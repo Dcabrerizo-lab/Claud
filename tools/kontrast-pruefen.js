@@ -46,7 +46,7 @@ const paare = [
   ['Tipp / Hinweis (Schiefer-Blau)', 'hint', 'hint-bg', 4.5], ['Tipp: Randbalken', 'hint-rand', 'hint-bg', 3], ['Warnung (Hinweisbox)', 'warn', 'warn-bg', 4.5],
   ['Frist: Text auf Frist-Fläche', 'ink', 'bad-bg', 4.5], ['Frist: Balken und Symbol', 'bad', 'bad-bg', 3],
   ['Fokusrahmen auf Karte', 'focus', 'surface', 3], ['Fokusrahmen neben Bedienfarbe', 'focus', 'accent-soft', 3],
-  ['Plakette „fehlt“', 'bad-on', 'bad', 4.5], ['Erkanntes Feld (Brief)', 'mark-ink', 'mark-bg', 4.5],
+  ['Plakette „fehlt“', 'bad-on', 'bad', 4.5], ['Erkanntes Feld (Brief)', 'mark-ink', 'mark-bg', 4.5], ['Unsicher erkanntes Feld (Foto)', 'ink', 'warn-bg', 4.5],
   ['Feldrand auf Karte', 'field', 'surface', 3], ['Fokusrahmen auf Hintergrund', 'focus', 'bg', 3],
   ['Antragsmappe (Papier)', 'papier-ink', 'papier', 4.5], ['Link in der Antragsmappe', 'papier-link', 'papier', 4.5],
   ['Start: „Los geht\'s“', 'c-leistungen', 'on-c', 4.5],
@@ -56,6 +56,7 @@ const paare = [
   ...BEREICHE.map((b) => ['Bereich ' + b + ': Farbe als Schrift auf Karte', 'c-' + b + '-t', 'surface', 4.5]),
   ...BEREICHE.map((b) => ['Bereich ' + b + ': Farbe als Schrift auf Hintergrund', 'c-' + b + '-t', 'bg', 4.5]),
   ...ABSENDER.map((a) => ['Absender ' + a + ': weiße Schrift auf Kachel', 'on-c', 'c-' + a, 4.5]),
+  ['Deutsch-Zeile (Sicherheitsnetz) auf Hintergrund', 'muted', 'bg', 4.5], ['Deutsch-Zeile auf Karte', 'muted', 'surface', 4.5], ['Deutsch-Zeile auf Tipp-Fläche', 'muted', 'hint-bg', 4.5], ['Deutsch-Zeile auf Achtung-Fläche', 'muted', 'warn-bg', 4.5], ['Deutsch-Zeile auf Frist-Fläche', 'ink', 'bad-bg', 4.5],
   ['Pflege: Einheit (Monat)', 'c-pflege-t', { mix: ['c-pflege', 0.14, 'surface'] }, 4.5],
 ];
 

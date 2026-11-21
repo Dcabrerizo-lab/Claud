@@ -1,0 +1,156 @@
+{
+ "l-wohngeld": [
+  "kira yardımı",
+  "konut yardımı",
+  "kira çok yüksek"
+ ],
+ "l-ggeld": [
+  "sosyal yardım",
+  "işsizlik parası 2",
+  "temel gelir",
+  "Hartz 4"
+ ],
+ "l-gsa": [
+  "emekli maaşı düşük",
+  "düşük emeklilik",
+  "yaşlılık temel güvencesi"
+ ],
+ "l-kindergeld": [
+  "çocuk parası",
+  "çocuk yardımı"
+ ],
+ "l-kiz": [
+  "çocuk ek ödemesi"
+ ],
+ "l-but": [
+  "okul gezisi",
+  "sınıf gezisi",
+  "okul malzemeleri",
+  "özel ders",
+  "okul yemeği"
+ ],
+ "l-uvg": [
+  "nafaka ödenmiyor",
+  "nafaka yok",
+  "baba ödemiyor",
+  "yalnız ebeveyn"
+ ],
+ "p-schaetzen": [
+  "bakım derecesi",
+  "bakım seviyesi"
+ ],
+ "pflege": [
+  "bakım",
+  "yakın bakımı"
+ ],
+ "l-ausweis": [
+  "engelli kartı",
+  "engellilik"
+ ],
+ "l-rundfunk": [
+  "yayın ücreti",
+  "televizyon ücreti",
+  "GEZ"
+ ],
+ "l-alg1": [
+  "işsiz",
+  "işimi kaybettim",
+  "işsizlik parası"
+ ],
+ "l-elterngeld": [
+  "ebeveyn parası",
+  "bebek"
+ ],
+ "l-mutter": [
+  "hamile",
+  "hamilelik",
+  "doğum izni"
+ ],
+ "l-asylblg": [
+  "iltica",
+  "mülteci"
+ ],
+ "brief": [
+  "mektup",
+  "resmi mektup",
+  "posta",
+  "karar",
+  "itiraz",
+  "Widerspruch",
+  "yanlış karar"
+ ],
+ "b-af": [
+  "form",
+  "form doldurma",
+  "başvuru formu"
+ ],
+ "g-konto": [
+  "hesaba haciz",
+  "hesap bloke",
+  "hesap donduruldu"
+ ],
+ "g-strom": [
+  "elektrik kesildi",
+  "elektrik kesintisi",
+  "gaz kesildi"
+ ],
+ "g-mahn": [
+  "mahkeme mektubu",
+  "sarı zarf",
+  "ödeme emri"
+ ],
+ "g-miete": [
+  "tahliye",
+  "ev sözleşmesi feshedildi",
+  "kira borcu"
+ ],
+ "g-inkasso": [
+  "icra takibi",
+  "tahsilat şirketi",
+  "inkasso"
+ ],
+ "g-rate": [
+  "taksit",
+  "taksitle ödeme"
+ ],
+ "g-hilfe": [
+  "borç danışmanlığı"
+ ],
+ "g-ablauf": [
+  "iflas",
+  "kişisel iflas"
+ ],
+ "geld": [
+  "para",
+  "borç",
+  "borçlar"
+ ],
+ "g-haushalt": [
+  "bütçe",
+  "harcamalar"
+ ],
+ "ausziehen": [
+  "taşınmak",
+  "evden ayrılmak",
+  "ilk ev"
+ ],
+ "e-anzeige": [
+  "dil",
+  "dili değiştir",
+  "yazı boyutu"
+ ],
+ "e-sicher": [
+  "PIN",
+  "şifre",
+  "verileri sil"
+ ],
+ "mappe": [
+  "başvuru",
+  "başvuru dosyası"
+ ],
+ "b-jc": [
+  "geri ödeme",
+  "fazla ödeme",
+  "Rückforderung"
+ ]
+}

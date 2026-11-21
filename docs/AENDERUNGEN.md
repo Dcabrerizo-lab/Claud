@@ -2,6 +2,70 @@
 
 Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss steigen). Die Versionsnummer kommt aus dem Build.
 
+## Version 1.9.0 (in Vorbereitung, noch nicht gebaut)
+
+Stand: Sammelzweig für Update 1.9 (21.11.2026). Versionsnummer (VersionCode) legt David fest.
+
+### Neu
+
+| Bereich | Was ist neu |
+|---|---|
+| **Suche** | Lupe oben auf jeder Seite (Startseite: neben der Sprachwahl) öffnet „Was suchst du?“. Findet alle Seiten der App, auch mit Alltagswörtern, alten Namen (z. B. Hartz 4, Mietzuschuss, gelber Brief, Pflegestufe, GEZ, Widerspruch, Einspruch, Rückforderung, Überzahlung) und mit Tippfehlern. Höchstens 6 Treffer. Zurück, Esc, Android-Zurück und Wischen schließen das Fenster. Ganz offline, nichts wird gespeichert. 13 Sprachen und Einfache Sprache. |
+| **Einzelne Vorgänge mit PIN sperren** | Mein Ordner → Bearbeiten → „Mit PIN sperren“ (4–8 Ziffern, empfohlen 6), zusätzlich zur App-PIN. In der Liste steht nur „Gesperrter Vorgang“ mit Schloss. Nach dem Wechseln, nach 2 Minuten im Hintergrund und nach dem Neustart wieder gesperrt. Fristen daraus erscheinen nur, solange er offen ist. Löschen geht ohne PIN (mit Rückfrage). PIN vergessen = Vorgang verloren. Nach mehreren Fehlversuchen kommt eine Wartezeit. |
+| **Bildschirmfoto-Schutz** | Ist die App-PIN an, sind Bildschirmfotos gesperrt (Android) und die Vorschau in der App-Übersicht ist verdeckt (Android und iPhone). Abschaltbar: Einstellungen → „Bildschirmfotos erlauben“. |
+| **Beratungsmodus: „Für Klient zusammenstellen“** | Haken setzen (Ergebnis des Hilfen-Checks, Laufzettel „Das bringst du mit – bis …“, Fristen, Musterschreiben), daraus entsteht ein Blatt, auch in der Sprache des Klienten mit Deutsch daneben oder in Einfacher Sprache. Knöpfe „Drucken“ und „Teilen“ (z. B. Messenger) mit kurzem Datenschutz-Hinweis. Im Privatmodus ändert sich nichts. |
+| **Beratungsmodus: an die SoLo-App des Klienten weitergeben** | Ausgewählte Teile oder der ganze Vorgang gehen per **QR-Code** oder als **SoLo-Datei** (.solo, z. B. per Messenger) an den Klienten. Standard mit PIN (6 Ziffern, mündlich sagen). Ohne PIN Hinweis „Wer den Code oder die Datei hat, kann es lesen.“ Beim Klienten: Mein Ordner → „Von der Beratung bekommen“ → Datei öffnen oder QR-Code scannen → PIN → Vorschau „Das bekommst du“ → Speichern als neuer Vorgang (nichts wird überschrieben). Fremde Dateien werden streng geprüft und nur als Text angezeigt. |
+| **Sicherheitsnetz für Übersetzungen** | Bei einer Fremdsprache steht unter wichtigen Sätzen (Fristen, Warnungen, „keine Rechtsberatung“, Ausschlüsse, Beträge mit Bedingung, Schritte in „Es ist dringend“) klein der deutsche Originalsatz, zum Vergleichen mit dem Brief oder zum Zeigen. Abschaltbar: Einstellungen → Anzeige → „Wichtige Sätze auch auf Deutsch zeigen“ (Standard an). |
+| **Raten anbieten mit Empfehlung** | Ist der Haushaltsplan ausgefüllt (Einnahmen, Miete, Essen), schlägt SoLo eine machbare Rate vor, nie mehr als der pfändbare Betrag (§ 850c ZPO). Bei mehreren Schulden Aufteilung nach Vorrang der Schulden-Liste. Neues Schreiben „Ratenzahlung anbieten“ mit Vorbehalt (kein Anerkenntnis der Forderung, der Zinsen und Kosten). Ist nichts pfändbar: eigener Hinweis und Verweis auf die Schuldnerberatung. |
+| **Tarife vergleichen** (Strom, Gas) | Eigener Tarif gegen ein Angebot, Kosten im Jahr mit und ohne Bonus, kurze Hinweise (Bonus, Vorkasse, Laufzeit, Kündigung, Fernwärme) und Link zur Verbraucherzentrale. Nichts wird gespeichert. |
+| **Pflege: Mit dem Gutachten vergleichen** | Neue Kachel auf der Ergebnisseite der Pflegegrad-Einschätzung: Gutachten des Medizinischen Dienstes scannen oder einfügen. Tabelle zeigt deine Punkte je Bereich neben dem Gutachten, Unterschiede fett. Zuerst steht der passende Antrag (Pflegegrad bzw. Höherstufung beantragen). |
+| **Brief prüfen: erkannte Werte erst prüfen** | Werte aus Foto, PDF oder eingefügtem Text sind gelb markiert: „Bitte vergleiche sie mit dem Brief.“ Erst nach „Werte stimmen“ kommen Vergleich und Widerspruch. Unsichere Werte bei Fotos zusätzlich mit „Schwer zu lesen“. |
+
+### Genauer gerechnet (mit amtlichen Quellen geprüft)
+
+| Leistung | Was sich ändert |
+|---|---|
+| **Wohngeld** | Für Rentner mit kleiner Rente jetzt ein Betrag statt „Einkommen eher zu niedrig“. Grenze dort, wo noch mindestens 10 € bleiben. Mehr als 12 Personen möglich. Lohn der Kinder: Arbeitnehmer-Pauschbetrag und Freibetrag nach § 17 Nr. 4 WoGG je Kind (geprüft mit dem amtlichen Wohngeldrechner: 400 von 400 Haushalten gleich oder in der Spanne). Bescheid-Check kennt den Freibetrag für 33 Jahre Grundrentenzeiten. |
+| **Kinderzuschlag** | Rechnet mit dem geschätzten Wohngeld statt einem festen Betrag. Vermögen knapp über der Grenze heißt „möglich“. Genauer bei Alleinerziehenden mit Altersrente. |
+| **Vermögen bei Paaren** | Freibetrag hängt vom Alter beider ab, deshalb öfter „möglich“ statt „wahrscheinlich“. |
+| **BAföG** | Sagt nicht mehr zu früh „eher nicht“: Vom Einkommen der Eltern über dem Freibetrag bleibt die Hälfte frei; eigenes Vermögen zählt nur über dem Freibetrag (plus 2.300 € je Partner und je Kind), verteilt auf 12 Monate. Kinderbetreuungszuschlag 160 € je Kind. Unter 10 € im Monat keine Zahlung (§ 51 Abs. 4 BAföG). |
+| **Grundsicherung im Alter** | Freibetrag für 33 Jahre Grundrentenzeiten aus der Bruttorente (auch im Bescheid-Check, neues Feld „Rente brutto“). Hinweis, wenn beide das Merkzeichen G haben. |
+| **Hilfe zur Pflege, Blindenhilfe** | Einkommensgrenze mit der ganzen Warmmiete und Familienzuschlag 395 €. |
+| **Blindengeld Bayern** | Bei Pflegegrad 4 und 5: 611,33 €. |
+| **Landespflegegeld** | Hinweis: Das Geld kommt in der Regel bis 31. Januar des Folgejahres (keine feste Zusage). |
+| **Arbeitslosengeld, Krankengeld** | Spanne reicht jetzt auch für Steuerklasse III. |
+| **Rundfunkbeitrag** | Befreiung kann bis zu 3 Jahre rückwirkend gelten (§ 4 Abs. 4 RBStV). |
+| **Zuständige Stellen** | Sachsen-Anhalt: Landesamt für Soziales, Jugend und Gesundheit (LAS) seit 1.4.2026; Eingliederungshilfe beim Sozialamt. Anschriften außerhalb Bayerns nur noch aus amtlichen Seiten: 60 frühere Wikipedia-Anschriften geprüft (32 bestätigt, 15 korrigiert, 13 ohne Beleg → nur Name und Website). |
+
+### Übersichtlicher
+
+| Bereich | Was ist anders |
+|---|---|
+| **Startseite** | Kachel „Pflege“ direkt unter „Welche Hilfen stehen mir zu?“. Auf dem Tablet stehen die vier Kacheln 2 × 2. Datenschutz-Satz als kleine Zeile. |
+| **Hilfen-Check** | Grüner Knopf „Briefe für die Anträge machen“ direkt unter den Ergebnis-Karten; Name und Anschrift fragt erst die Antragsmappe. „Zwei Wege“, „Gut zu wissen“, „Unsicher? Beratungsstelle“ als kurze Tipps zum Aufklappen. Bei „Zwei Wege“ ist in der Antragsmappe keine Leistung vorab angehakt. |
+| **„Es ist dringend“** | Alle Fälle gleich aufgebaut: Frist oben, „Das tust du jetzt“ in Schritten, Tipps zum Aufklappen, Quellen unten. |
+| **Geld und Schulden** | Keine Dopplungen mehr (z. B. „Gelber Umschlag vom Gericht?“ führt direkt zum Mahnbescheid; „Jeder darf nur ein P-Konto haben“). |
+| **Haushaltsplan** | Unter der Eingabe steht nichts mehr, Hinweise stehen in der Auswertung. „Bewilligt bis“ entfernt (auch die Erinnerung an den Folgeantrag). |
+| **Strom und Heizen** | „Abschlag prüfen“ jetzt dort: erst Strom oder Gas wählen, dann die Prüfung (Nachzahlung oder Guthaben, ungefähr). |
+| **Ich ziehe aus** | Großer Kasten „Unter 25 und Grundsicherungsgeld?“ entfernt; Thema in der normalen Karte (§ 22 Abs. 5 SGB II), auch wenn die Familie Grundsicherungsgeld bekommt oder man es nach dem Umzug braucht. |
+| **Briefe und Pflege** | Brief-Seiten ohne großen weißen Rahmen; Überschrift beim Jobcenter passend zur Briefart. Pflege-Seite mit kurzer Einleitung und grünem Knopf „Pflegegrad selbst einschätzen“. Aufklapper überall im gleichen Stil. |
+| **Brief einlesen, Gutachten lesen** | Liest Musterbescheide (Jobcenter, Wohngeld, Grundsicherung im Alter, Nebenkosten) und MD-Gutachten genauer, typische Fehler der Texterkennung (O/0, l/1, Punkt statt Komma) werden erkannt. |
+| **Verträge und Sozialtarife** | Telekom-Sozialtarif entfernt. |
+
+### Korrekturen, Sprachen, Sicherheit
+
+| Bereich | Was ist anders |
+|---|---|
+| **PIN-Schalter repariert** | Die App-PIN lässt sich wieder ausschalten (mit der bisherigen PIN); „Abbrechen“ beim Ein- und Ausschalten. |
+| **PIN-Erklärung ehrlich** | Unter „Neue PIN“ und beim Vorgang-PIN: Die PIN verschlüsselt die Angaben; vergessen = Angaben verloren; Sichtschutz, kein Schutz gegen Fachleute mit Spezialwerkzeug. |
+| **Sprachkorrekturen** | Rund 110 Korrekturen nach Rückübersetzung. Wichtig: Einfache Sprache beim Pflegegutachten („Urin/Stuhl: kann ihn meistens nicht oder nie halten“ – vorher Sinn umgekehrt); Somali: Text zur Zusicherung für unter 25-Jährige; Einspruch, Kündigung, P-Konto und Rundfunk in mehreren Sprachen einheitlich. |
+| **Vorgang wechseln ohne Reste** | Beim Wechsel des Vorgangs wird alles vom vorigen Klienten geleert (Scan, eingefügter Brief, Prüfungen, Namen in Schreiben, Antragsmappe, Blatt für Klienten, Pflege-Einschätzung). |
+| **iPhone: Angaben ohne Sicherung** | Die Angaben liegen in einer eigenen Datei, die iOS nicht in iCloud- oder Finder-Sicherungen aufnehmen soll (Hinweis an iOS, Apple garantiert das nicht). Alte Angaben werden beim ersten Start übernommen. |
+| **Keine Datei-Reste** | Beim Start werden liegengebliebene .solo-, PDF- und CSV-Dateien vom Teilen gelöscht. |
+| **Datenschutzerklärung** | Ergänzt: Einlesen von Briefen und PDF, Zwischenablage, Vorgang-PIN, Weitergabe per QR-Code/Datei (Messenger-Hinweis), Bildschirmfoto-Schutz, Diagnosedaten von Google ML Kit (nur Android), ältere iOS-Sicherungen. |
+| **Große Schrift (200 %)** | Lange Wörter in Kartentiteln werden umgebrochen, kein seitliches Scrollen. |
+| Technik | Gemeinsames Verschlüsselungs-Modul (src/krypto.js), alte verschlüsselte Daten bleiben lesbar. Neue Prüfwerkzeuge gegen amtliche Rechner (Wohngeld, Kinderzuschlag, BAföG, Elterngeld, Pfändung) – nicht in der App. |
+
 ## 1.8.0 (ab Versionsnummer 150, November 2026)
 - **Geld und Schulden neu geordnet**: Es ist dringend · Was bleibt mir? · Meine Schulden-Liste · **Post vom Inkasso** · Mein Geld planen (mit Spartipps) · **Schuldnerberatung**.
 - **Krisen-Check „Was ist zuerst dran?“** (7 Fragen) und neuer Fall **Geldstrafe: Haft droht**.

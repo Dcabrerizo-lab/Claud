@@ -47,6 +47,12 @@ function i18nSource() {
   LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'zusatz', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
   // Leistungs-Check Schritt für Schritt (src/schritte.js): eigene Sprachdateien src/lang/schritte/<Sprache>.json, Schlüssel „sf.*“
   LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'schritte', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
+  // „Für Klient zusammenstellen“ (src/klient.js): eigene Sprachdateien src/lang/klient/<Sprache>.json, Schlüssel „kb.*“
+  LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'klient', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
+  // Suche auf der Startseite (src/suche.js): Texte src/lang/suche/<Sprache>.json, Schlüssel „su.*“
+  LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'suche', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
+  // Sicherheitsnetz für Übersetzungen (src/denetz.js): Texte src/lang/denetz/<Sprache>.json, Schlüssel „dn.*“
+  LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'denetz', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
   return 'const I18N = ' + JSON.stringify(all) + ';\nconst I18N_EINFACH = ' + JSON.stringify(einfachSource(all.de)) + ';\nif (typeof module !== "undefined") module.exports = I18N;\n';
 }
 
@@ -122,14 +128,36 @@ function briefEinfachJs() {
   return 'const BRIEF_EINFACH = ' + JSON.stringify({ texte }) + ';\n';
 }
 
+// Alltagswörter und alte Namen für die Suche: src/lang/suche/woerter/<Sprache>.json ({ Ziel-ID: [Wörter] }), in src/suche.js eingesetzt
+function sucheJs() {
+  const dir = path.join(SRC, 'lang', 'suche', 'woerter'), w = {};
+  LANGS.forEach((l) => { const f = path.join(dir, l + '.json'); if (fs.existsSync(f)) w[l] = JSON.parse(fs.readFileSync(f, 'utf8')); });
+  const js = read('suche.js');
+  if (!js.includes('/*SUCHWOERTER*/null')) throw new Error('Marke /*SUCHWOERTER*/ fehlt in src/suche.js');
+  return js.replace('/*SUCHWOERTER*/null', () => JSON.stringify(w));
+}
+
+// Sicherheitsnetz für Übersetzungen: zentrale Liste src/lang/denetz/wichtig.json in src/denetz.js einsetzen (Marke /*WICHTIG*/null)
+function denetzJs() {
+  const js = read('denetz.js');
+  if (!js.includes('/*WICHTIG*/null')) throw new Error('Marke /*WICHTIG*/ fehlt in src/denetz.js');
+  const w = JSON.parse(read(path.join('lang', 'denetz', 'wichtig.json')));
+  Object.keys(w).forEach((k) => { if (k.startsWith('_')) delete w[k]; });
+  return js.replace('/*WICHTIG*/null', () => JSON.stringify(w));
+}
+
 // opts.native: Store-App (Android/iOS) statt Web
 function render(opts = {}) {
   const pp = pruefpaket();
-  const parts = { rules: read('rules.js'), i18n: i18nSource(), fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), vorgaenge: read('vorgaenge.js'), haushalt: read('haushalt.js'), ausziehen: read('ausziehen.js'), fristen: read('fristen.js'), schulden: read('schulden.js'), geld: read('geld.js'), schritte: read('schritte.js'), navigation: read('navigation.js'), app: read('app.js') };
+  const parts = { rules: read('rules.js'), i18n: i18nSource(), fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), vorgaenge: read('vorgaenge.js'), haushalt: read('haushalt.js'), ausziehen: read('ausziehen.js'), fristen: read('fristen.js'), schulden: read('schulden.js'), geld: read('geld.js'), schritte: read('schritte.js'), klient: read('klient.js'), suche: sucheJs(), denetz: denetzJs(), navigation: read('navigation.js'), app: read('app.js') };
   if (opts.native) {
     if (!parts.app.includes('/*NATIVE*/ false')) throw new Error('Marker /*NATIVE*/ fehlt in src/app.js');
     parts.app = parts.app.replace('/*NATIVE*/ false', 'true');
   }
+  // Weitergabe an den Klienten (src/weitergabe.js) mit QR-Code-Erzeugung (src/vendor/qrcode.js: qrcode-generator 2.0.4, MIT, Kazuhiko Arase), offline gebündelt
+  parts.weitergabe = read('weitergabe.js'); parts.qrcode = read(path.join('vendor', 'qrcode.js'));
+  // Gemeinsame Verschlüsselung (src/krypto.js) für Weitergabe und Vorgänge: steht vor beiden, im selben Skript wie die Weitergabe
+  parts.weitergabe = read('krypto.js') + parts.weitergabe;
   const vorlage = require(path.join(SRC, 'navigation.js')).vorlage(read('template.html')); // gemeinsamer Zurück-Knopf: Marken <!--ZURUECK ...-->
   if (/<!--ZURUECK/.test(vorlage)) throw new Error('Marke <!--ZURUECK--> mit falscher Schreibweise in src/template.html');
   const html = vorlage
@@ -141,6 +169,8 @@ function render(opts = {}) {
     .replace('/*BEHOERDEN*/\n', () => parts.behoerden)
     .replace('/*BEHOERDENDATA*/null', () => (opts.plz === false ? 'null' : behoerdenData()))
     .replace('/*FORMULARE*/\n', () => parts.formulare)
+    .replace('/*QRCODE*/\n', () => parts.qrcode)
+    .replace('/*WEITERGABE*/\n', () => parts.weitergabe)
     .replace('/*VORGAENGE*/\n', () => parts.vorgaenge)
     .replace('/*HAUSHALT*/\n', () => parts.haushalt)
     .replace('/*AUSZIEHEN*/\n', () => parts.ausziehen)
@@ -149,11 +179,14 @@ function render(opts = {}) {
     .replace('/*GELD*/\n', () => parts.geld)
     .replace('/*NAVIGATION*/\n', () => parts.navigation)
     .replace('/*SCHRITTE*/\n', () => parts.schritte)
+    .replace('/*KLIENT*/\n', () => parts.klient)
+    .replace('/*SUCHE*/\n', () => parts.suche)
+    .replace('/*DENETZ*/\n', () => parts.denetz)
     .replace('<!--PRUEFPAKET-->', () => pp.teile)
     .replace('/*PPSTIL*/\n', () => pp.css)
     .replace('/*PRUEFPAKET*/\n', () => briefEinfachJs() + pp.js)
     .replace('/*APP*/\n', () => parts.app.replace("'/*VERSION*/'", () => JSON.stringify(require(path.join(ROOT, 'package.json')).version)));
-  const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|VORGAENGE|HAUSHALT|AUSZIEHEN|FRISTEN|SCHULDEN|GELD|NAVIGATION|SCHRITTE|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEFPAKET-->/);
+  const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|VORGAENGE|HAUSHALT|AUSZIEHEN|FRISTEN|SCHULDEN|GELD|NAVIGATION|SCHRITTE|KLIENT|SUCHE|DENETZ|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEFPAKET-->/);
   if (left) throw new Error('Platzhalter nicht ersetzt: ' + left[0]);
   return { html, i18n: parts.i18n };
 }

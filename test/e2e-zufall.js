@@ -34,14 +34,16 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
   await p.click('#firstOk').catch(() => {});
 
   // Zum Leistungs-Check: seit der neuen Leiste (Start | Mein Ordner | Einstellungen) über die Startkachel
-  const zuLeistungen = async () => { await p.evaluate(() => { const s = document.querySelector('#appnav [data-ansicht=start]'); if (s) s.click(); const g = document.getElementById('goLeistungen'); if (g) g.click(); }); await p.waitForTimeout(150); };
+  // Offenes Such-Fenster (src/suche.js) macht Inhalt und Leiste inert: vor festen Besuchen schließen
+  const zuLeistungen = async () => { await p.evaluate(() => { if (window.Suche && Suche.offen && Suche.offen()) Suche.schliessen(false); const s = document.querySelector('#appnav [data-ansicht=start]'); if (s) s.click(); const g = document.getElementById('goLeistungen'); if (g) g.click(); }); await p.waitForTimeout(150); };
   const zustand = async () => p.evaluate(() => {
     const vis = (el) => !!el && el.offsetParent !== null && !el.closest('[hidden]');
     const es = document.querySelector('.es-wahl, #es-weiter, .es-ergebnis, .es-karte');
     const esModus = !!document.querySelector('#es-raus') && vis(document.querySelector('#es-raus'));
     const text = document.body.innerText;
+    // leer: ohne Angaben gibt es keine Karten und keinen Kasten „So geht's“ mehr (Legende verborgen)
     return {
-      esModus, esInhalt: !!es, karten: document.querySelectorAll('#cards .card').length, mappe: vis(document.getElementById('mappe')),
+      esModus, esInhalt: !!es, karten: document.querySelectorAll('#cards .card').length, leer: document.getElementById('legende').hidden, mappe: vis(document.getElementById('mappe')),
       legal: vis(document.getElementById('legal')), breite: document.documentElement.scrollWidth - window.innerWidth,
       kaputt: (text.match(/\bNaN\b|\bundefined\b|\bInfinity\b|\[object Object\]|\{[a-zA-Z]\w*\}/) || [''])[0],
       stelle: (() => { const m = text.match(/\bNaN\b|\bundefined\b|\bInfinity\b|\[object Object\]|\{[a-zA-Z]\w*\}/); return m ? text.slice(Math.max(0, m.index - 50), m.index + 50) : ''; })()
@@ -51,7 +53,7 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
   // Ein zufälliges sichtbares, bedienbares Element
   const ziele = async () => p.evaluate((verboten) => {
     const vis = (el) => el.offsetParent !== null && !el.closest('[hidden]') && !el.disabled && el.getClientRects().length > 0;
-    const offen = document.querySelector('#mappe:not([hidden]), #legal:not([hidden])');
+    const offen = document.querySelector('#mappe:not([hidden]), #legal:not([hidden]), #suFenster:not([hidden])'); // offenes Blatt oder Such-Fenster: nur darin klicken (der Rest ist verdeckt)
     const wurzel = offen || document;
     const els = [...wurzel.querySelectorAll('button, input, select, summary, [role=button]')].filter((el) => vis(el) && !el.matches(verboten));
     return els.map((el, i) => { el.setAttribute('data-zufall', String(i)); return { i, tag: el.tagName.toLowerCase(), typ: el.type || '', id: el.id || '', weg: !!el.closest('#appnav, .nav-kopf, #leistungenKopf') || !el.closest('#v-leistungen'), text: (el.innerText || el.value || '').slice(0, 30), opts: el.tagName === 'SELECT' ? [...el.options].map((o) => o.value) : null }; });
@@ -66,8 +68,8 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
     try {
       const r = rnd();
       // Feste Besuche, damit jeder Lauf sicher alle Bereiche prüft: einfache Version und Antragsmappe
-      if ((s % 100 === 25 || einfachNochmal > 0) && !imEinfach) { einfachNochmal = s % 100 === 25 ? 10 : einfachNochmal - 1; schritt = 'Einfache Version (fest)'; for (const zu of ['#mappeClose', '#legalClose']) if (await p.isVisible(zu)) await p.click(zu, { timeout: 1000 }); await zuLeistungen(); if (!(await p.locator('#es-raus').first().isVisible())) await p.evaluate(() => document.getElementById('einfachBtn').click()); } // vorher Mappe oder Impressum schließen und zum Bereich Leistungen (sonst bleibt die einfache Version unsichtbar); klappt es nicht, bis zu 10 Schritte erneut
-      else if (s % 200 === 150 || mappeNochmal > 0) { mappeNochmal = s % 200 === 150 ? 10 : mappeNochmal - 1; schritt = 'Antragsmappe (fest)'; for (const zu of ['#mappeClose', '#legalClose']) if (await p.isVisible(zu)) await p.click(zu, { timeout: 1000 }); await zuLeistungen(); if (await p.locator('#es-raus').first().isVisible()) { await p.locator('#es-raus').first().click({ timeout: 1000 }); await p.waitForTimeout(150); } if (!(await p.isVisible('#mappeMake')) || await p.isDisabled('#mappeMake')) { await p.evaluate(() => document.getElementById('p1').click()).catch(() => {}); if (await p.isVisible('#beispielJa')) await p.click('#beispielJa', { timeout: 1000 }); await p.waitForTimeout(150); } /* noch kein Ergebnis (Mappe-Bereich erscheint erst mit Ergebnis) oder nichts auswählbar: Beispiel laden */ await p.evaluate(() => { const c = [...document.querySelectorAll('[data-pick]')]; if (c.length && !c.some((x) => x.checked)) c[0].click(); }); /* alles abgewählt: eine Leistung wählen */ if (await p.isVisible('#mappeMake')) await p.click('#mappeMake', { timeout: 1000 }); } // erst zum Bereich Leistungen (es gibt jetzt mehr Bereiche), dann die einfache Version verlassen
+      if ((s % 100 === 25 || einfachNochmal > 0) && !imEinfach) { einfachNochmal = s % 100 === 25 ? 10 : einfachNochmal - 1; schritt = 'Einfache Version (fest)'; await p.evaluate(() => { if (window.Suche && Suche.offen && Suche.offen()) Suche.schliessen(false); }); for (const zu of ['#mappeClose', '#legalClose']) if (await p.isVisible(zu)) await p.click(zu, { timeout: 1000 }); await zuLeistungen(); if (!(await p.locator('#es-raus').first().isVisible())) await p.evaluate(() => document.getElementById('einfachBtn').click()); } // vorher Mappe oder Impressum schließen und zum Bereich Leistungen (sonst bleibt die einfache Version unsichtbar); klappt es nicht, bis zu 10 Schritte erneut
+      else if (s % 200 === 150 || mappeNochmal > 0) { mappeNochmal = s % 200 === 150 ? 10 : mappeNochmal - 1; schritt = 'Antragsmappe (fest)'; await p.evaluate(() => { if (window.Suche && Suche.offen && Suche.offen()) Suche.schliessen(false); }); for (const zu of ['#mappeClose', '#legalClose']) if (await p.isVisible(zu)) await p.click(zu, { timeout: 1000 }); await zuLeistungen(); if (await p.locator('#es-raus').first().isVisible()) { await p.locator('#es-raus').first().click({ timeout: 1000 }); await p.waitForTimeout(150); } if (!(await p.isVisible('#mappeMake')) || await p.isDisabled('#mappeMake')) { await p.evaluate(() => document.getElementById('p1').click()).catch(() => {}); if (await p.isVisible('#beispielJa')) await p.click('#beispielJa', { timeout: 1000 }); await p.waitForTimeout(150); } /* noch kein Ergebnis (Mappe-Bereich erscheint erst mit Ergebnis) oder nichts auswählbar: Beispiel laden */ await p.evaluate(() => { const c = [...document.querySelectorAll('[data-pick]')]; if (c.length && !c.some((x) => x.checked)) c[0].click(); }); /* alles abgewählt: eine Leistung wählen */ if (await p.isVisible('#mappeMake')) await p.click('#mappeMake', { timeout: 1000 }); } // erst zum Bereich Leistungen (es gibt jetzt mehr Bereiche), dann die einfache Version verlassen
       else if (r < 0.01) { schritt = 'Neu laden'; await p.reload(); await p.click('#firstOk', { timeout: 500 }).catch(() => {}); }
       else if (r < 0.045 && !imEinfach) { schritt = 'Einfache Version'; if (true) await p.evaluate(() => document.getElementById('einfachBtn').click()); }
       else if (r < 0.055) { schritt = 'Antragsmappe'; if (await p.isVisible('#mappeMake')) await p.click('#mappeMake', { timeout: 1000 }); }
@@ -98,11 +100,16 @@ const VERBOTEN = '#mappePrint, #mappeShare, #mappeCopy, #feedbackMail, #sc-take,
     if (z.kaputt) fehler.push('Kaputte Anzeige „' + z.kaputt + '“: …' + z.stelle.replace(/\s+/g, ' ') + '… | nach: ' + log.slice(-6).join(' > '));
     if (z.breite > 2) fehler.push('Seitliches Scrollen (' + z.breite + ' px) | nach: ' + log.slice(-6).join(' > '));
     if (z.esModus && !z.esInhalt && !z.mappe && !z.legal) fehler.push('Einfache Version ohne Frage und ohne Ergebnis | nach: ' + log.slice(-6).join(' > '));
-    if (!z.esModus && !z.mappe && !z.legal && z.karten === 0) fehler.push('Ausführliche Version ohne Karten und ohne Startanleitung | nach: ' + log.slice(-6).join(' > '));
+    if (!z.esModus && !z.mappe && !z.legal && z.karten === 0 && !z.leer) fehler.push('Ausführliche Version mit Ergebnis, aber ohne Karten | nach: ' + log.slice(-6).join(' > '));
     if (fehler.length >= 5) break;
   }
   await b.close();
   if (fehler.length) { console.log('FEHLER Zufalls-Klicktest' + SHARD.name + ' (Startwert ' + START + '):'); [...new Set(fehler)].slice(0, 5).forEach((f) => console.log('- ' + f)); process.exit(1); }
-  if (besucht.einfach < SCHRITTE / 20 || !besucht.mappe || !besucht.karten) { console.log('FEHLER Zufalls-Klicktest erreicht nicht alle Bereiche: ' + JSON.stringify(besucht)); process.exit(1); }
+  // Abdeckung: streng (rot) lokal und im schweren Lauf; im PR-Lauf (ZUFALL_ABDECKUNG=warnen) nur Warnung, weil test/e2e-rundgang.js
+  // dort jeden dieser Bereiche fest besucht und prüft. Fehler der App (oben) bleiben immer rot.
+  if (besucht.einfach < SCHRITTE / 20 || !besucht.mappe || !besucht.karten) {
+    if (process.env.ZUFALL_ABDECKUNG === 'warnen') console.log('::warning title=Zufalls-Klicktest Abdeckung::erreicht nicht alle Bereiche ' + JSON.stringify(besucht) + SHARD.name + ' (Pflichtbesuche prüft e2e-rundgang.js)');
+    else { console.log('FEHLER Zufalls-Klicktest erreicht nicht alle Bereiche: ' + JSON.stringify(besucht)); process.exit(1); }
+  }
   console.log('[zufall-klick] Zufalls-Klicktest' + SHARD.name + ' bestanden (Startwert ' + START + '): ' + SCHRITTE + ' zufällige Bedienschritte ohne Skriptfehler, kaputte Anzeige, seitliches Scrollen oder Sackgasse (Schritte in der einfachen Version ' + besucht.einfach + ', mit Ergebniskarten ' + besucht.karten + ', in der Antragsmappe ' + besucht.mappe + ')');
 })().catch((e) => { console.log('ABSTURZ', e.message); process.exit(1); });

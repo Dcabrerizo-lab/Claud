@@ -61,9 +61,10 @@ ck('[unt-kiz] F4b Kinderzuschlag 297 - 0,45 × 117,32 -> 240 €', m.kiz.level =
 m = ev({ kids: 1, kidsU6: 1, miete: 700, einkommen: [{ art: 'lohn', b: 600, n: 600 }, { art: 'unt', b: 1400 }] });
 ck('[unt-kiz] F4c Unterhalt über dem Bedarf mindert voll: etwa 30 €', m.kiz.level === 'vielleicht' && sch(m.kiz) && sch(m.kiz).a === E(30), m.kiz.tx);
 
-// 5 BAföG (Kind studiert): Paar, ein Kind, Netto 3.500 € Lohn + 800 € Unterhalt eines Elternteils
-//   Freibetrag 2.540 € + Spanne 1.200 € = 3.740 €: mit Unterhalt 4.300 € darüber, ohne 3.500 € darunter -> „möglich“
-const f5 = { adults: 2, kids: 1, ausbildung: 'kind', art1: 'lohn', art2: 'unt', brutto: 5800, brutto2: 800, netto: 4300 };
+// 5 BAföG (Kind studiert): Paar, ein Kind, Netto 4.000 € Lohn + 800 € Unterhalt eines Elternteils
+//   § 25 Abs. 4 BAföG: „eher nicht“ erst, wenn 50 % des Einkommens über dem Freibetrag 2.540 € den höchsten Bedarf 1.088 € minus 9,50 € (§ 51 Abs. 3, 4) übersteigen,
+//   also über 2.540 + 2.157 = 4.697 €: mit Unterhalt 4.800 € darüber, ohne 4.000 € darunter -> „möglich“
+const f5 = { adults: 2, kids: 1, ausbildung: 'kind', art1: 'lohn', art2: 'unt', brutto: 6600, brutto2: 800, netto: 4800 };
 ck('[unt-bafoeg] F5 BAföG möglich (Unterhalt zählt nur mit Realsplitting)', ev(f5).bafoeg.level === 'vielleicht');
 ck('F5 Gegenprobe Rente 800 €: unwahrscheinlich', ev({ ...f5, art2: 'rente' }).bafoeg.level === 'nein');
 

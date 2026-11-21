@@ -7,6 +7,7 @@
 //  - §§ 14, 16 WoGG, § 9a EStG (Werbungskosten-Pauschbetrag einmal je Person; § 16-Abzug je Person für ihr ganzes Einkommen, WoGVwV 16.11-16.13)
 //  - § 6a Abs. 1 Nr. 2, Abs. 6 BKGG (Mindesteinkommen 900 € ohne § 11b, Minderung 45 % / 100 %)
 'use strict';
+// Grenzen seit 21.11.2026 mit der 10-€-Schwelle (§ 21 Nr. 1 WoGG, gerundet ab 9,50 €), daher rund 25 € niedriger als vorher
 const R = require('./rules-de.js');
 const base = { kids: 0, young: 0, vermoegen: 0, bezug: {}, gebJahr: 1985, heute: 2026.9 };
 let n = 0, fails = 0;
@@ -29,7 +30,7 @@ ck('F1 Kinderzuschlag ≈ 260 €', m.kiz.level === 'ja' && sch(m.kiz).a === E(2
 m = run({ adults: 2, miete: 800, mietstufe: '3', einkommen: [P(1, 'lohn', 2000, 1480), P(1, 'lohn', 300), P(2, 'lohn', 603, 603)] });
 ck('[paar-ek] F2 Freibetrag 348 + 208,90 = 556,90', Math.abs(R.haushaltsFreibetrag(m._h) - 556.9) < 0.01, R.haushaltsFreibetrag(m._h));
 ck('F2 Grundsicherungsgeld möglich (Lücke −14,10)', m.ggeld.level === 'vielleicht', m.ggeld.level);
-ck('F2 Wohngeld: Werbungskosten P1 einmal, lo 2.464 / hi 3.145, bis 80 €', JSON.stringify(grenze(m.wohngeld)) === JSON.stringify([E(2464), E(3145)]) && sch(m.wohngeld).b === E(80), m.wohngeld.tx);
+ck('F2 Wohngeld: Werbungskosten P1 einmal, lo 2.442 / hi 3.116, bis 80 €', JSON.stringify(grenze(m.wohngeld)) === JSON.stringify([E(2442), E(3116)]) && sch(m.wohngeld).b === E(80), m.wohngeld.tx);
 // F2b Gegenprobe: Minijob 300 bei Person 2
 m = run({ adults: 2, miete: 800, mietstufe: '3', einkommen: [P(1, 'lohn', 2000, 1480), P(2, 'lohn', 603, 603), P(2, 'lohn', 300)] });
 ck('[paar-ek] F2b Freibetrag 348 + 298,90 = 646,90; Grundsicherungsgeld ≈ 80 €', Math.abs(R.haushaltsFreibetrag(m._h) - 646.9) < 0.01 && m.ggeld.level === 'ja' && sch(m.ggeld).a === E(80), m.ggeld.tx);
@@ -61,7 +62,7 @@ ck('[paar-ek] F5b 850 € < 900 €: minEink', m.kiz.level === 'nein' && m.kiz.h
 
 // F6 Wohngeld, § 16 je Person: Unterhalt bei P1 (Lohn mit voller Sozialversicherung) für „möglich“ mit 30 %
 m = run({ adults: 2, miete: 700, mietstufe: '3', einkommen: [P(1, 'lohn', 1500, 1150), P(1, 'unt', 300), P(2, 'rente', 1000, 890)] });
-ck('[paar-ek] F6 Wohngeld möglich, lo 2.313 / hi 2.896, bis 30 €', m.wohngeld.level === 'vielleicht' && JSON.stringify(grenze(m.wohngeld)) === JSON.stringify([E(2313), E(2896)]) && sch(m.wohngeld).b === E(30), m.wohngeld.tx);
+ck('[paar-ek] F6 Wohngeld möglich, lo 2.290 / hi 2.868, bis 30 €', m.wohngeld.level === 'vielleicht' && JSON.stringify(grenze(m.wohngeld)) === JSON.stringify([E(2290), E(2868)]) && sch(m.wohngeld).b === E(30), m.wohngeld.tx);
 
 // F7 kleiner Lohn 80 €: Grundabsetzbetrag deckt die Pauschale (Rz. 11.155), keine 30 € extra
 m = run({ adults: 2, miete: 700, einkommen: [P(1, 'lohn', 80, 80), P(1, 'unt', 400), P(2, 'ohne', 0)] });
@@ -88,7 +89,7 @@ ck('[paar-ek] allein: p 2 wird Person 1, brutto2 = 0', m._h.brutto2 === 0 && sch
 // F10 Rentnerpaar, zwei Renten bei P1 (zweites Einkommen nur Zahlbetrag): Renten-Pauschbetrag 102 € bei P1 nur einmal
 m = run({ adults: 2, gebJahr: 1950, miete: 650, mietstufe: '2', einkommen: [P(1, 'rente', 790, 700), P(1, 'rente', 300), P(2, 'rente', 680, 600)] });
 ck('[paar-ek] F10 Grundsicherung im Alter ≈ 60 €', m.gsa.level === 'ja' && sch(m.gsa).a === E(60), m.gsa.tx);
-ck('F10 Wohngeld 170–260 €, lo 2.167 / hi 2.531', m.wohngeld.level === 'ja' && sch(m.wohngeld).a === E(170) && sch(m.wohngeld).b === E(260) && JSON.stringify(grenze(m.wohngeld)) === JSON.stringify([E(2167), E(2531)]), m.wohngeld.tx);
+ck('F10 Wohngeld 170–260 €, lo 2.142 / hi 2.504', m.wohngeld.level === 'ja' && sch(m.wohngeld).a === E(170) && sch(m.wohngeld).b === E(260) && JSON.stringify(grenze(m.wohngeld)) === JSON.stringify([E(2142), E(2504)]), m.wohngeld.tx);
 
 // F11 KiZ-Hinweis Rentnerpaar auch mit Liste (beide haben Rente)
 m = run({ adults: 2, kids: 1, gebJahr: 1955, miete: 800, einkommen: [P(1, 'rente', 1000, 880), P(1, 'lohn', 200), P(2, 'rente', 800, 700)] });

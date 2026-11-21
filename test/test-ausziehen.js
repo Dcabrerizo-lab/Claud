@@ -6,7 +6,7 @@ const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'f
 let fehler = 0, n = 0;
 const check = (name, ok, info) => { n++; if (!ok) { fehler++; console.log('FAIL ' + name + (info !== undefined ? ' -> ' + JSON.stringify(info) : '')); } };
 const keys = A.schluessel();
-const zahlen = (s) => String(s).replace(/[٠-٩]/g, (c) => '٠١٢٣٤٥٦٧٨٩'.indexOf(c)).replace(/[۰-۹]/g, (c) => '۰۱۲۳۴۵۶۷۸۹'.indexOf(c)).replace(/\{[^}]*\}/g, ' ').replace(/(\d) (?=\d)/g, '$1').match(/\d+/g)?.sort().join(' ') || '';
+const { zahlen } = require('./hilf-zahlen.js'); // gemeinsame Zählfunktion (auch test-sprachen-zahlen.js)
 const de = require('../src/lang/ausziehen/de.json');
 
 // az-aufbau: Übersicht höchstens 8 Kacheln, jede Kachel ein Bereich; Checklisten mit Punkten
@@ -20,7 +20,7 @@ const farbe = (id) => { const m = quelltext.match(new RegExp('\\.az-k-' + id + '
 const farben = A.HAUPT.map(farbe);
 check('[az-aufbau] jede Kachel eine eigene Palettenfarbe', new Set(farben).size === A.HAUPT.length, farben);
 check('[az-aufbau] keine Hex-Farben im Modul', !/#[0-9a-fA-F]{6}\b/.test(quelltext));
-check('[az-aufbau] U25-Warnung als Punkt', A.BEREICHE[0].punkte.some((p) => p.id === 'u25' && p.warn));
+check('[az-aufbau] U25-Zusicherung als Punkt (§ 22 Abs. 5 SGB II)', A.BEREICHE[0].punkte.some((p) => p.id === 'u25' && p.q.indexOf('sgb2_22_5') >= 0));
 check('[az-aufbau] Hilfen alle „möglich“', A.BEREICHE.find((b) => b.id === 'hilfen').punkte.every((p) => p.moeglich));
 
 // az-quellen: jede Quelle existiert; Texte mit § oder Zahl haben eine Quelle; Zahlen im Text stehen so in der Quelle bzw. sind belegt

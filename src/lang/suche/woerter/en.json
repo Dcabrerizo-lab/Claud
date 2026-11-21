@@ -1,0 +1,171 @@
+{
+ "l-wohngeld": [
+  "housing benefit",
+  "rent help",
+  "rent subsidy",
+  "rent too high"
+ ],
+ "l-ggeld": [
+  "unemployment benefit 2",
+  "basic income",
+  "welfare",
+  "social benefits",
+  "citizens income"
+ ],
+ "l-gsa": [
+  "pension too low",
+  "small pension",
+  "old age income support",
+  "social assistance"
+ ],
+ "l-kindergeld": [
+  "child benefit"
+ ],
+ "l-kiz": [
+  "child supplement",
+  "money for children"
+ ],
+ "l-but": [
+  "school trip",
+  "class trip",
+  "school supplies",
+  "tutoring",
+  "school lunch",
+  "sports club"
+ ],
+ "l-uvg": [
+  "child maintenance missing",
+  "no child support",
+  "father does not pay",
+  "single parent"
+ ],
+ "p-schaetzen": [
+  "care level",
+  "care grade",
+  "nursing level"
+ ],
+ "pflege": [
+  "care",
+  "nursing care",
+  "caring for relatives"
+ ],
+ "l-ausweis": [
+  "disability card",
+  "disabled pass",
+  "disability"
+ ],
+ "l-rundfunk": [
+  "TV licence",
+  "broadcasting fee",
+  "GEZ"
+ ],
+ "l-alg1": [
+  "unemployed",
+  "lost my job",
+  "unemployment benefit"
+ ],
+ "l-elterngeld": [
+  "parental allowance",
+  "baby"
+ ],
+ "l-mutter": [
+  "pregnant",
+  "maternity pay"
+ ],
+ "l-asylblg": [
+  "asylum",
+  "refugee"
+ ],
+ "brief": [
+  "letter",
+  "mail from authority",
+  "official letter",
+  "notice",
+  "objection",
+  "appeal",
+  "Widerspruch",
+  "wrong decision"
+ ],
+ "b-af": [
+  "form",
+  "fill in form",
+  "application form"
+ ],
+ "g-konto": [
+  "account seized",
+  "account blocked",
+  "bank account frozen",
+  "garnishment account"
+ ],
+ "g-strom": [
+  "electricity cut off",
+  "power cut",
+  "gas cut off",
+  "no electricity"
+ ],
+ "g-mahn": [
+  "court letter",
+  "yellow letter",
+  "payment order"
+ ],
+ "g-miete": [
+  "eviction",
+  "flat terminated",
+  "rent arrears",
+  "notice to quit"
+ ],
+ "g-inkasso": [
+  "debt collection",
+  "collection agency"
+ ],
+ "g-rate": [
+  "installments",
+  "payment plan"
+ ],
+ "g-hilfe": [
+  "debt counselling",
+  "debt advice"
+ ],
+ "g-ablauf": [
+  "insolvency",
+  "bankruptcy"
+ ],
+ "geld": [
+  "money",
+  "debts",
+  "debt"
+ ],
+ "g-haushalt": [
+  "budget",
+  "household budget",
+  "expenses"
+ ],
+ "ausziehen": [
+  "moving out",
+  "first flat",
+  "own apartment",
+  "moving"
+ ],
+ "e-anzeige": [
+  "language",
+  "change language",
+  "font size",
+  "dark mode"
+ ],
+ "e-sicher": [
+  "PIN",
+  "password",
+  "delete data"
+ ],
+ "mappe": [
+  "application",
+  "apply",
+  "application folder"
+ ],
+ "b-jc": [
+  "repayment",
+  "overpayment",
+  "pay back Jobcenter",
+  "Rückforderung"
+ ]
+}

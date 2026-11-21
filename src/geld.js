@@ -78,11 +78,83 @@ var Geld = (function () {
       '- Ich habe mit Ihrem Auftraggeber keinen Vertrag geschlossen. Die Forderung ist mir nicht bekannt.',
       '- Ich habe den Betrag bereits am [Datum] bezahlt. Einen Beleg lege ich bei.',
       'Ich erkenne die Forderung nicht an. Bitte stellen Sie Ihre Mahnungen ein und bestätigen Sie mir das schriftlich.', '', 'Mit freundlichen Grüßen', '', '[Unterschrift]'];
+    else if (art === 'rate') b = rateSchreiben(f);
     else b = ['Kundennummer oder Aktenzeichen: ' + az, '', 'Antrag auf eine Bescheinigung für mein Pfändungsschutzkonto (§ 903 ZPO)', '', 'Sehr geehrte Damen und Herren,', '',
       'mein Konto ist ein Pfändungsschutzkonto (P-Konto). Damit meine Bank die höheren Freibeträge berücksichtigt, bitte ich Sie um eine Bescheinigung nach § 903 ZPO.',
       'Bitte bescheinigen Sie, soweit Ihnen bekannt: die Höhe und Art der Leistungen, die Sie auf mein Konto überweisen, und den Zeitraum sowie die Zahl der Personen, denen ich Unterhalt gewähre, mit dem Geburtsdatum minderjähriger Kinder.',
       'Bitte schicken Sie mir die Bescheinigung an meine Anschrift oben.', '', 'Mit freundlichen Grüßen', '', '[Unterschrift]'];
     return kopf.concat(b).join('\n');
+  }
+
+  // Ratenzahlung anbieten (Seite „Raten anbieten“, mit Ratenempfehlung). rate: Betrag in Euro, so wie der Nutzer ihn einträgt oder übernimmt.
+  // Kostenfrage: Vor einer Raten- oder Stundungsvereinbarung muss ein Inkassodienstleister auf die Kosten hinweisen (§ 13a Abs. 3 RDG, Wortlaut
+  // abgerufen 20.11.2026 auf https://www.gesetze-im-internet.de/rdg/__13a.html); das Schreiben fragt deshalb allgemein nach den Kosten.
+  // Vorbehalt: Ein Anerkenntnis „durch Abschlagszahlung, Zinszahlung, Sicherheitsleistung oder in anderer Weise“ lässt die Verjährung neu beginnen
+  // (§ 212 Abs. 1 Nr. 1 BGB, Wortlaut abgerufen 21.11.2026 auf https://www.gesetze-im-internet.de/bgb/__212.html). Das Schreiben sagt deshalb vorsichtig,
+  // dass das Angebot ohne Anerkennung einer Rechtspflicht erfolgt (wie „kein Anerkenntnis“ im Muster „Forderungsaufstellung“); ob das im Einzelfall
+  // trägt, ist offen – darum bleibt der Hinweis ra.warn (vorher „Stimmt der Brief?“).
+  function rateText(v) { var r = einzeilig(v, 12).replace(/[^0-9.,]/g, ''); return r ? r + ' €' : '[Betrag] €'; }
+  function rateSchreiben(f) {
+    return ['Aktenzeichen: ' + (einzeilig(f.az, 60) || LUECKE.az), '', 'Angebot einer Ratenzahlung', '', 'Sehr geehrte Damen und Herren,', '',
+      'ich kann Ihre Forderung zurzeit nicht auf einmal bezahlen. Ich biete Ihnen an, monatlich ' + rateText(f.rate) + ' zu zahlen, erstmals zum [Datum der ersten Rate].',
+      'Dieses Angebot mache ich ohne Anerkennung einer Rechtspflicht. Es ist kein Anerkenntnis der Forderung, insbesondere nicht von Zinsen und Kosten.',
+      'Bitte bestätigen Sie mir die Ratenzahlung schriftlich. Teilen Sie mir vorher mit, ob durch die Vereinbarung Kosten entstehen.',
+      'Solange ich die Raten pünktlich zahle, bitte ich Sie, von weiteren Maßnahmen abzusehen.', '', 'Mit freundlichen Grüßen', '', '[Unterschrift]'];
+  }
+
+  // ---------- Rate vorschlagen (SoLo-Faustregel, keine Rechtsaussage; Auftrag David 21.11.2026, korrigiert nach Prüfung Richtigkeit 21.11.2026) ----------
+  // Es gibt keine gesetzliche Formel für eine „machbare“ Rate. SoLo rechnet so (alles in Cent, ganzzahlig):
+  //  frei   = monatliche Einnahmen − monatliche Ausgaben aus dem Haushaltsplan (Haushalt.rest(), nur gelesen)
+  //  Puffer = 10 % der Einnahmen (auf den Cent aufgerundet), mindestens 50 € – für Unvorhergesehenes (Nachzahlung, Reparatur)
+  //  Obergrenze = pfändbarer Betrag nach der Pfändungstabelle (§ 850c ZPO mit den geprüften Werten 2026 in Rules.pfaendung, Wortlaut § 850c
+  //    abgerufen 21.11.2026 auf https://www.gesetze-im-internet.de/zpo/__850c.html): mehr als das könnten alle Gläubiger zusammen auch mit einer
+  //    Lohnpfändung nicht bekommen. Grundlage grob: Einnahmen des Plans ohne Kindergeld (§ 76 EStG), Unterhaltsberechtigte aus dem Pfändungsrechner
+  //    oder dem Check (Partner und Kinder im Haushalt). Unterhaltsgläubiger können mehr pfänden (§ 850d ZPO) – das ersetzt keine Beratung.
+  //  Rate   = min(frei − Puffer, pfändbar), abgerundet auf volle 5 €; unter 5 € keine Empfehlung: „keine“ (kein Spielraum) oder
+  //    „unpfaendbar“ (nach der Tabelle nichts pfändbar) – beide mit Verweis auf die Schuldnerberatung.
+  //  Mehrere offene Schulden mit Betrag: Reihenfolge wie in der Schulden-Liste (Schulden.artStufe: 1 Miete, Strom, Unterhalt, Geldstrafe,
+  //    Krankenversicherung; 2 Bußgeld, Amt; 3 Banken, Inkasso, Versand – Texte sl.kopf.1–3, sl.prio.lead). Die Rate geht zuerst an Stufe 1,
+  //    was dort nicht gebraucht wird an Stufe 2, dann an Stufe 3; innerhalb einer Stufe anteilig nach Höhe der Forderung, je Gläubiger
+  //    höchstens die Forderung, auf ganze Euro abgerundet (die Summe der Teile ist nie größer als die Gesamtrate).
+  // „Ausgefüllt“ heißt: Einnahmen, Miete und Essen stehen im Plan (Haushalt.rest().wesentlich); nur eine beliebige Ausgabe reicht nicht.
+  var RATE = { pufferAnteil: 10, pufferMin: 5000, schritt: 500 };
+  function forderung(e) { var b = e && (typeof e.stand === 'number' ? e.stand : typeof e.anfang === 'number' ? e.anfang : null); return b > 0 ? b : 0; }
+  // Module im Browser global (Rules ist als const deklariert, also nicht an window), in Node über require
+  function stufeVon(e) { var S = typeof Schulden !== 'undefined' ? Schulden : typeof require === 'function' ? require('./schulden.js') : null; return S && S.artStufe ? S.artStufe(e && e.art) : 3; }
+  // Pfändbarer Betrag im Monat in Cent (Lohnpfändung, § 850c ZPO): netto in Cent, personen = Unterhaltsberechtigte (0–5)
+  function pfaendbarCent(nettoCent, personen) {
+    var R = typeof Rules !== 'undefined' ? Rules : require('./rules.js');
+    return Math.round(R.pfaendung(Math.max(0, nettoCent) / 100, Math.min(5, Math.max(0, personen | 0))).pfaendbar * 100);
+  }
+  function rateEmpfehlung(hh, liste) {
+    if (!hh || !(hh.ein > 0) || !hh.wesentlich) return { art: 'ohnePlan' };
+    var ein = Math.round(hh.ein), aus = hh.aus > 0 ? Math.round(hh.aus) : 0;
+    var frei = ein - aus, puffer = Math.max(Math.ceil(ein * RATE.pufferAnteil / 100), RATE.pufferMin);
+    // pfaendbar (Cent) nur, wenn schon berechnet übergeben (Tests der reinen Rechnung); sonst aus der Pfändungstabelle
+    var pf = typeof hh.pfaendbar === 'number' ? hh.pfaendbar : pfaendbarCent(ein - (hh.kindergeld > 0 ? Math.round(hh.kindergeld) : 0), hh.personen);
+    var roh = Math.min(frei - puffer, pf), rate = roh > 0 ? Math.floor(roh / RATE.schritt) * RATE.schritt : 0;
+    var art = rate >= RATE.schritt ? 'rate' : pf < RATE.schritt ? 'unpfaendbar' : 'keine';
+    var r = { art: art, ein: ein, aus: aus, frei: frei, puffer: puffer, pfaendbar: pf, gedeckelt: frei - puffer > pf, rate: art === 'rate' ? rate : 0, teile: [] };
+    if (r.art !== 'rate') return r;
+    var mit = (liste || []).filter(function (e) { return e && e.st !== 'erledigt' && forderung(e) > 0; });
+    if (mit.length < 2) return r;
+    r.gesamt = mit.reduce(function (a, e) { return a + forderung(e); }, 0);
+    var rest = r.rate / 100, teil = {};
+    [1, 2, 3].forEach(function (s) {
+      var gr = mit.filter(function (e) { return stufeVon(e) === s; });
+      var summe = gr.reduce(function (a, e) { return a + forderung(e); }, 0);
+      if (!gr.length || rest <= 0) return;
+      var verteilt = 0;
+      gr.forEach(function (e) {
+        var euro = summe / 100 <= rest ? Math.floor(forderung(e) / 100) : Math.floor(rest * forderung(e) / summe);
+        teil[e.id] = euro; verteilt += euro;
+      });
+      rest -= verteilt;
+    });
+    r.vorrang = mit.some(function (e) { return stufeVon(e) < 3; });
+    r.teile = mit.map(function (e) { return { id: e.id, g: e.g, forderung: forderung(e), stufe: stufeVon(e), rate: (teil[e.id] || 0) * 100 }; })
+      .sort(function (x, y) { return x.stufe - y.stufe; });
+    return r;
   }
 
   // ---------- Bis zum Termin und Beratungsmappe (Haken je Vorgang, lotse.beratung-haken) ----------
@@ -100,7 +172,7 @@ var Geld = (function () {
 
   // ---------- Oberfläche ----------
   var ctx = null, haken = hakenLeer();
-  var st = { kc: { i: 0, a: {} }, ip: {}, ms: { art: '', g: '', adr: '', az: '', von: '', absender: '' } };
+  var st = { kc: { i: 0, a: {} }, ip: {}, ms: { art: '', g: '', adr: '', az: '', von: '', absender: '', rate: '' } };
   var speicher = {
     laden: function (cb) { try { cb(localStorage.getItem('lotse.beratung-haken')); } catch (e) { cb(null); } },
     schreiben: function (txt) { try { localStorage.setItem('lotse.beratung-haken', txt); } catch (e) { /* Speicher gesperrt */ } }
@@ -203,7 +275,9 @@ var Geld = (function () {
     if (ber()) box.appendChild(berEl('p', 'Prüfhinweise für Fachkräfte: Kostenhinweis vor Raten- oder Stundungsvereinbarung (§ 13a Abs. 3 RDG); Hinweis vor einem Schuldanerkenntnis (§ 13a Abs. 4 RDG); Erstattungsfähigkeit der Inkassokosten höchstens wie bei einem Rechtsanwalt (§ 13e RDG). Abrufdatum 20.11.2026.'));
   }
 
-  // Musterschreiben: erst wählen (Kacheln), dann Felder und Text. fest: Muster vorgegeben (P-Konto aus „Was bleibt mir?“)
+  // Musterschreiben: erst wählen (Kacheln), dann Felder und Text. fest: Muster vorgegeben (P-Konto aus „Was bleibt mir?“).
+  // Unter „Schreiben an Gläubiger“ keine Kachel P-Konto-Bescheinigung (Aufräumen 21.11.2026): geht nicht an Gläubiger und steht unter „Was bleibt mir?“.
+  // Hinweis „Die Anschrift fehlt noch“ (ms-ohne-adr) erst beim Drucken/Teilen, wenn das Feld leer ist, nicht schon vor der Eingabe.
   function schreibenSeite(box, neu, fest) {
     var m = st.ms;
     if (fest) m.art = fest;
@@ -211,11 +285,11 @@ var Geld = (function () {
       frage(box, t('ms.h'));
       box.appendChild(el('p', 'hint', t('ms.wahl')));
       var r = raster(box);
-      MUSTER.forEach(function (a) { r.appendChild(ctx.kachel('ms-' + a, { geduld: 'uhr', aufst: 'lupe', wider: 'stopp', pkonto: 'beleg' }[a], t('ms.' + a), t('ms.' + a + '.t'), function () { m.art = a; neu(); })); });
+      MUSTER.filter(function (a) { return a !== 'pkonto'; }).forEach(function (a) { r.appendChild(ctx.kachel('ms-' + a, { geduld: 'uhr', aufst: 'lupe', wider: 'stopp', pkonto: 'beleg' }[a], t('ms.' + a), t('ms.' + a + '.t'), function () { m.art = a; neu(); })); });
       box.appendChild(el('p', 'small muted', t('ms.hinweis')));
       return;
     }
-    frage(box, t('ms.' + m.art));
+    if (m.art === 'rate') box.appendChild(el('h3', 'ms-rate-h', t('ms.rate'))); else frage(box, t('ms.' + m.art));
     if (m.art === 'pkonto') box.appendChild(el('p', 'hint', t('ms.pkonto.lead')));
     if (m.art === 'wider') box.appendChild(el('p', 'warn', t('ms.wider.warn')));
     var liste = ctx.schulden ? ctx.schulden() : [];
@@ -240,24 +314,84 @@ var Geld = (function () {
     };
     feld('ms-g', 'g', t('ms.g'));
     feld('ms-adr', 'adr', t('ms.adr'), true);
-    var ohne = box.appendChild(el('p', 'small warn')); ohne.id = 'ms-ohne-adr';
+    var ohneBox = box.appendChild(el('div', 'ms-ohne-box')); ohneBox.hidden = true; // erst beim Drucken/Teilen sichtbar (dann blendet text() den Hinweis aus, sobald die Anschrift da ist)
+    var ohne = ohneBox.appendChild(el('p', 'small warn')); ohne.id = 'ms-ohne-adr'; ohne.setAttribute('aria-live', 'polite');
     feld('ms-az', 'az', t('ms.az'));
+    if (m.art === 'rate') { var fr = feld('ms-rate', 'rate', t('ms.rate.feld')); fr.inputMode = 'decimal'; fr.maxLength = 12; }
     if (ber()) { var fb = feld('ms-abs', 'absender', 'Absender-Zusatz (z. B. „vertreten durch …“)'); fb.closest('.field').classList.add('ber-nur'); }
     var lt = el('label', '', t('ms.text')); lt.htmlFor = 'ms-text'; box.appendChild(lt);
     if (ctx.lang() !== 'de') box.appendChild(el('p', 'small hint', t('ms.de')));
     var ta = el('textarea', 'ms-text'); ta.id = 'ms-text'; ta.rows = 16; ta.lang = 'de'; ta.dir = 'ltr'; box.appendChild(ta);
     var msg = el('p', 'small'); msg.setAttribute('aria-live', 'polite');
-    btns(box).appendChild(knopf('btn', t('hb.hw.briefAus'), function () { ctx.textAusgeben(ta.value, 'Schreiben', msg); }, { id: 'ms-aus' }));
+    btns(box).appendChild(knopf('btn', t('hb.hw.briefAus'), function () { ohneBox.hidden = false; ctx.textAusgeben(ta.value, 'Schreiben', msg); }, { id: 'ms-aus' }));
     box.appendChild(msg);
     box.appendChild(el('p', 'small ms-hinweis', t('ms.hinweis')));
     function text() {
-      ta.value = schreiben(m.art, { g: m.g, adr: m.adr, az: m.az, absender: ber() ? m.absender : '', datum: ctx.datumDe ? ctx.datumDe(new Date()) : '' });
+      ta.value = schreiben(m.art, { g: m.g, adr: m.adr, az: m.az, rate: m.rate, absender: ber() ? m.absender : '', datum: ctx.datumDe ? ctx.datumDe(new Date()) : '' });
       ohne.textContent = zeilen(m.adr).length ? '' : t('ms.ohneAdr'); ohne.hidden = !ohne.textContent;
     }
     text();
   }
   function schreibenVorbelegen(art, e) {
-    st.ms = { art: art || '', g: e && e.g || '', adr: e && e.adr || '', az: e && e.az || '', von: e && e.id || '', absender: st.ms.absender || '' };
+    st.ms = { art: art || '', g: e && e.g || '', adr: e && e.adr || '', az: e && e.az || '', von: e && e.id || '', absender: st.ms.absender || '', rate: st.ms.rate || '' };
+  }
+
+  // Seite „Raten anbieten“: Empfehlung aus dem Haushaltsplan (oder Vermerk), Hinweis Anerkenntnis, darunter das Schreiben „Ratenzahlung anbieten“.
+  // Anerkenntnis: Ein Ratenangebot oder eine Abschlagszahlung kann die Forderung anerkennen; die Verjährung beginnt dann neu
+  // (§ 212 Abs. 1 Nr. 1 BGB, https://www.gesetze-im-internet.de/bgb/__212.html, abgerufen 20.11.2026). Darum vorher „Stimmt der Brief?“.
+  function eurCent(c) { return { eur: c / 100 }; }
+  function rateSeite(box, neu) {
+    var m = st.ms; if (m.art !== 'rate') { m.art = 'rate'; m.rate = m.rate || ''; }
+    var liste = ctx.schulden ? ctx.schulden() : [], e = rateEmpfehlung(ctx.haushalt ? ctx.haushalt() : null, liste);
+    var wo = box.appendChild(el('div', 'ra-empf')); wo.id = 'ra-empf';
+    if (e.art === 'ohnePlan') {
+      var v = wo.appendChild(el('p', 'small ra-ohne', t('ra.ohnePlan'))); v.id = 'ra-ohne';
+      btns(wo).appendChild(knopf('btn ghost klein', t('hb.kachel'), function () { ctx.ziel('haushalt'); }, { id: 'ra-zum-plan' }));
+    } else if (e.art === 'keine' || e.art === 'unpfaendbar') {
+      // unpfaendbar: Nach der Pfändungstabelle (§ 850c ZPO) wäre vom Einkommen nichts pfändbar – kein Ratenvorschlag, sondern Beratung zuerst
+      wo.appendChild(el('p', 'warn ra-keine', t(e.art === 'keine' ? 'ra.keine' : 'ra.unpf'))).id = 'ra-keine';
+      btns(wo).appendChild(knopf('btn ghost', t('sb.h'), function () { ctx.ziel('hilfe'); }, { id: 'ra-zur-beratung' }));
+    } else {
+      var k = wo.appendChild(el('div', 'hb-karte ra-karte'));
+      var erg = k.appendChild(el('p', 'hb-ergebnis', t('ra.empf', { b: eurCent(e.rate) }))); erg.id = 'ra-betrag';
+      var msg = el('p', 'small'); msg.setAttribute('aria-live', 'polite');
+      btns(k).appendChild(knopf('btn', t('ra.uebernehmen'), function () {
+        // Schreiben an einen Gläubiger aus der Aufteilung: dessen Teil, sonst die Gesamtrate
+        var mein = e.teile.filter(function (x) { return !!m.von && x.id === m.von; })[0];
+        // Dieser Gläubiger ist laut Aufteilung erst später dran: keine Rate von 0 € ins Schreiben setzen (Prüfung PR #105, 21.11.2026)
+        if (mein && !mein.rate) { msg.textContent = t(e.vorrang ? 'ra.vor' : 'ra.keine'); return; }
+        m.rate = String((mein ? mein.rate : e.rate) / 100);
+        var f = document.getElementById('ms-rate'); if (f) { f.value = m.rate; f.dispatchEvent(new Event('input')); f.focus(); }
+        msg.textContent = t('ra.uebernommen');
+      }, { id: 'ra-uebernehmen' }));
+      k.appendChild(msg);
+      if (e.teile.length) {
+        k.appendChild(el('p', 'ra-auft-h', t('ra.auft.h')));
+        var tab = k.appendChild(el('table', 'pf-tab ra-auft')); tab.id = 'ra-auft';
+        var kopf = tab.createTHead().insertRow();
+        [t('ra.auft.g'), t('ra.auft.r')].forEach(function (x) { var th = el('th', '', x); th.scope = 'col'; kopf.appendChild(th); });
+        var tb = tab.createTBody();
+        e.teile.forEach(function (x) {
+          var tr = tb.insertRow(), dies = !!m.von && x.id === m.von;
+          if (dies) tr.className = 'ra-dies';
+          tr.insertCell().textContent = x.g + (dies ? ' (' + t('ra.auft.dies') + ')' : '');
+          tr.insertCell().textContent = x.rate ? t('ra.betrag', { b: eurCent(x.rate) }) : t('ra.auft.spaeter');
+        });
+        var fuss = tab.createTFoot().insertRow();
+        fuss.insertCell().textContent = t('ra.auft.gesamt'); fuss.insertCell().textContent = t('ra.betrag', { b: eurCent(e.rate) });
+        if (e.vorrang) k.appendChild(el('p', 'small ra-vor', t('ra.vor'))).id = 'ra-vor';
+      }
+      var so = k.appendChild(el('details', 'mehr ra-so')); so.appendChild(el('summary', '', t('ra.so')));
+      so.appendChild(el('p', '', t('ra.so.1', { a: eurCent(e.ein), b: eurCent(e.aus), c: eurCent(e.frei) })));
+      so.appendChild(el('p', '', t('ra.so.2', { b: eurCent(e.puffer) })));
+      so.appendChild(el('p', '', t('ra.so.3', { p: eurCent(e.pfaendbar), b: eurCent(e.rate) })));
+      if (e.teile.length) so.appendChild(el('p', '', t('ra.so.4')));
+      so.appendChild(el('p', 'small', t('ra.so.5')));
+      k.appendChild(ctx.tipp('ra.tipp', 'ra-tipp'));
+    }
+    var w = box.appendChild(el('p', 'warn ra-warn', t('ra.warn'))); w.id = 'ra-warn';
+    btns(box).appendChild(knopf('btn ghost klein', t('ip.h'), function () { ctx.ziel('pruef'); }, { id: 'ra-zur-pruef' }));
+    schreibenSeite(box, neu, 'rate');
   }
 
   // Bis zum Termin: 6 Haken, je Zeile ein Sprung. Haken 4 (Liste) und 5 (Haushaltsplan) setzen sich von selbst.
@@ -351,15 +485,15 @@ var Geld = (function () {
   }
   function zuruecksetzen() { st.kc = { i: 0, a: {} }; st.ip = {}; }
   function init(c) { ctx = c; laden(); }
-  function neuLaden() { st = { kc: { i: 0, a: {} }, ip: {}, ms: { art: '', g: '', adr: '', az: '', von: '', absender: '' } }; pm = { netto: '', pers: 0, kg: 0 }; laden(); } // auch die Pfändungs-Maske leeren: keine Zahlen des vorigen Vorgangs
+  function neuLaden() { st = { kc: { i: 0, a: {} }, ip: {}, ms: { art: '', g: '', adr: '', az: '', von: '', absender: '', rate: '' } }; pm = { netto: '', pers: 0, kg: 0 }; laden(); } // auch die Pfändungs-Maske leeren: keine Zahlen des vorigen Vorgangs
 
   return {
     // Rechnung (Tests)
     KC: KC, KC_ZUERST: KC_ZUERST, krisenErgebnis: krisenErgebnis, IP: IP.map(function (x) { return x[0]; }), ipFehlend: ipFehlend, MUSTER: MUSTER, schreiben: schreiben,
-    LUECKE: LUECKE, WARTEN: WARTEN, hakenNormiere: hakenNormiere,
+    LUECKE: LUECKE, WARTEN: WARTEN, hakenNormiere: hakenNormiere, RATE: RATE, rateEmpfehlung: rateEmpfehlung, pfaendbarCent: pfaendbarCent,
     // Oberfläche
     init: init, speicherOrt: speicherOrt, neuLaden: neuLaden, krisenCheck: krisenCheck, pruefliste: pruefliste, schreibenSeite: schreibenSeite,
-    schreibenVorbelegen: schreibenVorbelegen, wartezeit: wartezeit, mappe: mappe, pfMaske: pfMaske, tiefe: tiefe, zurueck: zurueck, zuruecksetzen: zuruecksetzen,
+    schreibenVorbelegen: schreibenVorbelegen, rateSeite: rateSeite, wartezeit: wartezeit, mappe: mappe, pfMaske: pfMaske, tiefe: tiefe, zurueck: zurueck, zuruecksetzen: zuruecksetzen,
     kcStart: function () { st.kc = { i: 0, a: {} }; }, haken: function () { return JSON.parse(JSON.stringify(haken)); }
   };
 })();

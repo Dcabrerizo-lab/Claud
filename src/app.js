@@ -38,7 +38,15 @@
       var v = p[k];
       return v && typeof v === 'object' && 'eur' in v ? Fmt.euro(v.eur, lang, rtl) : v;
     });
+    if (lang !== 'de' && window.DeNetz) DeNetz.merke(key, s, p); // Sicherheitsnetz: wichtige Sätze auch auf Deutsch (src/denetz.js)
     return s;
+  }
+  // Deutscher Originaltext zu einem Schlüssel (Sicherheitsnetz, src/denetz.js): gleiche Parameter, ohne Einfache Sprache
+  function tDe(key, p, ohne) {
+    var l = lang, es = einfachSprache, s;
+    lang = 'de'; einfachSprache = false;
+    try { s = t(key, p); } finally { lang = l; einfachSprache = es; }
+    return ohne ? Fmt.ohnePara(s) : s;
   }
 
   // Text für Laien: ohne Beratungsmodus Paragrafen in Klammern ausblenden (Fmt.ohnePara); im Beratungsmodus unverändert
@@ -47,7 +55,15 @@
   var parseAmount = Fmt.parse;
 
   // ----- Speicher: Preferences in der App, sonst localStorage -----
-  function plug(name) { try { return window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins[name] || null; } catch (e) { return null; } }
+  // iOS: statt Preferences (UserDefaults, geht in iCloud-/Finder-Sicherung) der eigene Speicher ohne Sicherung
+  // (app/ios/App/App/SoloSpeicherPlugin.swift, gleiche Aufrufe, übernimmt die alten Werte beim ersten Start). Android: Preferences (allowBackup="false").
+  function plug(name) {
+    try {
+      var P = window.Capacitor && window.Capacitor.Plugins; if (!P) return null;
+      if (name === 'Preferences' && P.SoloSpeicher) return P.SoloSpeicher;
+      return P[name] || null;
+    } catch (e) { return null; }
+  }
   var StoreRoh = {
     get: function (key, cb) {
       var p = plug('Preferences');
@@ -146,6 +162,7 @@
     bank: '<path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>',
     schere: '<circle cx="6" cy="7" r="3"/><circle cx="6" cy="17" r="3"/><path d="M8.5 8.5L20 18M8.5 15.5L20 6"/>',
     person: '<circle cx="12" cy="7" r="3"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>',
+    licht: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>',
     post: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
     haus: '<path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/>',
     stopp: '<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>',
@@ -165,15 +182,16 @@
     'sp.strom.1': 'aus', 'sp.strom.2': 'waesche', 'sp.strom.3': 'topf', 'sp.strom.4': 'thermo', 'sp.strom.5': 'zaehler', 'sp.strom.6': 'hausCheck',
     'sp.heizen.1': 'thermo', 'sp.heizen.2': 'fenster', 'sp.heizen.3': 'heizung', 'sp.heizen.4': 'wind', 'sp.heizen.5': 'einreichen',
     'sp.essen.1': 'liste', 'sp.essen.2': 'blatt', 'sp.essen.3': 'frost', 'sp.essen.4': 'korb', 'sp.essen.5': 'teller',
-    'sp.vertraege.1': 'radio', 'sp.vertraege.2': 'telefon', 'sp.vertraege.3': 'ticket', 'sp.vertraege.5': 'bank', 'sp.vertraege.6': 'schere',
+    'sp.vertraege.1': 'radio', 'sp.vertraege.3': 'ticket', 'sp.vertraege.5': 'bank', 'sp.vertraege.6': 'schere',
+    'tv.bonus': 'geld', 'tv.vorkasse': 'warn', 'tv.laufzeit': 'kalender', 'tv.kuendigung': 'uhr', 'tv.fernwaerme': 'heizung',
     'sp.schulden.1': 'post', 'sp.schulden.2': 'haus', 'sp.schulden.3': 'stopp',
     'sp.schulden.inkasso': 'lupe', 'sp.schulden.rate': 'kalender', 'sp.schulden.unserioes': 'warn', 'sp.schulden.insolvenz': 'waage',
-    'sp.schulden.konto': 'schild', 'sp.schulden.strom': 'blitz', 'sp.schulden.mahn': 'waage', 'sp.schulden.miete': 'haus',
-    'gs.d.konto.frist': 'uhr', 'gs.d.konto.schritt': 'bank', 'gs.d.strom.frist': 'uhr', 'gs.d.strom.schritt': 'telefon',
+    'sp.schulden.strom': 'blitz', 'sp.schulden.mahn': 'waage', 'sp.schulden.miete': 'haus',
+    'gs.d.konto.frist': 'uhr', 'gs.d.konto.schritt': 'bank', 'gs.d.strom.frist': 'uhr', 'gs.d.strom.schritt': 'telefon', 'gs.d.strom.haerte': 'post', 'gs.d.strom.darlehen': 'einreichen', 'gs.d.strom.grenze': 'blitz',
     'gs.d.mahn.frist': 'uhr', 'gs.d.mahn.schritt': 'post', 'gs.d.miete.frist': 'uhr', 'gs.d.miete.schritt': 'einreichen',
     'pf.tipp.unterhalt': 'warn', 'pf.tipp.unterhaltspflichten': 'lupe', 'pf.tipp.mehr': 'waage', 'pf.tipp.beratung': 'person', 'pf.tipp.einmal': 'geld',
     'ip.w1': 'stopp', 'ip.w2': 'kalender', 'ip.w3': 'post', 'sb.ordner': 'liste', 'gs.d.geld.frist': 'uhr', 'gs.d.geld.schritt': 'telefon',
-    'pf.tipp.kg': 'kind', 'pf.tipp.umwandeln': 'bank', 'pf.tipp.bescheinigung': 'beleg', 'pf.tipp.kontomehr': 'waage', 'pf.tipp.uebertrag': 'weiter', 'pf.tipp.sozial': 'schild'
+    'pf.tipp.kg': 'kind', 'pf.tipp.umwandeln': 'bank', 'pf.tipp.bescheinigung': 'beleg', 'pf.tipp.kontomehr': 'waage', 'pf.tipp.uebertrag': 'weiter', 'pf.tipp.sozial': 'schild', 'pu.tipp.beratung': 'person'
   };
   // laien: Paragrafen wie bisher nur bei den Spartipps aus dem Text nehmen (tL); sonst bleiben sie stehen
   function tippEl(key, cls, laien) {
@@ -185,6 +203,12 @@
     s.appendChild(sym); s.appendChild(k); d.appendChild(s);
     var p = document.createElement('p'); p.textContent = (laien ? tL : t)(key); d.appendChild(p);
     return d;
+  }
+  // Gleicher Tipp als HTML (Ergebnis des Leistungs-Checks wird als Text gebaut): Symbol + kurzer Satz (bereits mit esc), Inhalt zugeklappt.
+  // innen: fertiges, mit esc gebautes HTML; sym: Schlüssel aus TIPP_SYM (feste Pfade)
+  function tippHtml(sym, kurz, innen, id) {
+    return '<details class="mehr tipp"' + (id ? ' id="' + id + '"' : '') + '><summary><span class="tipp-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + (TIPP_SYM[sym] || TIPP_SYM.liste) + '</svg></span>' +
+      '<span class="tipp-kurz">' + esc(kurz) + '</span></summary>' + innen + '</details>';
   }
   window.SoloMehr = { el: mehrEl, quellen: quellenEl, tipp: tippEl, rb: function () { return t('rb.satz'); }, t: function (k, p) { return Object.prototype.hasOwnProperty.call(I18N.de, k) ? t(k, p) : null; } }; // auch für die Prüfpakete (erweiterungen/vorschau.js), Schulden-Liste und „Ich ziehe aus“
 
@@ -549,7 +573,7 @@
       (b.web ? '<p><a href="' + esc(b.web) + '" target="_blank" rel="noopener">' + esc(t('beh.web')) + '</a></p>' : '') + '</div>' +
       (b.weiter ? '<p class="small">' + esc(tL('beh.wgWeiter')) + '</p>' : '') +
       (!b.anschrift ? '<p class="small">' + esc(t('beh.ohneAdr')) + '</p>'
-        : '<p class="small">' + esc(t('beh.pruefenKurz')) + '</p>' + (b.quelleArt === 'wikipedia' || b.stand ? mehrHtml('<p>' + esc(b.quelleArt === 'wikipedia' ? t('beh.pruefenWiki', { stand: b.stand || '' }) : t('beh.pruefen', { stand: b.stand })) + '</p>', t('beh.quelle')) : ''));
+        : '<p class="small">' + esc(t('beh.pruefenKurz')) + '</p>' + (b.stand ? mehrHtml('<p>' + esc(t('beh.pruefen', { stand: b.stand })) + '</p>', t('beh.quelle')) : ''));
   }
 
   // Aufenthalt „Asylverfahren oder Duldung“ (asyl) oder „ausreisepflichtig ohne Duldung“ (ausreise): beide wie asyl in den Regeln
@@ -610,6 +634,7 @@
 
   function applyLang() {
     var app = $('app');
+    if (window.DeNetz) DeNetz.sprache(); // alte Übersetzungen vergessen
     app.setAttribute('lang', lang);
     document.documentElement.setAttribute('lang', lang);
     document.documentElement.setAttribute('dir', I18N[lang]['meta.dir']);
@@ -627,6 +652,8 @@
     if (window.FristenOrdner) FristenOrdner.sprache(); // Fristen in „Mein Ordner“ (src/fristen.js)
     if (window.Ausziehen && Ausziehen.sprache) Ausziehen.sprache(); // „Ich ziehe aus“ (src/ausziehen.js) in der neuen Sprache zeichnen
     if (window.Schulden && Schulden.sprache) Schulden.sprache(); // Schulden-Liste (src/schulden.js)
+    if (window.Klient) Klient.sprache(); // „Für Klient zusammenstellen“ (src/klient.js)
+    if (window.Suche) Suche.sprache(); // Suche (Lupe, src/suche.js)
     // Regeln älter als der nächste Stichtag (1. Januar): deutlich darauf hinweisen
     var veraltet = regelnVeraltet();
     $('altNotice').hidden = !veraltet; $('altNotice').textContent = veraltet ? t('alt.hinweis', { stand: standL() }) : '';
@@ -650,6 +677,14 @@
     b.setAttribute('aria-checked', String(de && einfachSprache));
     if (de) b.removeAttribute('aria-disabled'); else b.setAttribute('aria-disabled', 'true');
     $('einfacheSpracheT').textContent = t(de ? 'set.es.t' : 'set.es.nurDe');
+    if ($('deNetzBtn')) { $('deNetzBtn').setAttribute('aria-checked', String(!window.DeNetz || DeNetz.an())); $('deNetzT').textContent = t(de ? 'dn.set.nurFremd' : 'dn.set.t'); }
+  }
+  // Schalter „Wichtige Sätze auch auf Deutsch zeigen“ (Standard an; wirkt nur bei Fremdsprachen)
+  function deNetzSetzen(an, speichern) {
+    if (!window.DeNetz) return;
+    if (speichern) Store.set('lotse.deNetz', an ? '1' : '0');
+    DeNetz.setzeAn(an);
+    einfacheSpracheAnzeigen();
   }
   function einfacheSpracheSetzen(an, speichern) {
     einfachSprache = !!an;
@@ -665,6 +700,7 @@
     render();
     if (!$('mappe').hidden) buildMappe();
     if (!$('ergBlatt').hidden) ebBauen();
+    if (window.Klient) Klient.sichtbar(); // aus: Knopf weg, offenes Blatt zu
     if (aktAnsicht === 'pfaendung') pfRender(false);
     if (aktAnsicht === 'sparen') spRender(false);
     if (aktAnsicht === 'haushalt' && window.Haushalt) Haushalt.sprache(); // Druckblatt nur im Beratungsmodus
@@ -848,6 +884,7 @@
       einfacheSpracheSetzen(!einfachSprache, true);
     });
     $('beratungBtn').addEventListener('click', function () { beratungSetzen(!beratung, true); });
+    if ($('deNetzBtn')) $('deNetzBtn').addEventListener('click', function () { deNetzSetzen(!DeNetz.an(), true); });
     $('ebOpen').addEventListener('click', ebOeffnen);
     $('ebKuerzel').addEventListener('input', ebBauen);
     $('ebDruck').addEventListener('click', function () { ebAusgeben(NATIVE ? (plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen') : 'web'); });
@@ -862,18 +899,19 @@
     [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) {
       $(x[0]).addEventListener('input', function () {
         person[x[1]] = $(x[0]).value; save();
+        if (!$('mappe').hidden) mappeNeuBald(); // Briefe in der Mappe zeigen Name und Anschrift sofort
         // Die Anschrift kann den Wohnort liefern (PLZ): Karten mit der zuständigen Stelle aktualisieren
         if (x[1] === 'ort' && !/^\d{5}$/.test(String(state.plz || ''))) render();
       });
     });
     // Geburtsdatum beim Verlassen des Feldes einheitlich als TT.MM.JJJJ (Unklares bleibt wie eingegeben)
     $('p-geb').addEventListener('change', function () { var f = Fmt.gebDatum($('p-geb').value); if (f !== $('p-geb').value) { $('p-geb').value = f; person.geb = f; save(); } });
-    $('mappeMake').addEventListener('click', function () {
-      var any = Object.keys(picked).some(function (k) { return picked[k]; });
-      if (!any) { $('pickMsg').textContent = t('f.pick0'); return; }
-      $('pickMsg').textContent = '';
-      openMappe();
+    // „Briefe für die Anträge machen“ (entsteht mit den Karten): öffnet die Antragsmappe; Auswahl, Name und Anschrift stehen dort oben
+    $('cards').addEventListener('click', function (e) {
+      if (e.target && e.target.closest && e.target.closest('#mappeMake')) openMappe();
     });
+    // Auswahl der Leistungen in der Mappe: Mappe sofort neu aufbauen
+    $('pick').addEventListener('change', function () { if (!$('mappe').hidden) buildMappe(); });
     // App: „PDF teilen“ (auf dem iPhone mit Drucken und In Dateien sichern im Teilen-Dialog); kein zweiter, doppelter Teilen-Knopf
     if (NATIVE) { $('mappePrint').setAttribute('data-t', 'f.pdf'); $('mappePrint').textContent = t('f.pdf'); }
     // Android: eigene Knöpfe zum Drucken und Speichern (dort bietet der Teilen-Dialog das nicht auf jedem Gerät an; iPhone: im Teilen-Dialog enthalten)
@@ -984,7 +1022,7 @@
   // Hinweise, die zu bestimmten Leistungen gehören, stehen in deren Karte; Hinweise für alle Anträge in „Gut zu wissen“
   var HINWEIS_KARTE = { 'z.wgKiz': ['wohngeld', 'kiz'], 'z.gsaWg': ['gsa', 'wohngeld'], 'z.kgZuerst': ['kiz', 'kindergeld'], 'z.ggBezug': ['wohngeld', 'kiz', 'but'] };
   var HINWEIS_ALLE = ['z.stichtag', 'z.verfahren', 'z.grenzen'];
-  var kartenHinweise = {}, gutHtml = '';
+  var kartenHinweise = {}, tippsHtml = '';
   // Beratungsmodus: Rechtsgrundlage der Leistung (Rules.RECHT, deutsch) unter dem Kartentext
   function rechtHtml(r) { return beratung && r.recht ? '<p class="recht"><strong>' + esc(t('recht.label')) + ':</strong> <span lang="de" dir="ltr">' + esc(r.recht) + '</span></p>' : ''; }
   // Unterlagen-Checkliste zum Abhaken (Antragsmappe); Haken bleiben auf dem Gerät (lotse.haken)
@@ -1064,7 +1102,9 @@
   }
   function kartenHtml(results) {
     var k = kartenReihe(results), nein = k.neinKern.length + k.neinSpez.length;
-    return k.passt.map(card).join('') + gutHtml + (nein
+    // Grüner Hauptknopf direkt unter den passenden Karten (wie im Kurzen Check); Name und Anschrift fragt erst die Antragsmappe
+    var knopf = '<p class="btns erg-knopf" id="mappeKnopf"><button type="button" class="btn" id="mappeMake">' + esc(t('es.briefe')) + '</button></p>';
+    return k.passt.map(card).join('') + knopf + '<div class="erg-tipps" id="ergTipps">' + tippsHtml + '</div>' + (nein
       ? '<details class="neinbox"><summary>' + esc(t('nein.sum', { n: nein })) + '</summary>' + k.neinKern.map(card).join('') +
         (k.neinSpez.length ? '<details class="spezbox"><summary>' + esc(t('nein.spezial', { n: k.neinSpez.length })) + '</summary>' + k.neinSpez.map(card).join('') + '</details>' : '') +
         '</details>'
@@ -1082,34 +1122,46 @@
   // Rente/Erwerbsminderung: Grundsicherung im Alter oder Wohngeld – gibt es nicht gleichzeitig (Hinweis z.gsaWg). Gleicher Aufbau wie „Zwei Wege“,
   // aber nur mit Aussagen, die schon in der App stehen (z.gsaWg, es.r.gsa, es.r.wohngeld, sp.vertraege.1); keine eigene Vorrangregel.
   function entwederOder(results) {
-    return '<section class="zweiwege" id="entwederOder" aria-labelledby="h-eo"><h3 id="h-eo">' + esc(tL('eo.h')) + '</h3><p class="ww-tun"><b>' + esc(tL('eo.tipp')) + '</b></p><p>' + esc(tL('eo.t')) + '</p>' +
+    return tippHtml('waage', tL('eo.h'), '<div><p class="ww-tun"><b>' + esc(tL('eo.tipp')) + '</b></p><p>' + esc(tL('eo.t')) + '</p>' +
       '<div class="ww-wege"><div class="ww-weg"><h4>' + esc(tL('eo.a.h')) + '</h4><p>' + esc(tL('eo.a.t')) + '</p>' + wegLinks(results, ['gsa']) + '</div>' +
-      '<div class="ww-weg"><h4>' + esc(tL('eo.b.h')) + '</h4><p>' + esc(tL('eo.b.t')) + '</p>' + wegLinks(results, ['wohngeld']) + '</div></div></section>';
+      '<div class="ww-weg"><h4>' + esc(tL('eo.b.h')) + '</h4><p>' + esc(tL('eo.b.t')) + '</p>' + wegLinks(results, ['wohngeld']) + '</div></div></div>', 'entwederOder');
   }
   // Ohne Kinder: Texte mit Endung „0“ (kein Kinderzuschlag, keine Bildung und Teilhabe). Vorrang Wohngeld: § 12a SGB II,
   // § 7 Abs. 1 WoGG (gesetze-im-internet.de, abgerufen 20.11.2026)
   function zweiWege(results) {
     var weg = function (ids) { return wegLinks(results, ids); };
     var k = (state.kids || 0) + (state.young || 0) > 0, o = k ? '' : '0';
-    return '<section class="zweiwege" id="zweiWege" aria-labelledby="h-ww"><h3 id="h-ww">' + esc(t('ww.h' + o)) + '</h3><p class="ww-tun"><b>' + esc(t('ww.tipp')) + '</b></p>' +
-      '<details class="mehr ww-mehr"><summary>' + esc(t('mehr.wege')) + '</summary><p>' + esc(t('ww.t')) + '</p><div class="ww-wege"><div class="ww-weg"><h4>' + esc(t('ww.a.h')) + '</h4><p>' + esc(t('ww.a.t' + o)) + '</p>' + weg(k ? ['ggeld', 'but'] : ['ggeld']) + '</div>' +
+    return tippHtml('waage', t('ww.h' + o), '<div><p class="ww-tun"><b>' + esc(t('ww.tipp')) + '</b></p>' +
+      '<p>' + esc(t('ww.t')) + '</p><div class="ww-wege"><div class="ww-weg"><h4>' + esc(t('ww.a.h')) + '</h4><p>' + esc(t('ww.a.t' + o)) + '</p>' + weg(k ? ['ggeld', 'but'] : ['ggeld']) + '</div>' +
       '<div class="ww-weg"><h4>' + esc(t('ww.b.h' + o)) + '</h4><p>' + esc(t('ww.b.t' + o)) + '</p>' + weg(k ? ['wohngeld', 'kiz', 'but'] : ['wohngeld']) + '</div></div>' +
-      '<p class="ww-regel"><b>' + esc(t('ww.regel.h')) + '</b> ' + esc(t('ww.regel' + o)) + '</p></details></section>';
+      '<p class="ww-regel"><b>' + esc(t('ww.regel.h')) + '</b> ' + esc(t('ww.regel' + o)) + '</p></div>', 'zweiWege');
   }
 
-  function renderPick(results) {
+  // Entweder-oder (Hinweise z.ggVsWg und z.gsaWg, gleiche Bedingung wie die Kacheln „Zwei Wege“ / „Entweder oder“): Wohngeld und Kinderzuschlag gibt es
+  // nicht neben Grundsicherungsgeld, Wohngeld nicht neben Grundsicherung im Alter (§ 7 Abs. 1 WoGG, gesetze-im-internet.de, abgerufen 20.11.2026).
+  // Darum hakt die Antragsmappe keine dieser Leistungen vorab an; der Nutzer wählt selbst (Zeile f.pickWege). Bildung und Teilhabe gibt es auf beiden Wegen.
+  function wegeIds(zusammen) {
+    var z = function (k) { return (zusammen || []).some(function (x) { return x[0] === k; }); }, ids = [];
+    if (z('z.ggVsWg')) ids.push('ggeld', 'wohngeld', 'kiz');
+    if (z('z.gsaWg')) ids.push('gsa', 'wohngeld');
+    return ids;
+  }
+  function renderPick(results, zusammen) {
+    var wege = wegeIds(zusammen);
     // Keine Briefe für Dinge, die schon da sind: Pflegegrad festgestellt, Grad der Behinderung festgestellt oder beantragt
     var schonDa = function (id) { return (id === 'pflege' && state.pflegegrad && state.pflegegrad !== 'antrag') || (id === 'ausweis' && !!state.gdb); };
     var avail = results.filter(function (r) { return (r.level === 'ja' || r.level === 'vielleicht') && ANTRAG[r.id] && !schonDa(r.id); });
     var next = {};
-    avail.forEach(function (r) { next[r.id] = Object.prototype.hasOwnProperty.call(pickedUser, r.id) ? pickedUser[r.id] : r.level === 'ja'; });
+    avail.forEach(function (r) { next[r.id] = Object.prototype.hasOwnProperty.call(pickedUser, r.id) ? pickedUser[r.id] : r.level === 'ja' && wege.indexOf(r.id) < 0; });
+    var wegeDa = avail.filter(function (r) { return wege.indexOf(r.id) >= 0; }).length > 1;
     picked = next;
     $('pick').innerHTML = avail.length
       ? avail.map(function (r) {
           return '<label class="check"><input type="checkbox" data-pick="' + r.id + '"' + (picked[r.id] ? ' checked' : '') + '><span>' + esc(r.name) + (lang === 'de' ? '' : ' (' + esc(t('n.' + r.id)) + ')') + '</span></label>';
-        }).join('')
+        }).join('') + (wegeDa ? '<p class="small pick-wege" id="pickWege">' + esc(t('f.pickWege')) + '</p>' : '')
       : '<p class="small">' + esc(t('f.none')) + '</p>';
-    $('mappeMake').disabled = avail.length === 0;
+    if ($('mappeKnopf')) $('mappeKnopf').hidden = avail.length === 0;
+    $('pickMsg').textContent = '';
     document.querySelectorAll('[data-pick]').forEach(function (cb) {
       cb.addEventListener('change', function () { picked[cb.getAttribute('data-pick')] = cb.checked; pickedUser[cb.getAttribute('data-pick')] = cb.checked; });
     });
@@ -1124,7 +1176,7 @@
     satz.hidden = !(passend > 0);
     satz.textContent = passend === 1 ? t('res.n1') : passend > 1 ? t('res.n', { n: passend }) : '';
     $('ebOpen').hidden = !(passend > 0);
-    $('beratung').hidden = !started;
+    if (window.Klient) Klient.sichtbar(passend > 0); // „Für Klient zusammenstellen“ nur im Beratungsmodus (src/klient.js)
     $('resRb').hidden = !started; // „Erste Einschätzung, keine Rechtsberatung“ unter jedem Ergebnis
   }
 
@@ -1137,12 +1189,12 @@
       // Erster Start: keine erfundenen Ergebnisse zeigen, sondern erklären, wie es geht
       $('count').textContent = $('jumpText').textContent = t(gu ? 'warn.geb' : 'c.leer');
       $('overview').hidden = true; $('together').innerHTML = '';
-      $('cards').innerHTML = gu ? '<div class="card startcard"><p class="warn"><a href="#gebJahr">' + esc(t('warn.geb')) + '</a></p></div>' : '<div class="card startcard"><h3>' + esc(t('start.h')) + '</h3>' + listItems([t('start.1'), t('start.2'), t('start.3')]) + '</div>';
-      $('helper').hidden = true; $('legende').hidden = true; $('feedback').hidden = true;
+      $('cards').innerHTML = gu ? '<div class="card startcard"><p class="warn"><a href="#gebJahr">' + esc(t('warn.geb')) + '</a></p></div>' : ''; // ohne Angaben: kein Kasten „So geht's“
+      $('legende').hidden = true; $('feedback').hidden = true;
       kopfErgebnis(0, 0);
       return;
     }
-    $('helper').hidden = false; $('legende').hidden = false;
+    $('legende').hidden = false;
     var out = Rules.evaluate(state);
     lastOut = out;
     var n = { ja: 0, vielleicht: 0 };
@@ -1154,33 +1206,35 @@
     kopfErgebnis(n.ja, n.ja + n.vielleicht);
     $('count').textContent = summary;
     $('jumpText').textContent = summary;
-    var openIds = {}, neinOpen = false, spezOpen = false, gutOpen = false;
+    var openIds = {}, neinOpen = false, spezOpen = false, tippOffen = {};
     document.querySelectorAll('#cards details[open]').forEach(function (d) {
       var a = d.closest('article');
-      if (a) openIds[a.id] = true; else if (d.classList.contains('gutwissen')) gutOpen = true; else if (d.classList.contains('spezbox')) spezOpen = true; else if (d.classList.contains('neinbox')) neinOpen = true;
+      if (a) openIds[a.id] = true; else if (d.classList.contains('tipp') && d.id) tippOffen[d.id] = true; else if (d.classList.contains('spezbox')) spezOpen = true; else if (d.classList.contains('neinbox')) neinOpen = true;
     });
     kartenHinweise = {};
     out.zusammen.forEach(function (z) { (HINWEIS_KARTE[z[0]] || []).forEach(function (id) { (kartenHinweise[id] = kartenHinweise[id] || []).push(z); }); });
-    // „Gut zu wissen für alle Anträge“ steht zwischen den passenden Karten und dem Kasten „Wahrscheinlich nicht passend“
+    // Kurze Tipps unter dem grünen Knopf (Symbol + Satz, Inhalt zugeklappt): Zwei Wege / Entweder oder, „Gut zu wissen für alle Anträge“, Beratungsstelle
     var alle = out.zusammen.filter(function (z) { return HINWEIS_ALLE.indexOf(z[0]) >= 0; });
-    gutHtml = alle.length ? '<div id="gutWissen"><details class="gutwissen"><summary><span class="gw-titel">' + esc(t('gut.h')) + '</span><span class="karte-mehr" aria-hidden="true" data-mehr="' + esc(t('karte.mehr')) + '" data-weniger="' + esc(t('karte.weniger')) + '"></span></summary>' + listItems(alle.map(function (z) { return tL(z[0], z[1]); })) + '</details></div>' : '';
+    var wege = out.zusammen.some(function (z) { return z[0] === 'z.ggVsWg'; });
+    var eo = out.zusammen.some(function (z) { return z[0] === 'z.gsaWg'; });
+    tippsHtml = (wege ? zweiWege(out.results) : '') + (eo ? entwederOder(out.results) : '') +
+      (alle.length ? tippHtml('licht', t('gut.h'), listItems(alle.map(function (z) { return tL(z[0], z[1]); })), 'gutWissen') : '') +
+      tippHtml('person', t('res.beratung'), '<p>' + esc(t('foot.2')) + '</p>', 'beratung');
     $('cards').innerHTML = kartenHtml(out.results);
     Object.keys(openIds).forEach(function (id) { var d = document.querySelector('#' + id + ' details'); if (d) d.open = true; });
+    Object.keys(tippOffen).forEach(function (id) { var d = $(id); if (d) d.open = true; });
     if (neinOpen) { var nb = document.querySelector('#cards .neinbox'); if (nb) nb.open = true; }
     if (spezOpen) { var sb = document.querySelector('#cards .spezbox'); if (sb) sb.open = true; }
-    if (gutOpen) { var gw = document.querySelector('#cards .gutwissen'); if (gw) gw.open = true; }
     $('overview').hidden = true; $('overview').innerHTML = ''; // keine Häkchen-Leiste mehr: die Karten selbst sind die Übersicht
     // Hinweise verteilen: zu einer Leistung gehörende in deren Karte, für alle Anträge geltende in „Gut zu wissen“, der Rest bleibt in „Beachten“
-    var wege = out.zusammen.some(function (z) { return z[0] === 'z.ggVsWg'; });
     var rest = out.zusammen.filter(function (z) { return z[0] !== 'z.ggVsWg' && !HINWEIS_KARTE[z[0]] && HINWEIS_ALLE.indexOf(z[0]) < 0; });
-    var eo = out.zusammen.some(function (z) { return z[0] === 'z.gsaWg'; });
-    $('together').innerHTML = (wege ? zweiWege(out.results) : '') + (eo ? entwederOder(out.results) : '') + (rest.length
+    $('together').innerHTML = (rest.length
       ? '<div class="together"><h3>' + esc(t('beachten')) + '</h3>' + listItems(rest.map(function (z) { return tL(z[0], z[1]); })) + '</div>'
       : '');
 
     document.querySelectorAll('.cond-kids').forEach(function (el) { el.hidden = state.kids === 0; });
     document.querySelectorAll('.cond-adults2').forEach(function (el) { el.hidden = state.adults !== 2; });
-    renderPick(out.results);
+    renderPick(out.results, out.zusammen);
     $('feedback').hidden = false; $('feedbackMail').setAttribute('href', feedbackMail(out.results));
     if (typeof paAnzeigen === 'function') paAnzeigen();
   }
@@ -1445,8 +1499,13 @@
     formPlan().forEach(function (f) { if (f.art === 'link' && LINK_FUER[f.id]) mitLink[LINK_FUER[f.id]] = true; });
     return pickedIds().filter(function (r) { return !mitLink[r.id]; });
   }
+  var mappeTimer = null;
+  function mappeNeuBald() { clearTimeout(mappeTimer); mappeTimer = setTimeout(function () { mappeTimer = null; if (!$('mappe').hidden) buildMappe(); }, 150); }
   function buildMappe() {
     var ids = pickedIds(), briefe = briefIds();
+    // Nichts gewählt: Hinweis unter der Auswahl, keine leeren Briefe
+    $('pickMsg').textContent = ids.length || !$('pick').querySelector('[data-pick]') ? '' : t('f.pick0');
+    if (!ids.length) { $('mappeBody').innerHTML = ''; mappeTextNeu(); return; }
     var html = '', fh = formsHtml(); empfHinweisDa = false;
     var nameLang = function (r) { return r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'); };
     // Kein Inhaltsverzeichnis: oben eine Aufgabenliste (die Liste ist das Verzeichnis), dann Briefe, Formulare, Angabenblatt, Unterlagen
@@ -1938,7 +1997,7 @@
 
   // ----- PDF lesen (pdf.js von Mozilla): digitale PDFs liefern ihren Text direkt; eingescannte Seiten (nur Bild, kein Text)
   // werden auf dem Gerät zu einem Bild und gehen durch dieselbe Texterkennung wie ein Foto. Die Datei verlässt das Gerät nicht.
-  var PDFJS_VER = '3.11.174', PDF_MAX_SEITEN = 12, pdfjsLaden = null;
+  var PDFJS_VER = '3.11.174', PDF_MAX_SEITEN = 12, pdfjsLaden = null, pdfMitBild = false;
   function ladePdfjs() {
     if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
     if (pdfjsLaden) return pdfjsLaden;
@@ -1993,7 +2052,8 @@
         return doc.getPage(i).then(function (page) {
           return page.getTextContent().then(function (tc) {
             var t1 = pdfZeilen(tc.items);
-            return t1.replace(/\s/g, '').length >= 40 ? t1 : seiteAlsBild(page).then(bildText); // kaum Text: eingescannte Seite
+            if (t1.replace(/\s/g, '').length >= 40) return t1;
+            pdfMitBild = true; return seiteAlsBild(page).then(bildText); // kaum Text: eingescannte Seite
           });
         }).then(function (t1) { texte.push(t1); return naechste(); });
       }
@@ -2002,10 +2062,14 @@
   }
   function istPdf(f) { return !!f && (/pdf/i.test(f.type || '') || /\.pdf$/i.test(f.name || '')); }
 
+  // Zuletzt von Tesseract als unsicher gemeldete Wörter mit Ziffern (Konfidenz unter 70 von 100); „Brief prüfen“ markiert passende Werte farbig.
+  // Die Texterkennung des Geräts (ML Kit / Vision) liefert keine Konfidenz, dort gelten nur Plausibilitätsregeln (erweiterungen/vorschau.js).
+  var ocrUnsicher = [];
   function ocr(file) {
     var work = loadTess().then(function (T) {
       return T.createWorker('deu', 1, { langPath: 'https://cdn.jsdelivr.net/npm/@tesseract.js-data/deu/4.0.0_best_int' }).then(function (w) {
-        return w.recognize(file).then(function (r) { return w.terminate().then(function () { return r.data.text; }, function () { return r.data.text; }); });
+        return w.recognize(file).then(function (r) {
+          try { ocrUnsicher = ocrUnsicher.concat(((r.data && r.data.words) || []).filter(function (x) { return x && x.confidence < 70 && /\d/.test(x.text || ''); }).map(function (x) { return x.text; })); } catch (e) {} return w.terminate().then(function () { return r.data.text; }, function () { return r.data.text; }); });
       });
     });
     var limit = new Promise(function (_, rej) { setTimeout(function () { rej(new Error('timeout')); }, 120000); });
@@ -2371,7 +2435,7 @@
       picked = {}; pickedUser = {};
       out.results.forEach(function (x) { pickedUser[x.id] = false; });
       gut.forEach(function (x) { if (ANTRAG[x.id]) pickedUser[x.id] = x.level === 'ja'; });
-      lastOut = out; renderPick(out.results);
+      lastOut = out; renderPick(out.results, out.zusammen);
       openMappe();
       var hm = $('h-mappe'); if (hm) { hm.setAttribute('tabindex', '-1'); hm.focus({ preventScroll: true }); }
     });
@@ -2388,7 +2452,7 @@
   function esUmschalten(an) {
     esModus = an;
     if (an && !es) es = esLeer();
-    $('einfachBtn').setAttribute('aria-pressed', String(an));
+    if ($('einfachBtn')) $('einfachBtn').setAttribute('aria-pressed', String(an));
     esSpeichern(); esRender();
     if (window.Schritte) Schritte.render(); // Kurzer Check an: Frage für Frage ausblenden
     if (aktAnsicht === 'einst') return; // in den Einstellungen nur den Modus schalten; Fokus bleibt am Schalter, der Modus gilt im Bereich Leistungen
@@ -2397,18 +2461,21 @@
   }
 
   // Einstellungen: alle gespeicherten Angaben der App löschen (Store-Schlüssel) und die Anzeige auf den Anfangszustand setzen
-  var STORE_SCHLUESSEL = ['lotse.state', 'lotse.einfach', 'lotse.einfachSprache', 'lotse.beratung', 'lotse.haken', 'lotse.pflegecheck', 'lotse.lang', 'lotse.ack', 'lotse.fristen', 'lotse.fristTag', 'lotse.fristHinweis', 'lotse.checkWeg'];
+  var STORE_SCHLUESSEL = ['lotse.state', 'lotse.einfach', 'lotse.einfachSprache', 'lotse.beratung', 'lotse.haken', 'lotse.pflegecheck', 'lotse.lang', 'lotse.ack', 'lotse.fristen', 'lotse.fristTag', 'lotse.fristHinweis', 'lotse.checkWeg', 'lotse.deNetz'];
   state = blankState();
   $('sampleNotice').hidden = true; // Beispiel-Hinweis nur, wenn ein Beispiel geladen ist
   bind();
   writeForm();
+  if (window.DeNetz) DeNetz.init({ lang: function () { return lang; }, de: tDe, t: t, wurzel: function () { return $('app'); } });
   lang = detect();
   applyLang();
   initClaude();
 
   // Schaltet nur den Modus „Eine Frage pro Bildschirm“; er gilt im Bereich Leistungen (kein automatischer Sprung dorthin)
-  $('einfachBtn').addEventListener('click', function () { esUmschalten(!esModus); });
+  // Knopf „Kurzer Check …“ steht oben als Wahl (src/schritte.js baut ihn neu): Klick über das Dokument
+  document.addEventListener('click', function (e) { if (e.target && e.target.closest && e.target.closest('#einfachBtn')) esUmschalten(!esModus); });
   Store.get('lotse.einfachSprache', function (v) { if (v === '1') einfacheSpracheSetzen(true, false); });
+  Store.get('lotse.deNetz', function (v) { if (v === '0') deNetzSetzen(false, false); });
   Store.get('lotse.beratung', function (v) { if (v === '1') beratungSetzen(true, false); });
   // ----- Leistungs-Check: Weg wählen (Schritt für Schritt oder Alles auf einer Seite), Modul src/schritte.js -----
   // Beide Wege schreiben in denselben Zustand (state). Die Wahl gilt pro Gerät (lotse.checkWeg, nicht im Vorgang).
@@ -2590,7 +2657,9 @@
     ['hilfe', 'sb.h', 'sb.h.t', '<circle cx="9" cy="8" r="3"/><path d="M3 20c1-4 3-6 6-6s5 2 6 6"/><path d="M14 4h7v5h-4l-2 2V9h-1z"/>']
   ];
   // Es ist dringend: zuerst der Krisen-Check, dann je Fall Frist und erster Schritt, Einzelheiten zum Aufklappen (Texte sp.schulden.<fall>).
-  //  konto: § 850k Abs. 1 ZPO (Umwandlung, 4. Geschäftstag), § 899 Abs. 1 ZPO (Umwandlung binnen eines Monats schützt gesperrtes Guthaben);
+  //  konto: § 850k Abs. 1 und 2 ZPO (Umwandlung, 4. Geschäftstag), § 899 Abs. 1 ZPO (Umwandlung binnen eines Monats schützt gesperrtes Guthaben);
+  //  „Jeder darf nur ein P-Konto haben“ (im Schritt gs.d.konto.schritt, aufklappbar): § 850k Abs. 3 Satz 1 ZPO „Jede Person darf nur ein
+  //  Pfändungsschutzkonto unterhalten.“ (https://www.gesetze-im-internet.de/zpo/__850k.html, abgerufen 21.11.2026; früher Abs. 8 a. F.);
   //  strom: §§ 41f, 41g EnWG; mahn: §§ 692 Abs. 1 Nr. 3, 694, 700, 339 ZPO; miete: § 569 Abs. 3 Nr. 2 BGB, § 22 Abs. 8 SGB II, § 36 SGB XII
   //  (alle abgerufen 20.11.2026 auf gesetze-im-internet.de).
   //  geld (Geldstrafe, Texte gs.d.geld.*, inhaltlich wie sl.warum.geldstrafe): § 43 StGB (2 Tagessätze = 1 Tag Ersatzfreiheitsstrafe),
@@ -2604,32 +2673,39 @@
     ['miete', 'gs.d.miete', '<path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/>'],
     ['geld', 'gs.d.geld', '<path d="M12 4v16M6 20h12M5 7h14"/><path d="M5 7l-3 6h6zM19 7l-3 6h6z"/>']
   ];
-  // Post vom Inkasso: Prüfliste (§ 13a RDG), Musterschreiben, Raten anbieten, Gerichtspost (Sprung zum Mahnbescheid)
+  // Schritte je Fall unter „Das tust du jetzt“ (Standard: erster Schritt + sp.schulden.<fall>) und kurze Tipps darunter (Aufräumen 21.11.2026).
+  //  Konto: Bescheinigung für den höheren Freibetrag (pf.tipp.bescheinigung, § 903 ZPO) statt sp.schulden.konto (wiederholte nur Umwandeln und Rechner).
+  //  Strom/Gas: sp.schulden.strom in Schritte zerlegt, Wortlaut unverändert (gs.d.strom.haerte, gs.d.strom.darlehen; Darlehen § 22 Abs. 8 SGB II,
+  //  § 36 SGB XII) und Tipp gs.d.strom.grenze (§ 41f EnWG: 2 Monatsabschläge, mindestens 100 €; abgerufen 20.11.2026, gesetze-im-internet.de).
+  var GS_D_SCHRITTE = { konto: ['gs.d.konto.schritt', 'pf.tipp.bescheinigung'], strom: ['gs.d.strom.schritt', 'gs.d.strom.haerte', 'gs.d.strom.darlehen'], geld: ['gs.d.geld.schritt'] };
+  var GS_D_TIPPS = { strom: ['gs.d.strom.grenze'] };
+  // Post vom Inkasso: Prüfliste (§ 13a RDG), Musterschreiben, Raten anbieten, Gerichtspost. „Gelber Umschlag vom Gericht?“ ist nur ein Link:
+  //  öffnet direkt die Seite „Es ist dringend → Mahnbescheid vom Gericht“ (keine zweite Fassung); „Zurück“ führt von dort zu „Post vom Inkasso“.
   var GS_INKASSO = [
     ['pruef', 'ip.h', 'ip.h.t', '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M8.5 11l2 2 3.5-3.5"/>'],
     ['schreiben', 'ms.h', 'ms.h.t', '<path d="M6 3h9l4 4v14H6z"/><path d="M9 17l1-3 6-6 2 2-6 6z"/>'],
     ['rate', 'gs.rate', 'gs.rate.t', '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'],
     ['gelb', 'gs.gelb', 'gs.gelb.t', '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>']
   ];
-  // Schuldnerberatung: Beratungsstelle finden (sl.hilfe.1–5), Bis zum Termin, Beratungsmappe, Ablauf und Privatinsolvenz, unseriöse Anbieter
+  // Schuldnerberatung: Beratungsstelle finden (sl.hilfe.1–5, mit dem Tipp zu unseriösen Anbietern), Bis zum Termin, Beratungsmappe, Ablauf und
+  //  Privatinsolvenz. Eigene Kachel „Vorsicht: unseriöse Anbieter“ entfernt (Aufräumen 21.11.2026): ihr einziger Inhalt war derselbe Tipp.
   //  Ablauf (sb.ablauf.lead): AG SBV „Konzept Soziale Schuldnerberatung“ (2018), S. 10–14; Privatinsolvenz §§ 287, 305 InsO (abgerufen 20.11.2026).
   var GS_HILFE = [
     ['finden', 'sb.finden', 'sb.finden.t', '<path d="M12 21s-6-6.5-6-11a6 6 0 0 1 12 0c0 4.5-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/>'],
     ['termin', 'sb.termin', 'sb.termin.t', '<path d="M7 3h10M7 21h10M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9"/>'],
     ['mappe', 'sb.mappe', 'sb.mappe.t', '<path d="M3 6h7l2 2h9v11H3z"/><path d="M8 13h8"/>'],
-    ['ablauf', 'sb.ablauf', 'sb.ablauf.t', '<circle cx="5" cy="18" r="2"/><circle cx="12" cy="9" r="2"/><circle cx="19" cy="15" r="2"/><path d="M6.5 16.5l4-6M13.5 10.5l4 3"/>'],
-    ['unser', 'sb.unser', 'sb.unser.t', '<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/>']
+    ['ablauf', 'sb.ablauf', 'sb.ablauf.t', '<circle cx="5" cy="18" r="2"/><circle cx="12" cy="9" r="2"/><circle cx="19" cy="15" r="2"/><path d="M6.5 16.5l4-6M13.5 10.5l4 3"/>']
   ];
   // Sparen im Alltag (jetzt unter „Mein Geld planen“): Strom, Heizen, Essen (mit Link zur Verbraucherzentrale), Verträge
   var SP_THEMEN = [
     ['strom', 'sp.strom', 'sp.strom.t', 6, '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'],
     ['heizen', 'sp.heizen', 'sp.heizen.t', 5, '<path d="M12 21a6 6 0 0 0 6-6c0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-2 2-3 5-3 8a6 6 0 0 0 6 6z"/>'],
     ['essen', 'sp.essen', 'sp.essen.t', 5, '<path d="M4 11h16a8 8 0 0 1-16 0zM8 7c0-2 2-2 2-4M12 7c0-2 2-2 2-4"/>'],
-    ['vertraege', 'sp.vertraege', 'sp.vertraege.t', 5, '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>']
+    ['vertraege', 'sp.vertraege', 'sp.vertraege.t', 4, '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>']
   ];
   // Reihenfolge: die wirksamsten Tipps zuerst; Tipps mit Frist oder Nachzahlung stehen vorn. Jeder Tipp: Symbol + kurzer Satz, Rest zum Aufklappen.
   var SP_TIPPS = { strom: ['sp.strom.6', 'sp.strom.5', 'sp.strom.1', 'sp.strom.2', 'sp.strom.3', 'sp.strom.4'], heizen: ['sp.heizen.5', 'sp.heizen.1', 'sp.heizen.2', 'sp.heizen.3', 'sp.heizen.4'],
-    essen: ['sp.essen.5', 'sp.essen.4', 'sp.essen.1', 'sp.essen.2', 'sp.essen.3'], vertraege: ['sp.vertraege.1', 'sp.vertraege.6', 'sp.vertraege.5', 'sp.vertraege.2', 'sp.vertraege.3'] };
+    essen: ['sp.essen.5', 'sp.essen.4', 'sp.essen.1', 'sp.essen.2', 'sp.essen.3'], vertraege: ['sp.vertraege.1', 'sp.vertraege.6', 'sp.vertraege.5', 'sp.vertraege.3'] };
   // Schulden: Tipps nach gemeinnützigen Schuldnerberatungen, sinngemäß in eigenen Worten. Quellen (abgerufen 20.11.2026):
   //  Verbraucherzentralen: verbraucherzentrale.nrw „Erste Schritte, wenn die Schulden drücken“; verbraucherzentrale.de „Gerichtliches Mahnverfahren:
   //  Was tun bei einem Mahnbescheid?“, „Ratenvereinbarung beim Inkasso“, „Schuldnerberatungen: So erkennen Sie unseriöse Angebote“, „Privatinsolvenz –
@@ -2646,8 +2722,31 @@
   // Essen: Link zur Verbraucherzentrale statt eigener Rezepte (Entscheidung David 20.11.2026). Verbraucherzentrale Bundesverband,
   // „So geht gesunde Ernährung mit wenig Geld“ (Seite in einfacher Sprache, Stand der Seite 14.06.2024, abgerufen 20.11.2026).
   var SP_VZ_URL = 'https://www.verbraucherzentrale.de/lebensmittel/so-geht-gesunde-ernaehrung-mit-wenig-geld-96404';
+  // Seiten „Strom“ und „Heizen“: zwei Werkzeuge als Kacheln (Abschlag prüfen, Tarife vergleichen), danach je Werkzeug die Kacheln Strom und Gas.
+  // sp.fall = 'abschlag' | 'tarif' (Kacheln Strom/Gas) bzw. 'abschlag-strom', 'tarif-gas' … (Rechner). „Zurück“ führt je eine Ebene hoch.
+  var EN_WERKZEUGE = [
+    ['abschlag', 'pl.abschlag', 'pl.abschlag.t', '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/><circle cx="18" cy="18" r="4"/><path d="M18 16v2l1.2 1"/>'],
+    ['tarif', 'hb.tv.kachel', 'hb.tv.kachel.t', '<path d="M4 7h11M4 7l3-3M4 7l3 3M20 17H9M20 17l-3-3M20 17l-3 3"/>']
+  ];
+  // Tarife vergleichen: Hinweise (Tipp-Komponente). Quellen (abgerufen 21.11.2026):
+  //  Bonus nur im 1. Jahr: Verbraucherzentrale Bundesverband, „Was Sie bei Bonus-Tarifen für Strom und Gas beachten sollten“ (Stand 05.08.2026);
+  //  „So finden Sie den passenden Strom- oder Gastarif“ (Stand 29.07.2026): Bonus nicht einrechnen, Laufzeit etwa 1 Jahr mit Preisgarantie.
+  //  Keine Vorkasse, keine Pakettarife: Verbraucherzentrale Rheinland-Pfalz, „Stromanbieterwechsel“ (Stand 03/2020); Vorkasse auch Verbraucherzentrale
+  //  Hamburg, „Strom und Gas: So wechseln Sie den Anbieter“ (Stand 04.09.2025; Laufzeit höchstens 12 Monate, Preisgarantie für die Erstlaufzeit).
+  //  Kündigungsfrist steht auf der letzten Rechnung; Grundversorgung 2 Wochen: Verbraucherzentrale Bundesverband, „So können Sie Ihren Anbieter von Strom
+  //  und Gas wechseln“ (einfache Sprache, Stand 28.10.2026); „So läuft der Anbieterwechsel bei Strom und Gas ab“ (Stand 11.11.2026): 14 Tage.
+  //  Fernwärme: „Bei Fernwärme ist der Wechsel des Wärmelieferanten nicht möglich“ (Verbraucherzentrale Bundesverband, „Fernwärme: Kosten sparen
+  //  und gleichzeitig das Klima schonen“, Stand 09.07.2025).
+  var TV_TIPPS = ['tv.bonus', 'tv.vorkasse', 'tv.laufzeit', 'tv.kuendigung', 'tv.fernwaerme'];
+  // Link zum Anbieterwechsel (neutral, keine Vergleichsportale): Verbraucherzentrale Bundesverband, Seite in einfacher Sprache, Stand 28.10.2026, abgerufen 21.11.2026
+  var TV_VZ_URL = 'https://www.verbraucherzentrale.de/de-x-simple/energie/so-koennen-sie-ihren-anbieter-von-strom-und-gas-wechseln-88520';
+  function linkKarte(box, id, url, titel, text) { // Linkkarte (öffnet extern; in der App über das Browser-Plugin, siehe Klick auf a[href])
+    var vz = document.createElement('a'); vz.className = 'uk-karte sp-link-karte'; vz.href = url; vz.target = '_blank'; vz.rel = 'noopener'; vz.id = id;
+    vz.innerHTML = '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></span><span class="sk-txt"><b>' + esc(titel) + '</b><span>' + esc(text) + (lang !== 'de' ? ' ' + esc(t('sp.vz.de')) : '') + '</span></span>';
+    box.appendChild(vz);
+  }
 
-  var sp = { bereich: '', fall: '', thema: '' };
+  var sp = { bereich: '', fall: '', thema: '', von: '' }; // von: Bereich, aus dem eine Link-Kachel kam (Zurück dorthin)
   // Kachel in der Form der Startseite (Klasse sk): Symbol, Titel, kurzer Text
   // Deutscher Amtsbegriff in Klammern in einer Übersetzung (z. B. „(Mahnbescheid)“): als lang="de" auszeichnen, damit er wie deutscher
   // Text getrennt wird (mit Trennstrich, auch in Arabisch/Persisch richtig herum) statt mitten im Wort ohne Strich umzubrechen (schmale Kachel, 390 px)
@@ -2658,7 +2757,7 @@
   function skKachel(cls, sym, titel, text, fn) {
     return nhKnopf('uk-karte ' + cls, '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + sym + '</svg></span><span class="sk-txt"><b>' + kachelTitel(titel) + '</b>' + (text ? '<span>' + esc(text) + '</span>' : '') + '</span>', null, fn);
   }
-  function gsOeffne(bereich) { sp.bereich = bereich; sp.fall = ''; sp.thema = ''; if (bereich === 'dringend' && window.Geld) Geld.kcStart(); }
+  function gsOeffne(bereich) { sp.bereich = bereich; sp.fall = ''; sp.thema = ''; sp.von = ''; if (bereich === 'dringend' && window.Geld) Geld.kcStart(); }
   // Sprung aus einer Unteransicht (Pfändung, Haushaltsplan, Schulden-Liste) in einen Teil von „Geld und Schulden“: Herkunft bleibt die der
   // Startkachel, damit „Zurück“ eine Ebene hoch führt (Teil → Kacheln → Startseite) und nicht im Kreis zwischen zwei Ansichten
   function gsSprung(bereich, thema, fall) {
@@ -2670,7 +2769,7 @@
   }
   function pfBescheinigung() { pf = { art: 'besch', schritt: 1, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); }
   function pfKonto() { pf = { art: 'konto', schritt: 1, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); }
-  function abschlagPruefen() { oeffneVon('haushalt', true); if (window.Haushalt && Haushalt.energie) Haushalt.energie(); }
+  function abschlagPruefen() { gsSprung('sparen', 'strom', 'abschlag'); } // „Abschlag prüfen“ auf der Seite „Strom“: erst die Kacheln Strom/Gas (Haushalt.abschlag)
   // Ziele aus dem Krisen-Check, „Bis zum Termin“ und der Schulden-Liste
   function gsZiel(z) {
     if (['mahn', 'geld', 'miete', 'strom', 'konto'].indexOf(z) >= 0) { gsSprung('dringend', '', z); return; }
@@ -2680,6 +2779,8 @@
     if (z === 'pkonto-rechner') { pfKonto(); return; }
     if (z === 'finden') { gsSprung('hilfe', '', 'finden'); return; }
     if (z === 'inkasso') { gsSprung('inkasso'); return; }
+    if (z === 'pruef') { gsSprung('inkasso', '', 'pruef'); return; }
+    if (z === 'hilfe') { gsSprung('hilfe'); return; }
     if (z === 'geduld' || z === 'aufst') { Geld.schreibenVorbelegen(z); gsSprung('inkasso', '', 'schreiben'); }
   }
   function spRender(fokus, fokusId) {
@@ -2691,12 +2792,12 @@
     var tipp = function (key, fall, ziel, laien) { var dt = tippEl(key, fall ? 'sp-fall' : '', laien); if (fall) dt.setAttribute('data-fall', fall); (ziel || box).appendChild(dt); return dt; };
     var tippListe = function (keys, cls, laien) { var ul = document.createElement('ul'); ul.className = 'tipp-liste ' + cls; box.appendChild(ul); keys.forEach(function (k) { var li = document.createElement('li'); tipp(k, '', li, laien); ul.appendChild(li); }); return ul; };
     var neu = function (id) { spRender(false, id); };
-    // Unterkarten [id, Titel, Untertitel, Symbol]; „Gelber Umschlag“ springt zum Fall Mahnbescheid
+    // Unterkarten [id, Titel, Untertitel, Symbol]; „Gelber Umschlag“ springt direkt zum Fall Mahnbescheid (Zurück: wieder hierher)
     var unterkarten = function (liste, prefix) {
       var r = raster();
       liste.forEach(function (x) {
         r.appendChild(skKachel(prefix + x[0], x[3], t(x[1]), t(x[2]), function () {
-          if (x[0] === 'gelb') { gsOeffne('dringend'); sp.fall = 'mahn'; spRender(true); return; }
+          if (x[0] === 'gelb') { gsOeffne('dringend'); sp.fall = 'mahn'; sp.von = 'inkasso'; spRender(true); return; }
           sp.fall = x[0]; if (x[0] === 'schreiben') Geld.schreibenVorbelegen(''); spRender(true);
         }));
       });
@@ -2730,35 +2831,48 @@
       Geld.krisenCheck(box, function () { spRender(false); var f = $('kc-erg') || $('kc-ja'); if (f) { if (f.id === 'kc-erg') f.focus(); else { var q = $('kc-q'); if (q) { q.tabIndex = -1; q.focus(); } } } });
     } else if (sp.bereich === 'dringend') {
       var fx = GS_DRINGEND.filter(function (x) { return x[0] === sp.fall; })[0];
+      // Alle Fälle gleich aufgebaut (Aufräumen 21.11.2026): Frist (.frist) → „Das tust du jetzt“ (Schritte, Einzelheiten zum Aufklappen)
+      // → Knöpfe (nächster Schritt in der App, zuletzt Beratungsstelle) → Quellen. Texte unverändert, nur geordnet.
       p(t(fx[1]), 'pf-frage');
-      [['gs-frist', 'gs.frist', '.frist'], ['gs-schritt', 'gs.schritt', '.schritt']].forEach(function (z) {
-        var d = document.createElement('div'); d.className = (z[0] === 'gs-frist' ? 'frist ' : 'gs-box ') + z[0]; if (z[0] === 'gs-frist') d.setAttribute('role', 'note'); // Frist im gemeinsamen Muster .frist (#68)
-        var h3 = document.createElement('h3'); h3.textContent = t(z[1]); d.appendChild(h3);
-        tipp('gs.d.' + sp.fall + z[2], '', d);
-        box.appendChild(d);
+      var fd = document.createElement('div'); fd.className = 'frist gs-frist'; fd.setAttribute('role', 'note'); // Frist im gemeinsamen Muster .frist (#68)
+      var fh = document.createElement('h3'); fh.textContent = t('gs.frist'); fd.appendChild(fh);
+      tipp('gs.d.' + sp.fall + '.frist', '', fd); box.appendChild(fd);
+      var jd = document.createElement('div'); jd.className = 'pf-jetzt gs-schritt';
+      var jh = document.createElement('h3'); jh.textContent = t('pf.jetzt.h'); jd.appendChild(jh);
+      var jol = document.createElement('ol'); jol.className = 'tipp-liste'; jd.appendChild(jol);
+      (GS_D_SCHRITTE[sp.fall] || ['gs.d.' + sp.fall + '.schritt', 'sp.schulden.' + sp.fall]).forEach(function (k, i) {
+        var li = document.createElement('li'); tipp(k, i && k.indexOf('sp.schulden.') === 0 ? sp.fall : '', li); jol.appendChild(li);
       });
-      // je Fall genau ein nächster Schritt in der App
-      if (sp.fall === 'konto') { knopf('btn sp-rechner', t('sp.schulden.pf'), pfKonto); knopf('btn ghost gs-besch', t('ms.pkonto'), pfBescheinigung); }
-      if (sp.fall === 'strom' && window.Haushalt) knopf('btn ghost gs-abschlag', t('pl.abschlag'), abschlagPruefen);
-      if (sp.fall === 'mahn' && window.Schulden) knopf('btn ghost gs-in-liste', t('gs.d.mahn.liste'), function () { oeffneVon('schulden', true); Schulden.neu({ st: 'mahnbescheid' }); });
-      if (sp.fall !== 'geld') tipp('sp.schulden.' + sp.fall, sp.fall);
-      knopf('btn ghost gs-zur-hilfe', t('sb.finden'), function () { gsOeffne('hilfe'); sp.fall = 'finden'; spRender(true); });
-      box.appendChild(quellenEl([t('sp.schulden.quellen')]));
+      box.appendChild(jd);
+      if (GS_D_TIPPS[sp.fall]) { var gt = document.createElement('div'); gt.className = 'gs-tipps'; box.appendChild(gt); GS_D_TIPPS[sp.fall].forEach(function (k) { tipp(k, sp.fall, gt); }); }
+      if (sp.fall === 'konto') { // Grundfreibetrag aus den geprüften Werten (Rules.RULES.pfaendung, Pfändungsfreigrenzenbekanntmachung 2026, § 899 Abs. 1 ZPO)
+        var kf = Rules.pkonto({ personen: 0, kindergeldKinder: 0 }), rtlK = I18N[lang] && I18N[lang]['meta.dir'] === 'rtl';
+        if (new Date().toISOString().slice(0, 10) <= Rules.RULES.pfaendung.gueltigBis) {
+          var ft = document.createElement('table'); ft.className = 'pf-tab gs-freibetrag'; var fr0 = ft.insertRow();
+          fr0.insertCell().textContent = t('pf.k.sockel'); fr0.insertCell().textContent = Fmt.euro(kf.sockel, lang, rtlK); box.appendChild(ft);
+        }
+      }
+      var gb = document.createElement('div'); gb.className = 'btns gs-knoepfe'; box.appendChild(gb);
+      var gk = function (cls, txt, fn) { gb.appendChild(nhKnopf(cls, esc(txt), null, fn)); };
+      if (sp.fall === 'konto') { gk('btn sp-rechner', t('sp.schulden.pf'), pfKonto); gk('btn ghost gs-besch', t('ms.pkonto'), pfBescheinigung); }
+      if (sp.fall === 'strom' && window.Haushalt) gk('btn ghost gs-abschlag', t('pl.abschlag'), abschlagPruefen);
+      if (sp.fall === 'mahn' && window.Schulden) gk('btn ghost gs-in-liste', t('gs.d.mahn.liste'), function () { oeffneVon('schulden', true); Schulden.neu({ st: 'mahnbescheid' }); });
+      gk('btn ghost gs-zur-hilfe', t('sb.finden'), function () { gsOeffne('hilfe'); sp.fall = 'finden'; spRender(true); });
+      box.appendChild(quellenEl(sp.fall === 'konto' ? [t('sp.schulden.quellen'), t('pf.stand')] : [t('sp.schulden.quellen')]));
     } else if (sp.bereich === 'inkasso' && !sp.fall) {
       p(t('gs.inkasso'), 'pf-frage');
       unterkarten(GS_INKASSO, 'gs-i-');
     } else if (sp.bereich === 'inkasso' && sp.fall === 'pruef') {
       Geld.pruefliste(box, neu);
-      tipp('sp.schulden.inkasso', 'inkasso');
+      // Hinweise zusammen: Inkasso-Tipp direkt nach den Warnungen, „Erste Einschätzung, keine Rechtsberatung“ (ip.hinweis) darunter
+      var ipH = box.querySelector('.ip-hinweis'); box.insertBefore(tippEl('sp.schulden.inkasso', 'sp-fall'), ipH).setAttribute('data-fall', 'inkasso');
       box.appendChild(quellenEl([t('sp.schulden.quellen')]));
     } else if (sp.bereich === 'inkasso' && sp.fall === 'schreiben') {
       Geld.schreibenSeite(box, neu);
     } else if (sp.bereich === 'inkasso' && sp.fall === 'rate') {
       p(t('gs.rate'), 'pf-frage');
+      Geld.rateSeite(box, neu); // Ratenempfehlung aus dem Haushaltsplan und Schreiben „Ratenzahlung anbieten“ (src/geld.js)
       tipp('sp.schulden.rate', 'rate');
-      var hr = window.Haushalt ? Haushalt.rest() : null, hd = window.Haushalt ? Haushalt.daten() : null; // frei vor Raten wie in der Schulden-Liste (Schulden.vergleich)
-      if (hr && !hr.leer) p(t('sl.hh.frei', { b: { eur: Math.round((hr.rest + (hd && hd.plan && hd.plan.aus && hd.plan.aus.raten > 0 ? hd.plan.aus.raten : 0)) / 100) } }), 'gs-frei'); else p(t('sl.hh.keiner'), 'small');
-      if (window.Haushalt) knopf('btn ghost gs-zum-plan', t('hb.kachel'), function () { oeffneVon('haushalt', true); });
       box.appendChild(quellenEl([t('sp.schulden.quellen')]));
     } else if (sp.bereich === 'hilfe' && !sp.fall) {
       p(t('sb.h'), 'pf-frage');
@@ -2771,44 +2885,56 @@
         var hb = document.createElement('div'); hb.className = 'gs-box gs-schritt gs-beratung'; box.appendChild(hb);
         ['sl.hilfe.1', 'sl.hilfe.4', 'sl.hilfe.5', 'sl.hilfe.2', 'sl.hilfe.3'].forEach(function (k) { var e = document.createElement('p'); e.textContent = t(k); hb.appendChild(e); });
         tipp('sp.schulden.unserioes', 'unserioes');
-      } else if (sp.fall === 'ablauf') {
+      } else { // ablauf
         p(t('sb.ablauf'), 'pf-frage');
         p(t('sb.ablauf.lead'), 'hint');
         tippListe(['sp.schulden.1', 'sp.schulden.2', 'sp.schulden.3'], 'sp-schritte');
         tipp('sp.schulden.insolvenz', 'insolvenz');
-      } else {
-        p(t('sb.unser'), 'pf-frage');
-        tipp('sp.schulden.unserioes', 'unserioes');
       }
       box.appendChild(quellenEl([t('sp.schulden.quellen')]));
-    } else if (!sp.thema) { // Mein Geld planen: Haushaltsplan, Abschlag prüfen, darunter die Themen von „Geld sparen im Alltag“
+    } else if (!sp.thema) { // Mein Geld planen: Haushaltsplan, darunter die Themen von „Geld sparen im Alltag“
       p(t('gs.planen'), 'pf-frage');
       var rp = raster();
       if (window.Haushalt) {
         rp.appendChild(skKachel('gs-p-hh', '<path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M4 7l11-3v3"/><circle cx="16" cy="13.5" r="1"/>', t('hb.kachel'), t('hb.kachel.t'), function () { oeffneVon('haushalt', true); }));
-        rp.appendChild(skKachel('gs-p-abschlag', '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/><circle cx="18" cy="18" r="4"/><path d="M18 16v2l1.2 1"/>', t('pl.abschlag'), t('pl.abschlag.t'), abschlagPruefen));
       }
       var h3 = document.createElement('h3'); h3.className = 'gs-sparen-h'; h3.textContent = t('sp.h'); box.appendChild(h3);
       var r2 = raster();
       SP_THEMEN.forEach(function (x) { r2.appendChild(skKachel('gs-t-' + x[0], x[4], t(x[1]), t(x[2]), function () { sp.thema = x[0]; spRender(true); })); });
     } else {
       var th = SP_THEMEN.filter(function (x) { return x[0] === sp.thema; })[0];
-      p(t(th[1]), 'pf-frage');
-      tippListe(SP_TIPPS[sp.thema], 'sp-tipps', true);
-      if (sp.thema === 'essen') { // Linkkarte (öffnet extern; in der App über das Browser-Plugin, siehe Klick auf a[href])
-        var vz = document.createElement('a'); vz.className = 'uk-karte sp-link-karte'; vz.href = SP_VZ_URL; vz.target = '_blank'; vz.rel = 'noopener'; vz.id = 'sp-vz';
-        vz.innerHTML = '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></span><span class="sk-txt"><b>' + esc(t('sp.vz.link')) + '</b><span>' + esc(t('sp.vz.t')) + (lang !== 'de' ? ' ' + esc(t('sp.vz.de')) : '') + '</span></span>';
-        box.appendChild(vz);
+      var enSeite = (sp.thema === 'strom' || sp.thema === 'heizen') && window.Haushalt && Haushalt.abschlag;
+      var wz = sp.fall.split('-'), wzx = EN_WERKZEUGE.filter(function (x) { return x[0] === wz[0]; })[0];
+      if (enSeite && wzx && !wz[1]) { // Werkzeug gewählt: erst Strom oder Gas
+        p(t(wzx[1]), 'pf-frage');
+        var re = raster();
+        [['strom', SP_THEMEN[0][4]], ['gas', SP_THEMEN[1][4]]].forEach(function (x) { re.appendChild(skKachel('gs-e-' + wz[0] + '-' + x[0], x[1], t('hb.en.tab.' + x[0]), '', function () { sp.fall = wz[0] + '-' + x[0]; spRender(true); })); });
+      } else if (enSeite && wzx) { // Rechner für eine Sparte
+        p(t(wzx[1]), 'pf-frage');
+        var zb = document.createElement('div'); zb.id = wz[0] === 'tarif' ? 'spTarif' : 'spAbschlag'; box.appendChild(zb);
+        if (wz[0] === 'tarif') {
+          Haushalt.tarif(zb, wz[1]);
+          tippListe(TV_TIPPS, 'sp-tipps tv-tipps', true);
+          linkKarte(box, 'tv-vz', TV_VZ_URL, t('tv.vz.link'), t('tv.vz.t'));
+          box.appendChild(quellenEl([t('tv.quellen')]));
+        } else Haushalt.abschlag(zb, wz[1]);
+      } else {
+        p(t(th[1]), 'pf-frage');
+        if (enSeite) { var rw = raster(); EN_WERKZEUGE.forEach(function (x) { rw.appendChild(skKachel('gs-e-' + x[0], x[3], t(x[1]), t(x[2]), function () { sp.fall = x[0]; spRender(true); })); }); }
+        tippListe(SP_TIPPS[sp.thema], 'sp-tipps', true);
+        if (sp.thema === 'essen') linkKarte(box, 'sp-vz', SP_VZ_URL, t('sp.vz.link'), t('sp.vz.t'));
+        box.appendChild(quellenEl([t('sp.quellen')]));
       }
-      box.appendChild(quellenEl([t('sp.quellen')]));
     }
     if (fokusId && $(fokusId)) { $(fokusId).focus(); return; }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
   }
   // Eine Ebene zurück innerhalb von „Geld und Schulden“; false = schon auf der obersten Ebene
   function spEbeneZurueck() {
+    if (sp.fall && sp.von) { var von = sp.von; gsOeffne(von); return true; } // Link-Kachel (Gelber Umschlag): zurück zu „Post vom Inkasso“
     if (window.Geld && Geld.zurueck(sp.fall)) return true;
-    if (sp.fall) sp.fall = '';
+    if (sp.thema && sp.fall.indexOf('-') > 0) sp.fall = sp.fall.split('-')[0]; // Rechner → Kacheln Strom/Gas
+    else if (sp.fall) sp.fall = '';
     else if (sp.thema) sp.thema = '';
     else if (sp.bereich) sp.bereich = '';
     else return false;
@@ -2944,6 +3070,7 @@
   }
   function zurueckSchritt() {
     var a = aktAnsicht, b;
+    if (sucheRueck && navEbene().pfad === sucheRueck) { sucheZurStart(); return true; } // von einem Suchtreffer: Zurück führt zur Startseite mit offenem Such-Fenster
     if (paRueck && a === paRueck && (a !== 'pflegestart' || pu.schritt === 'liste')) { if (a === 'briefe') briefOeffnen(null); paErgebnisZeigen(); return true; } // Unterseite der Pflege-Ergebnisseite
     if (a === 'pflege') { b = document.querySelector('#pflegeAssist .pa-zur'); if (b) b.click(); else paVerlassen(); return true; }
     if (a === 'pflegeinfo') { piZurueckTun(); return true; }
@@ -2974,7 +3101,7 @@
     var a = aktAnsicht, sub = '', d = 0, x;
     if (a === 'pflege') { d = (pa.antworten && +pa.antworten.pos) || 0; sub = 'q' + d; }
     else if (a === 'pfaendung') { d = pf.schritt; sub = pf.art + d; }
-    else if (a === 'sparen') { d = (sp.bereich ? 1 : 0) + (sp.fall ? 1 : 0) + (sp.thema ? 1 : 0) + (window.Geld ? Geld.tiefe(sp.fall) : 0); sub = sp.bereich ? [sp.bereich, sp.fall || sp.thema].filter(Boolean).join('-') + (window.Geld && Geld.tiefe(sp.fall) ? '-w' : '') : ''; }
+    else if (a === 'sparen') { d = (sp.bereich ? 1 : 0) + (sp.fall ? 1 : 0) + (sp.thema ? 1 : 0) + (sp.thema && sp.fall.indexOf('-') > 0 ? 1 : 0) + (window.Geld ? Geld.tiefe(sp.fall) : 0); sub = sp.bereich ? [sp.bereich, sp.thema, sp.fall].filter(Boolean).join('-') + (window.Geld && Geld.tiefe(sp.fall) ? '-w' : '') : ''; }
     else if (a === 'schulden') { x = $('slBlatt'); d = ($('slEingabe') ? 1 : 0) + (x && !x.hidden ? 1 : 0); sub = d ? 'e' + d : ''; }
     else if (a === 'ausziehen') { d = window.Ausziehen && Ausziehen.offen() ? 1 : 0; sub = d ? 'offen' : ''; }
     else if (a === 'briefe') { d = $('checkBox').hidden ? 0 : 1; sub = d ? (briefArt || '') : ''; }
@@ -2991,7 +3118,9 @@
   }
   // Offene Blätter und Dialoge zuerst schließen (Zurück-Taste, Browser-Zurück, Wischen)
   function blattSchliessen() {
+    if (window.Suche && Suche.schliessen(true)) return true; // Such-Fenster (Lupe) zuerst; man bleibt auf der Seite
     if (!$('ergBlatt').hidden) { ebSchliessen(); return true; }
+    if (window.Klient && Klient.offen()) { Klient.schliessen(); return true; }
     if (window.Schulden && Schulden.blattOffen && Schulden.blattOffen() && aktAnsicht !== 'schulden') { Schulden.zurueck(); return true; }
     if (!$('legal').hidden) { closeLegal(); return true; }
     if (!$('mappe').hidden) { closeMappe(); return true; }
@@ -3011,7 +3140,7 @@
     }
     if ((a === 'einst' || a === 'ordner') && sub) usZeigen(a, sub, true);
     else if (a === 'briefe' && BRIEF_TEIL[sub]) briefOeffnen(sub);
-    else if (a === 'sparen' && sub) { var sx = sub.split('-'); if (sx[0] === 'sparen') sx[0] = 'planen'; gsOeffne(sx[0]); if (sx[1]) { if (sx[0] === 'planen') sp.thema = sx[1]; else sp.fall = sx[1]; } spRender(true); }
+    else if (a === 'sparen' && sub) { var sx = sub.split('-'); if (sx[0] === 'sparen') sx[0] = 'planen'; gsOeffne(sx[0]); if (sx[1]) { if (sx[0] === 'planen') { sp.thema = sx[1]; if (sx[2] && EN_WERKZEUGE.some(function (w) { return w[0] === sx[2]; })) sp.fall = sx[2] + (sx[3] === 'strom' || sx[3] === 'gas' ? '-' + sx[3] : ''); } else sp.fall = sx[1]; } spRender(true); }
     else if (a === 'pflegestart' && /^pg/.test(sub)) puOeffnen('pg');
     else if (a === 'pflegestart' && /^liste\d$/.test(sub)) puOeffnen('liste', +sub.slice(5));
   }
@@ -3043,6 +3172,8 @@
     var vorA = aktAnsicht, vorT = navBereit ? navEbene().tiefe : 0;
     paRueckPruefen(a); // Rückweg zur Pflege-Ergebnisseite nur auf der Unterseite selbst
     aktAnsicht = a;
+    if (a === 'start') sucheRueck = '';
+    if (window.Suche && Suche.offen()) Suche.schliessen(false); // Such-Fenster zu, wenn die App die Ansicht wechselt (z. B. Leiste, Link)
     if (a === 'pflegeinfo' && !herkunft.pflegeinfo) herkunft.pflegeinfo = piZurueckZu; // z. B. über die Adresse #pflegeinfo geöffnet
     if (a !== vorA && herkunft[a] === vorA) herkunftT[a] = { von: vorA, t: vorT };
     $('app').setAttribute('data-ansicht', a);
@@ -3102,23 +3233,36 @@
   // Neu laden (Sperren); in Tests ersetzbar
   function vgNeuStart() { if (window.__soloNeuStart) window.__soloNeuStart(); else { try { location.reload(); } catch (e) {} } }
   function vgSperrenJetzt() { flush(); tresor.fertig().then(vgNeuStart); }
+  // Bildschirmfoto-Schutz: mit App-PIN Standard an (Android FLAG_SECURE, iOS Abdeckung im App-Wechsler), Einstellung „Bildschirmfotos erlauben“
+  // (lotse.fotosErlaubt, nur Einstellung, kein Inhalt). Plugin SoloSchutz nur in der App (MainActivity.java / SoloSpeicherPlugin.swift).
+  var fotosErlaubt = false, schutzStand = null;
+  StoreRoh.get('lotse.fotosErlaubt', function (v) { fotosErlaubt = v === '1'; schutzAnwenden(); });
+  function schutzAnwenden() {
+    var p = plug('SoloSchutz'); if (!p) return;
+    var an = !!(tresor && tresor.pinAn() && !fotosErlaubt);
+    if (an === schutzStand) return;
+    schutzStand = an;
+    try { Promise.resolve(p.setzen({ an: an })).catch(function () { schutzStand = null; }); } catch (e) { schutzStand = null; }
+  }
   // Automatisch sperren: nach etwa 2 Minuten im Hintergrund (nur mit PIN). Vorher speichern, dann neu laden (Sperrbildschirm).
   var VG_SPERRE_MS = 120000, vgHinterAb = 0;
   function vgHintergrund(weg) {
     if (weg) { vgHinterAb = Date.now(); return; }
     var war = vgHinterAb; vgHinterAb = 0;
-    if (war && tresor && tresor.pinAn() && tresor.bereit() && Date.now() - war >= VG_SPERRE_MS) vgSperrenJetzt();
+    if (war && tresor && tresor.bereit() && (tresor.pinAn() || tresor.aktiv().gesperrt) && Date.now() - war >= VG_SPERRE_MS) vgSperrenJetzt(); // auch ein einzeln gesperrter Vorgang ist danach wieder zu
     else if (war && Date.now() - war >= VG_SPERRE_MS && window.FristenOrdner) FristenOrdner.startHinweis(); // „Öffnen“ nach 2 Minuten im Hintergrund (höchstens einmal am Tag)
   }
   document.addEventListener('visibilitychange', function () { vgHintergrund(document.visibilityState === 'hidden'); });
   // Mit PIN schneller speichern: beim Verlassen eines Feldes sofort
-  document.addEventListener('focusout', function (e) { if (tresor && tresor.pinAn() && tresor.bereit() && e.target && /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName) && saveTimer) flush(); });
+  document.addEventListener('focusout', function (e) { if (tresor && tresor.bereit() && (tresor.pinAn() || tresor.aktiv().gesperrt) && e.target && /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName) && saveTimer) flush(); });
   // Web: in einem anderen Fenster geändert -> neu laden, damit nichts überschrieben wird
   window.addEventListener('storage', function (e) { if (e.key === Vorgaenge.SCHLUESSEL) { clearTimeout(saveTimer); saveTimer = null; vgNeuStart(); } });
   // Angaben des geöffneten Vorgangs neu laden (nach Wechsel, neuem Vorgang, Löschen)
   function vgNeuLaden() {
     if (!$('mappe').hidden) closeMappe();
     state = blankState(); person = { name: '', geb: '', strasse: '', ort: '', tel: '' }; picked = {}; pickedUser = {}; started = false; edited = false;
+    // Erst nach dem Leeren von „person“: briefOeffnen trägt Name und Anschrift aus „person“ in die Schreiben ein (sonst stünde der vorige Klient darin)
+    einleseResteLeeren(); // nichts vom vorigen Vorgang sichtbar lassen (Scan, Brief, Prüfung, Blatt für Klienten)
     ['p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].forEach(function (id) { $(id).value = ''; });
     $('sampleNotice').hidden = true;
     pf = pfLeer(); pa = { antworten: null, schaetzung: null };
@@ -3131,7 +3275,11 @@
       es = d && d.es ? Object.assign(esLeer(), d.es) : (esModus ? esLeer() : null);
       if (esModus) esRender();
     });
-    Store.get('lotse.pflegecheck', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { pa.antworten = d.antworten || null; pa.schaetzung = d.schaetzung || null; } } catch (e) {} paAnzeigen(); });
+    Store.get('lotse.pflegecheck', function (v) {
+      try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { pa.antworten = d.antworten || null; pa.schaetzung = d.schaetzung || null; } } catch (e) {}
+      paAnzeigen();
+      if (aktAnsicht === 'pflege' && typeof PflegeAssistent !== 'undefined') paStarten(); // Einschätzung gerade sichtbar (z. B. „Rückgängig“): mit den Antworten dieses Vorgangs neu beginnen
+    });
     Store.get('lotse.pfaendung', pfLaden);
     if (aktAnsicht === 'pfaendung') pfRender(false);
     if (window.Haushalt && Haushalt.neuLaden) Haushalt.neuLaden(); // jeder Vorgang hat seinen eigenen Haushaltsplan
@@ -3140,6 +3288,44 @@
     if (window.Schulden && Schulden.neuLaden) Schulden.neuLaden(); // und eine eigene Schulden-Liste
     if (window.Geld) Geld.neuLaden(); // und eigene Haken unter „Schuldnerberatung“ (Bis zum Termin, Beratungsmappe)
     vgRender();
+  }
+  // Alle vorgangsbezogenen Zustände außerhalb des Speichers (nur im Arbeitsspeicher oder in Feldern), die beim Wechsel des Vorgangs,
+  // bei „Alle Angaben löschen“ und beim Löschen geleert werden. Gespeicherte Angaben lädt vgNeuLaden danach neu.
+  //   Antragsformular: Scan-Ergebnis (scanFound), Vorschaubilder (scanBilder, Blob-Adressen freigeben), eingefügter Text (sc-text), Dateiauswahl
+  //   Brief prüfen: gesammelter Brieftext (elGesammelt), eingefügter Text (elText), Meldung und Ergebnis (elMsg, elErg), geöffnete Kachel,
+  //                 Formulare, Ergebnisse und Schreiben der Prüfungen (PruefpaketLeeren in erweiterungen/vorschau.js)
+  //   Beratung: offenes Blatt „Für Klient zusammenstellen“ (Klient.schliessen vergisst Daten anderer Vorgänge)
+  //   Antragsmappe: selbst geänderte Empfänger (empfEdit), Brieftexte (mappeBody, mappeText); Ergebnisblatt: Kürzel und Tabelle
+  //   Vermögens-Helfer (va), Pflege-Unterstützung (pu), gezeichnete Pflegegrad-Einschätzung (pflegeAssist), Einwilligung „Scan mit Claude“
+  //   Von der Beratung bekommen: Vorschau, PIN-Abfrage und entschlüsselter Inhalt einer fremden Datei (kwImpBox)
+  //   Pfändung, Pflege-Einschätzung (Antworten), Haushalt, Fristen, Schulden, Ausziehen, Geld, Schritte: setzen vgNeuLaden bzw. die Module selbst zurück
+  function einleseResteLeeren() {
+    scanFound = []; scanBilderSetzen([]); renderScan(); scanMsg('');
+    ['sc-text', 'sc-file', 'sc-pdf', 'elText', 'elFile', 'elPdfFile'].forEach(function (id) { var e = $(id); if (e) e.value = ''; });
+    [['sc-pasteBox', 'sc-pasteBtn'], ['elPasteBox', 'elPaste']].forEach(function (x) { var b = $(x[0]), k = $(x[1]); if (b) b.hidden = true; if (k) k.setAttribute('aria-expanded', 'false'); });
+    elGesammelt = ''; if ($('elMsg')) $('elMsg').textContent = ''; if ($('elErg')) $('elErg').textContent = '';
+    if (window.PruefpaketLeeren) window.PruefpaketLeeren();
+    if (window.PruefpaketPflege) window.PruefpaketPflege.eigene(null);
+    if (briefArt) { var y = window.scrollY || 0; briefOeffnen(null); try { window.scrollTo(0, y); } catch (e) {} }
+    abVon = false;
+    if (window.Klient && Klient.offen()) Klient.schliessen();
+    // Unabhängige Prüfung 21.11.2026: weitere Zustände, die nicht gespeichert und sonst nicht neu gezeichnet werden
+    scanTitel = ''; if ($('sc-consent')) { $('sc-consent').checked = false; if ($('sc-claude')) $('sc-claude').disabled = true; }
+    empfEdit = {}; empfHinweisDa = false; // selbst geänderte Empfänger der Briefe in der Antragsmappe
+    if ($('mappeBody')) $('mappeBody').textContent = ''; if ($('mappeText')) { $('mappeText').value = ''; $('mappeText').hidden = true; }
+    if ($('ergBlatt') && !$('ergBlatt').hidden) ebSchliessen(); // Ergebnisblatt (Beratung): Kürzel und Tabelle
+    if ($('ebKuerzel')) $('ebKuerzel').value = ''; if ($('ebSeite')) $('ebSeite').textContent = ''; if ($('ebMsg')) $('ebMsg').textContent = '';
+    va = { schritt: 0, wahl: {}, wert: {} }; // Vermögens-Helfer: Auswahl und Beträge
+    if ($('va')) { $('va').hidden = true; $('va').textContent = ''; } if ($('vaBtn')) $('vaBtn').setAttribute('aria-expanded', 'false'); if ($('vaInfo')) vaInfo();
+    pu = { schritt: 'wahl', pg: null }; // Pflege-Unterstützung: gewählter Pflegegrad
+    // Pflegegrad-Einschätzung: die gezeichneten Fragen und Antworten gehören zum vorigen Vorgang (sonst über „Zurück“ wieder sichtbar,
+    // und „Weiter“ würde sie in den neuen Vorgang speichern). Leer: zeigeAnsicht öffnet die Seite nur über ihren Knopf neu.
+    if ($('pflegeAssist')) $('pflegeAssist').textContent = '';
+    paVonStart = false; paRueck = '';
+    // „Von der Beratung bekommen“ (src/weitergabe.js): offene Vorschau oder PIN-Abfrage einer fremden Datei schließen (vergisst den entschlüsselten Inhalt)
+    // importLeeren verwirft auch ein Entschlüsseln, das gerade noch läuft (sonst erschiene die Vorschau erst nach dem Wechsel)
+    if (window.Weitergabe && Weitergabe.importLeeren) Weitergabe.importLeeren();
+    var vg = $('vgGForm'); if (vg) vg.remove(); // offene PIN-Abfrage eines Vorgangs (getippte PIN, Kurzname)
   }
   function pfLeer() { return { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; }
   function pfLaden(v) {
@@ -3182,6 +3368,7 @@
     vgMsg(t('vg.geoeffnet', { name: n })); var h = $('vgH'); if (h) h.focus();
   }
   function vgRender() {
+    schutzAnwenden();
     if (!tresor || !$('setHaushalte')) return;
     vgGeruest();
     var bereit = tresor.bereit(), liste = tresor.liste(), a = tresor.aktiv();
@@ -3199,26 +3386,40 @@
       bb.addEventListener('click', function () { vgBearb = !vgBearb; vgRender(); var x = $('vgBearb'); if (x) x.focus(); });
       kopfZ.appendChild(bb);
     }
+    if (!mehrere && Vorgaenge.webCrypto() && a.name && !a.gesperrt) { // ein Vorgang mit Namen: Sperren ohne „Bearbeiten“
+      var se = vgEl('button', 'chip', t('vgp.sperren')); se.type = 'button'; se.id = 'vgGSperrenEins'; se.setAttribute('aria-expanded', 'false');
+      se.addEventListener('click', function () { vgGForm(kopfZ, se, liste[0], 'sperren'); });
+      kopfZ.appendChild(se);
+    }
     g.appendChild(kopfZ);
     if (!mehrere) h3.classList.add('vh'); // ein Vorgang: keine Liste, Überschrift nur für Screenreader
     var msg = vgEl('p', 'msg', msgAlt); msg.id = 'vgMsg'; msg.setAttribute('role', 'status');
     var ul = vgEl('ul', 'vg-liste');
     if (mehrere) liste.forEach(function (v) {
-      var offen = v.id === a.id, li = vgEl('li', offen ? 'vg-offen' : '');
-      var z = vgEl(offen ? 'div' : 'button', 'vg-zeile'); if (!offen) { z.type = 'button'; z.addEventListener('click', function () { vgOeffnen(v.id); var h = $('vgH'); if (h) h.focus(); }); }
-      z.setAttribute('data-vg-name', vgName(v));
+      var offen = v.id === a.id, zu = v.gesperrt && !v.offen, li = vgEl('li', (offen ? 'vg-offen' : '') + (v.gesperrt ? ' vg-gesperrt' : ''));
+      var z = vgEl(offen ? 'div' : 'button', 'vg-zeile'); if (!offen) { z.type = 'button'; z.addEventListener('click', function () { if (zu) { vgGForm(li, z, v, 'oeffnen'); return; } vgOeffnen(v.id); var h = $('vgH'); if (h) h.focus(); }); }
+      if (zu) z.setAttribute('aria-expanded', 'false');
+      z.setAttribute('data-vg-name', zu ? vgGTitel(v) : vgName(v));
       if (offen) z.setAttribute('aria-current', 'true');
-      z.appendChild(vgEl('span', 'vg-kreis', vgKuerzel(v))).setAttribute('aria-hidden', 'true');
-      var tx = vgEl('span', 'vg-txt'); tx.appendChild(vgEl('b', null, vgName(v)));
-      var st = vgEl('span', 'vg-st', offen ? t('vg.offen') : t('vg.geaendert', { datum: vgDatum(v.geaendert) }));
+      if (v.gesperrt) z.appendChild(vgSchloss()); else z.appendChild(vgEl('span', 'vg-kreis', vgKuerzel(v))).setAttribute('aria-hidden', 'true');
+      // Gesperrt und zu: nur neutraler Titel (und ein freiwilliger Kurzname), kein Datum
+      var tx = vgEl('span', 'vg-txt'); tx.appendChild(vgEl('b', null, zu ? t('vgp.titel') : vgName(v)));
+      var st = vgEl('span', 'vg-st', offen ? t(v.gesperrt ? 'vgp.st.offen' : 'vg.offen') : zu ? (v.name || t('vgp.st.zu')) : t('vg.geaendert', { datum: vgDatum(v.geaendert) }));
       tx.appendChild(st);
-      if (v.ablauf) tx.appendChild(vgEl('span', 'vg-st vg-ablauf', t('vg.loeschtAm', { datum: vgDatum(v.ablauf) })));
+      if (v.ablauf && !zu) tx.appendChild(vgEl('span', 'vg-st vg-ablauf', t('vg.loeschtAm', { datum: vgDatum(v.ablauf) })));
       z.appendChild(tx);
       z.appendChild(vgEl('span', offen ? 'vg-haken' : 'zeile-pfeil', offen ? '✓' : '›')).setAttribute('aria-hidden', 'true');
       li.appendChild(z);
       if (vgBearb) {
         var btns = vgEl('div', 'btns');
-        var knopf = function (key, fn, cls) { var b = vgEl('button', cls || 'chip', t(key)); b.type = 'button'; b.setAttribute('aria-label', t(key) + ': ' + vgName(v)); b.addEventListener('click', fn); btns.appendChild(b); return b; };
+        var knopf = function (key, fn, cls) { var b = vgEl('button', cls || 'chip', t(key)); b.type = 'button'; b.setAttribute('aria-label', t(key) + ': ' + (zu ? vgGTitel(v) : vgName(v))); b.addEventListener('click', fn); btns.appendChild(b); return b; };
+        if (v.gesperrt) { // gesperrt: nur Sperre aufheben (mit PIN) und Löschen (ohne PIN, mit Rückfrage)
+          var ak = knopf('vgp.aufheben', function () { vgGForm(li, ak, v, 'aufheben'); }); ak.setAttribute('aria-expanded', 'false');
+          var lg = knopf('vg.loeschen', function () {
+            loeschFragen(li, lg, loeschEinsTitel({ name: zu ? vgGTitel(v) : v.name }), loeschWas(), function () { vgLoeschen(v.id, $('vgMsg')); var h = $('vgH'); if (h) h.focus(); }, true);
+          }, 'chip vg-weg');
+          li.appendChild(btns); ul.appendChild(li); return;
+        }
         knopf('vg.umbenennen', function () {
           var neuN = vgEl('form', 'vg-form vg-umb'); neuN.setAttribute('novalidate', '');
           var l = vgEl('label', null, t('vg.name.label')); l.setAttribute('for', 'vgUmb-' + v.id);
@@ -3232,6 +3433,7 @@
           flush();
           if (tresor.kopie(v.id, vgKopieName(vgName(v)))) { vgNeuLaden(); vgMsg(t('vg.geoeffnet', { name: vgName(tresor.aktiv()) })); var h = $('vgH'); if (h) h.focus(); }
         });
+        if (Vorgaenge.webCrypto()) { var sk = knopf('vgp.sperren', function () { vgGForm(li, sk, v, 'sperren'); }); sk.setAttribute('aria-expanded', 'false'); }
         var lk = knopf('vg.loeschen', function () {
           loeschFragen(li, lk, loeschEinsTitel(v), loeschWas(), function () { vgLoeschen(v.id, $('vgMsg')); var h = $('vgH'); if (h) h.focus(); }, true);
         }, 'chip vg-weg');
@@ -3281,21 +3483,41 @@
       vgRender(); vgMsg(n ? t('vg.auto.weg', { n: String(n) }) : t('vg.auto.ok')); var s2 = $('vgTage'); if (s2) s2.focus();
     });
     al.appendChild(sel); g.appendChild(vgEl('p')).appendChild(al);
-    // PIN-Sperre: ein Schalter; an -> „Jetzt sperren“ und „PIN ändern“; die Warnung „PIN vergessen“ erst im Feld zum Festlegen
+    // PIN-Sperre: ein Schalter; an -> „Jetzt sperren“ und „PIN ändern“; die kurze Erklärung (vg.pin.erkl) erst unter dem Feld zum Festlegen
     var webOk = Vorgaenge.webCrypto(), pinAn = webOk && tresor.pinAn();
     var ps = vgEl('button', 'schalter'); ps.type = 'button'; ps.id = 'vgPinSchalter'; ps.setAttribute('role', 'switch'); ps.setAttribute('aria-checked', String(!!pinAn));
     var pst = vgEl('span', 'schalter-t', t('vg.pin.h')); pst.appendChild(vgEl('span', 'schalter-unter', t(webOk ? 'vg.pin.unter' : 'vg.pin.nicht'))); ps.appendChild(pst);
     ps.appendChild(vgEl('span', 'schalter-zst', t(pinAn ? 'set.an' : 'set.aus'))); ps.appendChild(vgEl('span', 'schalter-bahn')).setAttribute('aria-hidden', 'true');
     if (!webOk) ps.setAttribute('aria-disabled', 'true');
-    ps.addEventListener('click', function () { if (!webOk) return; if (tresor.pinAn()) vgPinForm(g, ps, true); else vgPinForm(g, ps); });
+    // Tippen auf den Schalter öffnet das passende Feld (an: bisherige PIN zum Ausschalten; aus: neue PIN festlegen).
+    // Ist dieses Feld schon offen, schließt erneutes Tippen es wieder (wie „Abbrechen“): der Schalter bleibt im echten Zustand.
+    // Früher fokussierte erneutes Tippen nur das Feld, und ein Abbrechen gab es nicht: der Schalter wirkte „festgeklemmt“ (Fehler 1.8.0).
+    ps.addEventListener('click', function () {
+      if (!webOk) return;
+      var art = tresor.pinAn() ? 'aus' : 'neu', offen = $('vgPinForm');
+      if (offen && offen.getAttribute('data-ausloeser') === 'vgPinSchalter' && offen.getAttribute('data-art') === art) { vgPinFormZu(offen); return; }
+      if (art === 'aus') vgPinForm(g, ps, true); else vgPinForm(g, ps);
+    });
     g.appendChild(vgEl('p')).appendChild(ps);
     if (pinAn) {
       var pb = vgEl('div', 'btns');
       var sp = vgEl('button', 'btn ghost', t('vg.pin.sperren')); sp.type = 'button';
       sp.addEventListener('click', vgSperrenJetzt);
       var ae = vgEl('button', 'btn ghost', t('vg.pin.aendern')); ae.type = 'button'; ae.setAttribute('aria-expanded', 'false');
-      ae.addEventListener('click', function () { vgPinForm(g, ae, false, true); });
+      ae.id = 'vgPinAendern';
+      ae.addEventListener('click', function () { var o = $('vgPinForm'); if (o && o.getAttribute('data-art') === 'aendern') vgPinFormZu(o); else vgPinForm(g, ae, false, true); });
       pb.appendChild(sp); pb.appendChild(ae); g.appendChild(pb);
+      if (plug('SoloSchutz')) { // nur in der App: Bildschirmfotos und Vorschau im App-Wechsler
+        var fs = vgEl('button', 'schalter'); fs.type = 'button'; fs.id = 'vgFotos'; fs.setAttribute('role', 'switch'); fs.setAttribute('aria-checked', String(fotosErlaubt));
+        var fst = vgEl('span', 'schalter-t', t('vg.fotos.h')); fst.appendChild(vgEl('span', 'schalter-unter', t(fotosErlaubt ? 'vg.fotos.an' : 'vg.fotos.aus'))); fs.appendChild(fst);
+        fs.appendChild(vgEl('span', 'schalter-zst', t(fotosErlaubt ? 'set.an' : 'set.aus'))); fs.appendChild(vgEl('span', 'schalter-bahn')).setAttribute('aria-hidden', 'true');
+        fs.addEventListener('click', function () {
+          fotosErlaubt = !fotosErlaubt; StoreRoh.set('lotse.fotosErlaubt', fotosErlaubt ? '1' : '0'); schutzAnwenden();
+          fs.setAttribute('aria-checked', String(fotosErlaubt)); fs.querySelector('.schalter-zst').textContent = t(fotosErlaubt ? 'set.an' : 'set.aus');
+          fs.querySelector('.schalter-unter').textContent = t(fotosErlaubt ? 'vg.fotos.an' : 'vg.fotos.aus');
+        });
+        g.appendChild(vgEl('p')).appendChild(fs);
+      }
     }
     var md = vgEl('details', 'set-mehr'); md.appendChild(vgEl('summary', null, t('vg.mehrDazu')));
     md.appendChild(vgEl('p', 'small', t('vg.pin.t'))); md.appendChild(vgEl('p', 'small', t('vg.auto.t')));
@@ -3315,19 +3537,91 @@
     if (alt && $(alt) && alt !== 'vgMsg' && alt !== 'vgMsgS') { try { $(alt).focus({ preventScroll: true }); } catch (e) {} }
     else if (!$('es-sicher').hidden && (!document.activeElement || document.activeElement === document.body)) { var hs = $('h-sicher'); hs.tabIndex = -1; hs.focus({ preventScroll: true }); } // Knopf neu gezeichnet: Fokus auf die Überschrift
   }
-  // PIN festlegen, ändern (mitAlt) oder ausschalten (nurAus). Ändern und Ausschalten fragen die bisherige PIN ab.
-  function vgPinForm(g, ausloeser, nurAus, mitAlt) {
-    var alt = $('vgPinForm'); if (alt) { if (alt.getAttribute('data-art') === (nurAus ? 'aus' : 'neu')) { alt.querySelector('input').focus(); return; } alt.remove(); }
+  // ----- Einzelne Vorgänge mit eigener PIN sperren (Vorgaenge: gSperren, gOeffnen, gAufheben) -----
+  // Gesperrt: in der Liste nur „Gesperrter Vorgang“ und Schloss (Kurzname nur, wenn ausdrücklich eingetragen). Öffnen verlangt die PIN;
+  // nach dem Wechsel und dem Neustart ist er wieder zu. Fristen darin erscheinen nur, solange er geöffnet ist. Löschen geht ohne PIN.
+  function vgGTitel(v) { return v.name ? t('vgp.titel') + ' ' + v.name : t('vgp.titel'); }
+  function vgSchloss() {
+    var k = vgEl('span', 'vg-kreis vg-schloss'); k.setAttribute('aria-hidden', 'true');
+    var ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg'); svg.setAttribute('viewBox', '0 0 24 24');
+    [['rect', { x: '5', y: '11', width: '14', height: '10', rx: '2' }], ['path', { d: 'M8 11V8a4 4 0 0 1 8 0v3' }]].forEach(function (x) {
+      var e = document.createElementNS(ns, x[0]); Object.keys(x[1]).forEach(function (n) { e.setAttribute(n, x[1][n]); }); svg.appendChild(e);
+    });
+    k.appendChild(svg); return k;
+  }
+  // art: 'sperren' (PIN zweimal, freiwilliger Kurzname, kurze Erklärung), 'oeffnen' oder 'aufheben' (PIN einmal)
+  function vgGForm(nach, ausloeser, v, art) {
+    var alt = $('vgGForm'); if (alt) { var gleich = alt.getAttribute('data-vg') === v.id + art; alt.remove(); document.querySelectorAll('[aria-expanded="true"]').forEach(function (x) { if (x.closest('#setHaushalte')) x.setAttribute('aria-expanded', 'false'); }); if (gleich) { ausloeser.focus(); return; } }
     ausloeser.setAttribute('aria-expanded', 'true');
-    var f = vgEl('form', 'vg-form'); f.id = 'vgPinForm'; f.setAttribute('novalidate', ''); f.setAttribute('data-art', nurAus ? 'aus' : 'neu');
+    var f = vgEl('form', 'vg-form vg-gform'); f.id = 'vgGForm'; f.setAttribute('novalidate', ''); f.setAttribute('data-vg', v.id + art);
+    var feld = function (id, key, max, typ) {
+      var l = vgEl('label', null, t(key)); l.setAttribute('for', id);
+      var i = vgEl('input'); i.id = id; i.type = typ || 'password'; i.setAttribute('autocomplete', 'off'); i.maxLength = max;
+      if (!typ) i.setAttribute('inputmode', 'numeric');
+      f.appendChild(l); f.appendChild(i); return i;
+    };
+    var p1 = feld('vgGPin', art === 'sperren' ? 'vgp.pinNeu' : 'vgp.pin', 8), p2 = art === 'sperren' ? feld('vgGPin2', 'vg.pin.label2', 8) : null, kurz = null;
+    if (art === 'sperren') {
+      kurz = feld('vgGKurz', 'vgp.kurz', Vorgaenge.NAME_MAX, 'text'); kurz.setAttribute('aria-describedby', 'vgGKurzH');
+      var kh = vgEl('p', 'small muted', t('vgp.kurz.t')); kh.id = 'vgGKurzH'; f.appendChild(kh);
+      var er = vgEl('ul', 'small vg-gerkl'); ['vgp.t0', 'vgp.t1', 'vgp.t2', 'vgp.t3'].forEach(function (k) { er.appendChild(vgEl('li', null, t(k))); }); f.appendChild(er);
+    } else f.appendChild(vgEl('p', 'small muted', t('vgp.vergessen')));
+    var b = vgEl('button', 'btn', t(art === 'sperren' ? 'vgp.sperren' : art === 'oeffnen' ? 'vgp.oeffnen' : 'vgp.aufheben')); b.type = 'submit'; f.appendChild(b);
+    var m = vgEl('p', 'msg'); m.setAttribute('role', 'status'); f.appendChild(m);
+    var warten = function (ms) { b.disabled = true; m.textContent = t('vg.sperre.warten', { s: String(Math.ceil(ms / 1000)) }); setTimeout(function () { if (document.body.contains(b)) { b.disabled = false; m.textContent = ''; } }, ms); };
+    f.addEventListener('submit', function (e) {
+      e.preventDefault(); if (b.disabled) return;
+      var pin = p1.value;
+      if (!Vorgaenge.VPIN_RE.test(pin)) { m.textContent = t('vgp.format'); p1.focus(); return; }
+      if (p2 && pin !== p2.value) { m.textContent = t('vg.pin.ungleich'); p2.focus(); return; }
+      b.disabled = true; m.textContent = t('vg.bitte');
+      if (undoFn) undoWeg(); // „Rückgängig“ (nach Löschen) holt keinen Stand von vor dem Sperren zurück
+      flush(); var vorher = tresor.aktiv().id;
+      if (art === 'sperren') {
+        tresor.gSperren(v.id, pin, kurz.value).then(function (ok) {
+          p1.value = ''; p2.value = '';
+          if (!ok) { b.disabled = false; m.textContent = t('vg.fehler.speicher'); return; }
+          if (tresor.aktiv().id !== vorher) { clearTimeout(saveTimer); saveTimer = null; vgNeuLaden(); } else vgRender(); // der geöffnete wurde gesperrt: ein anderer ist jetzt offen
+          vgMsg(t('vgp.ok')); var h = $('vgH'); if (h) h.focus();
+        });
+        return;
+      }
+      tresor[art === 'oeffnen' ? 'gOeffnen' : 'gAufheben'](v.id, pin).then(function (r) {
+        p1.value = '';
+        if (!r.ok) { b.disabled = false; m.textContent = t('vg.sperre.falsch'); if (r.warten) warten(r.warten); p1.focus(); return; }
+        if (undoFn) undoWeg();
+        if (tresor.aktiv().id !== vorher) { clearTimeout(saveTimer); saveTimer = null; vgNeuLaden(); } else vgRender();
+        vgMsg(art === 'oeffnen' ? t('vg.geoeffnet', { name: vgName(tresor.aktiv()) }) : t('vgp.aufgehoben')); var h = $('vgH'); if (h) h.focus();
+      });
+    });
+    if (nach.tagName === 'LI') nach.appendChild(f); else nach.parentNode.insertBefore(f, nach.nextSibling);
+    var rest = tresor.gWarten(v.id); if (rest > 0) warten(rest);
+    p1.focus();
+  }
+  // PIN festlegen, ändern (mitAlt) oder ausschalten (nurAus). Ändern und Ausschalten fragen die bisherige PIN ab.
+  // PIN-Feld schließen, ohne etwas zu ändern (Abbrechen): Schalter und Speicher bleiben, wie sie sind
+  function vgPinFormZu(f) {
+    var a = f && $(f.getAttribute('data-ausloeser')); if (f) f.remove();
+    if (a) { if (a.id === 'vgPinSchalter') a.setAttribute('aria-checked', String(!!tresor.pinAn())); else a.setAttribute('aria-expanded', 'false'); a.focus(); }
+  }
+  function vgPinForm(g, ausloeser, nurAus, mitAlt) {
+    var art = nurAus ? 'aus' : (mitAlt ? 'aendern' : 'neu');
+    var alt = $('vgPinForm'); if (alt) { if (alt.getAttribute('data-art') === art) { alt.querySelector('input').focus(); return; } vgPinFormZu(alt); }
+    if (ausloeser.id !== 'vgPinSchalter') ausloeser.setAttribute('aria-expanded', 'true'); // role=switch kennt kein aria-expanded
+    var f = vgEl('form', 'vg-form'); f.id = 'vgPinForm'; f.setAttribute('novalidate', ''); f.setAttribute('data-art', art); f.setAttribute('data-ausloeser', ausloeser.id);
     var felder = (nurAus || mitAlt ? [['vgPin0', 'vg.pin.alt']] : []).concat(nurAus ? [] : [['vgPin1', 'vg.pin.label'], ['vgPin2', 'vg.pin.label2']]);
     felder.forEach(function (x) {
       var l = vgEl('label', null, t(x[1])); l.setAttribute('for', x[0]);
       var i = vgEl('input'); i.id = x[0]; i.type = 'password'; i.setAttribute('inputmode', 'numeric'); i.setAttribute('autocomplete', 'off'); i.maxLength = 12;
       f.appendChild(l); f.appendChild(i);
+      // Kurze Erklärung direkt unter dem Feld für die neue PIN (Festlegen und Ändern). Inhalt nach Code: Sperrbildschirm deckt die ganze App ab (vgSperreZeigen, inert), AES-GCM-Verschlüsselung
+      // auf dem Gerät, die PIN selbst wird nie gespeichert, ohne richtige PIN lässt sich nichts entschlüsseln (keine Wiederherstellung, keine Biometrie).
+      if (x[0] === 'vgPin1') { var hw = vgEl('p', 'hint', t('vg.pin.erkl')); hw.id = 'vgPinHinweis'; i.setAttribute('aria-describedby', 'vgPinHinweis'); f.appendChild(hw); }
     });
-    if (!nurAus && !mitAlt) f.appendChild(vgEl('p', 'warn', t('vg.pin.vergessen'))); // Warnung erst beim Festlegen, nicht dauerhaft
-    var b = vgEl('button', 'btn', t(nurAus ? 'vg.pin.aus' : 'vg.pin.speichern')); b.type = 'submit'; f.appendChild(b);
+    var bz = vgEl('div', 'btns'); f.appendChild(bz);
+    var b = vgEl('button', 'btn', t(nurAus ? 'vg.pin.aus' : 'vg.pin.speichern')); b.type = 'submit'; bz.appendChild(b);
+    var ab = vgEl('button', 'btn ghost', t('l.abbrechen')); ab.type = 'button'; ab.id = 'vgPinAbbr'; bz.appendChild(ab);
+    ab.addEventListener('click', function () { vgPinFormZu(f); });
     var m = vgEl('p', 'msg'); m.setAttribute('role', 'status'); f.appendChild(m);
     f.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -3346,6 +3640,7 @@
     });
     ausloeser.parentNode.parentNode.insertBefore(f, ausloeser.parentNode.nextSibling);
     f.querySelector('input').focus();
+    try { f.scrollIntoView({ block: 'nearest', behavior: smooth() }); } catch (e) {} // auf dem Handy: Feld und Knöpfe über der Tastatur sichtbar
   }
   // ----- Unterseiten in „Einstellungen“ und „Mein Ordner“: Liste bzw. Übersicht oder eine Unterseite, „← Zurück“ führt zurück -----
   var usAktiv = { einst: '', ordner: '' }, usVon = null;
@@ -3414,11 +3709,18 @@
       if (az && az.von && az.n) zeile('ausziehen', t('ordner.ausziehen'), t('ordner.ausziehen.n', { n: az.n, von: az.von }), '<path d="M4 20V9l8-5 8 5v11"/><path d="M14 14h6M17 11l3 3-3 3"/>', function () { oeffneVon('ausziehen', true); });
     }
     if (pa && pa.schaetzung) zeile('pflege', t('ordner.pflege'), paStandText(), '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>', function () { oeffneVon('pflegestart', true); });
+    // Blatt von der Beratung (Weitergabe per QR-Code/SoLo-Datei): beim Laden erneut streng geprüft, angezeigt nur als Text
+    if (window.Weitergabe && window.Klient && tresor && tresor.bereit()) {
+      var kbRoh = null; Store.get('lotse.klient-blatt', function (v) { kbRoh = v; });
+      var kbDoc = null; try { var kbP = kbRoh ? Weitergabe.pruefen({ s: 1, typ: 'auswahl', blatt: JSON.parse(kbRoh) }) : null; kbDoc = kbP && kbP.blatt; } catch (e) { kbDoc = null; }
+      if (kbDoc) zeile('beratung', t('kw.ordner'), t('kw.ordner.st', { n: kbDoc.abschnitte.length }), '<path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7M14 3v5h5"/>', function () { Klient.zeigen(kbDoc); });
+    }
     if (pf && pf.art && pf.schritt > 0) zeile('pfaendung', t('ordner.pfaendung'), t(pf.art === 'lohn' ? 'pf.lohn' : 'pf.konto'), '<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/>', function () { oeffneVon('pfaendung', true); });
     ul.hidden = !ul.children.length;
   }
   // Sperrbildschirm: deckt die App ab, bis die PIN stimmt
   function vgSperreZeigen() {
+    schutzAnwenden();
     var s = $('vgSperre');
     if (!s) { s = vgEl('div', 'vg-sperre'); s.id = 'vgSperre'; s.setAttribute('role', 'dialog'); s.setAttribute('aria-modal', 'true'); s.setAttribute('aria-labelledby', 'vgSperreH'); $('app').parentNode.appendChild(s); }
     s.innerHTML = ''; s.hidden = false; s.setAttribute('lang', lang); s.setAttribute('dir', I18N[lang]['meta.dir']);
@@ -3523,7 +3825,7 @@
   var paVonStart = false; // Einschätzung aus der Pflege-Startkachel geöffnet: „Zurück“ führt zur Auswahl
   var paRueck = ''; // Unterseite, die aus der Ergebnisseite geöffnet wurde ('briefe', 'leistungen', 'pflegestart'): „← Zurück“ führt zur Ergebnisseite
   function paVomLeistungsCheck() { return !paVonStart && herkunftVon('pflege') === 'leistungen'; }
-  function paVerlassen() { paRueck = ''; if (paVonStart) puOeffnen('wahl'); else if (herkunftVon('pflege') === 'leistungen') paZurueck('paStart'); else zurueckZurHerkunft('pflege'); }
+  function paVerlassen() { if (aktAnsicht === 'pflege' && sucheRueck.indexOf('pflege/') === 0) { sucheZurStart(); return; } paRueck = ''; if (paVonStart) puOeffnen('wahl'); else if (herkunftVon('pflege') === 'leistungen') paZurueck('paStart'); else zurueckZurHerkunft('pflege'); }
   // Unterseite der Ergebnisseite öffnen: Rückweg merken
   function paUnterseite(ziel) { paRueck = ziel; if (aktAnsicht === ziel) paRueckPruefen(ziel); }
   // Beim Ansichtswechsel: Rückweg nur auf der Unterseite selbst (der gemeinsame „← Zurück“ führt dann über zurueckSchritt zur Ergebnisseite)
@@ -3545,17 +3847,21 @@
       speichern: function (a) { pa.antworten = a; paSpeichern(); },
       beimErgebnis: paMerken,
       abbrechen: paVerlassen,
+      // Reihenfolge (David 21.11.2026): zuerst der passende Antrag (noch kein Pflegegrad: beantragen; Einschätzung höher: Höherstufung),
+      // dann „Mit dem Gutachten vergleichen“, dann „Was steht mir zu?“. Höchstens 3 Kacheln.
       aktionen: [
-        { id: 'antrag', kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Antrag an die Pflegekasse', text: 'Mit der Antragsmappe, deine Daten sind schon drin', wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
-          paUebernehmen(r); picked.pflege = true; pickedUser.pflege = true; if (lastOut) renderPick(lastOut.results);
+        { id: 'antrag', kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Pflegegrad beantragen', text: 'Mit der Antragsmappe, deine Daten sind schon drin', wenn: function (r, pg) { return pg == null && r.pg >= 1; }, fn: function (r) {
+          paUebernehmen(r); picked.pflege = true; pickedUser.pflege = true; if (lastOut) renderPick(lastOut.results, lastOut.zusammen);
           paZurueck('mappeMake'); paUnterseite('leistungen'); } },
         { id: 'hoeher', kachel: 'antrag', sym: PA_SYM.antrag, titel: 'Höherstufung beantragen', text: 'Schreiben an die Pflegekasse mit deinen Antworten', wenn: function (r, pg) { return pg != null && r.pg > pg; }, fn: function (r, a, g) {
           paUebernehmen(r); zeigeAnsicht('briefe', false); briefOeffnen('pk'); paUnterseite('briefe');
           if (window.PruefpaketPflege) { window.PruefpaketPflege.setze(g, 'hoeher'); briefFormular(); } } },
+        // Nach dem Antrag (falls passend): mit dem Gutachten vergleichen. Öffnet die Gutachten-Prüfung (wie Brief → Pflegekasse); briefOeffnen('pk') übergibt die Antworten
+        // dieser Einschätzung (PruefpaketPflege.eigene), die Prüfung zeigt dann eigene Punkte je Bereich neben dem Gutachten. „← Zurück“ führt hierher.
+        { id: 'gutachten', kachel: 'gutachten', sym: PA_SYM.gutachten, titel: 'Mit dem Gutachten vergleichen', text: 'Gutachten vom Medizinischen Dienst scannen oder einfügen', fn: function () {
+          zeigeAnsicht('briefe', false); briefOeffnen('pk'); paUnterseite('briefe'); } },
         { id: 'hilfen', kachel: 'hilfen', sym: PA_SYM.hilfen, titel: 'Was steht mir zu?', text: function (r) { return r.pg ? 'Unterstützung bei Pflegegrad ' + r.pg : 'Hilfen schon ohne Pflegegrad'; }, fn: function (r) {
           paUnterseite('pflegestart'); puOeffnen('liste', r.pg || 0, true); } },
-        { id: 'gutachten', kachel: 'gutachten', sym: PA_SYM.gutachten, titel: 'Mit dem Gutachten vergleichen', text: 'Brief der Pflegekasse prüfen', fn: function () {
-          zeigeAnsicht('briefe', false); briefOeffnen('pk'); paUnterseite('briefe'); } },
         // In den Leistungs-Check nur, wenn man von dort gekommen ist
         { id: 'zurueck', titel: 'Zurück zum Leistungs-Check', wenn: paVomLeistungsCheck, fn: function (r) { paUebernehmen(r); paRueck = ''; paZurueck('c-pflege'); } }
       ]
@@ -3753,12 +4059,20 @@
       var pg = pu.pg || 0, liste = Rules.pflegeFuer(pg), tx = puTexte(pg), U = Rules.RULES.pflegeUnterst;
       var top = PU_TOP[Math.min(pg, 2)];
       p(pg ? 'Das gibt es bei Pflegegrad ' + pg : 'Das gibt es ohne Pflegegrad', 'pf-frage');
-      if (pg >= 2) p('Aufs Konto kommen nur das Pflegegeld und, wer in einer ambulant betreuten Wohngruppe lebt, der Wohngruppenzuschlag. Das meiste sind Budgets: Die Pflegekasse bezahlt damit Hilfe, meistens gegen Rechnung. Wer sie nicht nutzt, verschenkt Hilfe.', 'hint');
-      else if (pg === 1) p('Bei Pflegegrad 1 gibt es noch kein Pflegegeld und keinen Pflegedienst als Sachleistung. Es gibt aber Budgets und Zuschüsse. Die Pflegekasse bezahlt damit Hilfe, meistens gegen Rechnung.', 'hint');
+      // Einleitung: ein Satz sichtbar, der Rest zum Aufklappen (gleiches Bauteil details.mehr); Inhalt unverändert
+      var einl = function (satz, titel, rest) {
+        p(satz, 'hint pu-einl');
+        var m = box.appendChild(el('details', null, 'mehr pu-einl-mehr')); m.appendChild(el('summary', titel));
+        rest.forEach(function (x) { m.appendChild(el('p', x)); });
+      };
+      if (pg >= 2) einl('Das meiste sind Budgets: Die Pflegekasse bezahlt damit Hilfe, meistens gegen Rechnung.', 'Was kommt aufs Konto?',
+        ['Aufs Konto kommen nur das Pflegegeld und, wer in einer ambulant betreuten Wohngruppe lebt, der Wohngruppenzuschlag. Wer die Budgets nicht nutzt, verschenkt Hilfe.']);
+      else if (pg === 1) einl('Bei Pflegegrad 1 gibt es noch kein Pflegegeld und keinen Pflegedienst als Sachleistung.', 'Was gibt es stattdessen?',
+        ['Es gibt aber Budgets und Zuschüsse. Die Pflegekasse bezahlt damit Hilfe, meistens gegen Rechnung.']);
       else {
-        p('Geld und Budgets der Pflegekasse gibt es erst mit einem Pflegegrad. Den Antrag stellst du bei der Pflegekasse; ein Anruf genügt. Diese Hilfen gibt es schon vorher:', 'hint');
         // § 2 PflegeZG mit § 7 Abs. 4 Satz 2 PflegeZG (gesetze-im-internet.de, abgerufen 20.11.2026): gilt schon bei voraussichtlicher Pflegebedürftigkeit
-        p('Tritt die Pflege plötzlich ein, dürfen Angehörige bis zu 10 Arbeitstage der Arbeit fernbleiben, um die Pflege zu organisieren. Das gilt schon, wenn ein Pflegegrad voraussichtlich kommt. Als Lohnersatz gibt es auf Antrag das Pflegeunterstützungsgeld der Pflegekasse.', 'hint');
+        einl('Geld und Budgets der Pflegekasse gibt es erst mit einem Pflegegrad; diese Hilfen gibt es schon vorher.', 'Wie bekomme ich einen Pflegegrad?',
+          ['Den Antrag stellst du bei der Pflegekasse; ein Anruf genügt.', 'Tritt die Pflege plötzlich ein, dürfen Angehörige bis zu 10 Arbeitstage der Arbeit fernbleiben, um die Pflege zu organisieren. Das gilt schon, wenn ein Pflegegrad voraussichtlich kommt. Als Lohnersatz gibt es auf Antrag das Pflegeunterstützungsgeld der Pflegekasse.']);
       }
       var karte = function (l, ziel) {
         var z = tx[l.id], d = el('section', null, 'pu-l pu-' + l.art); d.id = 'pu-l-' + l.id;
@@ -3779,16 +4093,19 @@
         ziel.appendChild(d);
       };
       top.map(function (id) { return liste.filter(function (l) { return l.id === id; })[0]; }).filter(Boolean).forEach(function (l) { karte(l, box); });
+      // Grüner Hauptknopf unter den Leistungen: Pflegegrad selbst einschätzen (ohne Grad: für den Antrag; mit Grad 1 bis 4: passt ein höherer?).
+      // Nicht bei Grad 5 und nicht, wenn die Seite aus der Ergebnisseite der Einschätzung geöffnet wurde.
+      if (pg < 5 && !vonErg && typeof PflegeAssistent !== 'undefined') { var hk = box.appendChild(el('div', null, 'btns pu-haupt')); hk.appendChild(nhKnopf('btn', esc(t('pu.schaetzen')), null, function () { paOeffnen(true); })).id = 'pu-schaetzen-knopf'; }
       var rest = liste.filter(function (l) { return top.indexOf(l.id) < 0; });
       if (rest.length) {
-        var w = el('details', null, 'pu-weitere'); w.id = 'pu-weitere';
+        var w = el('details', null, 'pu-weitere mehr mehr-liste'); w.id = 'pu-weitere';
         w.appendChild(el('summary', 'Weitere Leistungen (' + rest.length + ')'));
         rest.forEach(function (l) { karte(l, w); });
         box.appendChild(w);
       }
-      p('Hilfe bei allen Fragen und beim Antrag: Pflegekasse oder Pflegestützpunkt, kostenlos.', 'hint');
+      // Pflegeberatung ist kostenlos: § 7a Abs. 1 SGB XI, Pflegestützpunkte § 7c SGB XI (gesetze-im-internet.de, abgerufen 21.11.2026)
+      box.appendChild(tippEl('pu.tipp.beratung'));
       box.appendChild(quellenEl(['Stand der Beträge: ' + U.stand + ' (' + U.quelle + '). Den genauen Anspruch legt die Pflegekasse fest.']));
-      if (!pg && !vonErg && typeof PflegeAssistent !== 'undefined') box.appendChild(el('div', null, 'btns')).appendChild(nhKnopf('btn', esc(t('pu.schaetzen')), null, function () { paOeffnen(true); }));
     }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
   }
@@ -3817,7 +4134,8 @@
     elPlatz();
     if (art === 'pk' && window.PruefpaketPflege && typeof PflegeAssistent !== 'undefined') window.PruefpaketPflege.eigene(pa.antworten ? PflegeAssistent.eingabe(pa.antworten, null) : null);
     window.scrollTo(0, 0);
-    var h = teil && $(teil).querySelector('h2'); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+    var h = teil && ($(teil).querySelector('h2') || $('h-briefe')); if (h) { // „Anderer Brief“: nur die Seitenüberschrift (keine zweite)
+      h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
   }
   // ----- Brief einlesen: scannen (Kamera und Texterkennung auf dem Gerät) oder Text einfügen; erweiterungen/brief-lesen.js -----
   // Ohne geöffnete Kachel erkennt die App Absender und Art selbst; in einer Kachel ist die Art bekannt.
@@ -3839,7 +4157,7 @@
     var sec = briefArt && briefArt !== 'af' && $(BRIEF_TEIL[briefArt]), karte = sec && sec.querySelector('.card');
     if (!karte) { box.hidden = true; return; }
     box.hidden = false;
-    var satz = karte.querySelector('.pp-frist-box') || karte.querySelector('h2 + p'); // erster Satz (bei Bescheiden: Frist und Art des Briefs); Details stehen darunter
+    var satz = karte.querySelector('.pp-frist-box') || karte.querySelector('h2 + p') || karte.querySelector(':scope > p'); // „Anderer Brief“ hat keine eigene Überschrift // erster Satz (bei Bescheiden: Frist und Art des Briefs); Details stehen darunter
     if (satz) satz.insertAdjacentElement('afterend', box); else karte.appendChild(box);
     $('elSelbst').hidden = !sec || !sec.classList.contains('pp-zu');
     $('elScanT').textContent = t(elGesammelt ? 'el.mehr' : briefArt ? 'el.scanHier' : 'el.scan');
@@ -3893,7 +4211,7 @@
     if (!briefArt) briefOeffnen(r.art);
     if (r.art === 'pk') { $('pf-text').value = text; $('pf-lesen').click(); briefFormular(); elNachricht(t('el.erkanntPk', { titel: ppEin(r.titel) })); return; }
     if (r.art === 'af') { setScanResult(scanFromText(text)); elNachricht(t('el.erkanntOhne', { titel: ppEin(r.titel) })); return; }
-    var n = window.PruefpaketLesen ? window.PruefpaketLesen.fuelle(r.art, r, haushalt()) : 0;
+    var n = window.PruefpaketLesen ? window.PruefpaketLesen.fuelle(r.art, r, haushalt(), elQuelle) : 0;
     briefFormular();
     elNachricht(n ? t('el.erkannt', { titel: ppEin(r.titel), n: String(n) }) : t('el.keineWerte', { titel: ppEin(r.titel) }));
   }
@@ -3913,24 +4231,28 @@
       }).then(function (r) { weg(); res(((r && r.lines) || []).join('\n')); }, function (e) { weg(); rej(e); });
     });
   }
-  function elFertig(text) { elBusy = false; $('elScan').disabled = false; elGesammelt = (elGesammelt ? elGesammelt + '\n' : '') + text; elPlatz(); textLesen(elGesammelt); }
+  // Woher der gelesene Text stammt: Foto (Texterkennung) oder Text/PDF. Bei Fotos prüft „Brief prüfen“ zusätzlich die Plausibilität.
+  var elQuelle = { foto: false, unsicher: [] };
+  function elQuelleNeu(foto) { if (!elGesammelt) elQuelle = { foto: false, unsicher: [] }; if (foto) elQuelle.foto = true; ocrUnsicher = []; }
+  function elFertig(text) { elQuelle.unsicher = elQuelle.unsicher.concat(ocrUnsicher); ocrUnsicher = []; elBusy = false; $('elScan').disabled = false; elGesammelt = (elGesammelt ? elGesammelt + '\n' : '') + text; elPlatz(); textLesen(elGesammelt); }
   function elFehler(e) { elBusy = false; $('elScan').disabled = false; elNachricht(/cancel/i.test(String(e && (e.message || e) || '')) ? '' : t('el.fehler')); }
   $('elScan').addEventListener('click', function () {
     if (elBusy) return;
-    if (NATIVE) { elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese')); fotoText().then(elFertig, elFehler); return; }
+    if (NATIVE) { elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese')); elQuelleNeu(true); fotoText().then(elFertig, elFehler); return; }
     $('elFile').value = ''; $('elFile').click();
   });
   $('elPdf').addEventListener('click', function () { if (elBusy) return; $('elPdfFile').value = ''; $('elPdfFile').click(); });
   $('elPdfFile').addEventListener('change', function () {
     var f = $('elPdfFile').files && $('elPdfFile').files[0]; if (!f || elBusy) return;
     elBusy = true; $('elScan').disabled = true; $('elPdf').disabled = true;
+    var vorher = elQuelle; elQuelle = { foto: false, unsicher: [] }; ocrUnsicher = []; pdfMitBild = false;
     pdfLesen(f, function (i, n) { elNachricht(t('el.pdfSeite', { n: String(i), m: String(n) })); }).then(function (text) {
-      $('elPdf').disabled = false; elGesammelt = ''; elFertig(text);
-    }, function () { elBusy = false; $('elScan').disabled = false; $('elPdf').disabled = false; elNachricht(t('el.pdfFehler')); });
+      $('elPdf').disabled = false; elGesammelt = ''; if (pdfMitBild) elQuelle.foto = true; elFertig(text);
+    }, function () { elQuelle = vorher; elBusy = false; $('elScan').disabled = false; $('elPdf').disabled = false; elNachricht(t('el.pdfFehler')); });
   });
   $('elFile').addEventListener('change', function () {
     var f = $('elFile').files && $('elFile').files[0]; if (!f) return;
-    elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese'));
+    elBusy = true; $('elScan').disabled = true; elNachricht(t('el.lese')); elQuelleNeu(true);
     ocr(f).then(elFertig, elFehler);
   });
   $('elPaste').addEventListener('click', function () { var box = $('elPasteBox'); box.hidden = !box.hidden; $('elPaste').setAttribute('aria-expanded', String(!box.hidden)); if (!box.hidden) $('elText').focus(); });
@@ -3943,7 +4265,7 @@
   if ($('an-eingabe')) $('an-eingabe').hidden = true; // in der App liest das Einlesen oben den Brief
   // Antragsformular: Hinweis auf das Nachladen der Texterkennung gilt nur für die Web-Version; in der App liest das Gerät selbst
   if (NATIVE && $('scLocalNote')) { $('scLocalNote').setAttribute('data-t', 'el.privat'); $('scLocalNote').textContent = t('el.privat'); }
-  $('elLesen').addEventListener('click', function () { elGesammelt = ''; textLesen($('elText').value); });
+  $('elLesen').addEventListener('click', function () { elGesammelt = ''; elQuelle = { foto: false, unsicher: [] }; textLesen($('elText').value); });
 
   function briefZurueckTun() {
     elGesammelt = ''; var war = null, k, art = null; document.querySelectorAll('#checkBox .pp-teil').forEach(function (s) { if (!s.hidden) war = s.id; });
@@ -3991,8 +4313,7 @@
       grenzen: function () { try { return started && edited ? Rules.evaluate(state).grenzen : null; } catch (e) { return null; } },
       setze: function (werte) { if (started && !edited) state = blankState(); Object.assign(state, werte); writeForm(); buildSelects(); touched(); },
       zeige: oeffneVon, regeln: function () { return Rules.RULES; }, plug: plug, nativ: NATIVE,
-      fristenNeu: function () { if (window.FristenOrdner) FristenOrdner.neu(); },
-      sparen: function (thema) { gsSprung('sparen', thema); }, // Energiekosten-Check: „Mehr Spartipps“ → Geld und Schulden → Sparen im Alltag
+      sparen: function (thema) { gsSprung('sparen', thema); }, // Auswertung: „Mehr Spartipps“ → Geld und Schulden → Sparen im Alltag
       foto: NATIVE ? fotoText : null, bild: ocr,
       textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); }
     });
@@ -4007,8 +4328,7 @@
       t: tL, lang: function () { return lang; }, datum: function (d) { return Fmt.datum(d, lang); }, roh: StoreRoh, neu: ordnerRender,
       alle: function () {
         if (!tresor || !tresor.bereit()) return [];
-        var h = tresor.ueberall('lotse.haushalt');
-        return tresor.ueberall('lotse.fristliste').map(function (v, i) { return { id: v.id, name: v.name, aktiv: v.aktiv, fristliste: v.wert, haushalt: h[i] ? h[i].wert : null }; });
+        return tresor.ueberall('lotse.fristliste').map(function (v) { return { id: v.id, name: v.name, aktiv: v.aktiv, fristliste: v.wert }; });
       },
       ablauf: function () { var a = tresor && tresor.bereit() ? tresor.aktiv() : null; return a && a.ablauf ? new Date(a.ablauf) : null; },
       oeffneVorgang: vgOeffnen,
@@ -4046,11 +4366,162 @@
       ziel: gsZiel, schreibenOeffnen: function (art) { Geld.schreibenVorbelegen(art); sp.fall = 'schreiben'; spRender(true); },
       schulden: function () { var d = window.Schulden && Schulden.daten(); return d ? d.liste.filter(function (e) { return e.st !== 'erledigt'; }) : []; },
       planFertig: function () { return !!(window.Haushalt && Haushalt.rest().ausgefuellt); },
+      // nur lesen: { ein, aus, rest, wesentlich, kindergeld } in Cent (Ratenvorschlag). personen: Unterhaltsberechtigte für die Pfändungstabelle
+      // (§ 850c Abs. 2 ZPO) – aus dem Pfändungsrechner, sonst Partner und Kinder im Haushalt aus dem Check
+      haushalt: function () {
+        if (!window.Haushalt) return null;
+        var r = Haushalt.rest();
+        r.personen = pf.pers !== null ? pf.pers : Math.min(5, (state.adults === 2 ? 1 : 0) + (state.kids | 0) + (state.young | 0));
+        return r;
+      },
       mappeDrucken: window.Schulden ? function () { oeffneVon('schulden', true); Schulden.blatt(); } : null, // Druck: Blatt der Schulden-Liste mit Haushaltsplan und Unterlagenliste
       textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); }
     });
   }
+  // ----- „Für Klient zusammenstellen“ (src/klient.js, nur Beratungsmodus): Inhalt aus vorhandenen Ergebnissen, kein neuer Rechtsinhalt -----
+  // Anderer Vorgang: dessen Angaben nur für die Dauer des Aufrufs einsetzen (Rechnen, Texte), danach den geöffneten Stand zurück. Nichts wird gespeichert.
+  function kbMitVorgang(daten, fn) {
+    if (!daten) return fn(null);
+    var alt = { s: state, p: person, h: haken, o: lastOut };
+    var lies = function (k) { var v = daten[k]; if (v == null) return null; if (typeof v !== 'string') return v; try { return JSON.parse(v); } catch (e) { return null; } };
+    try {
+      var d = lies('lotse.state'), hk = lies('lotse.haken');
+      state = Object.assign(blankState(), d && d.s ? migriereEinkommen(migriereFragen(JSON.parse(JSON.stringify(d.s)))) : {}); state.bezug = d && d.s && d.s.bezug || {};
+      person = Object.assign({ name: '', geb: '', strasse: '', ort: '', tel: '' }, d && d.p || {});
+      haken = hk && typeof hk === 'object' ? hk : {};
+      lastOut = d && d.s ? Rules.evaluate(state) : null;
+      return fn(daten);
+    } finally { state = alt.s; person = alt.p; haken = alt.h; lastOut = alt.o; }
+  }
+  function kbInhalt(daten) {
+    return kbMitVorgang(daten, function (d) {
+      var ohne = Fmt.ohnePara, out = { hilfen: [], unterlagen: [], fristen: [], briefe: [] };
+      if (!lastOut || (!d && !started)) return out;
+      out.hilfen = ebZeilen().map(function (z) { return { id: z.r.id, name: z.name, lvl: z.lvl, betrag: ohne(z.betrag), stelle: z.stelle, schritt: ohne(z.schritt) }; });
+      out.unterlagen = lastOut.results.filter(function (r) { return (r.level === 'ja' || r.level === 'vielleicht') && r.steps && r.steps.u; }).map(function (r) {
+        return { id: r.id, name: r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'), items: r.steps.u.filter(function (k) { return !haken[r.id + '|' + k]; }).map(function (k) { return ohne(t(k)); }) };
+      });
+      if (window.FristenOrdner && FristenOrdner.offeneTexte) { try { out.fristen = d ? FristenOrdner.offeneTexte(d['lotse.fristliste'] || null) : FristenOrdner.offeneTexte(); } catch (e) { out.fristen = []; } }
+      if (!d) out.briefe = briefIds().map(function (r) { return { id: r.id, name: r.name, text: letterText(r.id) }; }); // Musterschreiben nur aus dem geöffneten Vorgang (Antragsmappe)
+      return out;
+    });
+  }
+  // ----- Suche (Lupe oben auf jeder Seite, src/suche.js): Treffer öffnen die Seite über die vorhandenen Wege; „Zurück“ führt zur Startseite mit Suche -----
+  var sucheRueck = ''; // Ebene (navEbene().pfad), die ein Suchtreffer geöffnet hat
+  function sucheTitel(z, de) {
+    var k = z[2];
+    if (k.indexOf('N:') === 0) return de || lang === 'de' ? Rules.NAMES[k.slice(2)] : t('n.' + k.slice(2));
+    return de ? (I18N.de[k] || '') : t(k);
+  }
+  function sucheZurStart() {
+    var a = aktAnsicht;
+    if (a === 'sparen') gsOeffne('');
+    if (a === 'einst' || a === 'ordner') usZeigen(a, '', false);
+    if (a === 'briefe' && briefArt) briefOeffnen(null);
+    if (a === 'pflegestart') pu.schritt = 'wahl';
+    if (a === 'pfaendung') { pf.art = ''; pf.schritt = 0; }
+    if (a === 'ausziehen' && window.Ausziehen) for (var i = 0; i < 6 && Ausziehen.offen(); i++) Ausziehen.zurueck();
+    herkunft = {}; sucheRueck = '';
+    zeigeAnsicht('start', false);
+    window.scrollTo(0, 0);
+    Suche.fokus();
+  }
+  function sucheGehe(id) {
+    var k = id.split('-'), x = k.slice(1).join('-'), DR = ['konto', 'strom', 'mahn', 'miete', 'check'];
+    // Aus dem Such-Fenster (Lupe) direkt von der aktuellen Seite aus öffnen, ohne Umweg über die Startseite (der Verlauf würde sonst zurückspringen);
+    // „Zurück“ führt trotzdem zur Startseite mit Suche (sucheRueck)
+    if (aktAnsicht !== 'start') { herkunft = {}; if (aktAnsicht === 'einst' || aktAnsicht === 'ordner') usZeigen(aktAnsicht, '', false); if (aktAnsicht === 'briefe' && briefArt) briefOeffnen(null); }
+    if (id === 'check') oeffneVon('leistungen', true);
+    else if (k[0] === 'l') { // Leistung: Hilfen-Check; gibt es schon ein Ergebnis, direkt zur Karte der Leistung
+      oeffneVon('leistungen', true);
+      var c = $('c-' + x); if (c && !c.closest('[hidden]')) { var d = c.closest('details:not(.karte)'); if (d) d.open = true; karteAuf('c-' + x); try { c.scrollIntoView({ block: 'start' }); } catch (e) {} var s = c.querySelector('summary'); if (s) s.focus({ preventScroll: true }); }
+    }
+    else if (id === 'brief') oeffneVon('briefe', true);
+    else if (k[0] === 'b') { if (briefArt) briefOeffnen(null); oeffneVon('briefe', false); briefOeffnen(x); }
+    else if (id === 'geld') { gsOeffne(''); oeffneVon('sparen', true); }
+    else if (id === 'g-bleibt' || id === 'g-lohn') { pf = { art: id === 'g-lohn' ? 'lohn' : '', schritt: id === 'g-lohn' ? 1 : 0, netto: pf.netto, pers: pf.pers, kg: pf.kg, kiz: pf.kiz }; oeffneVon('pfaendung', true); }
+    else if (id === 'g-pkonto') pfBescheinigung();
+    else if (id === 'g-liste') oeffneVon('schulden', true);
+    else if (id === 'g-haushalt') oeffneVon('haushalt', true);
+    else if (id === 'g-dringend' || id === 'g-inkasso' || id === 'g-hilfe' || id === 'g-planen') gsSprung(x);
+    else if (id === 'g-geldstrafe' || DR.indexOf(x) >= 0) gsSprung('dringend', '', id === 'g-geldstrafe' ? 'geld' : x);
+    else if (['pruef', 'schreiben', 'rate'].indexOf(x) >= 0) { if (x === 'schreiben') Geld.schreibenVorbelegen(''); gsSprung('inkasso', '', x); }
+    else if (['finden', 'termin', 'ablauf'].indexOf(x) >= 0 || id === 'g-bmappe') gsSprung('hilfe', '', id === 'g-bmappe' ? 'mappe' : x);
+    else if (k[1] === 'sp') gsSprung('planen', k[2]);
+    else if (id === 'g-abschlag' || id === 'g-tarif') gsSprung('planen', 'strom', x);
+    else if (id === 'pflege') puOeffnen('wahl');
+    else if (id === 'p-hilfe') puOeffnen('pg');
+    else if (id === 'p-schaetzen') paOeffnen(true);
+    else if (id === 'ausziehen' || k[0] === 'a') { $('goAusziehen').click(); if (k[0] === 'a' && window.Ausziehen) Ausziehen.oeffnen(x); }
+    else if (id === 'mappe') { oeffneVon('leistungen', true); var mk = $('mappeMake'); if (mk && !mk.closest('[hidden]')) { try { mk.scrollIntoView({ block: 'center' }); } catch (e) {} mk.focus({ preventScroll: true }); } } // Knopf zur Antragsmappe unter dem Ergebnis (ohne Ergebnis: der Hilfen-Check)
+    else if (id === 'einst' || id === 'ordner') { usZeigen(id, '', false); zeigeAnsicht(id, true); }
+    else if (k[0] === 'e') { zeigeAnsicht('einst', false); usZeigen('einst', x, true); }
+    else if (id === 'o-fristen') { zeigeAnsicht('ordner', false); usZeigen('ordner', 'fristen', true); }
+    else if (id === 'o-ergebnis') { oeffneVon('leistungen', false); var e = $('ergebnis'); if (e) { try { e.scrollIntoView({ block: 'start' }); } catch (x2) {} e.focus({ preventScroll: true }); } }
+    if (aktAnsicht !== 'start') { sucheRueck = navEbene().pfad; if (navBereit) Navigation.melde(); }
+  }
+  if (window.Suche) {
+    Suche.init({ t: t, lang: function () { return lang; }, schluessel: function () { return lang + (lang === 'de' && einfachSprache ? '-e' : ''); },
+      titel: function (z) { return sucheTitel(z, false); }, titelDe: function (z) { return sucheTitel(z, true); },
+      gehe: sucheGehe, check: function () { sucheGehe('check'); } });
+    Suche.sprache();
+  }
+  if (window.Klient) {
+    Klient.init({
+      t: t, lang: function () { return lang; }, beratung: function () { return beratung; },
+      sprachen: function () { return Array.prototype.map.call($('lang').options, function (o) { return { code: o.value, name: o.textContent }; }); },
+      inSprache: function (l, ein, fn) { var a = lang, e = einfachSprache; lang = I18N[l] ? l : 'de'; einfachSprache = !!ein; try { return fn(); } finally { lang = a; einfachSprache = e; } },
+      inhalt: kbInhalt,
+      vorgaenge: function () {
+        if (!tresor || !tresor.bereit()) return [];
+        var a = tresor.aktiv(); return tresor.liste().map(function (v) { return { id: v.id, name: v.name, aktiv: !!a && v.id === a.id, gesperrt: !!v.gesperrt }; });
+      },
+      daten: function (id) { // offener anderer Vorgang: Werte nur lesen
+        var o = {}; if (!tresor || !tresor.bereit()) return o;
+        Vorgaenge.DATEN.forEach(function (k) { tresor.ueberall(k).forEach(function (v) { if (v.id === id && v.wert != null) o[k] = v.wert; }); });
+        return o;
+      },
+      // Gesperrter Vorgang: nur im Speicher entschlüsseln (Schnittstelle aus dem PIN-Zweig: tresor.oeffneGesperrt bzw. Vorgaenge.oeffneGesperrt), nie zurückschreiben
+      oeffneGesperrt: function (id, pin) {
+        var f = tresor && typeof tresor.oeffneGesperrt === 'function' ? tresor.oeffneGesperrt.bind(tresor) : (typeof Vorgaenge.oeffneGesperrt === 'function' ? Vorgaenge.oeffneGesperrt : null);
+        // Ergebnis laut PIN-Zweig: { id, name, daten }; nur daten werden verwendet (nur im Speicher)
+        return f ? Promise.resolve(f(id, pin)).then(function (r) { return r && r.daten && typeof r.daten === 'object' ? r.daten : r; }) : Promise.reject(new Error('nicht verfügbar'));
+      },
+      datum: function (d, l) { var x = d instanceof Date ? d : new Date(String(d) + 'T12:00:00'); return Fmt.datum(x, l); },
+      rtl: function (l) { return !!(I18N[l] && I18N[l]['meta.dir'] === 'rtl'); },
+      native: function () { return NATIVE; },
+      druckArt: function () { return NATIVE ? (plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen') : 'web'; },
+      pdf: function (seiten, titel, name, msg, art, rtlHinweis) { pdfAusgeben(seiten, titel, name, msg, art, rtlHinweis); },
+      blatt: function (an) { $('app').classList.toggle('pm', !!an); if (an) { try { window.scrollTo(0, 0); } catch (e) {} } },
+      // Weitergabe (src/weitergabe.js): gespeicherte Eingaben des geöffneten Vorgangs (nur lesen) und Datei über das Teilen-Menü der App
+      vorgangDaten: function () {
+        var o = {}; if (!tresor || !tresor.bereit()) return o;
+        flush(); var a = tresor.aktiv(); if (!a) return o;
+        Vorgaenge.DATEN.forEach(function (k) { tresor.ueberall(k).forEach(function (v) { if (v.id === a.id && v.wert != null) o[k] = v.wert; }); });
+        return o;
+      },
+      nativDatei: function (name, text, msg) {
+        var fs = plug('Filesystem'), sh = plug('Share');
+        if (!fs || !sh) { msg.textContent = t('f.pdfFail'); return Promise.resolve(); }
+        return fs.writeFile({ path: name, data: text, directory: 'CACHE', encoding: 'utf8' })
+          .then(function (r) { return sh.share({ title: name, files: [r.uri] }).then(function () {}, function () {}); })
+          .then(function () { return fs.deleteFile({ path: name, directory: 'CACHE' }).catch(function () {}); })
+          .catch(function () { msg.textContent = t('f.pdfFail'); });
+      }
+    });
+  }
+  // Von der Beratung bekommen (src/weitergabe.js, für alle Nutzer): SoLo-Datei oder QR-Code → neuer Vorgang (bestehende nie überschreiben)
+  if (window.Weitergabe) {
+    Weitergabe.importInit({
+      t: t, bereit: function () { return !!(tresor && tresor.bereit()); },
+      importieren: function (name, daten) { flush(); var id = tresor.importieren(name, daten); if (id) vgRender(); return id; },
+      oeffnen: function (id) { vgOeffnen(id); },
+      // Fristen wie beim Laden prüfen (src/fristen.js normiere): Unbekanntes fällt weg; „Erinnerung beim Öffnen“ gilt dann wie für eigene Fristen
+      fristen: function (obj) { try { return JSON.stringify(window.FristenOrdner ? FristenOrdner.normiere(obj) : { v: 1, e: [] }); } catch (e) { return null; } }
+    });
+  }
   window.addEventListener('hashchange', function () { var a = location.hash.slice(1); if (ANSICHTEN.indexOf(a) >= 0 && a !== aktAnsicht) zeigeAnsicht(a, true); });
+  if (NATIVE && window.Klient) Klient.cacheAufraeumen(plug('Filesystem')); // liegengebliebene .solo-/PDF-Dateien vom Teilen (src/klient.js)
   Store.remove('lotse.fristen'); // Fristen aus 1.3.0 (Build 141) gibt es nicht mehr: gespeicherte Einträge vom Gerät löschen
   zeigeAnsicht((function () { var a = (location.hash || '').slice(1); return ANSICHTEN.indexOf(a) >= 0 ? a : 'start'; })());
   // Einheitliche Navigation (src/navigation.js): Zurück-Knopf, Android-Taste, Browser-Zurück/-Vorwärts und Wischen auf dem iPhone.

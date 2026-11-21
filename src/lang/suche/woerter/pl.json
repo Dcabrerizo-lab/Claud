@@ -1,0 +1,153 @@
+{
+ "l-wohngeld": [
+  "dodatek mieszkaniowy",
+  "dopłata do czynszu",
+  "czynsz za wysoki"
+ ],
+ "l-ggeld": [
+  "zasiłek socjalny",
+  "pomoc społeczna",
+  "dochód podstawowy",
+  "Hartz 4"
+ ],
+ "l-gsa": [
+  "za niska emerytura",
+  "mała emerytura",
+  "zabezpieczenie na starość"
+ ],
+ "l-kindergeld": [
+  "zasiłek na dziecko",
+  "kindergeld"
+ ],
+ "l-kiz": [
+  "dodatek na dziecko"
+ ],
+ "l-but": [
+  "wycieczka szkolna",
+  "przybory szkolne",
+  "korepetycje",
+  "obiad w szkole"
+ ],
+ "l-uvg": [
+  "brak alimentów",
+  "alimenty",
+  "ojciec nie płaci",
+  "samotny rodzic"
+ ],
+ "p-schaetzen": [
+  "stopień opieki",
+  "stopień pielęgnacji"
+ ],
+ "pflege": [
+  "opieka",
+  "pielęgnacja"
+ ],
+ "l-ausweis": [
+  "legitymacja niepełnosprawności",
+  "niepełnosprawność"
+ ],
+ "l-rundfunk": [
+  "abonament RTV",
+  "opłata radiowo telewizyjna",
+  "GEZ"
+ ],
+ "l-alg1": [
+  "bezrobotny",
+  "straciłem pracę",
+  "zasiłek dla bezrobotnych"
+ ],
+ "l-elterngeld": [
+  "zasiłek rodzicielski",
+  "dziecko"
+ ],
+ "l-mutter": [
+  "ciąża",
+  "w ciąży",
+  "zasiłek macierzyński"
+ ],
+ "l-asylblg": [
+  "azyl",
+  "uchodźca"
+ ],
+ "brief": [
+  "list",
+  "pismo z urzędu",
+  "poczta",
+  "decyzja",
+  "sprzeciw",
+  "odwołanie",
+  "Widerspruch"
+ ],
+ "b-af": [
+  "formularz",
+  "wypełnić formularz"
+ ],
+ "g-konto": [
+  "zajęcie konta",
+  "konto zablokowane",
+  "komornik konto"
+ ],
+ "g-strom": [
+  "odcięcie prądu",
+  "brak prądu",
+  "odcięcie gazu"
+ ],
+ "g-mahn": [
+  "list z sądu",
+  "żółta koperta",
+  "nakaz zapłaty"
+ ],
+ "g-miete": [
+  "eksmisja",
+  "wypowiedzenie mieszkania",
+  "zaległy czynsz"
+ ],
+ "g-inkasso": [
+  "windykacja",
+  "firma windykacyjna"
+ ],
+ "g-rate": [
+  "raty",
+  "spłata w ratach"
+ ],
+ "g-hilfe": [
+  "poradnia zadłużenia",
+  "doradztwo dłużników"
+ ],
+ "g-ablauf": [
+  "upadłość konsumencka",
+  "niewypłacalność"
+ ],
+ "geld": [
+  "pieniądze",
+  "długi"
+ ],
+ "g-haushalt": [
+  "budżet",
+  "wydatki"
+ ],
+ "ausziehen": [
+  "przeprowadzka",
+  "pierwsze mieszkanie",
+  "wyprowadzka"
+ ],
+ "e-anzeige": [
+  "język",
+  "zmiana języka",
+  "wielkość czcionki"
+ ],
+ "e-sicher": [
+  "PIN",
+  "hasło",
+  "usuń dane"
+ ],
+ "mappe": [
+  "wniosek",
+  "teczka wniosków"
+ ],
+ "b-jc": [
+  "zwrot pieniędzy",
+  "nadpłata",
+  "Rückforderung"
+ ]
+}

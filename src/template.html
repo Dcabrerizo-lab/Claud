@@ -348,26 +348,20 @@
   .card.auf > details.karte > summary::-webkit-details-marker { display: none; }
   .card.auf > details.karte > summary .head2 { color: var(--muted); font-weight: 600; }
   .karte-mehr::after { content: attr(data-mehr) " ▾"; color: var(--accent); font-weight: 700; font-size: .9em; }
-  details.karte[open] .karte-mehr::after, details.gutwissen[open] .karte-mehr::after { content: attr(data-weniger) " ▴"; }
+  details.karte[open] .karte-mehr::after { content: attr(data-weniger) " ▴"; }
   .card.auf > details.karte > :not(summary) { margin: 0 18px; }
   .card.auf > details.karte > :last-child { margin-bottom: 16px; }
   .card.auf > details.karte[open] > summary { padding-bottom: 8px; }
   .card.auf .body, .card.auf .zust { margin-bottom: 10px; }
-  /* Zwei Wege: Grundsicherungsgeld oder Wohngeld und Kinderzuschlag */
-  .zweiwege { background: var(--surface); border: 2px solid var(--accent); border-radius: var(--r-card); padding: 16px 18px; display: grid; gap: 10px; margin-bottom: 16px; }
+  /* Zwei Wege / Entweder oder: kurzer Tipp (details.mehr.tipp), darin die beiden Wege */
   .ww-wege { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
   .ww-weg { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; }
   .ww-weg h4 { margin: 0; font-size: 1em; }
   .ww-l { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 44px; color: var(--ink); text-decoration: none; border-top: 1px dashed var(--line); padding-top: 6px; }
   .ww-l > span:first-child { text-decoration: underline; text-decoration-color: var(--accent); }
   .ww-regel { margin: 0; }
-  .ww-tun { margin: 0; background: var(--ok-bg); color: var(--ink); border-radius: 8px; padding: 8px 12px; }
+  .ww-tun { margin: 0; }
   .karte-hinweis { background: var(--hint-bg); color: var(--hint); border-radius: 14px; padding: 8px 12px; margin: 8px 0 0; }
-  .gutwissen { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); padding: 4px 18px; }
-  .gutwissen > summary { min-height: 48px; color: var(--ink); display: grid; gap: 4px; padding: 12px 0; list-style: none; cursor: pointer; }
-  .gutwissen > summary::-webkit-details-marker { display: none; }
-  .gw-titel { font-weight: 700; }
-  .gutwissen ul { margin: 0 0 12px; padding-inline-start: 20px; display: grid; gap: 8px; }
   /* Beratungsmodus: Rechtsgrundlage; Unterlagen-Checkliste; Übersicht der Mappe; Ergebnisblatt */
   .recht { margin: 8px 0 0; font-size: 0.92em; color: var(--muted); }
   .haken-liste { list-style: none; padding: 0; margin: 4px 0; display: grid; gap: 4px; }
@@ -391,6 +385,34 @@
   .eb-tab thead th { border-bottom-width: 2px; }
   .eb-tab .pill { white-space: nowrap; }
   .eb-hinweis { margin: 14px 0 0; font-size: 0.9em; }
+  /* Für Klient zusammenstellen (src/klient.js): zweispaltig Klient | Deutsch, auf dem Handy untereinander */
+  .kb-open { margin: 8px 0 0; }
+  .kb-wahl .kb-gruppe { border: 1px solid var(--line); border-radius: var(--r-feld); padding: 8px 12px; margin: 0 0 12px; }
+  .kb-wahl legend { font-weight: 700; padding: 0 4px; }
+  .kb-wahl .kb-pin input { max-width: 12em; }
+  .kb-ds { color: var(--muted); }
+  .kw-box { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 6px; }
+  .kw-box h3 { margin: 6px 0 4px; }
+  .kw-pinwert { font-size: 1.15em; margin: 4px 0; }
+  .kw-pinwert b { letter-spacing: 0.08em; font-size: 1.3em; }
+  .kw-qr { margin: 10px 0; }
+  .kw-qr svg { display: block; width: min(100%, 360px); height: auto; border-radius: var(--r-feld); }
+  .kw-import { margin: 18px 0 0; border: 1px solid var(--line); border-radius: var(--r-feld); padding: 8px 12px; }
+  .kw-import summary { font-weight: 700; cursor: pointer; }
+  .kw-ok { font-weight: 700; }
+  .app[data-ansicht="ordner"] #or-beratung .zeile-sym { background: var(--c-anderer); color: var(--on-c); } /* gruppe ordner */
+  .kb-blatt h3, .kb-blatt h4 { margin: 14px 0 4px; }
+  .kb-blatt .kb-titel h3 { margin-top: 0; font-size: 1.3em; }
+  .kb-blatt p { margin: 2px 0; }
+  .kb-blatt pre { white-space: pre-wrap; font: inherit; font-size: 0.92em; border-inline-start: 3px solid var(--line); padding-inline-start: 10px; }
+  .kb-paar { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 18px; }
+  .kb-de { color: var(--muted); }
+  @media (max-width: 560px) { .kb-paar { grid-template-columns: 1fr; gap: 0; } .kb-paar .kb-de { margin-bottom: 6px; } }
+  @media print {
+    .kb-blatt, .kb-blatt * { color: #000 !important; background: #fff !important; }
+    .kb-paar { grid-template-columns: 1fr 1fr !important; }
+    .kb-zeile { break-inside: avoid; }
+  }
   @media print {
     .haken input { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .haken input:checked + span { text-decoration: none; color: #000; }
@@ -406,6 +428,12 @@
   .sl-leer { margin: 6px 0 0; }
   .sl-summe { border: 1px solid var(--line); border-inline-start: 4px solid var(--c-pfaendung-t); border-radius: var(--r-card, 14px); background: var(--surface); padding: 12px 16px; display: grid; gap: 6px; margin: 8px 0; }
   .sl-summe p { margin: 0; }
+/* Ratenempfehlung (src/geld.js): Gläubiger des aktuellen Schreibens fett und mit Randbalken, zusätzlich als Text markiert */
+.ra-karte { margin: 8px 0 12px; }
+.ra-auft { width: 100%; }
+.ra-auft tr.ra-dies td { font-weight: 700; }
+.ra-auft tr.ra-dies td:first-child { border-inline-start: 4px solid var(--c-sparen-t); padding-inline-start: 8px; }
+.ra-auft tfoot td { font-weight: 700; border-top: 1px solid var(--line); }
   .sl-gesamt { font-size: 1.25em; font-weight: 700; }
   .sl-hh { display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 8px; }
   .sl-fehler { color: var(--bad); font-weight: 700; }
@@ -442,8 +470,9 @@
   .hb-sym { width: 36px; height: 36px; border-radius: 999px; display: grid; place-items: center; background: var(--c-sparen); color: var(--on-c); flex: none; }
   .hb-sym svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
   .hb-katfeld { display: grid; gap: 8px; }
-  /* Energiekosten-Check (src/haushalt.js energieBox): Ergebnis-Wort nach docs/FARBEN.md, Farbe nie allein */
+  /* Abschlag prüfen (src/haushalt.js abschlagBox, Seite „Strom“): Ergebnis-Wort nach docs/FARBEN.md, Farbe nie allein */
   .hb-en { display: grid; gap: 10px; }
+  #spAbschlag, #spTarif { margin: 0 0 14px; }
   .hb-en-ergebnis { display: grid; gap: 6px; } .hb-en-ergebnis p { margin: 0; }
   .hb-en-erg { font-size: 1.15em; font-weight: 700; padding: 12px 14px; border-radius: 12px; background: var(--na-bg); color: var(--ink); }
   .hb-en-erg.nach { background: var(--warn-bg); color: var(--warn); }
@@ -456,7 +485,6 @@
   .hb-en-tab { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 6px 10px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
   .hb-en-tab[aria-pressed="true"] { border: 2px solid var(--accent); background: var(--accent-soft); }
   .hb-en-felder { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; } .hb-en-felder > legend { font-weight: 700; padding: 0; }
-  .hb-en-det > summary { font-weight: 600; cursor: pointer; padding: 8px 0; } .hb-en-det p { margin: 6px 0; }
   .hb-frage, .hb-hinweis { border: 2px solid var(--accent); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; }
   .hb-frage p, .hb-hinweis p { margin: 0; }
   /* Haushaltsbuch: Beleg-Häkchen und Belegliste (keine neue Farbe) */
@@ -468,8 +496,7 @@
   .hb-bl-liste li { overflow-wrap: anywhere; }
   .hb-hinweise { display: grid; gap: 10px; }
   .hb-hinweise:empty, #hbSpeicherMsg:empty { display: none; }
-  .hb-mehr > summary, .hb-hw-det > summary, .hb-rb > summary, .hb-wb > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
-  .hb-start { margin: 8px 0 14px; }
+  .hb-mehr > summary, .hb-hw-det > summary, .hb-rb > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 600; }
   /* Fristen (src/fristen.js): Hinweis beim Öffnen nach Zustand (Bernstein bald, Rot abgelaufen), Liste in „Mein Ordner“ */
   .fri-start { margin: 8px 0 14px; border: 2px solid var(--warn); background: var(--warn-bg); color: var(--ink); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; }
   .fri-start.vorbei { border-color: var(--bad); background: var(--bad-bg); }
@@ -542,9 +569,17 @@
   .together { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 10px; }
   .together ul { margin: 0; padding-inline-start: 20px; display: grid; gap: 8px; }
 
-  .helper { background: var(--surface); border: 2px solid var(--accent); border-radius: var(--r-card); padding: 18px; display: grid; gap: 16px; }
-  .helper .two { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
-  @media (min-width: 560px) { .helper .two { grid-template-columns: 1fr 1fr; } }
+  /* Antragsmappe: Angaben für die Briefe (ohne Kasten), Name und Anschrift erst hier */
+  .mappe-angaben { display: grid; gap: 16px; }
+  .mappe-angaben > p { margin: 0; }
+  .mappe-angaben .two { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 560px) { .mappe-angaben .two { grid-template-columns: 1fr 1fr; } }
+  /* Ergebnis: grüner Hauptknopf direkt unter den passenden Karten, darunter kurze Tipps */
+  .erg-knopf { margin: 4px 0 8px; }
+  .erg-knopf .btn { width: 100%; }
+  .erg-tipps { display: grid; gap: 0; margin: 0 0 8px; }
+  details.mehr.tipp > :is(div, ul, ol) { color: var(--ink); font-size: .95em; margin: 0 0 10px; }
+  details.mehr.tipp ul { padding-inline-start: 20px; display: grid; gap: 6px; }
   .btn {
     font: inherit; font-weight: 700; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px;
     min-height: 48px; padding: 0 20px; cursor: pointer;
@@ -597,7 +632,7 @@
   .sc-titel span { color: var(--muted); font-weight: 400; }
   .sc-labs { margin: 0; padding-inline-start: 1.1em; display: grid; gap: 2px; }
 
-  .rules { background: transparent; border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; }
+  .rules { background: transparent; margin: 8px 0; } /* „So rechnet der Check“: Aufklapper ohne eigenen Rahmen (wie überall details.mehr) */
   .rules details { border-top: 0; padding-top: 0; }
   .rules table { width: 100%; border-collapse: collapse; font-size: 0.92em; margin-top: 8px; }
   .rules th, .rules td { text-align: start; padding: 8px 8px 8px 0; padding-inline: 0 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
@@ -608,7 +643,7 @@
      Auswahlfelder werden nicht breiter als ihre Spalte, die Regeltabelle steht auf schmalen Bildschirmen untereinander. */
   .app { overflow-wrap: anywhere; hyphens: auto; }
   .results, .card, fieldset, .field, .cols > *, form, .formgrid, .checks, .ekbox, .subbox, .card .behoerde, details .inner, details ul,
-  .neinbox, .together, .together ul, .helper, .scan, .scan .box, .sc-list, .sc-row, .foot, #legal, #mappe, .es-nav1 { grid-template-columns: minmax(0, 1fr); }
+  .neinbox, .together, .together ul, .mappe-angaben, .scan, .scan .box, .sc-list, .sc-row, .foot, #legal, #mappe, .es-nav1 { grid-template-columns: minmax(0, 1fr); }
   .seg { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .seg label { white-space: normal; text-align: center; }
   select { max-width: 100%; min-width: 0; overflow: hidden; text-overflow: ellipsis; } /* WebKit: langer Eintrag läuft sonst über die Spalte hinaus */
@@ -719,6 +754,9 @@
   .vg-plus { border-style: dashed; border-color: var(--accent); }
   .vg-plus .vg-kreis { background: transparent; color: var(--accent); border: 2px solid var(--accent); font-size: 1.3em; }
   .vg-plus b { color: var(--accent); }
+  /* Einzeln gesperrter Vorgang: Schloss statt Initialen (gleiche Farben wie der Initialen-Kreis) */
+  .vg-schloss svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .vg-gerkl { margin: 6px 0; padding-inline-start: 20px; }
   .vg-liste .btns { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 4px 0; }
   .vg-sicher { margin: 4px 0 0; }
   .vg-ablauf { font-weight: 700; }
@@ -865,6 +903,9 @@
   .card:has(.pill.nein), .card:has(.pill.na) { border-inline-start-color: var(--line); }
   .card.dim { background: var(--surface); box-shadow: var(--shadow-s); }
   .card header h3 { font-size: 1.15em; font-weight: 700; }
+  /* Große Schrift (200 %): lange Wörter im Kartentitel umbrechen statt seitlich zu scrollen */
+  .card header > div { min-width: 0; flex: 1 1 10em; }
+  .card header h3, .card .desc, .es-karte h3 { overflow-wrap: anywhere; hyphens: auto; }
   .together { border-inline-start-color: var(--accent); }
   .pill { border: 0; padding: 5px 12px; }
   .card .behoerde { border-radius: var(--r-ctl); border-inline-start-width: 4px; }
@@ -889,6 +930,8 @@
   #checkBox .pp-teil.pp-zu > :not(:first-child), #checkBox .pp-teil.pp-anders > :not(:first-child) { display: none !important; }
   /* Brief prüfen wie der Rest der App: runde weiße Karten mit Schatten statt eckiger Kästen */
   #checkBox.pp .card { border: 0; border-radius: var(--r-card); box-shadow: var(--shadow); padding: 20px; }
+  /* Der Einstieg jeder Brief-Stelle steht direkt auf der Seite wie die anderen Seiten (kein großer weißer Rahmen um den ganzen Inhalt) */
+  #checkBox.pp .pp-teil > .card:first-child { background: transparent; box-shadow: none; border-radius: 0; padding: 0; }
   #checkBox.pp fieldset { border-radius: var(--r-feld); }
   .pp-frist-box { display: grid; gap: 10px; margin: 12px 0 4px; }
   .pp-frist-box .frist { margin: 0; }
@@ -905,6 +948,7 @@
   .einlesen .btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 6px; }
   .einlesen textarea { width: 100%; min-height: 120px; font: inherit; }
   .pp .pp-erkannt { background: var(--mark-bg) !important; border-color: var(--mark-line) !important; color: var(--mark-ink) !important; } /* !important: die Feldstile des Prüfpakets sind spezifischer */
+  .pp .pp-erkannt.pp-unsicher { background: var(--warn-bg) !important; border: 2px solid var(--warn) !important; color: var(--ink) !important; } /* Foto: schwer lesbar oder unplausibel */
   .el-erkl { background: var(--warn-bg); border-radius: 12px; padding: 10px 14px; margin-top: 8px; }
   /* Aufforderung zur Senkung der Wohnkosten (erweiterungen/kostensenkung.js): Rand in der Farbe des Absenders */
   .el-ks { border-inline-start: 4px solid var(--c-briefe-t); display: grid; gap: 8px; }
@@ -969,6 +1013,35 @@
   /* Sprachwahl oben nur auf der Startseite (sonst in den Einstellungen): auf allen anderen Seiten, auch „Deine Angaben“, nicht unsichtbar per Tastatur oder Vorlesefunktion erreichbar */
   .app:not([data-ansicht="start"]) .top .sprach-knopf { display: none; }
   .gruss { font-size: 1.7em; font-weight: 900; margin: 4px 0 6px; }
+  /* Suche auf der Startseite (src/suche.js): dezent, über den Kacheln; Treffer als Zeilen, Symbol in der Bereichsfarbe */
+  .su-suche { max-width: 640px; margin: 0; }
+  .su-feld { position: relative; display: flex; align-items: center; }
+  .su-lupe { position: absolute; inset-inline-start: 14px; width: 20px; height: 20px; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
+  #suFeld { width: 100%; min-height: 46px; padding: 10px 46px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; -webkit-appearance: none; appearance: none; }
+  #suFeld::placeholder { color: var(--muted); opacity: 1; }
+  #suFeld::-webkit-search-cancel-button { display: none; }
+  .su-leeren { position: absolute; inset-inline-end: 4px; width: 40px; height: 40px; border: 0; border-radius: 50%; background: none; color: var(--muted); font-size: 1.5em; line-height: 1; cursor: pointer; }
+  .su-treffer { margin: 10px 0 0; }
+  .su-treffer .zeilen { margin: 0; gap: 8px; max-width: none; }
+  .su-zeile { min-height: 54px; padding: 8px 14px; text-align: start; font: inherit; cursor: pointer; }
+  .su-zeile .zeile-sym { width: 34px; height: 34px; background: none; }
+  .su-L .zeile-sym { color: var(--c-leistungen-t); }
+  .su-B .zeile-sym { color: var(--c-briefe-t); }
+  .su-G .zeile-sym { color: var(--c-sparen-t); }
+  .su-P .zeile-sym { color: var(--c-pflege-t); }
+  .su-A .zeile-sym { color: var(--c-ausziehen-t); }
+  .su-M .zeile-sym, .su-E .zeile-sym, .su-O .zeile-sym { color: var(--muted); }
+  .su-nichts { margin: 4px 0 8px; color: var(--muted); }
+  #inhalt { position: relative; }
+  .su-lupe-knopf { position: absolute; top: 0; inset-inline-end: 0; z-index: 2; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer; }
+  .su-lupe-knopf svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .app[data-ansicht="start"] #inhalt > .su-lupe-knopf, .app:not([data-ansicht="start"]) .top .su-lupe-knopf { display: none; }
+  .top .su-lupe-knopf { position: static; align-self: flex-start; flex: none; }
+  .top .sprach-knopf + .su-lupe-knopf { margin-inline-start: -12px; }
+  .app:not([data-ansicht="start"]) #inhalt .pa-zeile { padding-inline-end: 52px; }
+  .su-fenster { position: fixed; inset: 0; z-index: 50; overflow-y: auto; background: var(--bg); padding: max(16px, env(safe-area-inset-top)) 16px 24px; }
+  .su-fenster > * { max-width: 640px; margin-inline: auto; }
+  .su-fenster .su-suche { margin-top: 4px; }
   .gruss-t { color: var(--muted); font-size: 1.05em; margin: 0 0 4px; }
   /* Startseite als Kachel-Raster (Kacheln wie Richtung 3 „Bunt und bildhaft“, Farben aus der warmen Palette; weiße Schrift mind. 4,5:1).
      Spaltenbreite in em: bei 320 px oder großer Schrift bricht das Raster auf eine Spalte um. Jeder Bereich hat seine Farbe. */
@@ -984,6 +1057,8 @@
   .hero-los { display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 24px; border-radius: 999px; background: var(--on-c); color: var(--c-leistungen); font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; }
   [dir="rtl"] .pfeil { display: inline-block; transform: scaleX(-1); }
   .start-raster > .sk:last-child:nth-child(even) { grid-column: 1 / -1; min-height: 0; }
+  /* Tablet: bei 640 px passen 3 Spalten, dann stünde „Ich ziehe aus“ allein und schmal in der zweiten Reihe -> 2 Spalten wie am Handy (2 × 2) */
+  @media (min-width: 768px) { .start-raster { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .sk-briefe { --c: var(--c-briefe); } .sk-geld { --c: var(--c-sparen); } .sk-pflege { --c: var(--c-pflege); } .sk-ausziehen { --c: var(--c-ausziehen); }
   .sk-sym { flex: none; width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; background: color-mix(in srgb, var(--on-c) 20%, transparent); color: var(--on-c); }
   .sk-sym svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
@@ -1034,6 +1109,11 @@
   .sl-tabelle { margin: 8px 0; }
   .sp-link-karte { text-decoration: none; min-height: 0; margin: 16px 0; max-width: 640px; }
   .frist.gs-frist h3 { font-size: var(--fs-s); margin: 0; color: var(--ink); }
+  .frist.gs-frist .tipp-sym { display: none; } /* ein Symbol je Frist (das der .frist), keine doppelte Einrückung */
+  .frist.gs-frist .tipp-kurz { font-weight: 700; }
+  .pf-jetzt.gs-schritt li + li { margin-top: 8px; }
+  .gs-freibetrag { margin: 0 0 12px; }
+  .gs-tipps { display: grid; gap: 8px; margin: 0 0 12px; }
   .app[data-ansicht="sparen"] .weg-sym { background: var(--c-sparen); color: var(--on-c); }
   /* ===== Symbolfarben in Mein Ordner und im Energie-Check (die Regel „keine Farbe doppelt“ prüft tools/kontrast-pruefen.js nur noch für die Startseite) ===== */
   .app[data-ansicht="ordner"] #or-fristen .zeile-sym { background: var(--c-briefe); } /* gruppe ordner */
@@ -1049,11 +1129,6 @@
   .app[data-ansicht="ordner"] #or-schulden .zeile-sym { background: var(--c-sparen); } /* gruppe ordner */
   .app[data-ansicht="ordner"] #or-schulden .zeile-sym { color: var(--on-c); }
   /* ===== Ende Gruppenfarben ===== */
-  .hinweis-koralle { display: flex; gap: 12px; align-items: flex-start; background: var(--hint-bg); color: var(--hint); border-radius: var(--r-item); padding: 14px 16px; margin: 4px 0 0; font-weight: 700; }
-  .hinweis-koralle > svg { flex: none; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-top: 1px; }
-  .hinweis-koralle p { margin: 0; }
-  .hinweis-koralle.beratung > div { display: grid; gap: 4px; }
-  .hinweis-koralle.beratung > div > p:not(.b-titel) { font-weight: 400; color: var(--ink); font-size: .92em; }
   /* Gemeinsames Info-Bauteil „ⓘ Mehr dazu“ (überall gleich): Text bleibt zu, bis man ihn antippt */
   details.mehr { border-top: 0; padding-top: 0; margin: 2px 0 0; }
   details.mehr > summary { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: .92em; font-weight: 700; color: var(--accent); cursor: pointer; list-style: none; }
@@ -1075,11 +1150,15 @@
   .gs-box details.mehr.tipp, .frist details.mehr.tipp, .pf-jetzt details.mehr.tipp { border: 0; background: none; padding: 0; margin: 0; }
   details.mehr.tipp.tipp-warn { border-color: var(--warn); }
   details.mehr > :not(summary) { margin: 0 0 6px; color: var(--muted); font-size: .92em; font-weight: 400; }
-  .form-ende { display: grid; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+  /* Gleiches Aufklapp-Bauteil ohne Sonderrahmen: .mehr-block (Formular, Rechenweg) zeigt den Inhalt in normaler Schrift,
+     .mehr-liste („Weitere Punkte (4)“, „Weitere Leistungen“, Erledigt-Liste) ohne i-Symbol, weil darin Karten stehen */
+  details.mehr.mehr-block > :not(summary), details.mehr.mehr-liste > :not(summary) { color: var(--ink); font-size: 1em; margin: 0 0 10px; }
+  details.mehr.mehr-liste > summary::before { content: none; display: none; }
   .rb-satz { margin: 12px 0 0; }
-  .ww-mehr > :not(summary) { color: var(--ink); font-size: 1em; margin-bottom: 10px; }
-  .form-ende .loeschzeile { margin: 0 0 16px; padding-top: 0; border-top: 0; }
-  .form-ende .es-link { margin: 0; }
+  .sf-leiste .sf-kurz { flex-basis: 100%; margin: 0; }
+  /* Startseite: Datenschutz als kleine Zeile ohne Kasten */
+  .start-sicher { display: flex; gap: 8px; align-items: center; margin: 14px 0 0; color: var(--muted); font-size: var(--fs-xs); }
+  .start-sicher > svg { flex: none; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .empf-mehr { margin: 10px 0 4px; }
   .summary .res-satz { flex-basis: 100%; font-size: 1.05em; font-weight: 700; }
   .summary h2 { font-weight: 900; }
@@ -1134,9 +1213,7 @@
   .pill { border: 0; border-radius: var(--r-tag); padding: 3px 8px; font-size: var(--fs-xs); overflow-wrap: normal; word-break: normal; box-shadow: none; }
 
   /* --- Hinweis-Kästen: Tipp (ruhig), Achtung (--warn), Frist/Fehler (--bad) --- */
-  .karte-hinweis, .hinweis-koralle, .pp-hinweis, .el-erkl { background: var(--hint-bg); color: var(--hint); border-inline-start: 4px solid var(--hint-rand); border-radius: var(--r-feld); }
-  .hinweis-koralle { font-weight: 600; }
-  .hinweis-koralle.beratung > div > p:not(.b-titel) { font-size: var(--fs-s); }
+  .karte-hinweis, .pp-hinweis, .el-erkl { background: var(--hint-bg); color: var(--hint); border-inline-start: 4px solid var(--hint-rand); border-radius: var(--r-feld); }
 
   /* --- Frist: ein festes, auffälliges Muster, immer ganz oben (Brief prüfen, Startseite, Mein Ordner, Bescheide) ---
      Aufbau: <div class="frist" role="note"><p class="frist-wann">Frist: bis 12.12.2026</p><p>Satz, was zu tun ist.</p></div>
@@ -1153,6 +1230,11 @@
   .fri-bis > b::before { inset-inline-start: 0; top: 1px; width: 24px; height: 24px; }
   @media (forced-colors: active) { .frist, .fri-start { border: 2px solid CanvasText; } .frist::before, .fri-start::before, .fri-bis > b::before { background: CanvasText; } }
   @media print { .frist, .fri-start { border: 1pt solid #000; } }
+  /* Sicherheitsnetz für Übersetzungen (src/denetz.js): deutscher Originalsatz klein und gedämpft unter wichtigen Sätzen, kein Kasten */
+  .de-netz { display: block; margin: 2px 0 0; font-size: var(--fs-xs); font-weight: 400; line-height: 1.35; color: var(--muted); text-align: start; }
+  [dir="rtl"] .de-netz { text-align: right; }
+  .frist .de-netz, .fri-start .de-netz, .warn .de-netz, .notice .de-netz { color: inherit; } /* farbige Flächen: Schrift der Fläche (Kontrast geprüft), nur kleiner */
+  .de-netz-v { font-style: italic; }
 
   /* --- Vertrauen: Stand und Herkunft der Zahlen ruhig, aber sichtbar am Ergebnis --- */
   .vertrauen { display: flex; align-items: center; gap: 8px; flex-basis: 100%; margin: 0; color: var(--muted); font-size: var(--fs-xs); font-weight: 600; }
@@ -1214,9 +1296,12 @@
         <p class="lead" data-t="lead"></p>
       </div>
       <label class="sprach-knopf"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="vh" data-t="lang.top"></span><select id="langTop"></select></label>
+      <button type="button" class="su-lupe-knopf" id="suLupeStart" data-t-aria="su.suchen"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
     </header>
 
     <main id="inhalt">
+    <!-- Lupe oben auf allen Seiten außer Start (dort steht sie in der Kopfzeile neben der Sprache): öffnet das Such-Fenster (src/suche.js) -->
+    <button type="button" class="su-lupe-knopf" id="suLupe" data-t-aria="su.suchen"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
     <!-- Erststart: einmal für jeden Einstieg (gleich welche Kachel), bis „Verstanden“ -->
     <div class="notice info first" id="firstNotice" role="note" hidden>
       <p data-t="first.text"></p>
@@ -1228,12 +1313,12 @@
       <p class="gruss-t" data-t="home.gruss.t"></p>
       <div class="start-raster">
         <button type="button" class="sk sk-haupt sk-leistungen" id="goLeistungen"><span class="sk-txt"><b data-t="home.leistungen"></b><span class="sk-meta" data-t="home.hero.meta"></span></span><span class="hero-los"><span data-t="home.los"></span><span class="pfeil" aria-hidden="true">→</span></span></button>
+        <button type="button" class="sk sk-pflege" id="goPflege"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M9 12h6M12 9v6"/></svg></span><span class="sk-txt"><b data-t="home.pflege"></b><span data-t="home.pflege.t"></span></span></button>
         <button type="button" class="sk sk-briefe" id="goBriefe"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><span class="sk-txt"><b data-t="home.brief"></b><span data-t="home.brief.t"></span></span></button>
         <button type="button" class="sk sk-geld" id="goGeld"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M6 7l9.6-2.9A1 1 0 0 1 17 5v2"/><path d="M21 11h-4.5a2 2 0 0 0 0 4H21"/><circle cx="16.6" cy="13" r=".6"/></svg></span><span class="sk-txt"><b data-t="home.geld"></b><span data-t="home.geld.t"></span></span></button>
-        <button type="button" class="sk sk-pflege" id="goPflege"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M9 12h6M12 9v6"/></svg></span><span class="sk-txt"><b data-t="home.pflege"></b><span data-t="home.pflege.t"></span></span></button>
         <button type="button" class="sk sk-ausziehen" id="goAusziehen"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 11l8-6 8 6v9H4z"/><path d="M10 20v-5h4v5"/><path d="M17 3l2 2-2 2"/></svg></span><span class="sk-txt"><b data-t="az.kachel"></b><span data-t="az.kachel.t"></span></span></button>
       </div>
-      <p class="hinweis-koralle"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span data-t="home.sicher"></span></p>
+      <p class="start-sicher"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span data-t="home.sicher"></span></p>
     </section>
 
     <!-- Brief prüfen: nach Absender -->
@@ -1264,9 +1349,8 @@
         <p class="pp-hinweis small" id="ppNurDe" data-t="briefe.schreibenDe" hidden></p>
 <!--PRUEFPAKET-->
         <!-- Gemeinsame Kachel „Anderer Brief oder Formular“: erst einlesen (die App erkennt Formular oder Brief), darunter die Wahl von Hand -->
-        <section class="pp-teil" id="abWahl" aria-labelledby="h-abWahl" hidden>
+        <section class="pp-teil" id="abWahl" aria-labelledby="h-briefe" hidden>
           <div class="card">
-            <h2 id="h-abWahl" data-t="briefe.ab"></h2>
             <p data-t="briefe.ab.lead"></p>
             <p class="ab-oder" data-t="briefe.ab.wahl"></p>
             <div class="weg-liste" id="abUnter"></div>
@@ -1740,9 +1824,6 @@
             </div>
           </fieldset>
         </form>
-        <div class="form-ende">
-          <p class="es-link"><button type="button" class="linkbtn" id="einfachBtn" aria-pressed="false"><span data-t="einfach.btn"></span></button></p>
-        </div>
       </section>
 
       <section class="results" id="ergebnis" aria-labelledby="h-res" tabindex="-1">
@@ -1752,32 +1833,13 @@
           <p class="res-satz" id="resSatz" hidden></p>
           <p class="vertrauen" id="vertrauen"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><span id="vertrauenT"></span></p>
           <p class="eb-open"><button type="button" class="btn ghost" id="ebOpen" data-t="eb.btn" hidden></button></p>
+          <p class="kb-open"><button type="button" class="btn ghost" id="kbOpen" data-t="kb.btn" hidden></button></p>
         </div>
         <p class="legende" id="legende" data-t="legende"></p>
         <nav id="overview" class="overview" hidden></nav>
         <div id="together"></div>
         <div id="cards" class="results"></div>
-        <div class="hinweis-koralle beratung" id="beratung" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><div><p class="b-titel" data-t="res.beratung"></p><details class="mehr"><summary data-t="mehr.hilfe"></summary><p data-t="foot.2"></p></details></div></div>
         <p class="small muted rb-satz" id="resRb" data-t="rb.satz"></p>
-
-        <section class="helper" id="helper" aria-labelledby="h-helper">
-          <h2 id="h-helper" data-t="f.h"></h2>
-          <p data-t="f.intro"></p>
-          <details class="mehr"><summary data-t="mehr.formlos"></summary><p data-t="f.intro.mehr"></p><p data-t="f.srente.hinweis" id="introSrente" hidden></p></details>
-          <div class="two">
-            <div class="field"><label for="p-name" data-t="f.name"></label><input type="text" id="p-name" autocomplete="off"></div>
-            <div class="field"><label for="p-geb" data-t="f.geb"></label><input type="text" id="p-geb" placeholder="TT.MM.JJJJ" autocomplete="off"></div>
-            <div class="field"><label for="p-strasse" data-t="f.strasse"></label><input type="text" id="p-strasse" autocomplete="off"></div>
-            <div class="field"><label for="p-ort" data-t="f.ort"></label><input type="text" id="p-ort" autocomplete="off"></div>
-            <div class="field"><label for="p-tel" data-t="f.tel"></label><input type="text" id="p-tel" inputmode="tel" autocomplete="off"></div>
-          </div>
-          <div class="field">
-            <span class="lab" data-t="f.which"></span>
-            <div class="checks" id="pick"></div>
-          </div>
-          <div class="btns"><button type="button" class="btn" id="mappeMake" data-t="f.make"></button></div>
-          <p class="msg" id="pickMsg" role="status"></p>
-        </section>
 
       </section>
     </div>
@@ -1790,6 +1852,16 @@
         <h2 id="h-ordner" class="ans-h" data-t="nav.ordner"></h2>
         <div class="vg-gruppe" id="setHaushalte" hidden></div>
         <ul id="ordnerKarten" class="zeilen"></ul>
+        <!-- Von der Beratung bekommen (src/weitergabe.js, für alle Nutzer): SoLo-Datei öffnen oder QR-Code scannen → neuer Vorgang -->
+        <details class="kw-import" id="kwImport">
+          <summary data-t="kw.imp.h"></summary>
+          <p class="small" data-t="kw.imp.t"></p>
+          <div class="btns"><button type="button" class="btn ghost" id="kwDatei" data-t="kw.imp.datei"></button><button type="button" class="btn ghost" id="kwScan" data-t="kw.imp.scan"></button></div>
+          <input type="file" id="kwDateiEin" accept=".solo,text/plain,application/json" hidden>
+          <input type="file" id="kwFotoEin" accept="image/*" capture="environment" hidden>
+          <p class="msg" id="kwImpMsg" role="status"></p>
+          <div id="kwImpBox" hidden></div>
+        </details>
       </div>
       <!-- Fristen (src/fristen.js): Unterseite von „Mein Ordner“, kein eigener Bereich. Namen v-fristen/startFristen nicht wieder benutzen (1.3.0) -->
       <div id="ordnerFristen" class="unterseite" data-seite="fristen" hidden>
@@ -1819,6 +1891,7 @@
           <label class="langpick set-zeile"><span class="schalter-t" data-t="lang.label"></span><select id="lang"></select></label>
           <p><button type="button" class="schalter" id="bigBtn" role="switch" aria-checked="false"><span class="schalter-t" data-t="big"></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
           <p><button type="button" class="schalter" id="einfacheSpracheBtn" role="switch" aria-checked="false" aria-describedby="einfacheSpracheT"><span class="schalter-t"><span data-t="set.es.label"></span><span class="schalter-unter" id="einfacheSpracheT"></span></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
+          <p><button type="button" class="schalter" id="deNetzBtn" role="switch" aria-checked="true" aria-describedby="deNetzT"><span class="schalter-t"><span data-t="dn.set.label"></span><span class="schalter-unter" id="deNetzT"></span></span><span class="schalter-zst"></span><span class="schalter-bahn" aria-hidden="true"></span></button></p>
           <div class="field"><span class="lab" id="lab-thema" data-t="set.thema"></span>
             <div class="seg seg3" role="radiogroup" aria-labelledby="lab-thema">
               <input type="radio" name="thema" id="thema-auto" value="" checked><label for="thema-auto" data-t="set.thema.auto"></label>
@@ -1858,11 +1931,11 @@
         <!--ZURUECK cls=us-zurueck-->
         <h2 class="ans-h" data-t="set.about.h"></h2>
         <div class="set-gruppe">
-          <p class="small muted"><span id="appVersion"></span><br><span class="stand" id="stand"></span></p>
+          <p class="small muted"><span id="appVersion"></span><br><span class="stand"><span id="stand"></span> <span data-t="foot.3"></span></span></p>
           <p><button type="button" class="linkbtn" id="legalBtn2" data-t="legal.open"></button></p>
         </div>
         <div class="rules" id="feedback" hidden>
-          <details>
+          <details class="mehr mehr-block">
             <summary data-t="fb.h"></summary>
             <div class="inner">
               <p data-t="fb.text"></p>
@@ -1873,7 +1946,7 @@
         </div>
 
         <div class="rules">
-          <details>
+          <details class="mehr mehr-block">
             <summary data-t="rules.sum"></summary>
             <div class="inner">
               <p data-t="rules.intro"></p>
@@ -1919,7 +1992,6 @@
 
         <div class="foot">
           <p data-t="foot.1"></p>
-          <p data-t="foot.3"></p>
           <p hidden><button type="button" class="linkbtn" id="legalBtn" data-t="legal.open"></button></p>
         </div>
       </div>
@@ -1947,6 +2019,7 @@
         <li>Schriften Atkinson Hyperlegible (Braille Institute) und Nunito (The Nunito Project Authors): SIL Open Font License 1.1</li>
         <li>Noto Sans (PDF-Erzeugung): SIL Open Font License 1.1</li>
         <li>Capacitor und seine Plugins, pdf-lib: MIT-Lizenz</li>
+        <li>QR-Code erzeugen: qrcode-generator 2.0.4 (Kazuhiko Arase): MIT-Lizenz. „QR Code“ ist eine eingetragene Marke von DENSO WAVE INCORPORATED.</li>
         <li>pdf.js (Mozilla, PDF-Dateien lesen): Apache License 2.0</li>
         <li>Texterkennung Android: Google ML Kit (Nutzungsbedingungen von Google)</li>
         <li>Texterkennung Web-Version: Tesseract.js und Sprachdaten (Apache-Lizenz 2.0)</li>
@@ -1979,6 +2052,23 @@
         <p class="msg" id="copyMsg" role="status"></p>
         <textarea id="mappeText" readonly hidden></textarea>
       </div>
+      <!-- Angaben für die Briefe: erst hier abgefragt (früher Kasten „Ausfüllhilfe“ unter dem Ergebnis); gespeichert wie bisher nur auf dem Gerät -->
+      <section class="mappe-angaben no-print" id="helper" aria-label="Angaben">
+        <p data-t="f.intro"></p>
+        <details class="mehr"><summary data-t="mehr.formlos"></summary><p data-t="f.intro.mehr"></p><p data-t="f.srente.hinweis" id="introSrente" hidden></p></details>
+        <div class="two">
+          <div class="field"><label for="p-name" data-t="f.name"></label><input type="text" id="p-name" autocomplete="off"></div>
+          <div class="field"><label for="p-geb" data-t="f.geb"></label><input type="text" id="p-geb" placeholder="TT.MM.JJJJ" autocomplete="off"></div>
+          <div class="field"><label for="p-strasse" data-t="f.strasse"></label><input type="text" id="p-strasse" autocomplete="off"></div>
+          <div class="field"><label for="p-ort" data-t="f.ort"></label><input type="text" id="p-ort" autocomplete="off"></div>
+          <div class="field"><label for="p-tel" data-t="f.tel"></label><input type="text" id="p-tel" inputmode="tel" autocomplete="off"></div>
+        </div>
+        <div class="field">
+          <span class="lab" data-t="f.which"></span>
+          <div class="checks" id="pick"></div>
+        </div>
+        <p class="msg" id="pickMsg" role="status"></p>
+      </section>
       <div id="mappeBody"></div>
       <div class="no-print mappe-ende">
         <div class="btns"><button type="button" class="btn" id="mappePrint2" data-t="f.print"></button></div>
@@ -1999,6 +2089,24 @@
       </div>
       <article class="page ergblatt" id="ebSeite"></article>
     </section>
+
+    <!-- Für Klient zusammenstellen (nur Beratungsmodus, src/klient.js): Auswahl per Haken, ein Blatt, Drucken oder Teilen -->
+    <section id="klientBlatt" hidden aria-labelledby="h-kb">
+      <div class="no-print"><!--ZURUECK id=kbClose--></div>
+      <div class="mappe-bar no-print">
+        <h2 id="h-kb" data-t="kb.h"></h2>
+        <p data-t="kb.intro"></p>
+        <div id="kbWahl" class="kb-wahl"></div>
+        <div class="btns">
+          <button type="button" class="btn" id="kbDruck" data-t="f.print"></button>
+          <button type="button" class="btn ghost" id="kbTeilen" data-t="kb.teilen"></button>
+        </div>
+        <p class="small kb-ds" id="kbDs" data-t="kb.datenschutz"></p>
+        <p class="msg" id="kbMsg" role="status"></p>
+        <div id="kwBox" class="kw-box" hidden></div><!-- Weitergabe an die SoLo-App des Klienten: QR-Code, SoLo-Datei (src/weitergabe.js) -->
+      </div>
+      <article class="page kb-blatt" id="kbSeite"></article>
+    </section>
     </main>
   </div>
 
@@ -2011,6 +2119,20 @@
   <div class="undo" id="undoBar" hidden><span id="undoText"></span> <button type="button" id="undoBtn" data-t="clear.undo"></button></div>
   <!-- Rückfrage vor „Beispiel laden“, wenn schon eigene Angaben da sind (eigener Dialog, kein window.confirm) -->
 
+  <!-- Such-Fenster: dasselbe Suchfeld wie auf der Startseite; Zurück, Esc, Android-Zurück und Wischen schließen es -->
+  <div class="su-fenster" id="suFenster" role="dialog" aria-modal="true" aria-labelledby="suFensterH" hidden>
+    <!--ZURUECK id=suZu eigen=1-->
+    <h2 id="suFensterH" class="vh" data-t="su.suchen"></h2>
+    <div id="suFensterPlatz">
+    <!-- Suche (src/suche.js): offline, nichts wird gespeichert oder gesendet -->
+      <form class="su-suche" id="suSuche" role="search" autocomplete="off">
+        <label for="suFeld" class="vh" data-t="su.label"></label>
+        <span class="su-feld"><svg class="su-lupe" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input type="search" id="suFeld" data-t-ph="su.label" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" aria-describedby="suStatus"><button type="button" class="su-leeren" id="suLeeren" data-t-aria="su.leeren" hidden><span aria-hidden="true">×</span></button></span>
+        <p class="vh" id="suStatus" role="status" aria-live="polite"></p>
+        <div class="su-treffer" id="suTreffer" hidden></div>
+      </form>
+    </div>
+  </div>
   <nav class="appnav" id="appnav" aria-label="SoLo">
     <button type="button" data-ansicht="start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span data-t="nav.start"></span></button>
     <button type="button" data-ansicht="ordner"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M3 10h18"/></svg><span data-t="nav.ordner"></span></button>
@@ -2042,9 +2164,18 @@ Behoerden.init(/*BEHOERDENDATA*/null);
 /*SCHULDEN*/
 /*GELD*/
 /*SCHRITTE*/
+/*KLIENT*/
+/*SUCHE*/
+/*DENETZ*/
 </script>
 <script>
 /*NAVIGATION*/
+</script>
+<script>
+/*QRCODE*/
+</script>
+<script>
+/*WEITERGABE*/
 </script>
 <script>
 /*FORMULARE*/

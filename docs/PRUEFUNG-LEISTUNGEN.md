@@ -32,7 +32,7 @@ Stand: 17.11.2026. Geprüft am Gesetzestext (gesetze-im-internet.de, abgerufen a
 | Kinderkrankengeld ab 2027 | 10 / 20 Tage, höchstens 25 / 50 | § 45 Abs. 2 SGB V | ✓ Gesetzestext |
 | Arbeitslosengeld I | 60 / 67 % | § 149 SGB III | ✓ Gesetzestext |
 | BAföG Freibeträge Eltern | 2.540 / 1.690 € + 770 € je Kind | § 25 BAföG | ✓ Gesetzestext |
-| BAföG Vermögen | 15.000 / 45.000 € | § 29 BAföG | ✓ Gesetzestext |
+| BAföG Vermögen | 15.000 / 45.000 €; darüber nur der Rest geteilt durch 12 Monate (§ 30) | §§ 29, 30 BAföG | ✓ Gesetzestext (21.11.2026) |
 | Grundfreibetrag Einkommensteuer | 12.348 € | § 32a EStG | ✓ Gesetzestext |
 | Pflege-Pauschbetrag | 600 / 1.100 / 1.800 € | § 33b Abs. 6 EStG | ✓ Gesetzestext |
 | Unterhaltsvorschuss | 227 / 299 / 394 € | § 2 UVG: Mindestunterhalt minus Kindergeld | Rechenweg ✓; Mindestunterhalt 2026 (486 / 558 / 653 €) nicht abrufbar, aus der Düsseldorfer Tabelle 2026 |

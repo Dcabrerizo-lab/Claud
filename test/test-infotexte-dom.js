@@ -40,10 +40,22 @@ setTimeout(() => {
   check('Feldhilfen hinter „Wo steht das?“, alle zu', [...d.querySelectorAll('#p-bescheid .feld-hilfe')].every((x) => x.tagName === 'DETAILS' && !x.open && x.querySelector('summary').textContent === 'Wo steht das?') && d.querySelectorAll('#p-bescheid .feld-hilfe').length >= 8);
   check('Datenschutz am Scan-Knopf, ohne „Wert vergleichen“', /gelöscht/.test(de['el.privat']) && !/vergleichen/.test(de['el.privat']));
   check('„Keine Rechtsberatung“ erst unter dem Prüfergebnis (leer: ausgeblendet per CSS)', !!d.querySelector('#bs-erg + .rb-erg') && !!d.querySelector('#bs-wid-text ~ .rb-schreiben'));
+  // Briefart Einladung/Anhörung: Überschrift passt, Bescheid-Aufklapper und „Scanne den Bescheid“ ausgeblendet, kein „null“ im Text
+  const artWahl = (v) => { const r = d.querySelector('input[name="bs-briefart"][value="' + v + '"]'); r.checked = true; r.dispatchEvent(new w.Event('change', { bubbles: true })); };
+  const bsDet = () => [...karte.querySelectorAll(':scope > details')];
+  check('[brief-art] Bescheid: Überschrift „Bescheid … prüfen“, beide Aufklapper sichtbar', karte.querySelector('h2').textContent === de['bp.jc.h'] && bsDet().length === 2 && bsDet().every((x) => !x.hidden));
+  artWahl('termin');
+  check('[brief-art] Einladung: Überschrift „Einladung zu einem Termin“, Bescheid-Teile weg', karte.querySelector('h2').textContent === de['bp.art.termin.h'] && bsDet().every((x) => x.hidden) && satz.hidden && !/null/.test(karte.textContent), karte.querySelector('h2').textContent);
+  artWahl('anh');
+  check('[brief-art] Anhörung: eigene Überschrift', karte.querySelector('h2').textContent === de['bp.art.anh.h'] && bsDet().every((x) => x.hidden));
+  artWahl('bescheid');
+  check('[brief-art] zurück zu Bescheid: alles wieder da', karte.querySelector('h2').textContent === de['bp.jc.h'] && bsDet().every((x) => !x.hidden) && !satz.hidden);
+  check('[brief-rahmen] Einstieg der Brief-Stellen ohne großen Rahmen (CSS)', /#checkBox\.pp \.pp-teil > \.card:first-child \{ background: transparent; box-shadow: none;/.test(html));
   $('briefZurueck').click();
   // Eine Kachel „Anderer Brief oder Formular“: erst einlesen, darunter zwei Unterkarten zur Wahl von Hand
   check('Brief-Übersicht: 7 Kacheln, „Anderer Brief oder Formular“ statt zwei Kacheln', d.querySelectorAll('#briefKacheln .kachel').length === 7 && !!$('brief-ab') && !$('briefKacheln').contains($('brief-an')) && !$('briefKacheln').contains($('brief-af')) && $('brief-ab').querySelector('b').textContent === de['briefe.ab']);
   $('brief-ab').click();
+  check('[brief-ab] „Anderer Brief“: nur eine Überschrift (die der Seite)', !$('abWahl').querySelector('h2') && $('abWahl').getAttribute('aria-labelledby') === 'h-briefe');
   check('Gemeinsame Kachel: Einlesen oben, darunter „Brief mit Frist oder Mahnung“ und „Antragsformular ausfüllen“', !$('abWahl').hidden && $('abWahl').contains($('einlesen')) && !$('einlesen').hidden && $('abWahl').compareDocumentPosition($('abUnter')) & w.Node.DOCUMENT_POSITION_CONTAINED_BY && $('einlesen').compareDocumentPosition($('abUnter')) & w.Node.DOCUMENT_POSITION_FOLLOWING && $('brief-an').textContent.includes(de['briefe.andere']) && $('brief-af').textContent.includes(de['briefe.formular']));
   $('elPaste').click(); $('elText').value = 'Antrag auf Wohngeld\nBitte ankreuzen\nFamilienname, Vorname\nGeburtsdatum\nIBAN\nOrt, Datum\nUnterschrift des Antragstellers'; $('elLesen').click();
   check('Gemeinsame Kachel: ein Formular wird erkannt und erklärt (Formular-Teil offen)', !$('scan').hidden && $('abWahl').hidden, $('elMsg').textContent);
@@ -63,8 +75,7 @@ setTimeout(() => {
   // Leistungs-Check: erste Frage zuerst
   d.querySelector('#appnav [data-ansicht=start]') && d.querySelector('#appnav [data-ansicht=start]').click();
   $('goLeistungen').click();
-  const formEnde = d.querySelector('.form-ende');
-  check('Kurzer Check steht nach dem Formular; keine sichtbaren Beispiele', formEnde && $('form').compareDocumentPosition(formEnde) & w.Node.DOCUMENT_POSITION_FOLLOWING && formEnde.contains($('einfachBtn')) && $('presets').hidden);
+  check('Kurzer Check als Wahl oben (vor dem Formular, nicht am Formularende); keine sichtbaren Beispiele', !d.querySelector('.form-ende') && $('einfachBtn') && $('einfachBtn').compareDocumentPosition($('form')) & w.Node.DOCUMENT_POSITION_FOLLOWING && $('presets').hidden);
   check('Löschen: Textknopf oben in „Deine Angaben“ (vor dem Formular)', !$('clearBtn') && $('clearLink').classList.contains('linkbtn') && $('clearLink').compareDocumentPosition($('form')) & w.Node.DOCUMENT_POSITION_FOLLOWING);
   const hinweise = [...d.querySelectorAll('#form .hint')].filter(sichtbar);
   check('Formular leer: höchstens 8 sichtbare Feldhinweise', hinweise.length <= 8, hinweise.map((x) => x.textContent.slice(0, 30)));
@@ -77,15 +88,17 @@ setTimeout(() => {
   // Beispiel laden: Ergebnis
   $('p1').click();
   check('Ergebnis: „Keine Rechtsberatung“ als eine Zeile unter der Liste', !$('resRb').hidden && $('resRb').textContent === de['rb.satz']);
-  check('Ergebnis: Namen der Verbände hinter „Mehr dazu“', !!d.querySelector('#beratung details.mehr') && !d.querySelector('#beratung details.mehr').open);
-  check('Ergebnis: f.intro kurz, Erklärung „formloser Antrag“ zugeklappt', !/Gerät/.test(de['f.intro']) && !!d.querySelector('#helper details.mehr'));
+  const tipp = (el) => !!el && el.matches('details.mehr.tipp') && !el.open && !!el.querySelector('summary .tipp-sym svg') && el.querySelector('summary .tipp-kurz').textContent.split(/\s+/).length <= 12;
+  check('[hilfen-aufraeumen] Ergebnis: Beratungsstelle als kurzer Tipp (Symbol + Satz), Verbände zugeklappt; kein blauer Kasten', tipp($('beratung')) && $('beratung').querySelector('.tipp-kurz').textContent === de['res.beratung'] && $('beratung').textContent.includes(de['foot.2']) && !d.querySelector('.hinweis-koralle'));
+  check('Ergebnis: f.intro kurz, Erklärung „formloser Antrag“ zugeklappt (jetzt oben in der Antragsmappe)', !/Gerät/.test(de['f.intro']) && !!d.querySelector('#mappe #helper details.mehr'));
   const ww = $('zweiWege');
-  if (ww) check('Zwei Wege: sichtbar nur Titel und Tipp, Wege zugeklappt', !!ww.querySelector('.ww-tun') && ww.querySelector('details.mehr') && !ww.querySelector('details.mehr').open && ww.querySelector('details.mehr').contains(ww.querySelector('.ww-wege')));
+  if (ww) check('[hilfen-aufraeumen] Zwei Wege: kurzer Tipp unter den Karten, Tipp und Wege zugeklappt', tipp(ww) && !!ww.querySelector('.ww-tun') && !!ww.querySelector('.ww-wege') && ($('mappeKnopf').compareDocumentPosition(ww) & w.Node.DOCUMENT_POSITION_FOLLOWING));
+  check('[hilfen-aufraeumen] Ergebnis: „Gut zu wissen“ als kurzer Tipp', !$('gutWissen') || tipp($('gutWissen')));
   check('Erst „Verstanden“: Erststart bleibt weg', $('firstNotice').hidden);
   // Antragsmappe als Aufgabenliste
+  $('mappeMake').click();
   $('p-name').value = 'Test'; $('p-name').dispatchEvent(new w.Event('input', { bubbles: true }));
   d.querySelectorAll('#pick input').forEach((c) => { if (!c.checked) c.click(); });
-  $('mappeMake').click();
   const auf = [...d.querySelectorAll('#mappeBody .aufgabe')];
   check('Mappe: nummerierte Aufgabenliste mit Knopf und „Erledigt“ je Schritt', auf.length >= 3 && auf.every((a) => a.querySelector('button.btn') && a.querySelector('input[data-haken^="mappe|"]')), auf.length);
   check('Mappe: Frist (Antrag sichert den Monat) sichtbar im letzten Schritt, nicht zum Aufklappen', /Monat/.test(auf[auf.length - 1].textContent) && !auf[auf.length - 1].querySelector('.mappe-stichtag').closest('details'));

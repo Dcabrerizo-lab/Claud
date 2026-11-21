@@ -1,0 +1,67 @@
+# Differenztest gegen amtliche Rechner: BAföG-Rechner (BAföG Digital), Elterngeld-Schnellrechner (Familienportal),
+# Freibetragsrechner Pfändung (Justiz NRW). Zufällige, realistische Fälle (fester Startwert), Bedienung über die normale
+# Oberfläche mit Pausen ≥ 2 s, höchstens 300 Fälle je Rechner. Ergebnis als Artefakt "amtlich-bafoeg-eg-ergebnis".
+# Startet von Hand oder wenn tools/amtliche-rechner/auftrag-bafoeg-eg.txt auf einem Arbeitszweig geändert wird.
+name: Amtlich BAföG Elterngeld Pfändung
+
+on:
+  push:
+    branches-ignore: ['main']
+    paths: ['tools/amtliche-rechner/auftrag-bafoeg-eg.txt']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Nicht doppelt bei den Behörden-Rechnern abfragen: höchstens ein Lauf je Zweig gleichzeitig (ein neuer wartet, bricht nichts ab).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  abfragen:
+    # Nicht bei Merge-Commits starten: ein Merge in einen Bündel-Zweig enthält die Auftragsdatei schon und würde dieselben
+    # Abfragen wiederholen (21.11.2026: 9 von 16 Läufen). Neuer Auftrag: Auftragsdatei in einem normalen Commit ändern.
+    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'Merge')
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { art: bafoeg, teil: 0, teile: 2 }
+          - { art: bafoeg, teil: 1, teile: 2 }
+          - { art: elterngeld, teil: 0, teile: 1 }
+          - { art: pfaendung, teil: 0, teile: 1 }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Browser installieren (bis zu 3 Versuche)
+        run: for i in 1 2 3; do timeout 300 npx playwright install --with-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
+      - name: Amtlichen Rechner abfragen
+        run: node tools/amtliche-rechner/bafoeg-eg-abfrage.js ${{ matrix.art }} ${{ matrix.teil }} ${{ matrix.teile }} amtlich-${{ matrix.art }}-${{ matrix.teil }}.json
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: amtlich-${{ matrix.art }}-${{ matrix.teil }}
+          path: amtlich-${{ matrix.art }}-${{ matrix.teil }}.json
+          if-no-files-found: warn
+
+  auswerten:
+    needs: abfragen
+    if: always() && needs.abfragen.result != 'skipped'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with: { path: ergebnis, pattern: 'amtlich-*' }
+      - name: SoLo gegen amtliche Ergebnisse (Stand dieses Zweigs)
+        run: node tools/amtlich-vergleich-bafoeg-eg.js auswerten ergebnis --md ergebnis/bericht.md --json ergebnis/auswertung.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with: { name: amtlich-bafoeg-eg-ergebnis, path: 'ergebnis/**' }

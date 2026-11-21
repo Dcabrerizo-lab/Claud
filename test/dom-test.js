@@ -39,7 +39,7 @@ check('Startsprache folgt dem Browser (Deutsch)', d.getElementById('lang').value
 check('Sprachwahl bietet 13 Sprachen', d.getElementById('lang').options.length === 13);
 check('Sprachwahl nur in Einstellungen und Kopfzeile, nicht in „Deine Angaben“', d.getElementById('lang').closest('#v-einst') !== null && d.querySelectorAll('#v-leistungen select[id^="lang"], #v-leistungen .langpick').length === 0 && /\.app:not\(\[data-ansicht="start"\]\) \.top \.sprach-knopf \{ display: none; \}/.test([...d.querySelectorAll('style')].map((s) => s.textContent).join('')));
 check('Start ohne Beispielwerte: leeres Formular', d.getElementById('ek1Brutto').value === '' && d.getElementById('miete').value === '');
-check('Start zeigt Anleitung statt Karten', d.querySelector('#cards .startcard') !== null && cards().length === 0, d.getElementById('cards').innerHTML.slice(0, 200));
+check('[hilfen-aufraeumen] Start ohne Karten und ohne Kasten „So geht\'s“', d.getElementById('cards').innerHTML === '' && cards().length === 0, d.getElementById('cards').innerHTML.slice(0, 200));
 check('Start: Beispiel-Hinweis versteckt', d.getElementById('sampleNotice').hidden === true);
 beispiel('p1');
 check(KARTEN.length + ' Ergebnis-Karten', cards().length === KARTEN.length, cards().length);
@@ -175,12 +175,21 @@ beispiel('p1');
 const pickBoxes = () => [...d.querySelectorAll('[data-pick]')];
 const okCount = cards().filter((c) => /pill (ja|vielleicht)/.test(c.querySelector('.pill').className)).length;
 check('Auswahl für die Ausfüllhilfe nennt alle passenden Leistungen', pickBoxes().length === okCount && okCount >= 4, pickBoxes().length + ' vs ' + okCount);
-check('Haken sind nur bei wahrscheinlichen Leistungen vorgesetzt', pickBoxes().every((cb) => cb.checked === (level(cb.closest('label').textContent.trim()) === 'ja')) && pickBoxes().some((cb) => cb.checked));
+// Entweder oder (Grundsicherungsgeld oder Wohngeld/Kinderzuschlag, § 7 Abs. 1 WoGG): keine dieser Leistungen vorab angehakt, Zeile f.pickWege
+const WEGE = ['ggeld', 'wohngeld', 'kiz', 'gsa'], wegeZeile = d.getElementById('pickWege');
+check('Haken sind nur bei wahrscheinlichen Leistungen vorgesetzt (außer bei „entweder oder“)', pickBoxes().every((cb) => cb.checked === (level(cb.closest('label').textContent.trim()) === 'ja' && !(wegeZeile && WEGE.includes(cb.getAttribute('data-pick'))))) && pickBoxes().some((cb) => cb.checked));
+{
+  const ids = pickBoxes().map((cb) => cb.getAttribute('data-pick')), an = (id) => { const c = d.querySelector('[data-pick="' + id + '"]'); return !!c && c.checked; };
+  const zweiWege = !!d.getElementById('zweiWege') || /Zwei Wege/.test(d.getElementById('ergebnis').textContent);
+  check('[zwei-wege] Beispiel 1 zeigt „Zwei Wege“ und bietet Grundsicherungsgeld und Wohngeld an', zweiWege && ids.includes('ggeld') && ids.includes('wohngeld'), ids.join());
+  check('[zwei-wege] Grundsicherungsgeld, Wohngeld und Kinderzuschlag nicht vorab angehakt, Zeile „nur entweder oder“ sichtbar', !an('ggeld') && !an('wohngeld') && !an('kiz') && !!wegeZeile && wegeZeile.textContent === I18N.de['f.pickWege'], ids.map((i) => i + ':' + an(i)).join());
+}
 check('Mappe ist anfangs geschlossen', d.getElementById('mappe').hidden === true);
 // nichts gewählt
 pickBoxes().forEach((cb) => { cb.checked = false; fire(cb, 'change'); });
 d.getElementById('mappeMake').click();
-check('Ohne Auswahl erscheint ein Hinweis, keine Mappe', d.getElementById('mappe').hidden === true && d.getElementById('pickMsg').textContent === I18N.de['f.pick0']);
+check('[hilfen-aufraeumen] Grüner Knopf „Briefe für die Anträge machen“ direkt unter den passenden Karten, kein Kasten „Ausfüllhilfe“ im Ergebnis', (() => { const k = d.getElementById('mappeKnopf'), letzte = cards().filter((c) => /pill (ja|vielleicht)/.test(c.querySelector('.pill').className)).pop(); return k && !k.hidden && k.previousElementSibling === letzte && d.getElementById('mappeMake').textContent === I18N.de['es.briefe'] && !d.getElementById('ergebnis').contains(d.getElementById('p-name')); })());
+check('[hilfen-aufraeumen] Ohne Auswahl: Mappe öffnet mit Auswahl, Name und Anschrift oben und einem Hinweis, keine leeren Briefe', d.getElementById('mappe').hidden === false && d.getElementById('mappe').contains(d.getElementById('p-name')) && d.getElementById('pickMsg').textContent === I18N.de['f.pick0'] && !d.querySelector('#mappeBody .page'));
 // Wohngeld und Unterhaltsvorschuss wählen
 pickBoxes().filter((cb) => ['wohngeld', 'uvg'].includes(cb.getAttribute('data-pick'))).forEach((cb) => { cb.checked = true; fire(cb, 'change'); });
 const set = (id, v) => { d.getElementById(id).value = v; fire(d.getElementById(id), 'input'); };
@@ -263,12 +272,14 @@ setTimeout(() => {
   check('Titel ist ein Name', title === 'SoLo – Sozialleistungslotse');
   check('Dunkelmodus doppelt definiert', (html.match(/color-scheme: dark/g) || []).length >= 2);
   check('Kein horizontales Scrollen erzwungen', !/min-width:\s*\d{4,}px/.test(html));
+  check('Große Schrift: Kartentitel brechen lange Wörter um (kein seitliches Scrollen)', /\.card header > div \{ min-width: 0;/.test(html) && /\.card header h3, \.card \.desc, \.es-karte h3 \{ overflow-wrap: anywhere; hyphens: auto; \}/.test(html));
   check('Logische statt physische Abstände im Formular (RTL-fähig)', !/\.money input\s*\{[^}]*padding-right/.test(html) && /inset-inline-end/.test(html));
   check('Jedes Formularfeld hat eine Beschriftung', ['miete', 'mietstufe', 'ek1Art', 'ek1Brutto', 'ek1Netto', 'ek2Art', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'vermoegen', 'gebJahr', 'kindEink', 'ausbildung', 'pflegegrad', 'p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].every((id) => d.querySelector('label[for="' + id + '"]')));
   // Grenze 6 MB (Entscheidung David 20.11.2026; davor 5 MB; bis 1.4: 2,5 MB; 19.11.2026: 3 MB für 13 Sprachen; 20.11.2026: 4 MB für Vorgänge speichern, Beratungsmodus, Pflege-Unterstützung, Schulden-Tipps, Haushaltsplan; 20.11.2026 nachmittags: 5 MB für Fristen, Schuldenliste, Energie, Mietgrenze, Kostensenkung, Paar-Einkommen – Entscheidung des Nutzers): eine einzige Datei, die offline läuft; der größte Teil sind PLZ-Daten (ganz Deutschland mit Mietenstufen), Behörden (Bayern), 13 Sprachen,
   // seit 1.4 auch „Brief prüfen“ und die Pflegegrad-Einschätzung (zusammen gut 200 KB)
   check('Web-Datei ist ein vollständiges Dokument mit UTF-8 und Viewport (Safari, Handy)', /^<!doctype html>/i.test(html) && /<meta charset="utf-8">/i.test(html.slice(0, 300)) && /name="viewport"/.test(html.slice(0, 400)));
-  check('Dateigröße unter 6 MB', html.length < 6 * 1024 * 1024, (html.length / 1024).toFixed(0) + ' KB');
+  // 21.11.2026: in Bytes gemessen (Buffer.byteLength, UTF-8) statt in Zeichen; Grenze vorläufig 7 MB – Entscheidung David steht noch aus
+  check('Dateigröße unter 7 MB (Bytes, vorläufig)', Buffer.byteLength(html, 'utf8') < 7 * 1024 * 1024, (Buffer.byteLength(html, 'utf8') / 1024).toFixed(0) + ' KB');
   // ----- Antrag scannen -----
   setLang('de');
   beispiel('p1');
@@ -392,6 +403,11 @@ setTimeout(() => {
   d.querySelector('#v-sparen [data-nav-zurueck]').click();
   check('Geld und Schulden „← Zurück“ führt zur Startseite', sicht() === 'start');
   check('Startseite: eine Kachel „Geld und Schulden“, keine eigenen Kacheln für Sparen und Pfändung', !!d.getElementById('goGeld') && !d.getElementById('goSparen') && !d.getElementById('goPfaendung') && d.getElementById('goGeld').classList.contains('sk'));
+  { // Reihenfolge der Startkacheln im DOM (= Tastatur- und Vorlese-Reihenfolge), Wunsch David 21.11.2026: Pflege direkt unter „Welche Hilfen stehen mir zu?“
+    const ids = [...d.querySelectorAll('.start-raster > .sk')].map((e) => e.id).join(',');
+    check('Startseite: Kachel-Reihenfolge Leistungen, Pflege, Briefe, Geld, Ausziehen (DOM)', ids === 'goLeistungen,goPflege,goBriefe,goGeld,goAusziehen', ids);
+    check('Startseite: Pflege-Kachel behält ihre Farbe (sk-pflege)', d.getElementById('goPflege').classList.contains('sk-pflege'));
+  }
   d.getElementById('goPflege').click();
   if (sicht() === 'pflege') {
     check('Start → Pflege: Leiste markiert Start', navAkt() === 'start');
@@ -422,10 +438,19 @@ setTimeout(() => {
     check('[schulden-korr] Vollstreckungsbescheid: darf sofort gepfändet werden, Einspruch 2 Wochen (Notfrist), stoppt nicht von selbst; Widerspruch bis zum Vollstreckungsbescheid', /solange das Gericht noch keinen Vollstreckungsbescheid erlassen hat \(§ 694 ZPO\)/.test(fall('mahn')) && /darf sofort gepfändet werden \(§ 700 ZPO\)\. Dagegen hilft nur noch ein Einspruch\. Er muss innerhalb von 2 Wochen/.test(fall('mahn')) && /Notfrist, §§ 700, 339 ZPO/.test(fall('mahn')) && /nicht von selbst.*§ 719 ZPO/.test(fall('mahn')));
     check('[geld] Mahnbescheid nennt die 2-Wochen-Frist mit Quelle', /2 Wochen.*§ 692 ZPO/.test(box.querySelector('.gs-frist p').textContent));
     check('[geld] Mahnbescheid: Knopf „In die Schulden-Liste eintragen“', !!box.querySelector('.gs-in-liste'));
+    // Aufräumen 21.11.2026: alle Fälle gleich aufgebaut – Frist, „Das tust du jetzt“, Knöpfe (Beratungsstelle zuletzt), Quellen
+    const aufbau = () => [...box.children].map((e) => (e.className.match(/pf-frage|gs-frist|gs-schritt|gs-tipps|gs-freibetrag|gs-knoepfe|quellen/) || ['?'])[0]).join();
+    check('[aufraeumen] Mahnbescheid: Reihenfolge Titel, Frist, Schritte, Knöpfe, Quellen; Beratungsstelle als letzter Knopf', aufbau() === 'pf-frage,gs-frist,gs-schritt,gs-knoepfe,quellen' && box.querySelector('.gs-knoepfe').lastChild.classList.contains('gs-zur-hilfe') && box.querySelectorAll('.gs-schritt li').length === 2 && box.querySelector('.gs-schritt h3').textContent === I18N.de['pf.jetzt.h'], aufbau());
+    zur(); kacheln()[1].click();
+    check('[aufraeumen] Konto: Schritte Umwandeln und Bescheinigung (§ 903 ZPO), Grundfreibetrag aus Rules, kein doppelter P-Konto-Tipp', aufbau() === 'pf-frage,gs-frist,gs-schritt,gs-freibetrag,gs-knoepfe,quellen' && [...box.querySelectorAll('.gs-schritt details')].map((x) => x.getAttribute('data-tipp')).join() === 'gs.d.konto.schritt,pf.tipp.bescheinigung' && /§ 903 ZPO/.test(box.querySelector('.gs-schritt li:nth-child(2) p').textContent) && box.querySelector('.gs-freibetrag td:last-child').textContent.replace(/\s/g, '') === '1.590€' && !box.querySelector('[data-tipp="sp.schulden.konto"]'), aufbau());
+    check('[aufr-geld] Konto: „Jeder darf nur ein P-Konto haben“ aufklappbar beim Schritt Umwandeln (§ 850k Abs. 3 ZPO)', /nur ein P-Konto haben \(§ 850k Abs\. 3 ZPO\)/.test(box.querySelector('.gs-schritt [data-tipp="gs.d.konto.schritt"] p').textContent) && !/nur ein P-Konto/.test(box.querySelector('.gs-schritt [data-tipp="gs.d.konto.schritt"] summary').textContent));
+    [2, 4, 5].forEach((i) => { zur(); kacheln()[i].click(); check('[aufraeumen] Fall ' + i + ': gleicher Aufbau', aufbau() === (i === 2 ? 'pf-frage,gs-frist,gs-schritt,gs-tipps,gs-knoepfe,quellen' : 'pf-frage,gs-frist,gs-schritt,gs-knoepfe,quellen'), aufbau()); });
     zur();
     check('[geld] „← Zurück“ aus einem Fall führt zur Auswahl „Es ist dringend“', kacheln().length === 6 && !!box.querySelector('.gs-d-check'));
     kacheln()[2].click();
-    check('[schulden-korr] Strom/Gas: 2 Abschläge und 100 €, 4 Wochen Androhung, 8 Werktage, zinsfreie Raten (§§ 41f, 41g EnWG)', /2 Monatsabschlägen und mindestens 100 € .*§ 41f EnWG/.test(fall('strom')) && /4 Wochen vorher angedroht und 8 Werktage/.test(fall('strom')) && /zinsfreie Ratenzahlung .*§ 41g EnWG/.test(fall('strom')) && /Strom und Gas/.test(fall('strom')) && !/StromGVV/.test(fall('strom')));
+    { const sx = [...box.querySelectorAll('details.tipp > p')].map((e) => e.textContent).join(' ');
+      check('[schulden-korr] Strom/Gas: 2 Abschläge und 100 €, 4 Wochen Androhung, 8 Werktage, zinsfreie Raten (§§ 41f, 41g EnWG)', /2 Monatsabschlägen und mindestens 100 € .*§ 41f EnWG/.test(fall('strom')) && /4 Wochen vorher angedroht und 8 Werktage/.test(sx) && /zinsfrei anbieten \(§ 41g EnWG\)/.test(sx) && /Strom und Gas/.test(fall('strom')) && !/StromGVV/.test(sx));
+      check('[aufraeumen] Strom/Gas: 3 Schritte (Raten, Härte, Darlehen), Tipp „Sperre erst ab …“ darunter, ohne Wiederholung von sp.schulden.strom', [...box.querySelectorAll('.gs-schritt details')].map((x) => x.getAttribute('data-tipp')).join() === 'gs.d.strom.schritt,gs.d.strom.haerte,gs.d.strom.darlehen' && box.querySelector('.gs-tipps [data-tipp="gs.d.strom.grenze"]') && !box.querySelector('[data-tipp="sp.schulden.strom"]') && /Darlehen/.test(sx)); }
     check('[geld] Strom/Gas: Knopf „Abschlag prüfen“', !!box.querySelector('.gs-abschlag'));
     zur(); kacheln()[4].click();
     check('[schulden-korr] Mietschulden: ordentliche Kündigung kann trotz Schonfrist bestehen bleiben', /ordentlich \(mit Frist\) gekündigt.*trotz Zahlung bestehen bleiben/.test(fall('miete')) && /§ 569 BGB/.test(box.querySelector('.gs-frist p').textContent));
@@ -450,33 +475,44 @@ setTimeout(() => {
     const ipH = [...box.querySelectorAll('.ip-liste input[type=checkbox]')];
     check('[inkasso] Prüfliste: 6 Haken nach § 13a RDG, ohne Fundstelle im Privatmodus, 3 Warnungen', ipH.length === 6 && !box.querySelector('.ber-nur') && box.querySelectorAll('.ip-warn').length === 3);
     check('[inkasso] Prüfliste: Hinweis „Erste Einschätzung, keine Rechtsberatung“ immer sichtbar (Prüfung 20.11.2026)', !!box.querySelector('.ip-hinweis') && /keine Rechtsberatung/.test(box.querySelector('.ip-hinweis').textContent));
+    check('[inkasso] Prüfliste: Tipps zusammen, Hinweis „keine Rechtsberatung“ erst nach dem letzten Tipp (Aufräumen 21.11.2026)', box.querySelector('.ip-hinweis').previousElementSibling.getAttribute('data-fall') === 'inkasso' && box.querySelector('.ip-hinweis').nextElementSibling.classList.contains('quellen'));
     check('[inkasso] ohne Haken: alles fehlt, Knopf zum Schreiben „Forderungsaufstellung“', box.querySelectorAll('#ip-erg li').length === 6 && !!d.getElementById('ip-zum-schreiben'));
     ipH.forEach((c) => { c.checked = true; c.dispatchEvent(new w.Event('change', { bubbles: true })); });
     check('[inkasso] alle Haken: kein Urteil über die Forderung', d.getElementById('ip-erg').textContent === I18N.de['ip.erg.alle'] && !d.getElementById('ip-zum-schreiben'));
-    zur(); kacheln()[1].click();
-    check('[inkasso] Schreiben: 4 Muster zur Wahl', kacheln().map((b) => b.className.match(/ms-([a-z]+)/)[1]).join() === 'geduld,aufst,wider,pkonto');
+    zur(); box.querySelector('.gs-i-gelb').click();
+    check('[aufr-geld] Gelber Umschlag: öffnet direkt die Seite Mahnbescheid (keine zweite Fassung)', box.querySelector('.pf-frage').textContent === I18N.de['gs.d.mahn'] && !!box.querySelector('.gs-frist') && box.querySelectorAll('.gs-i-gelb').length === 0);
+    zur();
+    check('[aufr-geld] Gelber Umschlag: „Zurück“ führt zu „Post vom Inkasso“', !!box.querySelector('.gs-i-pruef') && !!box.querySelector('.gs-i-gelb'));
+    kacheln()[1].click();
+    check('[aufr-geld] Schreiben an Gläubiger: 3 Muster, keine P-Konto-Bescheinigung (steht unter „Was bleibt mir?“)', kacheln().map((b) => b.className.match(/ms-([a-z]+)/)[1]).join() === 'geduld,aufst,wider' && !box.querySelector('.ms-pkonto'));
     kacheln()[1].click();
     const ta = d.getElementById('ms-text');
-    check('[schreiben] Forderungsaufstellung: deutscher Text mit Lücken, Hinweis „keine Rechtsberatung“, Anschrift fehlt', ta && ta.lang === 'de' && /§ 13a Abs\. 1 und 2/.test(ta.value) && /\[Anschrift aus dem Brief\]/.test(ta.value) && /keine Rechtsberatung/.test(box.querySelector('.ms-hinweis').textContent) && !d.getElementById('ms-ohne-adr').hidden);
+    check('[schreiben] Forderungsaufstellung: deutscher Text mit Lücken, Hinweis „keine Rechtsberatung“', ta && ta.lang === 'de' && /§ 13a Abs\. 1 und 2/.test(ta.value) && /\[Anschrift aus dem Brief\]/.test(ta.value) && /keine Rechtsberatung/.test(box.querySelector('.ms-hinweis').textContent));
+    check('[aufr-geld] „Die Anschrift fehlt noch“ nicht schon vor der Eingabe', !(() => { const o = d.getElementById('ms-ohne-adr'); return !o.hidden && !o.closest('.ms-ohne-box').hidden; })());
+    w.print = () => {}; d.getElementById('ms-aus').click();
+    check('[aufr-geld] „Die Anschrift fehlt noch“ erst beim Drucken/Teilen, wenn die Anschrift leer ist', (() => { const o = d.getElementById('ms-ohne-adr'); return !o.hidden && !o.closest('.ms-ohne-box').hidden; })() && d.getElementById('ms-ohne-adr').textContent === I18N.de['ms.ohneAdr']);
+    { const aIn = d.getElementById('ms-adr'); aIn.value = 'Musterstraße 1'; aIn.dispatchEvent(new w.Event('input', { bubbles: true })); }
+    check('[aufr-geld] Anschrift eingetragen: Hinweis verschwindet', !(() => { const o = d.getElementById('ms-ohne-adr'); return !o.hidden && !o.closest('.ms-ohne-box').hidden; })());
+    d.documentElement.classList.remove('druckt-brief');
     const gIn = d.getElementById('ms-g'); gIn.value = 'Muster <b>Inkasso</b> GmbH'; gIn.dispatchEvent(new w.Event('input', { bubbles: true }));
     check('[schreiben] Eingabe nur als Text eingesetzt', /Muster <b>Inkasso<\/b> GmbH/.test(ta.value) && !box.querySelector('b b'));
     zur();
     check('[schreiben] „← Zurück“ führt zur Wahl des Musters', !!box.querySelector('.ms-geduld'));
     zur(); zur();
-    // 5 Mein Geld planen: Haushaltsplan, Abschlag prüfen, darunter Sparen im Alltag
+    // 5 Mein Geld planen: Haushaltsplan, darunter Sparen im Alltag („Abschlag prüfen“ steht seit 1.9 auf den Seiten „Strom“ und „Heizen“)
     kacheln()[4].click();
-    check('[geld] Mein Geld planen: Haushaltsplan und Abschlag prüfen, dann Überschrift „Geld sparen im Alltag“', !!box.querySelector('.gs-p-hh') && !!box.querySelector('.gs-p-abschlag') && box.querySelector('.gs-sparen-h').textContent === I18N.de['sp.h']);
+    check('[geld] Mein Geld planen: Haushaltsplan, dann Überschrift „Geld sparen im Alltag“ (kein Abschlag hier)', !!box.querySelector('.gs-p-hh') && !box.querySelector('.gs-p-abschlag') && box.querySelector('.gs-sparen-h').textContent === I18N.de['sp.h']);
     const th = [...box.querySelectorAll('[class*="gs-t-"]')].map((b) => b.className.match(/gs-t-([a-z]+)/)[1]);
     check('[geld] Sparen im Alltag: Strom, Heizen, Essen, Verträge (Kacheln)', th.join() === 'strom,heizen,essen,vertraege', th.join());
     box.querySelector('.gs-t-vertraege').click();
-    check('[geld] Verträge ohne Schulden-Text (Sperre steht nur unter „Es ist dringend“)', !/41g/.test(box.textContent) && box.querySelectorAll('.sp-tipps li').length === 5);
-    { const tp = [...box.querySelectorAll('details.tipp')]; check('[geld-tipp] Jeder Tipp: Symbol + kurzer Satz (höchstens 12 Wörter), ausführlicher Text zugeklappt', tp.length === 5 && tp.every((x) => x.querySelector('summary .tipp-sym svg') && x.querySelector('.tipp-kurz').textContent.split(/\s+/).length <= 12 && !x.open && x.querySelector('p').textContent.length > x.querySelector('.tipp-kurz').textContent.length), tp.map((x) => x.querySelector('.tipp-kurz').textContent)); }
+    check('[geld] Verträge ohne Schulden-Text (Sperre steht nur unter „Es ist dringend“)', !/41g/.test(box.textContent) && box.querySelectorAll('.sp-tipps li').length === 4);
+    { const tp = [...box.querySelectorAll('details.tipp')]; check('[geld-tipp] Jeder Tipp: Symbol + kurzer Satz (höchstens 12 Wörter), ausführlicher Text zugeklappt', tp.length === 4 && tp.every((x) => x.querySelector('summary .tipp-sym svg') && x.querySelector('.tipp-kurz').textContent.split(/\s+/).length <= 12 && !x.open && x.querySelector('p').textContent.length > x.querySelector('.tipp-kurz').textContent.length), tp.map((x) => x.querySelector('.tipp-kurz').textContent)); }
     zur(); box.querySelector('.gs-t-essen').click();
     { const vz = d.getElementById('sp-vz'); check('[geld] Essen: keine eigenen Rezepte, Linkkarte zur Verbraucherzentrale (öffnet extern)', !!vz && vz.href === 'https://www.verbraucherzentrale.de/lebensmittel/so-geht-gesunde-ernaehrung-mit-wenig-geld-96404' && vz.target === '_blank' && /Verbraucherzentrale/.test(vz.textContent) && !box.querySelector('.rezept') && !/Rezept/.test(box.textContent)); }
     zur(); zur();
     // 6 Schuldnerberatung
     kacheln()[5].click();
-    check('[beratung-kachel] Unterkarten: finden, Bis zum Termin, Mappe, Ablauf, unseriöse Anbieter', kacheln().map((b) => b.className.match(/gs-h-([a-z]+)/)[1]).join() === 'finden,termin,mappe,ablauf,unser');
+    check('[aufr-geld] Unterkarten: finden, Bis zum Termin, Mappe, Ablauf (keine eigene Kachel „unseriöse Anbieter“)', kacheln().map((b) => b.className.match(/gs-h-([a-z]+)/)[1]).join() === 'finden,termin,mappe,ablauf');
     kacheln()[0].click();
     check('[beratung-kachel] Beratungsstelle finden: ein Text (sl.hilfe.*) und Warnung vor unseriösen Anbietern', box.querySelector('.gs-beratung p').textContent === I18N.de['sl.hilfe.1'] && box.querySelectorAll('.gs-beratung p').length === 5 && !!box.querySelector('details[data-fall="unserioes"]'));
     check('[schulden] Quellenzeile nennt Verbraucherzentralen, BAG-SB, Caritas/Diakonie und AG SBV', /Verbraucherzentralen.*BAG-SB.*Caritas.*Diakonie.*AG SBV/.test(box.textContent));
@@ -490,7 +526,7 @@ setTimeout(() => {
     check('[geld] Zurück aus Schuldnerberatung → Kacheln', kacheln().length === 6);
     // Alle Ebenen in allen Sprachen ohne Rohschlüssel
     const roh = [];
-    const ebenen = [[], [0], [0, 0], [0, 5], [3], [3, 0], [3, 1], [3, 1, 3], [4], [5], [5, 1], [5, 2], [5, 3]];
+    const ebenen = [[], [0], [0, 0], [0, 5], [3], [3, 0], [3, 1], [3, 1, 2], [3, 3], [4], [5], [5, 1], [5, 2], [5, 3]];
     Object.keys(I18N).forEach((l) => {
       setLang(l);
       ebenen.forEach((weg) => {

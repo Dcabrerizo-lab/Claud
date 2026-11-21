@@ -11,6 +11,7 @@ public class MainActivity extends BridgeActivity {
         // Eigene Plugins vor super.onCreate registrieren
         registerPlugin(TextRecognitionPlugin.class);
         registerPlugin(PdfAusgabePlugin.class);
+        registerPlugin(SoloSchutzPlugin.class); // Bildschirmfoto-Schutz (FLAG_SECURE), gesteuert aus src/app.js
         super.onCreate(savedInstanceState);
         schriftgroesseUebernehmen();
     }

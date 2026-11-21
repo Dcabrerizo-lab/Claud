@@ -11,3 +11,4 @@ app/ios/App/Pods/
 .DS_Store
 store-bilder/
 __pycache__/
+test/listen/.betroffen.txt
