@@ -468,7 +468,16 @@ function bafoeg0(e) {
     // den höchsten Bedarf (475 + 380 + 185 + 48 = 1.088 €, §§ 13, 13a Abs. 2) übersteigt
     const anteil = 0.5 - 0.05 * Math.max(0, h.kids - 1);
     // § 51 Abs. 3, 4 BAföG: unter 10 € (gerundet, also ungerundet unter 9,50 €) kein BAföG -> Grenze 1.088 − 9,50 €
-    return { level: h.netto <= frei ? 'ja' : anteil <= 0 || (h.netto - frei) * anteil <= 1088 - 9.5 ? 'vielleicht' : 'nein', frei };
+    // § 11 Abs. 4 BAföG: Sind j Geschwister ebenfalls in förderfähiger Ausbildung, entfällt für sie der Freibetrag 770 € (und die 5 %),
+    // das Einkommen wird auf 1 + j Auszubildende geteilt. „nein“ nur, wenn es für jedes j = 0 … Geschwister nicht reicht.
+    // Elterngeld: bis 300 € frei (§ 10 Abs. 1 BEEG); Unterhalt für sich selbst nur versteuert (zählt hier nicht).
+    const eink = h.netto - h.p.reduce((s, x) => s + (x.art === 'eg' ? Math.min(300, x.brutto) : 0), 0) - (e.art1 === 'unt' ? h.brutto - h.brutto2 : 0) - (h.erwachsene === 2 && e.art2 === 'unt' ? h.brutto2 : 0);
+    let reicht = false;
+    for (let j = 0; j <= Math.max(0, h.kids - 1); j++) {
+      const mit = Math.max(0, h.kids - 1) - j, fj = (h.erwachsene === 2 ? 2540 : 1690) + mit * 770, qj = 0.5 - 0.05 * mit;
+      if (qj <= 0 || Math.max(0, eink - fj) * qj / (1 + j) <= 1088 - 9.5) reicht = true;
+    }
+    return { level: h.netto <= frei ? 'ja' : anteil <= 0 || (h.netto - frei) * anteil <= 1088 - 9.5 || reicht ? 'vielleicht' : 'nein', frei };
   }
   if (h.gruppe === '50+') return { level: 'nein' };
   if (h.gruppe === '40-49' && !(h.jahre && h.jahre < 45)) return { level: 'vielleicht' };

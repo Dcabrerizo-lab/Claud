@@ -95,5 +95,5 @@
   "bp.vgl.pg": "bakım derecesi (Pflegegrad) {pg}",
   "bp.vgl.kein": "bakım derecesi (Pflegegrad) yok",
   "bp.vgl.klein": "Pflegekasse’nin hesapladığı gibi ağırlıklı puanlar (§ 15 SGB XI). Artı şu demek: senin değerlendirmen orada daha fazla puan veriyor. Aşağıda tam olarak hangi sorularda olduğu yazıyor.",
-  "t.bafoeg.vermTeil": "Varlığınız {verm} muafiyet tutarının üzerinde. Yalnızca aşan kısım sayılır: 12 aya bölünür ve BAföG'u ayda yaklaşık {monat} azaltır. Kesin hesabı Amt für Ausbildungsförderung yapar."
+  "t.bafoeg.vermTeil": "Varlığınız {verm} muafiyet tutarının üzerinde. Ek 2.300 € yalnızca eş veya kayıtlı hayat arkadaşı ve her öz çocuğunuz için verilir. Yalnızca muafiyeti aşan kısım sayılır: 12 aya bölünür ve BAföG'u ayda yaklaşık {monat} azaltır. Kesin hesabı Amt für Ausbildungsförderung yapar."
 }

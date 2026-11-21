@@ -80,7 +80,12 @@ function bafoegSolo(f) {
   }
   const r = R.evaluate(inp).results.find((x) => x.id === 'bafoeg');
   const vt = r.tx.find((t) => t[0] === 'bafoeg.vermTeil');
-  return { level: r.level, hl: r.hl, keys: r.tx.map((t) => t[0]), vermMonat: vt ? (vt[1].monat && vt[1].monat.eur != null ? vt[1].monat.eur : Number(String(vt[1].monat).replace(/[^\d]/g, ''))) : null };
+  // Betragsschätzung (seit Update BAföG-Betrag): Spanne [von, bis] in €; „bis etwa“ -> von 0; keine Schätzung oder „eher nicht“ -> [0, 0].
+  // Dazu die Spanne je Wohnsituation (bafoeg.betragWohnen: a–b bei den Eltern, c–d nicht bei den Eltern).
+  const sch = r.tx.find((t) => /^schaetz\./.test(t[0])), bw = r.tx.find((t) => t[0] === 'bafoeg.betragWohnen');
+  const spanne = r.level === 'nein' || !sch ? [0, 0] : sch[0] === 'schaetz.eins' ? [sch[1].a.eur, sch[1].a.eur] : sch[0] === 'schaetz.spanne' ? [sch[1].a.eur, sch[1].b.eur] : [0, sch[1].b.eur];
+  const wohnen = bw ? { eltern: [bw[1].a.eur, bw[1].b.eur], aus: [bw[1].c.eur, bw[1].d.eur] } : null;
+  return { level: r.level, hl: r.hl, keys: r.tx.map((t) => t[0]), spanne, wohnen, vermMonat: vt ? (vt[1].monat && vt[1].monat.eur != null ? vt[1].monat.eur : Number(String(vt[1].monat).replace(/[^\d]/g, ''))) : null };
 }
 function egSolo(f) {
   const kids = f.geschwister ? 2 : 0;
@@ -100,12 +105,12 @@ const eur = (x) => (x == null ? '–' : Number(x).toLocaleString('de-DE', { mini
 
 function auswerten(dir) {
   const erg = { bafoeg: null, elterngeld: null, pfaendung: null };
-  // BAföG: SoLo nennt keinen Betrag, nur eine Einschätzung. Regeln: „wahrscheinlich“ -> amtlich > 0 €; „eher nicht“ -> amtlich 0 €
+  // BAföG: Einschätzung und (seit Update BAföG-Betrag) geschätzte Spanne. Regeln: „wahrscheinlich“ -> amtlich > 0 €; „eher nicht“ -> amtlich 0 €
   // (unter 10 € wird nicht ausgezahlt, § 51 Abs. 4 BAföG); „möglich“ ist immer vereinbar. Zeigt SoLo die monatliche Minderung durch
   // Vermögen (bafoeg.vermTeil), muss amtlich Bedarf − Minderung herauskommen (± 1 €), wenn sonst nichts angerechnet wird.
   const B = lies(dir, 'bafoeg');
   if (B.length) {
-    const z = { n: B.length, ohne: 0, gleich: 0, anders: [], moeglichPos: 0, moeglichNull: 0, ja: 0, nein: 0, vermGeprueft: 0, hinweise: [] };
+    const z = { n: B.length, ohne: 0, gleich: 0, anders: [], moeglichPos: 0, moeglichNull: 0, ja: 0, nein: 0, vermGeprueft: 0, betragGeprueft: 0, betragBreite: [], hinweise: [] };
     for (const x of B) {
       if (!x.amtlich || x.amtlich.anspruch == null) { z.ohne++; continue; }
       const s = bafoegSolo(x.f), a = x.amtlich.anspruch, pos = a >= 10;
@@ -117,6 +122,18 @@ function auswerten(dir) {
         z.vermGeprueft++;
         const soll = Math.max(0, x.amtlich.bedarf - s.vermMonat);
         if (Math.abs(soll - a) > 1) fehler = 'Minderung durch Vermögen: SoLo ' + eur(s.vermMonat) + '/Monat, amtlich Bedarf ' + eur(x.amtlich.bedarf) + ' − Anspruch ' + eur(a) + ' = ' + eur(x.amtlich.bedarf - a);
+      }
+      // Betrag: Der amtliche Anspruch muss in SoLos Spanne liegen, und in der Spanne der passenden Wohnsituation. Toleranz 0 €:
+      // SoLo rundet die Grenzen schon nach außen auf 10 € (untere ab, obere auf), der amtliche Betrag ist nach § 51 Abs. 3 auf volle Euro
+      // gerundet; die Teilspannen je Wohnsituation rechnen mit demselben § 51 (gerundet, unter 10 € = 0 €).
+      if (!fehler) {
+        z.betragGeprueft++;
+        if (s.spanne[1] > s.spanne[0]) z.betragBreite.push(s.spanne[1] - s.spanne[0]);
+        if (a < s.spanne[0] || a > s.spanne[1]) fehler = 'Betrag: amtlich ' + eur(a) + ' außerhalb der SoLo-Spanne ' + eur(s.spanne[0]) + ' bis ' + eur(s.spanne[1]);
+        else if (s.wohnen) {
+          const w = x.f.beiEltern ? s.wohnen.eltern : s.wohnen.aus;
+          if (a < w[0] || a > w[1]) fehler = 'Betrag: amtlich ' + eur(a) + ' außerhalb der Spanne ' + (x.f.beiEltern ? 'bei den Eltern ' : 'eigene Wohnung ') + eur(w[0]) + ' bis ' + eur(w[1]);
+        }
       }
       if (fehler) z.anders.push({ i: x.i, f: x.f, solo: s, amtlich: x.amtlich, fehler }); else z.gleich++;
     }
@@ -158,7 +175,7 @@ function bericht(erg) {
   if (erg.bafoeg) {
     const z = erg.bafoeg;
     L.push('## BAföG', '', '| | Anzahl |', '|---|---|', '| Fälle | ' + z.n + ' |', '| amtlich ohne Ergebnis | ' + z.ohne + ' |', '| SoLo „wahrscheinlich“ | ' + z.ja + ' |', '| SoLo „eher nicht“ | ' + z.nein + ' |',
-      '| SoLo „möglich“, amtlich Anspruch | ' + z.moeglichPos + ' |', '| SoLo „möglich“, amtlich 0 € | ' + z.moeglichNull + ' |', '| Vermögensminderung in € geprüft | ' + z.vermGeprueft + ' |', '| **Widersprüche** | **' + z.anders.length + '** |', '');
+      '| SoLo „möglich“, amtlich Anspruch | ' + z.moeglichPos + ' |', '| SoLo „möglich“, amtlich 0 € | ' + z.moeglichNull + ' |', '| Vermögensminderung in € geprüft | ' + z.vermGeprueft + ' |', '| Betrag in SoLos Spanne geprüft | ' + z.betragGeprueft + ' |', '| Breite der Spanne (Median) | ' + (z.betragBreite.length ? eur(z.betragBreite.slice().sort((p, q) => p - q)[z.betragBreite.length >> 1]) : '–') + ' |', '| **Widersprüche** | **' + z.anders.length + '** |', '');
     if (z.anders.length) {
       L.push('| Nr. | Fall | SoLo | amtlich | Befund |', '|---|---|---|---|---|');
       z.anders.slice(0, 60).forEach((a) => L.push('| ' + a.i + ' | ' + fb(a.f) + ' | ' + a.solo.level + ' (' + a.solo.keys.join(', ') + ') | ' + eur(a.amtlich.anspruch) + ' (Bedarf ' + eur(a.amtlich.bedarf) + ') | ' + a.fehler + ' |'));

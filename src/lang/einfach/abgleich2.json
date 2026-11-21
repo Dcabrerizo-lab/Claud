@@ -1,3 +1,9 @@
 {
-  "t.bafoeg.vermTeil": "Du hast mehr Geld als den Freibetrag von {verm}. Nur das Geld über dem Freibetrag zählt. Das Amt teilt es auf 12 Monate auf. Dann gibt es jeden Monat etwa {monat} weniger BAföG. Das Amt für Ausbildungsförderung rechnet es genau aus."
+  "t.bafoeg.vermTeil": "Du hast mehr Geld als den Freibetrag von {verm}. Zusätzlich 2.300 € frei gibt es nur für einen Ehe-Partner oder eingetragenen Lebens-Partner und für jedes eigene Kind. Nur das Geld über dem Freibetrag zählt. Das Amt teilt es auf 12 Monate auf. Dann gibt es jeden Monat etwa {monat} weniger BAföG. Das Amt für Ausbildungsförderung rechnet es genau aus.",
+  "t.bafoeg.vermEvtl": "Du hast mehr Geld als {verm}. Zusätzlich 2.300 € frei gibt es nur für einen Ehe-Partner oder eingetragenen Lebens-Partner und für jedes eigene Kind (§ 29 BAföG). Gilt das nicht für dich? Dann gibt es jeden Monat bis zu etwa {monat} weniger BAföG.",
+  "t.bafoeg.betragWohnen": "Für ein Studium: Wohnt die Person bei den Eltern? Dann gibt es etwa {a} bis {b} im Monat. Wohnt sie woanders? Dann gibt es etwa {c} bis {d} im Monat. Es kommt auch auf die Kranken-Versicherung an.",
+  "t.bafoeg.schule": "Das gilt für ein Studium. Für Schulen gibt es andere Beträge. Wer bei den Eltern wohnt und auf eine allgemein-bildende Schule geht (zum Beispiel Gymnasium), bekommt meist kein BAföG.",
+  "t.bafoeg.andererElternteil": "Das Einkommen vom anderen Eltern-Teil zählt auch. Die App kennt es nicht. Darum zeigt sie nur, wie viel es höchstens gibt.",
+  "t.bafoeg.kindHinweis": "Das Amt nimmt das Einkommen der Eltern vom vorletzten Jahr. Ist das Einkommen jetzt viel kleiner? Dann kann man einen Antrag stellen. Dann nimmt das Amt das Einkommen von jetzt (§ 24 Abs. 3 BAföG). Hat das Kind selbst Einkommen oder Vermögen, gibt es vielleicht weniger BAföG.",
+  "t.bafoeg.ab30": "Warst du am Anfang der Ausbildung schon 30 Jahre alt? Dann zählt das Einkommen deiner Eltern nicht (§ 11 Abs. 3 BAföG). Dann zählen nur dein Einkommen, dein Vermögen und das Einkommen von deinem Ehe-Partner oder eingetragenen Lebens-Partner. Warst du jünger? Dann gibt es vielleicht weniger."
 }
