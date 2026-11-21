@@ -4,6 +4,7 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 
 ## Nächste Version (in Arbeit)
 - **„Es ist dringend“ aufgeräumt**: alle Fälle gleich aufgebaut – Frist oben, „Das tust du jetzt“ in Schritten, kurze Tipps zum Aufklappen, Knöpfe, Quellen unten. Konto gepfändet mit Bescheinigung und Grundfreibetrag statt doppeltem Tipp; Strom-/Gassperre in 3 Schritten. „Stimmt der Brief?“: Hinweis „keine Rechtsberatung“ unter dem letzten Tipp.
+- **PIN-Schalter repariert**: Die PIN-Sperre lässt sich wieder ausschalten (nach Eingabe der bisherigen PIN). Beim Ein- und Ausschalten gibt es „Abbrechen“; erneutes Tippen auf den Schalter schließt das Feld, der Schalter zeigt immer den echten Zustand.
 - **PIN festlegen mit kurzer Erklärung**: Unter dem Feld „Neue PIN“ steht in 3 kurzen Sätzen, dass die PIN die ganze App sperrt und die Angaben verschlüsselt, dass man sie sich merken muss und dass bei vergessener PIN niemand die Angaben öffnen kann (13 Sprachen und Einfache Sprache).
 - **Haushaltsplan aufgeräumt**: Unter der Eingabe steht nichts mehr. Hinweise stehen in der Auswertung, das Druckblatt auch, die Tabelle (CSV) im Haushaltsbuch. Die Übernahme in den Leistungs-Check steht in der Karte, die bei knappem Geld erscheint.
 - **„Bewilligt bis“ entfernt** (auch die Erinnerung an den Folgeantrag in den Fristen). Alte Angaben werden einfach nicht mehr verwendet.

@@ -123,6 +123,17 @@ const offenName = (s) => { const z = s.d.querySelector('#setHaushalte .vg-offen 
   const sel = d.getElementById('vgTage'); sel.value = '30'; sel.dispatchEvent(new s.w.Event('change'));
   ck('[vorgaenge] automatisches Löschen: Datum „wird am … gelöscht“ sichtbar', d.querySelectorAll('#setHaushalte .vg-ablauf').length === 3 && /Wird am \d\d\.\d\d\.\d{4} gelöscht/.test(d.getElementById('setHaushalte').textContent));
 
+  // PIN einschalten und abbrechen: Feld zu, Schalter bleibt bzw. springt zurück auf „aus“, nichts gespeichert (Fehler 1.8.0: Schalter „festgeklemmt“)
+  {
+    const sw = () => d.getElementById('vgPinSchalter');
+    sw().click();
+    ck('[vorgaenge] PIN ein: Feld zum Festlegen mit „Abbrechen“', !!d.getElementById('vgPin1') && !!d.getElementById('vgPinAbbr'));
+    d.getElementById('vgPin1').value = '9999';
+    d.getElementById('vgPinAbbr').click();
+    ck('[vorgaenge] PIN ein abbrechen: Feld weg, Schalter aus, keine PIN', !d.getElementById('vgPinForm') && sw().getAttribute('aria-checked') === 'false' && !/"pin"/.test(mem['lotse.vorgaenge'] || '') && d.activeElement === sw());
+    sw().click(); sw().click();
+    ck('[vorgaenge] PIN ein: erneutes Tippen auf den Schalter schließt das Feld (Schalter aus)', !d.getElementById('vgPinForm') && sw().getAttribute('aria-checked') === 'false');
+  }
   // PIN setzen
   d.getElementById('vgPinSchalter').click();
   { // Kurze Erklärung direkt unter dem Feld „Neue PIN“: dezente Hinweiszeile, mit dem Feld verknüpft, höchstens 3 kurze Sätze
@@ -192,6 +203,29 @@ const offenName = (s) => { const z = s.d.querySelector('#setHaushalte .vg-offen 
   ck('[vorgaenge] nach dem Entsperren: Haushaltsplan entschlüsselt geladen', s2.w.Haushalt.daten().plan.aus.essen === 30000);
   ck('[vorgaenge] nach dem Entsperren: App wieder bedienbar', s2.d.getElementById('app').inert === false);
   ck('[vorgaenge] nach dem Entsperren: „Familie M.“ in „Mein Ordner“ geöffnet', offenName(s2) === 'Familie M.');
+  // Ausschalten nach dem Neustart (wie in der installierten App): falsche PIN -> bleibt an; Abbrechen -> bleibt an; richtige PIN -> aus
+  const memMitPin = Object.assign({}, mem); // danach wiederherstellen: „PIN vergessen“ weiter unten braucht den Stand mit PIN
+  {
+    const sw = () => s2.d.getElementById('vgPinSchalter');
+    ck('[vorgaenge] nach Neustart: Schalter „an“', sw().getAttribute('aria-checked') === 'true');
+    sw().click();
+    ck('[vorgaenge] PIN aus: Feld „Bisherige PIN“ mit „Abbrechen“', !!s2.d.getElementById('vgPin0') && !!s2.d.getElementById('vgPinAbbr'));
+    s2.d.getElementById('vgPinAbbr').click();
+    ck('[vorgaenge] PIN aus abbrechen: Feld weg, Schalter bleibt an', !s2.d.getElementById('vgPinForm') && sw().getAttribute('aria-checked') === 'true');
+    sw().click(); sw().click();
+    ck('[vorgaenge] PIN aus: erneutes Tippen schließt das Feld, Schalter bleibt an', !s2.d.getElementById('vgPinForm') && sw().getAttribute('aria-checked') === 'true');
+    sw().click();
+    s2.d.getElementById('vgPin0').value = '1111'; submit(s2, s2.d.getElementById('vgPinForm'));
+    for (let i = 0; i < 200 && !/bisherige PIN stimmt nicht/.test(s2.d.getElementById('vgPinForm').textContent); i++) await warte(50);
+    ck('[vorgaenge] PIN aus mit falscher PIN: Meldung, bleibt an, weiter verschlüsselt', /bisherige PIN stimmt nicht/.test(s2.d.getElementById('vgPinForm').textContent) && sw().getAttribute('aria-checked') === 'true' && /"ct"/.test(mem['lotse.vorgaenge']) && !mem['lotse.state']);
+    s2.d.getElementById('vgPin0').value = '2580'; submit(s2, s2.d.getElementById('vgPinForm'));
+    for (let i = 0; i < 200 && s2.d.getElementById('vgPinForm'); i++) await warte(50);
+    await warte(50);
+    ck('[vorgaenge] PIN aus mit richtiger PIN: Schalter aus, Angaben wieder unverschlüsselt, keine PIN gespeichert', sw().getAttribute('aria-checked') === 'false' && /PIN-Sperre ist aus/.test(s2.d.body.textContent) && !/"pin"/.test(mem['lotse.vorgaenge']) && /640/.test(mem['lotse.state'] || ''), [sw().getAttribute('aria-checked'), s2.d.getElementById('setSicher').textContent.slice(0, 300), (mem['lotse.state'] || '').slice(0, 80)]);
+    const s5 = seite(mem); await warte(100);
+    ck('[vorgaenge] nach PIN aus und Neustart: kein Sperrbildschirm, Schalter aus', (!s5.d.getElementById('vgSperre') || s5.d.getElementById('vgSperre').hidden) && s5.d.getElementById('vgPinSchalter').getAttribute('aria-checked') === 'false' && s5.d.getElementById('miete').value === '640');
+  }
+  await warte(100); Object.keys(mem).forEach((k) => delete mem[k]); Object.assign(mem, memMitPin);
 
   // Automatisch löschen umstellen, geöffneter Vorgang ist abgelaufen: Rückfrage mit Anzahl, keine fremden Daten überschreiben
   {
