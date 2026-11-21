@@ -69,5 +69,6 @@
   "bp.vgl.zaehltNicht": "nie liczy się",
   "bp.vgl.pg": "stopień opieki (Pflegegrad) {pg}",
   "bp.vgl.kein": "brak stopnia opieki (Pflegegrad)",
-  "bp.vgl.klein": "Punkty ważone, tak jak liczy Pflegekasse (§ 15 SGB XI). Plus oznacza: Twoja ocena daje tam więcej punktów. Poniżej widać, przy których pytaniach dokładnie."
+  "bp.vgl.klein": "Punkty ważone, tak jak liczy Pflegekasse (§ 15 SGB XI). Plus oznacza: Twoja ocena daje tam więcej punktów. Poniżej widać, przy których pytaniach dokładnie.",
+  "t.bafoeg.vermTeil": "Majątek przekracza kwotę wolną {verm}. Liczy się tylko nadwyżka: rozłożona na 12 miesięcy zmniejsza BAföG o około {monat} miesięcznie. Dokładnie wylicza to Amt für Ausbildungsförderung."
 }

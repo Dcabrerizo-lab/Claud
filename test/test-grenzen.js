@@ -53,8 +53,9 @@ drei('Unterhaltsvorschuss ab 12, Einkommen des Elternteils', R.uvg.min12, (x) =>
   drei('Krankengeld: kein Anspruch aus Minijob ' + Math.floor(heute), mj, (x) => keys({ heute, arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: x }, 'krankengeld').includes('krank.minijob'), BIS);
 });
 // Einkommensgrenze § 85 SGB XII: Hilfe zur Pflege und Blindenhilfe (genau auf der Grenze: „unter“)
-const g85 = (o) => R.hzp.grund * R.regelbedarf.alleinstehend + o.miete + R.hzp.familie * R.regelbedarf.alleinstehend * ((o.adults || 1) - 1);
-[{ miete: 500 }, { miete: 700, adults: 2 }].forEach((o) => {
+// § 85 Abs. 1 SGB XII: Unterkunft ohne Heizung (ohne Angabe minus Heizkostenkomponente), Familienzuschlag auf volle Euro aufgerundet (395 €)
+const g85 = (o) => R.hzp.grund * R.regelbedarf.alleinstehend + o.miete - (o.heizkosten || Rules.wgHeiz(o.adults || 1)) + Math.ceil(R.hzp.familie * R.regelbedarf.alleinstehend) * ((o.adults || 1) - 1);
+[{ miete: 600, heizkosten: 100 }, { miete: 800, heizkosten: 100, adults: 2 }, { miete: 700, adults: 2 }].forEach((o) => {
   const v = Math.round(g85(o));
   drei('Hilfe zur Pflege, Einkommensgrenze § 85 SGB XII (' + (o.adults || 1) + ' Erw.)', v, (x) => keys({ ...o, pflegegrad: 3, art1: 'rente', brutto: x, netto: x }, 'hzp').includes('hzp.unter'), BIS);
 });

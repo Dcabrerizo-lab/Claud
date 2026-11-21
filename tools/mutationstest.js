@@ -31,6 +31,10 @@ const M = [
   ['Elterngeld: 0,1 Punkte je 4 statt 2 €', 'Math.floor((E.grenzeUnten - n) / 2)', 'Math.floor((E.grenzeUnten - n) / 4)'],
   ['Elterngeld: Mindestbetrag 300 € fehlt', 'return Math.min(E.max, Math.max(E.min, n * q));', 'return Math.min(E.max, n * q);'],
   ['Elterngeld: 12 statt 14 Monate', 'const monate = R.eg.monate + R.eg.partner;', 'const monate = R.eg.monate;'],
+  // Abgleich 2 (21.11.2026): Befunde 10, 12, 14
+  ['BAföG: Elterneinkommen über dem Freibetrag voll statt zu 50 % angerechnet (Befund 10)', 'const quote = R.bafoeg.anrechFrei - R.bafoeg.anrechFreiKind', 'const quote = 1 - R.bafoeg.anrechFreiKind'],
+  ['Blindengeld Bayern: Pflegegrad 4 und 5 mit dem eigenen Pflegegeld (Befund 12)', ': 0.33 * R.pflege.geld[3];', ': 0.33 * R.pflege.geld[h.pflegegrad];'],
+  ['Grundsicherung im Alter: Grundrenten-Freibetrag aus der Netto-Rente (Befund 14)', 'gesB = Math.max(gesetzlich, b - zusB[i])', 'gesB = gesetzlich'],
   ['Hilfe zur Pflege: Grenze 1,5 statt 2 Regelsätze', 'hzp: { grund: 2, familie: 0.7 }', 'hzp: { grund: 1.5, familie: 0.7 }'],
   ['Hilfe zur Pflege: Familienzuschlag 80 %', 'hzp: { grund: 2, familie: 0.7 }', 'hzp: { grund: 2, familie: 0.8 }'],
   ['Blindenhilfe auch bei Sehbehinderung', "if (h.blind !== 'blind') return mk(id, 'nein'", "if (!h.blind) return mk(id, 'nein'"],
@@ -79,9 +83,9 @@ const M = [
   ['Wohngeld: Elterngeld 300 € zählt doch', "const zaehlt = x[0] === 'eg' ? Math.max(0, x[1] - R.elterngeldFrei) : x[1] - wkHier;", 'const zaehlt = x[1] - wkHier;'],
   ['Wohngeld: Freibetrag Alleinerziehende fehlt', 'if (h.alleinerz) freib += R.wohngeld.freibetragAlleinerzMonat;', ''],
   ['Wohngeld: Freibetrag Kindereinkommen fehlt', 'wgKindFrei: 100', 'wgKindFrei: 0'],
-  ['Grundsicherung: Grundrentenfreibetrag ohne Deckel', 'freiStaffel(gesetzlich, R.grundrente, rs1)', 'freiStaffel(gesetzlich, { sockel: 100, quote: 0.3, max: 1 }, rs1)'],
+  ['Grundsicherung: Grundrentenfreibetrag ohne Deckel', 'freiStaffel(gesB, R.grundrente, rs1)', 'freiStaffel(gesB, { sockel: 100, quote: 0.3, max: 1 }, rs1)'],
   ['Grundsicherung: Freibetrag für Betriebs-, Riester- oder private Rente fehlt', ' - freiStaffel(z, R.vorsorge, rs1); }', ' - 0; }'],
-  ['Grundsicherung: Grundrentenfreibetrag auch auf die Betriebsrente', 'freiStaffel(gesetzlich, R.grundrente, rs1)', 'freiStaffel(n, R.grundrente, rs1)'],
+  ['Grundsicherung: Grundrentenfreibetrag auch auf die Betriebsrente', 'freiStaffel(gesB, R.grundrente, rs1)', 'freiStaffel(Math.max(n, b), R.grundrente, rs1)'],
   ['Kinderzuschlag: anderes Elterneinkommen nur zu 45 %', 'return andere > bedarf ? andere - bedarf + R.kiz.anrechnung * arbeit : R.kiz.anrechnung * Math.max(0, gesamt - bedarf);', 'return R.kiz.anrechnung * Math.max(0, gesamt - bedarf);'],
   ['Rundfunk: Befreiung bei Blindenhilfe, Hilfe zur Pflege, BAföG fehlt', "if (okW(w.hzp) || okW(w.blh) || (okW(w.baf) && h.ausbildung === 'ich' && h.wohnform !== 'eltern'))", 'if (false)'],
   ['Grundsicherungsgeld: Versicherungspauschale neben Lohn', 'return a + Math.min(anders, lohn > 0 ? Math.max(0, R.versPauschale - lohn) : R.versPauschale);', 'return a + R.versPauschale;'],
@@ -95,7 +99,7 @@ const M = [
   ['Grundsicherung: Freibetrag größer als die Rente', 'const freiStaffel = (x, p, rs1) => (x > 0 ? Math.min(p.sockel + p.quote * Math.max(0, x - p.sockel), p.max * rs1, x) : 0);', 'const freiStaffel = (x, p, rs1) => (x > 0 ? Math.min(p.sockel + p.quote * Math.max(0, x - p.sockel), p.max * rs1) : 0);'],
   ['Grundsicherungsgeld: Elterngeld 300 € nicht frei', "egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0)", "egFreiSGB: sumIf(() => 0)"],
   ['Grundsicherungsgeld: Unterhalt ohne Deckel', 'return Math.min(eink, Math.max(0, kinderBedarf - h.children * R.kindergeld));', 'return eink;'],
-  ['Blindengeld: Pflegegrad 2 mit 33 %', '(h.pflegegrad === 2 ? 0.46 : 0.33)', '(h.pflegegrad === 2 ? 0.33 : 0.33)'],
+  ['Blindengeld: Pflegegrad 2 mit 33 %', 'h.pflegegrad === 2 ? 0.46 * R.pflege.geld[2]', 'h.pflegegrad === 2 ? 0.33 * R.pflege.geld[2]'],
   ['Zuzahlung: chronisch schon ab GdB 50', 'if (gdbNum(h) >= 60 || h.pflegegrad >= 3)', 'if (gdbNum(h) >= 50 || h.pflegegrad >= 3)'],
   ['Ausweis: Gleichstellung erst ab 40', "if (gdbEff(h) && g >= 30) return", "if (gdbEff(h) && g >= 40) return"],
   ['Grundsicherungsgeld: Freibetrag 30 % statt 20 %', 'if (b > 100) f += 0.2 * (Math.min(b, 520) - 100);', 'if (b > 100) f += 0.3 * (Math.min(b, 520) - 100);'],
@@ -129,6 +133,7 @@ const DATEI = (m) => m[3] || 'src/rules.js';
 const ORIG = {};
 M.forEach((m) => { ORIG[DATEI(m)] = ORIG[DATEI(m)] || fs.readFileSync(path.join(ROOT, DATEI(m)), 'utf8'); });
 const TESTS = ['test.js', 'test-netto.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-ba-beispiele.js', 'test-paar-einkommen.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
+TESTS.push('test-musterbescheide-2.js'); // Abgleich 2 (21.11.2026)
 const laeuft = () => { try { for (const t of TESTS) execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); return true; } catch (e) { return false; } };
 
 let unentdeckt = 0, geprueft = 0;

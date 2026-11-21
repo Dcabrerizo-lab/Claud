@@ -154,6 +154,22 @@ Bekannte, bewusst vorsichtige Abweichung: Beim Grundsicherungsgeld lässt SoLo E
 über 300 € liegt. Das Gesetz (§ 10 Abs. 5 BEEG) lässt auch beim Mindestbetrag so viel frei, wie vor der Geburt verdient wurde
 (FW-Beispiel: 250 € frei). SoLo zählt hier also eher zu viel Einkommen und nennt eher zu wenig Grundsicherungsgeld, nie zu viel.
 
+## Abgleich Runde 2 mit amtlichen Rechenbeispielen (21.11.2026)
+
+84 weitere Fälle (Merkblätter, Broschüren, Weisungen, zwei Urteile, Gesetzestexte); 6 Befunde behoben, jede Korrektur am amtlichen Text geprüft (Abruf 21.11.2026). Feste Tests: `test/test-musterbescheide-2.js`; Mutationen für Nr. 10, 12, 14 in `tools/mutationstest.js`.
+
+| Nr. | Korrektur | Quelle |
+|---|---|---|
+| 10 | BAföG Elterneinkommen: Anrechnung 50 % (plus 5 % je Kind mit Freibetrag) des Betrags über dem Freibetrag; „eher nicht“ erst über dem höchsten Bedarf 1.088 € | § 25 Abs. 4, §§ 13, 13a BAföG; bafög.de |
+| 11 | BAföG Vermögen: nur der Betrag über 15.000 / 45.000 €, geteilt durch 12 Monate | §§ 29, 30 BAföG; bafög.de Beispiel „Stefan“ |
+| 12 | Blindengeld Bayern Pflegegrad 3 bis 5: einheitlich 33 % des Pflegegeldes von Pflegegrad 3 (197,67 €) | Art. 4 Abs. 1 Satz 2 BayBlindG; ZBFS-Infoblatt 7/2026 |
+| 13 | Arbeitslosengeld/Krankengeld: obere Grenze mindestens Netto Steuerklasse III (beim Arbeitslosengeld 20 % Pauschale + Lohnsteuer) | § 153 SGB III; Merkblatt 1 Abschnitt 4; § 47 SGB V |
+| 14 | Grundrentenfreibetrag Grundsicherung aus der Bruttorente, App und Bescheid-Check | § 82a Abs. 1 SGB XII; DRV „Die Grundsicherung“ 5/2026 S. 18 |
+| 15 | Einkommensgrenze Hilfe zur Pflege/Blindenhilfe: Unterkunft ohne Heizung, Familienzuschlag aufgerundet (395 €) | § 85 Abs. 1 SGB XII; Infoblatt Nr. 37 Pflegestützpunkte Berlin |
+| H3 | Landespflegegeld: Auszahlung bis 31. Januar des Folgejahres im Antragshinweis | Art. 2 Abs. 4 BayLPflGG |
+
+Nicht umgesetzt (im Bericht gelassen): H1 (Unterhaltsvorschuss 12/13 Jahre in der internen Schätzung), H2 (Arbeitnehmer-Pauschbetrag beim WBS, Landesrecht je Land), H4 (Frage nach Geschwisterkind unter 3). Ohne Angabe der Heizkosten zieht die Grenze nach § 85 die Heizkostenkomponente des Wohngelds ab (Näherung, vorsichtige Seite).
+
 ## Großer und schwerer Abgleich mit amtlichen Rechnern (14.11.2026)
 
 Auf GitHub automatisch abgefragt, Ergebnisse als feste Testfälle in `test/amtlich-gross-*.json` (geprüft von `test/test-amtlich.js`):

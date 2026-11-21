@@ -69,5 +69,6 @@
   "bp.vgl.zaehltNicht": "does not count",
   "bp.vgl.pg": "care level (Pflegegrad) {pg}",
   "bp.vgl.kein": "no care level (Pflegegrad)",
-  "bp.vgl.klein": "Weighted points, as the Pflegekasse calculates them (§ 15 SGB XI). Plus means: your estimate gives more points there. Below you can see which questions exactly."
+  "bp.vgl.klein": "Weighted points, as the Pflegekasse calculates them (§ 15 SGB XI). Plus means: your estimate gives more points there. Below you can see which questions exactly.",
+  "t.bafoeg.vermTeil": "Your assets are above the allowance of {verm}. Only the part above it counts: spread over 12 months, it reduces BAföG by about {monat} a month. The Amt für Ausbildungsförderung calculates the exact amount."
 }

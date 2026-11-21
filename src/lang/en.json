@@ -997,7 +997,7 @@
   "t.lpg.land": "Landespflegegeld only exists in Bavaria.",
   "t.lpg.keine": "In Bavaria Landespflegegeld is paid from care level 2.",
   "t.lpg.ja": "In Bavaria there is Landespflegegeld from care level 2: {betrag} per year (from {stand}), regardless of income. It is paid in addition to the Pflegegeld from the Pflegekasse.",
-  "t.lpg.antrag": "You apply once at the Bayerisches Landesamt für Pflege, after that the money comes every year. Apply soon, as there is a deadline; the Landesamt will tell you which one.",
+  "t.lpg.antrag": "You apply once at the Bayerisches Landesamt für Pflege, after that the money comes every year. Apply soon, as there is a deadline; the Landesamt will tell you which one. The money for one year arrives by 31 January of the following year at the latest.",
   "t.lpg.pflegeAntrag": "As soon as a care level of 2 or more is confirmed, Bavaria also pays Landespflegegeld: {betrag} per year.",
   "t.kindergeld.familiengeld": "Bavaria only: For children born up to the end of 2024 there is still Familiengeld until their 3rd birthday ({betrag} per month, from the 3rd child {ab3}) and, with a crèche, up to {krippe} Krippengeld per month depending on income. For children born from 2025 neither exists any more.",
   "t.ausweis.gl": "Deaf (marker Gl): Some federal states pay their own Gehörlosengeld, for example Hessen and Sachsen-Anhalt; Bavaria does not. Ask the Versorgungsamt of your state.",
