@@ -991,7 +991,7 @@
   "t.lpg.land": "Landespflegegeld موجود فقط في بافاريا.",
   "t.lpg.keine": "في بافاريا يُدفع Landespflegegeld ابتداءً من درجة الرعاية 2.",
   "t.lpg.ja": "في بافاريا يوجد Landespflegegeld ابتداءً من درجة الرعاية 2: {betrag} سنويًا (منذ {stand})، بغض النظر عن الدخل. يُدفع إضافةً إلى Pflegegeld من Pflegekasse.",
-  "t.lpg.antrag": "تقدّم الطلب مرة واحدة لدى Bayerisches Landesamt für Pflege، وبعدها يأتي المال كل عام. قدّمه قريبًا لأن هناك مهلة؛ يخبرك Landesamt بها. يصل مال السنة الواحدة في موعد أقصاه 31 يناير من السنة التالية.",
+  "t.lpg.antrag": "تقدّم الطلب مرة واحدة لدى Bayerisches Landesamt für Pflege، وبعدها يأتي المال كل عام. قدّمه قريبًا لأن هناك مهلة؛ يخبرك Landesamt بها. يصل مال السنة الواحدة عادةً حتى 31 يناير من السنة التالية.",
   "t.lpg.pflegeAntrag": "بمجرد تحديد درجة رعاية 2 أو أكثر تدفع بافاريا أيضًا Landespflegegeld: {betrag} سنويًا.",
   "t.kindergeld.familiengeld": "في بافاريا فقط: للأطفال المولودين حتى نهاية 2024 لا يزال يوجد Familiengeld حتى عيد ميلادهم الثالث ({betrag} شهريًا، ومن الطفل الثالث {ab3}) ومع الحضانة حتى {krippe} شهريًا Krippengeld حسب الدخل. للأطفال المولودين منذ 2025 لم يعد أي منهما موجودًا.",
   "t.ausweis.gl": "أصم (العلامة Gl): بعض الولايات تدفع Gehörlosengeld خاصًا، مثل هيسن وساكسونيا-أنهالت؛ بافاريا لا. اسأل Versorgungsamt في ولايتك.",

@@ -1497,13 +1497,13 @@ const Rules = (function () {
 
   // Einkommensgrenze § 85 Abs. 1 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__85.html, Abruf 21.11.2026): zweifache Regelbedarfsstufe 1
   // + Aufwendungen für die Unterkunft + Familienzuschlag 70 % der Regelbedarfsstufe 1, „auf volle Euro aufgerundet“ (563 € -> 395 €), je weitere Person.
-  // Unterkunft ohne Heizung: Pflegestützpunkte Berlin, Informationsblatt Nr. 37 Hilfe zur Pflege (12/2025, Werte 2026, Abruf 21.11.2026):
-  // „Kosten der Unterkunft (ohne Heizung)“. Ohne Angabe der Heizkosten: Warmmiete minus Heizkostenkomponente wie beim Wohngeld (wgHeiz).
+  // Unterkunft MIT Heizung (ganze Warmmiete): BSG, Urteil vom 30.04.2020, B 8 SO 1/19 R, Leitsatz: Auch ab dem 1.1.2016 sind die Heizkosten
+  // als Aufwendungen für die Unterkunft einzustellen (https://www.bsg.bund.de/SharedDocs/Entscheidungen/DE/2020/2020_04_30_B_08_SO_01_19_R.html,
+  // Abruf 21.11.2026; ambulante Leistungen). § 85 nennt die Heizung nicht. Manche Träger rechnen trotzdem ohne Heizung (Pflegestützpunkte
+  // Berlin, Informationsblatt Nr. 37, 12/2025); die Karte bleibt deshalb „möglich“ und nennt die Grenze mit „etwa“.
   function hzpGrenze(h) {
     const rs1 = R.regelbedarf.alleinstehend;
-    const heiz = h.heizkosten > 0 && h.heizkosten < h.miete ? h.heizkosten : wgHeiz(h.persons);
-    const kdu = Math.max(0, h.miete - heiz);
-    return R.hzp.grund * rs1 + kdu + Math.ceil(R.hzp.familie * rs1) * (h.persons - 1);
+    return R.hzp.grund * rs1 + h.miete + Math.ceil(R.hzp.familie * rs1) * (h.persons - 1);
   }
 
   // Hilfe zur Pflege (SGB XII, 7. Kapitel): wenn Pflegekasse und eigenes Geld nicht reichen (Pflegedienst, Tagespflege, Heim)
@@ -1556,7 +1556,8 @@ const Rules = (function () {
     const id = 'lpg';
     if (h.land && h.land !== 'BY') return mk(id, 'nein', 'land', [['lpg.land']]);
     if (h.pflegegrad < 2 && !h.pflegeAntrag) return mk(id, 'nein', 'vorausFehlt', [['lpg.keine']]);
-    // lpg.antrag: Auszahlung bis 31. Januar des Folgejahres (Art. 2 Abs. 4 Satz 2 BayLPflGG, https://www.gesetze-bayern.de/Content/Document/BayLPflGG-2, Abruf 21.11.2026)
+    // lpg.antrag: Auszahlung bis 31. Januar des Folgejahres (Art. 2 Abs. 4 Satz 2 BayLPflGG, https://www.gesetze-bayern.de/Content/Document/BayLPflGG-2, Abruf 21.11.2026);
+    // im Text „in der Regel“, weil der Antrag noch bis 3 Monate nach Ende des Pflegegeldjahres gestellt werden kann (Art. 3 Abs. 1 Satz 1)
     const tx = [['lpg.ja', { betrag: eur(R.lpg.betrag), stand: R.lpg.stand }], ['lpg.antrag']];
     return h.pflegegrad >= 2 ? mk(id, 'ja', 'ja', tx) : mk(id, 'vielleicht', 'vielleicht', [['lpg.pflegeAntrag', { betrag: eur(R.lpg.betrag) }]]);
   }

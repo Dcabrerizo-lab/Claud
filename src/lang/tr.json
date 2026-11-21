@@ -991,7 +991,7 @@
   "t.lpg.land": "Landespflegegeld sadece Bavyera'da vardır.",
   "t.lpg.keine": "Bavyera'da Landespflegegeld bakım derecesi 2'den itibaren ödenir.",
   "t.lpg.ja": "Bavyera'da bakım derecesi 2'den itibaren Landespflegegeld vardır: yılda {betrag} ({stand} itibarıyla), gelirden bağımsız. Pflegekasse'nin Pflegegeld'ine ek olarak ödenir.",
-  "t.lpg.antrag": "Başvuruyu bir kez Bayerisches Landesamt für Pflege'ye yaparsın, sonra para her yıl gelir. Bir süre sınırı olduğu için yakında başvur; hangisi olduğunu Landesamt söyler. Bir yılın parası en geç bir sonraki yılın 31 Ocak tarihine kadar gelir.",
+  "t.lpg.antrag": "Başvuruyu bir kez Bayerisches Landesamt für Pflege'ye yaparsın, sonra para her yıl gelir. Bir süre sınırı olduğu için yakında başvur; hangisi olduğunu Landesamt söyler. Bir yılın parası genellikle bir sonraki yılın 31 Ocak tarihine kadar gelir.",
   "t.lpg.pflegeAntrag": "Bakım derecesi 2 veya üstü belli olur olmaz Bavyera ayrıca Landespflegegeld öder: yılda {betrag}.",
   "t.kindergeld.familiengeld": "Sadece Bavyera: 2024 sonuna kadar doğan çocuklar için 3. yaş gününe kadar hâlâ Familiengeld (ayda {betrag}, 3. çocuktan itibaren {ab3}) ve kreşte gelire bağlı olarak ayda {krippe}'ya kadar Krippengeld vardır. 2025'ten itibaren doğan çocuklar için ikisi de artık yok.",
   "t.ausweis.gl": "Sağır (Gl işareti): Bazı eyaletler kendi Gehörlosengeld'ini öder, örneğin Hessen ve Sachsen-Anhalt; Bavyera ödemez. Eyaletinin Versorgungsamt'ına sor.",

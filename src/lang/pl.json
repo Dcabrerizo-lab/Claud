@@ -991,7 +991,7 @@
   "t.lpg.land": "Landespflegegeld istnieje tylko w Bawarii.",
   "t.lpg.keine": "W Bawarii Landespflegegeld przysługuje od stopnia opieki 2.",
   "t.lpg.ja": "W Bawarii od stopnia opieki 2 jest Landespflegegeld: {betrag} rocznie (od {stand}), niezależnie od dochodu. Jest wypłacane dodatkowo do Pflegegeld z Pflegekasse.",
-  "t.lpg.antrag": "Wniosek składasz raz w Bayerisches Landesamt für Pflege, potem pieniądze przychodzą co roku. Złóż go szybko, bo jest termin; jaki, powie Landesamt. Pieniądze za dany rok przychodzą najpóźniej do 31 stycznia następnego roku.",
+  "t.lpg.antrag": "Wniosek składasz raz w Bayerisches Landesamt für Pflege, potem pieniądze przychodzą co roku. Złóż go szybko, bo jest termin; jaki, powie Landesamt. Pieniądze za dany rok przychodzą zwykle do 31 stycznia następnego roku.",
   "t.lpg.pflegeAntrag": "Gdy tylko zostanie ustalony stopień opieki 2 lub wyższy, Bawaria płaci dodatkowo Landespflegegeld: {betrag} rocznie.",
   "t.kindergeld.familiengeld": "Tylko w Bawarii: na dzieci urodzone do końca 2024 roku do ich 3. urodzin jest jeszcze Familiengeld ({betrag} miesięcznie, od 3. dziecka {ab3}), a przy żłobku do {krippe} Krippengeld miesięcznie zależnie od dochodu. Na dzieci urodzone od 2025 roku nie ma już ani jednego, ani drugiego.",
   "t.ausweis.gl": "Głuchota (oznaczenie Gl): niektóre kraje związkowe płacą własne Gehörlosengeld, na przykład Hesja i Saksonia-Anhalt; Bawaria nie. Zapytaj w Versorgungsamt swojego kraju.",
