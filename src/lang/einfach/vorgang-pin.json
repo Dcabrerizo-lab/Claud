@@ -1,0 +1,20 @@
+{
+  "vgp.titel": "=",
+  "vgp.sperren": "=",
+  "vgp.aufheben": "=",
+  "vgp.oeffnen": "=",
+  "vgp.pin": "PIN für diesen Vorgang. 4 bis 8 Ziffern.",
+  "vgp.pinNeu": "PIN für diesen Vorgang. 4 bis 8 Ziffern. Am besten 6.",
+  "vgp.kurz": "Name in der Liste. Das musst du nicht.",
+  "vgp.kurz.t": "Diesen Namen sieht jeder, auch ohne PIN. Lässt du es leer, steht da nur „Gesperrter Vorgang“.",
+  "vgp.t0": "Das ist ein Sichtschutz. Gegen Fachleute mit Spezial-Werkzeug hilft er nicht sicher.",
+  "vgp.t1": "Ohne PIN können auch wir ihn nicht öffnen.",
+  "vgp.t2": "Fristen darin siehst du nur, wenn er offen ist.",
+  "vgp.t3": "PIN vergessen? Dann ist der Vorgang weg.",
+  "vgp.vergessen": "PIN vergessen? Dann ist der Vorgang weg. Löschen geht auch ohne PIN.",
+  "vgp.format": "Die PIN muss 4 bis 8 Ziffern haben.",
+  "vgp.ok": "Der Vorgang ist jetzt gesperrt.",
+  "vgp.aufgehoben": "Die Sperre ist weg.",
+  "vgp.st.offen": "Offen. Wenn du wechselst, ist er wieder gesperrt.",
+  "vgp.st.zu": "PIN eingeben zum Öffnen"
+}

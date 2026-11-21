@@ -31,6 +31,10 @@ const M = [
   ['Elterngeld: 0,1 Punkte je 4 statt 2 €', 'Math.floor((E.grenzeUnten - n) / 2)', 'Math.floor((E.grenzeUnten - n) / 4)'],
   ['Elterngeld: Mindestbetrag 300 € fehlt', 'return Math.min(E.max, Math.max(E.min, n * q));', 'return Math.min(E.max, n * q);'],
   ['Elterngeld: 12 statt 14 Monate', 'const monate = R.eg.monate + R.eg.partner;', 'const monate = R.eg.monate;'],
+  // Abgleich 2 (21.11.2026): Befunde 10, 12, 14
+  ['BAföG: Elterneinkommen über dem Freibetrag voll statt zu 50 % angerechnet (Befund 10)', 'const quote = R.bafoeg.anrechFrei - R.bafoeg.anrechFreiKind', 'const quote = 1 - R.bafoeg.anrechFreiKind'],
+  ['Blindengeld Bayern: Pflegegrad 4 und 5 mit dem eigenen Pflegegeld (Befund 12)', ': 0.33 * R.pflege.geld[3];', ': 0.33 * R.pflege.geld[h.pflegegrad];'],
+  ['Grundsicherung im Alter: Grundrenten-Freibetrag aus der Netto-Rente (Befund 14)', 'gesB = Math.max(gesetzlich, b - zusB[i])', 'gesB = gesetzlich'],
   ['Hilfe zur Pflege: Grenze 1,5 statt 2 Regelsätze', 'hzp: { grund: 2, familie: 0.7 }', 'hzp: { grund: 1.5, familie: 0.7 }'],
   ['Hilfe zur Pflege: Familienzuschlag 80 %', 'hzp: { grund: 2, familie: 0.7 }', 'hzp: { grund: 2, familie: 0.8 }'],
   ['Blindenhilfe auch bei Sehbehinderung', "if (h.blind !== 'blind') return mk(id, 'nein'", "if (!h.blind) return mk(id, 'nein'"],
@@ -47,6 +51,9 @@ const M = [
   ['Wohngeld: Mindestwerte Anlage 3 fehlen', '    M = Math.max(M, WG_MMIN[wgIdx(n)]); Y = Math.max(Y, WG_YMIN[wgIdx(n)]);', ''],
   ['Wohngeld: Werbungskostenpauschale fehlt', '    wgWerbung: { lohn: 1230, rente: 102 },', '    wgWerbung: { lohn: 0, rente: 0 },'],
   ['Elterngeld: Pauschbetrag § 2c BEEG fehlt', '    const n = Math.max(0, netto - E.pausch);', '    const n = Math.max(0, netto);'],
+  // Abgleich Musterbescheide 21.11.2026: Befund 1 (Plausibilitätsprüfung Nr. 15.01 WoGVwV mit Wohngeld) und Befund 2 (Vermögen Paar je Person, § 12 Abs. 2 SGB II)
+  ['Wohngeld: Mindesteinkommen ohne das Wohngeld selbst (Befund 1)', "- (h.uzBetrag || 0) + wgVorsichtig(h, yPess);", "- (h.uzBetrag || 0);"],
+  ['Grundsicherungsgeld: Paar-Vermögen mit Freibetrag der ältesten Person für beide (Befund 2)', "return h.adults === 2 && vMin && h.vermoegen > vMin ? hoechstensMoeglich(r, 'ggeld.vermAlter') : r;", 'return r;'],
   ['Kinderzuschlag: Hilfebedürftigkeit mit vollem Netto statt bereinigtem Einkommen', '    const mitKiz = elternEinkSGB2(h) + h.children * R.kindergeld', '    const mitKiz = h.netto + 0 * h.children * R.kindergeld'],
   // Ausfüllhilfe: falsche Anlage, Name falsch geteilt
   ['Formulare: Anlage KDU fehlt bei Miete', "if (miete > 0 || eigen) anl.push('Anlage KDU", "if (eigen) anl.push('Anlage KDU", 'src/formulare.js'],
@@ -80,10 +87,11 @@ const M = [
   ['Wohngeld: Freibetrag Alleinerziehende fehlt', 'if (h.alleinerz) freib += R.wohngeld.freibetragAlleinerzMonat;', ''],
   ['Wohngeld: Freibetrag Kindereinkommen fehlt', 'wgKindFrei: 100', 'wgKindFrei: 0'],
   ['Wohngeld: Lohn der Kinder ohne Arbeitnehmer-Pauschbetrag (§ 14 Abs. 1 WoGG, § 9a EStG)', 'const kindAbzug = R.wgWerbung.lohn / 12 + R.wgKindFrei;', 'const kindAbzug = R.wgKindFrei;'],
+  ['Wohngeld: vorsichtige Schätzung mit Pauschbetrag auch über der Minijob-Grenze (Auszahlung statt Brutto)', 'const kindAbzugPess = (h.kindEink || 0) > h.minijob ? R.wgKindFrei : kindAbzug;', 'const kindAbzugPess = kindAbzug;'],
   ['Wohngeld: Freibetrag § 17 Nr. 4 WoGG nur einmal statt je Kind', 'const kindNOpt = Math.max(1, (h.kids || 0) - (h.kidsU6 || 0) + (h.young || 0)), kindX', 'const kindNOpt = 1, kindX'],
-  ['Grundsicherung: Grundrentenfreibetrag ohne Deckel', 'freiStaffel(gesetzlich, R.grundrente, rs1)', 'freiStaffel(gesetzlich, { sockel: 100, quote: 0.3, max: 1 }, rs1)'],
+  ['Grundsicherung: Grundrentenfreibetrag ohne Deckel', 'freiStaffel(gesB, R.grundrente, rs1)', 'freiStaffel(gesB, { sockel: 100, quote: 0.3, max: 1 }, rs1)'],
   ['Grundsicherung: Freibetrag für Betriebs-, Riester- oder private Rente fehlt', ' - freiStaffel(z, R.vorsorge, rs1); }', ' - 0; }'],
-  ['Grundsicherung: Grundrentenfreibetrag auch auf die Betriebsrente', 'freiStaffel(gesetzlich, R.grundrente, rs1)', 'freiStaffel(n, R.grundrente, rs1)'],
+  ['Grundsicherung: Grundrentenfreibetrag auch auf die Betriebsrente', 'freiStaffel(gesB, R.grundrente, rs1)', 'freiStaffel(Math.max(n, b), R.grundrente, rs1)'],
   ['Kinderzuschlag: anderes Elterneinkommen nur zu 45 %', 'return andere > bedarf ? andere - bedarf + R.kiz.anrechnung * arbeit : R.kiz.anrechnung * Math.max(0, gesamt - bedarf);', 'return R.kiz.anrechnung * Math.max(0, gesamt - bedarf);'],
   ['Rundfunk: Befreiung bei Blindenhilfe, Hilfe zur Pflege, BAföG fehlt', "if (okW(w.hzp) || okW(w.blh) || (okW(w.baf) && h.ausbildung === 'ich' && h.wohnform !== 'eltern'))", 'if (false)'],
   ['Grundsicherungsgeld: Versicherungspauschale neben Lohn', 'return a + Math.min(anders, lohn > 0 ? Math.max(0, R.versPauschale - lohn) : R.versPauschale);', 'return a + R.versPauschale;'],
@@ -97,7 +105,7 @@ const M = [
   ['Grundsicherung: Freibetrag größer als die Rente', 'const freiStaffel = (x, p, rs1) => (x > 0 ? Math.min(p.sockel + p.quote * Math.max(0, x - p.sockel), p.max * rs1, x) : 0);', 'const freiStaffel = (x, p, rs1) => (x > 0 ? Math.min(p.sockel + p.quote * Math.max(0, x - p.sockel), p.max * rs1) : 0);'],
   ['Grundsicherungsgeld: Elterngeld 300 € nicht frei', "egFreiSGB: sumIf((a, b) => a === 'eg' && b > R.elterngeldFrei ? R.elterngeldFrei : 0)", "egFreiSGB: sumIf(() => 0)"],
   ['Grundsicherungsgeld: Unterhalt ohne Deckel', 'return Math.min(eink, Math.max(0, kinderBedarf - h.children * R.kindergeld));', 'return eink;'],
-  ['Blindengeld: Pflegegrad 2 mit 33 %', '(h.pflegegrad === 2 ? 0.46 : 0.33)', '(h.pflegegrad === 2 ? 0.33 : 0.33)'],
+  ['Blindengeld: Pflegegrad 2 mit 33 %', 'h.pflegegrad === 2 ? 0.46 * R.pflege.geld[2]', 'h.pflegegrad === 2 ? 0.33 * R.pflege.geld[2]'],
   ['Zuzahlung: chronisch schon ab GdB 50', 'if (gdbNum(h) >= 60 || h.pflegegrad >= 3)', 'if (gdbNum(h) >= 50 || h.pflegegrad >= 3)'],
   ['Ausweis: Gleichstellung erst ab 40', "if (gdbEff(h) && g >= 30) return", "if (gdbEff(h) && g >= 40) return"],
   ['Grundsicherungsgeld: Freibetrag 30 % statt 20 %', 'if (b > 100) f += 0.2 * (Math.min(b, 520) - 100);', 'if (b > 100) f += 0.3 * (Math.min(b, 520) - 100);'],
@@ -130,10 +138,11 @@ fs.symlinkSync(path.join(ROOT, 'app', 'node_modules'), path.join(tmp, 'app', 'no
 const DATEI = (m) => m[3] || 'src/rules.js';
 const ORIG = {};
 M.forEach((m) => { ORIG[DATEI(m)] = ORIG[DATEI(m)] || fs.readFileSync(path.join(ROOT, DATEI(m)), 'utf8'); });
-const TESTS = ['test.js', 'test-netto.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-ba-beispiele.js', 'test-paar-einkommen.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
+const TESTS = ['test.js', 'test-netto.js', 'test-strict.js', 'test-beh.js', 'test-faelle.js', 'test-raster.js ' + (process.env.MUT_RASTER || 8000), 'test-pruefliste.js', 'test-einfach-gleich.js 3000', 'test-grenzen.js', 'test-formulare.js', 'test-amtlich.js', 'test-ba-beispiele.js', 'test-musterbescheide.js', 'test-paar-einkommen.js', 'test-eigenschaften.js ' + (process.env.MUT_EIGEN || 3000)];
 const laeuft = () => { try { for (const t of TESTS) execSync('node test/' + t, { cwd: tmp, stdio: 'ignore' }); return true; } catch (e) { return false; } };
 
 let unentdeckt = 0, geprueft = 0;
+TESTS.push('test-musterbescheide-2.js'); // Abgleich 2 (21.11.2026)
 for (const m of MEINE) {
   const [name, alt, neu] = m, datei = DATEI(m), orig = ORIG[datei];
   if (orig.split(alt).length !== 2) { console.log('UNGÜLTIG (Stelle nicht genau einmal gefunden): ' + name); unentdeckt++; continue; }

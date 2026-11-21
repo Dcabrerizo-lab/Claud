@@ -16,6 +16,10 @@ var Klient = (function () {
   var bis = ''; // Laufzettel: mitbringen bis (JJJJ-MM-TT)
   var wahl = {}; // Haken: 'h|id', 'u|id', 'f|id', 'b|id' → true/false
   var basis = null; // Inhalt in der Sprache der App (für die Auswahl-Liste)
+  // Weitergabe an die SoLo-App des Klienten (QR-Code / SoLo-Datei, src/weitergabe.js)
+  var modus = 'blatt'; // 'blatt' = ausgewählte Teile, 'vorgang' = ganzer Vorgang mit gespeicherten Eingaben
+  var mitPin = true, pin = ''; // PIN je Weitergabe (Standard an), Vorschlag 6 Ziffern, nur im Speicher
+  var fremd = null; // Blatt aus einer Weitergabe (beim Klienten): nur ansehen, drucken, teilen
 
   function $(id) { return document.getElementById(id); }
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
@@ -31,6 +35,7 @@ var Klient = (function () {
   // ---------- Dokument (rein: Inhalt in zwei Sprachen → Abschnitte mit Textpaaren) ----------
   // Ergebnis: { titel: {k, de}, kopf: {k, de}, abschnitte: [{ h: {k, de}, zeilen: [{ art: 'h3'|'p'|'li'|'small'|'pre', k, de }] }], rtl, l }
   function dokument() {
+    if (fremd) return fremd;
     var s = spracheTeile(sprache), zwei = mitDeutsch();
     var A = inhaltIn(s.l, s.ein), D = zwei ? inhaltIn('de', false) : null;
     var tA = function (k, p) { return ctx.inSprache(s.l, s.ein, function () { return t(k, p); }); };
@@ -94,6 +99,16 @@ var Klient = (function () {
   function blattZeichnen() {
     var seite = $('kbSeite'); if (!seite) return;
     seite.textContent = '';
+    if (modus === 'vorgang' && !fremd && W()) {
+      seite.classList.remove('kb-zwei');
+      seite.appendChild(el('h3', null, t('kw.vorgang.h')));
+      var teile = vorgangsTeile(), ul = el('ul');
+      teile.forEach(function (x) { ul.appendChild(el('li', null, x)); });
+      if (teile.length) seite.appendChild(ul); else seite.appendChild(el('p', 'muted kb-leer', t('kb.nichts')));
+      ['kbDruck', 'kbTeilen'].forEach(function (id) { var b = $(id); if (b) { b.disabled = true; b.hidden = true; } });
+      return null;
+    }
+    ['kbDruck', 'kbTeilen'].forEach(function (id) { var b = $(id); if (b) b.hidden = false; });
     var doc = dokument();
     seite.classList.toggle('kb-zwei', doc.zwei);
     seite.appendChild(zeileEl(doc.titel, doc)).classList.add('kb-titel');
@@ -117,6 +132,11 @@ var Klient = (function () {
     if (ctx.rtl(spracheTeile(sprache).l)) { sprache = 'de'; daneben = false; }
     try {
       var doc = dokument(), b = [];
+      if (fremd && fremd.rtl) { // Blatt aus einer Weitergabe in Schrift von rechts nach links: im PDF nur die deutschen Zeilen
+        var nurDe = function (z) { return z.de ? { art: z.art, k: z.de, de: null } : (z.art === 'pre' ? z : null); };
+        doc = { titel: nurDe(doc.titel) || { art: 'h', k: 'SoLo', de: null }, kopf: nurDe(doc.kopf) || { art: 'p', k: '', de: null },
+          abschnitte: doc.abschnitte.map(function (ab) { return { h: nurDe(ab.h) || { art: 'h', k: '', de: null }, zeilen: ab.zeilen.map(nurDe).filter(Boolean) }; }) };
+      }
       var add = function (z) {
         var art = z.art === 'h3' ? 'h' : z.art;
         b.push({ t: art, text: z.art === 'li' ? z.k : z.k });
@@ -140,26 +160,141 @@ var Klient = (function () {
   function drucken() {
     var art = ctx.druckArt(), msg = $('kbMsg');
     if (art === 'web') { try { window.print(); } catch (e) {} return; }
-    ctx.pdf(pdfSeiten(), t('kb.d.titel'), 'SoLo-Klient.pdf', msg, art, ctx.rtl(spracheTeile(sprache).l));
+    ctx.pdf(pdfSeiten(), t('kb.d.titel'), 'SoLo-Klient.pdf', msg, art, rtlJetzt());
   }
+  function rtlJetzt() { return fremd ? !!fremd.rtl : ctx.rtl(spracheTeile(sprache).l); }
   function teilen() {
     var msg = $('kbMsg');
-    if (ctx.native()) { ctx.pdf(pdfSeiten(), t('kb.d.titel'), 'SoLo-Klient.pdf', msg, 'teilen', ctx.rtl(spracheTeile(sprache).l)); return Promise.resolve('app'); }
-    var name = 'SoLo-Klient.html', inhalt = htmlDatei(), datei = null;
-    try { datei = new File([inhalt], name, { type: 'text/html' }); } catch (e) { datei = null; }
+    if (ctx.native()) { ctx.pdf(pdfSeiten(), t('kb.d.titel'), 'SoLo-Klient.pdf', msg, 'teilen', rtlJetzt()); return Promise.resolve('app'); }
+    return dateiAusgeben('SoLo-Klient.html', htmlDatei(), 'text/html', msg);
+  }
+  // Datei über das Teilen-Menü (Messenger, Mail, Dateien) oder als Download; in der App über ctx.nativDatei (Filesystem + Share)
+  function dateiAusgeben(name, inhalt, typ, msg) {
+    if (ctx.native() && ctx.nativDatei) return Promise.resolve(ctx.nativDatei(name, inhalt, msg)).then(function () { return 'app'; });
+    var datei = null;
+    try { datei = new File([inhalt], name, { type: typ }); } catch (e) { datei = null; }
     var nav = window.navigator;
     if (datei && nav.share && (!nav.canShare || nav.canShare({ files: [datei] }))) {
       return nav.share({ files: [datei], title: t('kb.d.titel') }).then(function () { return 'geteilt'; }, function () { return 'abgebrochen'; });
     }
     // Fallback: Download
     try {
-      var url = URL.createObjectURL(new Blob([inhalt], { type: 'text/html' }));
+      var url = URL.createObjectURL(new Blob([inhalt], { type: typ }));
       var a = document.createElement('a'); a.href = url; a.download = name; a.hidden = true;
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function () { try { URL.revokeObjectURL(url); } catch (e) {} }, 4000);
       msg.textContent = t('kb.geladen', { name: name });
     } catch (e) { msg.textContent = t('f.pdfFail'); }
     return Promise.resolve('download');
+  }
+
+  // ---------- Weitergabe an die SoLo-App des Klienten (QR-Code, SoLo-Datei) ----------
+  function W() { return typeof globalThis !== 'undefined' && globalThis.Weitergabe ? globalThis.Weitergabe : null; }
+  function json(v) { if (v == null) return null; if (typeof v !== 'string') return v; try { return JSON.parse(v); } catch (e) { return null; } }
+  function vorgangsDaten() { return vgDaten || (ctx.vorgangDaten ? ctx.vorgangDaten() : {}) || {}; }
+  function vorgangsName() {
+    var vg = ctx.vorgaenge(), a = vg.filter(function (v) { return vgId ? v.id === vgId : v.aktiv; })[0];
+    return a && !a.gesperrt ? String(a.name || '').slice(0, 24) : '';
+  }
+  // Was weitergegeben wird (Daten, aus denen die App des Klienten alles neu erzeugt; keine PDF)
+  function inhaltFuerWeitergabe() {
+    var w = W(), heute = new Date(), datum = heute.getFullYear() + '-' + ('0' + (heute.getMonth() + 1)).slice(-2) + '-' + ('0' + heute.getDate()).slice(-2);
+    if (modus === 'vorgang') {
+      var roh = vorgangsDaten(), d = {}, n = 0;
+      w.FELDER.forEach(function (k) { if (typeof roh[k] === 'string' && roh[k]) { d[k] = roh[k]; n++; } });
+      return n ? { s: 1, typ: 'vorgang', name: vorgangsName(), datum: datum, daten: d } : null;
+    }
+    var doc = dokument();
+    if (!doc.abschnitte.length) return null;
+    var o = { s: 1, typ: 'auswahl', name: vorgangsName(), datum: datum, blatt: JSON.parse(JSON.stringify(doc)) };
+    // Gewählte offene Fristen zusätzlich als Daten: der Klient kann sie als Erinnerung übernehmen
+    var fl = json(vorgangsDaten()['lotse.fristliste']);
+    if (fl && Array.isArray(fl.e)) {
+      var e = fl.e.filter(function (x) { return x && !x.erledigt && typeof x.id === 'string' && gewaehlt('f', x.id); }).slice(0, 50);
+      if (e.length) o.fristen = { v: 1, e: e };
+    }
+    return o;
+  }
+  function vorgangsTeile() { // Liste für den ganzen Vorgang: was enthalten ist (Bezeichnungen)
+    var roh = vorgangsDaten();
+    return W().FELDER.filter(function (k) { return typeof roh[k] === 'string' && roh[k]; }).map(function (k) { return t('kw.teil.' + k.replace('lotse.', '')); })
+      .filter(function (x, i, a) { return a.indexOf(x) === i; });
+  }
+  function kwMsg(text) { var m = $('kwMsg'); if (m) m.textContent = text || ''; }
+  var FEHLER = { zuGross: 'kw.f.zuGross', technik: 'kw.f.technik', schema: 'kw.f.schema' };
+  function codeBauen() {
+    // Weitergeben gibt es nur im Beratungsmodus und nur aus der geöffneten Zusammenstellung (nicht aus einem empfangenen Blatt)
+    if (!ctx || !ctx.beratung() || !offen || fremd || !W()) return Promise.reject(Object.assign(new Error('technik'), { art: 'technik' }));
+    var i = inhaltFuerWeitergabe();
+    if (!i) return Promise.reject(Object.assign(new Error('leer'), { art: 'leer' }));
+    kwMsg(t('kw.bitte'));
+    return W().packen(i, mitPin ? pin : null);
+  }
+  function qrZeigen() {
+    var box = $('kwQr'); if (!box) return Promise.resolve(false);
+    box.textContent = ''; box.hidden = true;
+    return codeBauen().then(function (code) {
+      var svg = W().qrSvg(document, code, t('kw.qr.label'));
+      if (!svg) { kwMsg(t('kw.f.qrGross')); return false; }
+      box.appendChild(svg);
+      box.appendChild(el('p', 'small', t('kw.qr.hilfe')));
+      // Die PIN steht bewusst nicht beim QR-Code: ein Foto des Codes soll die PIN nicht mit enthalten
+      if (mitPin) box.appendChild(el('p', 'small kw-pinwdh', t('kw.pin.hinweis')));
+      box.hidden = false; kwMsg('');
+      return true;
+    }, function (e) { kwMsg(t(e && e.art === 'leer' ? 'kb.leer' : FEHLER[e && e.art] || 'kw.f.technik')); return false; });
+  }
+  function dateiTeilen() {
+    var box = $('kwQr'); if (box) { box.textContent = ''; box.hidden = true; }
+    return codeBauen().then(function (code) {
+      var name = 'SoLo-' + (modus === 'vorgang' ? 'Vorgang' : 'Unterlagen') + '.solo';
+      kwMsg('');
+      return dateiAusgeben(name, W().datei(code), 'text/plain', $('kwMsg'));
+    }, function (e) { kwMsg(t(e && e.art === 'leer' ? 'kb.leer' : FEHLER[e && e.art] || 'kw.f.technik')); return false; });
+  }
+  function pinText() { return pin.slice(0, 3) + ' ' + pin.slice(3); }
+  function weitergabeZeichnen() {
+    var box = $('kwBox'), w = W(); if (!box) return;
+    box.textContent = ''; box.hidden = !w || !!fremd;
+    if (!w || fremd) return;
+    box.appendChild(el('h3', null, t('kw.h')));
+    box.appendChild(el('p', 'small', t('kw.intro')));
+    var lab = el('label', 'check'), cb = el('input');
+    cb.type = 'checkbox'; cb.id = 'kwPinAn'; cb.checked = mitPin;
+    lab.appendChild(cb); lab.appendChild(el('span', null, t('kw.pin.an'))); box.appendChild(lab);
+    var pinZeile = el('div', 'kw-pin'); pinZeile.id = 'kwPinZeile';
+    if (mitPin) {
+      var p = el('p', 'kw-pinwert'); p.appendChild(el('span', null, t('kw.pin.ist') + ' '));
+      var b = el('b', null, pinText()); b.id = 'kwPin'; b.setAttribute('dir', 'ltr'); p.appendChild(b);
+      pinZeile.appendChild(p);
+      pinZeile.appendChild(el('p', 'small', t('kw.pin.hinweis')));
+      var neuB = el('button', 'linkbtn', t('kw.pin.neu')); neuB.type = 'button'; neuB.id = 'kwPinNeu';
+      neuB.addEventListener('click', function () { pin = w.pinVorschlag(); weitergabeZeichnen(); });
+      pinZeile.appendChild(neuB);
+    } else {
+      var warn = el('p', 'small kw-offen', t('kw.pin.aus')); warn.id = 'kwOhnePin'; pinZeile.appendChild(warn);
+    }
+    box.appendChild(pinZeile);
+    var det = el('details', 'kw-wie'); det.appendChild(el('summary', null, t('kw.wie.h'))); det.appendChild(el('p', 'small', t('kw.wie.t'))); box.appendChild(det);
+    cb.addEventListener('change', function () { mitPin = cb.checked; weitergabeZeichnen(); var c = $('kwPinAn'); if (c) c.focus(); });
+    var btns = el('div', 'btns');
+    var q = el('button', 'btn', t('kw.qr')); q.type = 'button'; q.id = 'kwQrBtn'; q.addEventListener('click', qrZeigen);
+    var f = el('button', 'btn ghost', t('kw.datei')); f.type = 'button'; f.id = 'kwDateiBtn'; f.addEventListener('click', dateiTeilen);
+    btns.appendChild(q); btns.appendChild(f); box.appendChild(btns);
+    var m = el('p', 'msg'); m.id = 'kwMsg'; m.setAttribute('role', 'status'); box.appendChild(m);
+    var qr = el('div', 'kw-qr'); qr.id = 'kwQr'; qr.hidden = true; box.appendChild(qr);
+  }
+  function modusWahl(wrap) {
+    if (!W()) return;
+    var f = el('fieldset', 'kb-gruppe kw-modus'); f.id = 'kwModus'; f.appendChild(el('legend', null, t('kw.modus')));
+    [['blatt', 'kw.modus.blatt'], ['vorgang', 'kw.modus.vorgang']].forEach(function (x) {
+      var lab = el('label', 'check'), r = el('input');
+      r.type = 'radio'; r.name = 'kwModus'; r.value = x[0]; r.id = 'kwModus-' + x[0]; r.checked = modus === x[0];
+      r.addEventListener('change', function () { if (!r.checked) return; modus = x[0]; auswahlZeichnen(); blattZeichnen(); var z = $('kwModus-' + x[0]); if (z) z.focus(); });
+      lab.appendChild(r); lab.appendChild(el('span', null, t(x[1]))); f.appendChild(lab);
+    });
+    if (modus === 'vorgang') f.appendChild(el('p', 'small', t('kw.modus.vorgang.t')));
+    wrap.appendChild(f);
   }
 
   // ---------- Auswahl (Vorgang, Sprache, Haken) ----------
@@ -205,10 +340,12 @@ var Klient = (function () {
       Promise.resolve().then(function () { return ctx.oeffneGesperrt(id, p); }).then(function (daten) {
         if (!daten || typeof daten !== 'object') throw new Error('leer');
         nehmen(id, daten);
-      }, function () {
+      }, function (e) {
         sel.value = vorher; pinBox.hidden = true;
-        var m = $('kbPinMsg') || pm; m.textContent = t('kb.pinFalsch');
-        var g = $('kbVgMsg'); if (g) g.textContent = t('kb.pinFalsch');
+        // Wartezeit nach Fehlversuchen (Vorgaenge.oeffneGesperrt: reject ohne falsch, mit warten in ms) ist keine falsche PIN
+        var tx = e && !e.falsch && e.warten > 0 ? t('vg.sperre.warten', { s: String(Math.ceil(e.warten / 1000)) }) : t('kb.pinFalsch');
+        var m = $('kbPinMsg') || pm; m.textContent = tx;
+        var g = $('kbVgMsg'); if (g) g.textContent = tx;
       });
     });
     wrap.appendChild(f);
@@ -236,6 +373,8 @@ var Klient = (function () {
     var wrap = $('kbWahl'); if (!wrap) return;
     wrap.textContent = '';
     vorgangWahl(wrap);
+    modusWahl(wrap);
+    if (modus === 'vorgang' && W()) return; // ganzer Vorgang: keine Sprache, keine Haken
     spracheWahl(wrap);
     var b = basis || { hilfen: [], unterlagen: [], fristen: [], briefe: [] };
     if (b.hilfen.length) { var g1 = gruppe(wrap, 'kb.teil.hilfen', 'kbHilfen'); b.hilfen.forEach(function (x) { haken(g1, 'h', x.id, x.name + ' – ' + x.lvl); }); }
@@ -258,17 +397,21 @@ var Klient = (function () {
   function oeffnen() {
     if (!ctx || !ctx.beratung()) return;
     zurueck = document.activeElement;
-    vgId = null; vgDaten = null; wahl = {}; bis = '';
+    vgId = null; vgDaten = null; wahl = {}; bis = ''; fremd = null;
     sprache = ctx.lang(); daneben = true;
+    modus = 'blatt'; mitPin = true; pin = W() ? W().pinVorschlag() : '';
     $('kbMsg').textContent = '';
-    basisNeu(); auswahlZeichnen(); blattZeichnen();
+    ansichtNurBlatt(false);
+    basisNeu(); auswahlZeichnen(); blattZeichnen(); weitergabeZeichnen();
     $('klientBlatt').hidden = false; offen = true;
     ctx.blatt(true);
     var h = $('h-kb'); if (h) { h.setAttribute('tabindex', '-1'); try { h.focus({ preventScroll: true }); } catch (e) {} }
   }
   function schliessen() {
     if (!offen) return;
-    offen = false; vgDaten = null; vgId = null; // Daten anderer Vorgänge sofort vergessen
+    ansichtNurBlatt(false);
+    offen = false; vgDaten = null; vgId = null; fremd = null; pin = ''; // Daten anderer Vorgänge und PIN sofort vergessen
+    var kb = $('kwBox'); if (kb) kb.textContent = '';
     var s = $('kbSeite'); if (s) s.textContent = '';
     var w = $('kbWahl'); if (w) w.textContent = '';
     $('klientBlatt').hidden = true;
@@ -281,9 +424,27 @@ var Klient = (function () {
     if (mitErgebnis !== undefined) letztesErgebnis = !!mitErgebnis; else mitErgebnis = letztesErgebnis;
     var b = $('kbOpen'); if (!b || !ctx) return;
     b.hidden = !(ctx.beratung() && mitErgebnis);
-    if (!ctx.beratung() && offen) schliessen();
+    if (!ctx.beratung() && offen && !fremd) schliessen();
   }
-  function sprachWechsel() { if (offen) { basisNeu(); auswahlZeichnen(); blattZeichnen(); } }
+  function sprachWechsel() { if (offen && !fremd) { basisNeu(); auswahlZeichnen(); blattZeichnen(); weitergabeZeichnen(); } }
+  // Blatt aus einer Weitergabe ansehen (beim Klienten, für alle Nutzer): ohne Auswahl, nur Drucken und Teilen
+  function ansichtNurBlatt(an) {
+    ['kbWahl', 'kbDs'].forEach(function (id) { var e = $(id); if (e) e.hidden = !!an; });
+    var intro = document.querySelector('#klientBlatt [data-t="kb.intro"]'); if (intro) intro.hidden = !!an;
+    var h = $('h-kb'); if (h) h.textContent = t(an ? 'kw.blatt.h' : 'kb.h');
+  }
+  function zeigen(doc) {
+    if (!ctx || !doc || !Array.isArray(doc.abschnitte)) return false;
+    zurueck = document.activeElement;
+    fremd = doc; vgId = null; vgDaten = null;
+    $('kbMsg').textContent = '';
+    var w = $('kbWahl'); if (w) w.textContent = '';
+    ansichtNurBlatt(true); weitergabeZeichnen(); blattZeichnen();
+    $('klientBlatt').hidden = false; offen = true;
+    ctx.blatt(true);
+    var h = $('h-kb'); if (h) { h.setAttribute('tabindex', '-1'); try { h.focus({ preventScroll: true }); } catch (e) {} }
+    return true;
+  }
 
   // ctx = { t, lang(), sprachen() → [{code, name}], inSprache(l, einfach, fn), inhalt(daten|null) → { hilfen, unterlagen, fristen, briefe },
   //         beratung(), vorgaenge() → [{ id, name, aktiv, gesperrt }], daten(id), oeffneGesperrt(id, pin) → Promise<Daten>,
@@ -295,7 +456,7 @@ var Klient = (function () {
     var s = $('kbTeilen'); if (s) s.addEventListener('click', teilen);
   }
 
-  return { init: init, oeffnen: oeffnen, schliessen: schliessen, offen: function () { return offen; }, sichtbar: sichtbar, sprache: sprachWechsel,
+  return { init: init, oeffnen: oeffnen, zeigen: zeigen, qrZeigen: qrZeigen, dateiTeilen: dateiTeilen, inhaltFuerWeitergabe: function () { return inhaltFuerWeitergabe(); }, schliessen: schliessen, offen: function () { return offen; }, sichtbar: sichtbar, sprache: sprachWechsel,
     dokument: function () { return dokument(); }, pdfSeiten: pdfSeiten, teilen: teilen, drucken: drucken };
 })();
 if (typeof module !== 'undefined') module.exports = Klient;

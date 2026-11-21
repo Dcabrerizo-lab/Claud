@@ -19,6 +19,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Vermögensfreibeträge Familie und ab dem 30. Geburtstag wie FW § 12 SGB II Rz. 12.36/12.37 (Stand 01.07.2026) (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-ggeld` |
 | Angemessene Unterkunftskosten (§ 22 SGB II): Orientierung WoGG-Höchstbetrag + 10 % plus Heizkostenkomponente (Rechtsprechung ohne schlüssiges Konzept); darüber zusätzlich mit der Grenze gerechnet, Einstufung aus beiden, Hinweis | ◐ | `kdu-grenze` |
 | Selbstständige: Gewinn wie Einkommen aus Arbeit (§ 11b Abs. 3), Hinweis auf vorläufige Bewilligung (§ 41a) | ✓ | `selbst` |
 | Selbst bewohntes Eigentum: geschützt (§ 12), Unterkunftskosten ohne Tilgung -> nur „möglich“ | ◐ | `eigentum` |
@@ -40,6 +41,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Zweites Einkommen je Person (auch bei Paaren, Liste mit Person 1/2): Freibetrag für Arbeit je erwerbstätiger Person aus der Summe ihrer Löhne (§ 11b Abs. 3; BA-FW Rz. 11.144, 11.15); Versicherungspauschale 30 € je Person ohne Lohn, bei Lohn unter 30 € nur der Rest (§ 6 Abs. 1 Nr. 1 GrusiGV; Rz. 11.155); beim Wohngeld Werbungskosten-Pauschbetrag einmal je Person (§ 9a EStG) und § 16-Abzug je Person; SGB-XII-Freibetrag für Arbeit je Person (§ 82 Abs. 3 SGB XII); KiZ-Mindesteinkommen aus allen Einkommen beider Eltern; Familienversicherung aus allen Einkommen von Person 2 | ✓ | `paar-ek` |
 | Vorrangige Leistungen (§ 12a SGB II): geschätztes Arbeitslosengeld, Krankengeld oder Elterngeld (über 300 €) zählt als Einkommen; zweite Rechnung „sobald gezahlt“ (statt des Lohns der ersten Person), Einstufung aus beiden, Hinweis aufs Überbrücken | ✓ | `zuk-einkommen` |
 | Schonvermögen nach Alter (§ 12 Abs. 2, ab 1.7.2026): 5.000 € bis zum 30. Geburtstag, dann 10.000 €, ab dem 40. 12.500 €, ab dem 50. 20.000 € je Person | ✓ | `gg-verm` |
+| Paar: Freibetrag je Person nach eigenem Alter (§ 12 Abs. 2 SGB II; Merkblatt SGB II 8/2026 Nr. 9.5); die App kennt nur das Alter der ältesten Person: über der kleinsten möglichen Grenze (zweite Person unter 30) höchstens „möglich“ mit Hinweis „hängt vom Alter beider ab“; abgerufen 21.11.2026 | ✓ | `gg-verm-paar` |
 | Mehrbedarf Alleinerziehende (§ 21 Abs. 3) | ✓ | `gg-mb-ae` |
 | Mehrbedarf 35 % bei Teilhabe am Arbeitsleben bzw. Schule und Ausbildung (§ 21 Abs. 4, § 23 Nr. 2); bei Kindern Alter unbekannt | ✓ / ◐ | `gg-mb-teilhabe`, `gg-mb-kind` |
 | Mehrbedarf G für nicht erwerbsfähige Personen (§ 23 Nr. 4) | ◐ | `gg-mb-kind` |
@@ -67,6 +69,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Unterhalt für die Person selbst: voll Einkommen (§ 82 Abs. 1 SGB XII), kein Freibetrag nach § 82 Abs. 3 | ✓ | `unt-sgb12` |
 | Werkstattlohn: Arbeitsförderungsgeld frei, 1/8 RS1 + 50 % frei (§ 82 Abs. 2 Nr. 5, Abs. 3 Satz 2) | ✓ | `gsa-wfbm` |
 | Grundrentenfreibetrag (§ 82a) | ✓ | `gsa-grundrente` |
+| Grundrentenfreibetrag aus der Bruttorente (§ 82a Abs. 1: „aus der gesetzlichen Rente“; Antwort der Bundesregierung BT-Drs. 19/27495 S. 16 f.: „Der auf die Bruttorente anzuwendende Grundrentenfreibetrag“; DRV „Die Grundsicherung“ 5/2026 S. 18), höchstens die Netto-Rente; Bescheid-Check mit Feld „Rente brutto“, ohne Brutto Hinweis; amtliche Beispiele Gerda M., Max B./Inge M., Harald F., Befund 14 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-gsa` |
 | Freibetrag für Betriebs-, Riester- und private Rente (§ 82 Abs. 4), Grundrentenfreibetrag nur auf die gesetzliche Rente | ✓ | `gsa-zusatzrente` |
 | Kinderzuschlag: anderes Elterneinkommen über dem Bedarf voll, Arbeitseinkommen zu 45 % (§ 6a Abs. 6 BKGG) | ✓ | `kiz-anderes` |
 | Versicherungspauschale 30 € einmal je Person, nicht neben Arbeitseinkommen (§ 6 Bürgergeld-V, § 11b Abs. 2 SGB II) | ✓ | `vpausch-person` |
@@ -79,6 +82,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Bei den Eltern: eigene Grundsicherung, Stufe 1, Wohnkosten anteilig (§ 42a Abs. 3); Einkommen der Eltern erst ab 100.000 € (§ 94 Abs. 1a) | ✓ / ◐ Wohnkosten | `gsa-eltern` |
 | Wohnheim: Stufe 2, Wohnkosten (§ 42a Abs. 5) | ✓ / ◐ Wohnkosten | `gsa-heim` |
 | Schonvermögen 10.000 € je Erwachsenem (Barbetragsverordnung) | ✓ | `gsa-verm` |
+| Merkzeichen G nur für eine Person abgefragt; bei Paaren Hinweis, dass der Mehrbedarf (17 %) mit zwei Ausweisen für jede Person gilt (§ 30 Abs. 1 SGB XII; Merkblatt Bochum Beispiel b); Bescheid-Check rechnet beide; abgerufen 21.11.2026 | ✓ | `gsa-g-paar` |
 | Pflegegeld zählt nicht als Einkommen (§ 13 Abs. 5 SGB XI) | ✓ | `gsa-pflegegeld` |
 | Mehrbedarf Schwangerschaft (§ 30 Abs. 2) | ✓ | `gsa-schwanger` |
 | Mehrbedarf kostenaufwändige Ernährung (§ 30 Abs. 5) | ◐ | `gsa-ernaehrung` |
@@ -90,6 +94,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Zu berücksichtigende Miete wie im Bescheid laut VG Bayreuth 25.06.2025 (B 8 K 25.211): 438,00 € (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-wohngeld` |
 | Asylverfahren oder Duldung: nicht pauschal ausgeschlossen (§ 3 Abs. 5 Satz 1 Nr. 2, 4 WoGG; ausreisepflichtig ohne Duldung nicht berechtigt). Ohne Einkommensart „Asylbewerberleistungen“ normal gerechnet, auch „wahrscheinlich“, Hinweis vorn (Entscheidung David 20.11.2026); mit ihr „unwahrscheinlich“ mit Hinweis Sozialamt (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG) (Abruf 20.11.2026) | ◐ | `wg-asyl` `asyl-bezug` |
 | Aufenthalt „ausreisepflichtig ohne Duldung“ (eigene Auswahl, sonst wie Asylverfahren/Duldung): Wohngeld „unwahrscheinlich“ (in § 3 Abs. 5 Satz 1 Nr. 1 bis 6 WoGG nicht genannt), WBS „unwahrscheinlich“ ohne Ausnahme (§ 27 Abs. 2 WoFG) (Abruf 20.11.2026) | ✓ | `ausreise` |
 | Eigentum: Lastenzuschuss, Belastung nach § 10 WoGG nicht genau gerechnet -> nur „möglich“ | ◐ | `eigentum` |
@@ -98,15 +103,20 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Tipp „früh beantragen“ (Wohngeld erst ab dem Antragsmonat, § 25 Abs. 2 WoGG) bei „wahrscheinlich“ oder „möglich“, ohne Datumsbedingung; keine Hinweise aus Gesetzentwürfen (BT-Drs. 21/8284 nicht angezeigt) | ✓ | `recht-geltend` |
 | Formel, Höchstbeträge, Klima- und Heizkomponente (§§ 12, 19), Pauschalabzug je Einkommensart (§ 16) | ✓ | `wg-formel` |
 | Werbungskosten-Pauschbetrag (§ 14 WoGG mit § 9a EStG: Arbeit 1.230 €, Rente 102 €, nicht bei Selbstständigen) und Mindestwerte für M und Y (Anlage 3 WoGG, ab 1.1.2025); 60 Haushalte gleich wie der amtliche Wohngeldrechner des Bundes | ✓ | `amtlich-wohngeld` |
+| Abgleich mit veröffentlichten Musterbescheiden und amtlichen Rechenbeispielen (Merkblatt und DA Kinderzuschlag 2026, Merkblatt SGB II 8/2026, Musterbescheid Bürgergeld 2023 auf den Cent, Musterbescheid Wohngeld Frankfurt 2025, Wohngeld Hannover/München 2025, BMWSB-Hinweise 12+ Personen, Grundsicherung im Alter Hannover/Bochum, Elterngeld-Broschüre 2025), 23 feste Fälle, abgerufen 21.11.2026 | ✓ | `musterbescheide` |
 | Bruttokaltmiete mit angegebenen Heizkosten (freiwilliges Feld), sonst Warmmiete minus Heizkostenkomponente (§§ 9, 12 WoGG) | ✓ | `wg-heiz` |
 | Höchstbetrag der Miete unter dem Mietfeld und in der Einfachen Version (Gut zu wissen): Anlage 1 WoGG plus Klimakomponente (§ 12 Abs. 1, 7 WoGG, BGBl. 2024 I Nr. 314, abgerufen 20.11.2026), Vergleich mit der geschätzten Bruttokaltmiete (wie Wohngeld-Rechnung); Mietenstufe unsicher: Spanne und „möglich“; Abgrenzung zu den örtlichen Kosten der Unterkunft (§ 22 Abs. 1 SGB II, § 35 SGB XII); kein Hinweis auf Entwürfe zu 2027 (BT-Drs. 21/8284, nicht beschlossen, Stand 20.11.2026) | ✓ | `mietgrenze`, `mietgrenze-dom` |
 | Kinderzuschlag/Grundsicherungsgeld: Mehrbedarf Alleinerziehende 36 % bei Kind unter 7; Kind von 6-13 kann 6 sein -> nie fälschlich „eher nicht“ (§ 21 Abs. 3 SGB II) | ✓ | `kiz-ae7` |
 | Freibetrag 1.800 € je schwerbehinderter Person (GdB 100 oder Schwerbehinderung mit Pflege, § 17 Nr. 1) | ✓ | `wg-schwerb` |
 | Freibetrag Alleinerziehende 1.320 € (§ 17 Nr. 3) | ✓ | `wg-ae` |
-| Einkommen von Kindern unter 25: je Kind Arbeitnehmer-Pauschbetrag 102,50 €/Monat (§ 14 Abs. 1 WoGG, § 9a EStG) und Freibetrag bis 100 €/Monat (§ 17 Nr. 4); nur Summe bekannt: „wahrscheinlich“ wie ein verdienendes Kind, obere Schätzung verteilt auf alle Kinder ab 6; 12 Fälle auf den Euro gleich wie der amtliche Wohngeldrechner | ✓ | `wg-kindeink`, `wg-kind-wk`, `wg-kind-frei` |
+| Einkommen von Kindern unter 25: je Kind Arbeitnehmer-Pauschbetrag 102,50 €/Monat (§ 14 Abs. 1 WoGG, § 9a EStG) und Freibetrag bis 100 €/Monat (§ 17 Nr. 4); nur Summe bekannt: „wahrscheinlich“ wie ein verdienendes Kind (über der Minijob-Grenze vorsichtig ohne Pauschbetrag, weil die Auszahlung kleiner ist als das Brutto), obere Schätzung verteilt auf alle Kinder ab 6; 12 Fälle auf den Euro gleich wie der amtliche Wohngeldrechner | ✓ | `wg-kindeink`, `wg-kind-wk`, `wg-kind-frei` |
 | Elterngeld bis 300 € frei (§ 10 Abs. 1 BEEG) | ✓ | `wg-eg300` |
 | Pflegegeld, Kindergeld und Kinderzuschlag kein Einkommen (§ 14) | ✓ | `wg-keinEink` |
 | Grundrentenfreibetrag (§ 17a) | ✓ | `wg-grundrente` |
+| Grundrentenfreibetrag (§ 17a) auch im Bescheid-Check (Art „Rente mit 33 Jahren Grundrentenzeiten“); Musterbescheid Frankfurt 6/2025 auf den Euro (355 €), abgerufen 21.11.2026 | ✓ | `bwg-17a` |
+| Plausibilitätsprüfung Nr. 15.01 WoGVwV (amtlich: WoGVwV 28.06.2017 Nr. 15.01 Abs. 1 Satz 3, „Einnahmen zuzüglich Wohngeld“, verwaltungsvorschriften-im-internet.de; strengere Lesart nach den BMI-Hinweisen 11.03.2020, nicht amtlich veröffentlicht): Einnahmen plus vorsichtig geschätztes Wohngeld plus Kindergeld müssen 100 % der Miete und 80 % der Regelbedarfe decken, ohne Mehrbedarfe; sonst „möglich – Einkommen eher zu niedrig“ mit Betrag (keine Ablehnung, Nr. 15.01 Abs. 2); Abgleich Wohngeldstelle Hannover 1/2025, abgerufen 21.11.2026 | ✓ | `wg-plaus` |
+| Einkommensgrenze bei 9,50 € ungerundetem Wohngeld (unter 10 € kein Wohngeld, § 21 Nr. 1 WoGG; Rundung Anlage 3 Nr. 3); Einkommensgrenzen München 2025 genau getroffen, abgerufen 21.11.2026 | ✓ | `wg-grenze10` |
+| Mehr als 12 Haushaltsmitglieder: je weitere Person 65 € mehr, höchstens bis zur Miete (§ 19 Abs. 3 WoGG; BMWSB-Hinweise 02.12.2024), App und Bescheid-Check, abgerufen 21.11.2026 | ✓ | `wg-ueber12` |
 | Mietenstufe aus der Postleitzahl für ganz Deutschland (Anlage zur WoGV, Stand 1.1.2023); Bayern von Hand geprüft, übrige Länder automatisch und unabhängig gegengeprüft (13.386 Einträge, 0 Abweichungen); nicht eindeutige Orte ohne Stufe | ✓ | `plz-stufe` |
 | Vermögen: Regelvermutung der Verwaltungsvorschrift (60.000 € + 30.000 € je weitere Person) | ✓ | `wg-verm` |
 | Ausschluss bei Grundsicherungsgeld, Grundsicherung im Alter und Hilfe zum Lebensunterhalt (§ 7 Abs. 1 Satz 1 Nr. 1, 5, 6 WoGG; Nr. 3 ist weggefallen); Asylbewerberleistungen siehe Zeile Asylverfahren | ✓ | `wg-ausschluss`, `asyl-ausschluss` |
@@ -124,6 +134,9 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Kinderzuschlag muss Hilfebedürftigkeit beenden (§ 6a Abs. 1 Nr. 3 BKGG): bereinigtes Einkommen + Kindergeld + Kinderzuschlag; reicht es nur mit Wohngeld: „möglich“, beides beantragen; 40 Familien ohne Widerspruch zum KiZ-Lotsen | ✓ | `amtlich-kiz` |
 | Mehrbedarfe der Eltern im Bedarf der Eltern (Schwangerschaft, Warmwasser, 35 % Teilhabe) | ✓ | `kiz-mehr` |
 | Vermögensgrenze 40.000 € für die erste, 15.000 € je weitere Person (§ 6a Abs. 3 BKGG, bleibt trotz Grundsicherungsreform) | ✓ | `kiz-verm` |
+| Vermögen knapp über der Grenze: mindert nur den 1. Monat, wenn der übersteigende Betrag kleiner als der Monatsbetrag ist (§ 6a Abs. 3 Satz 6-7 BKGG; DA-KiZ C.2.2.2) -> „möglich“ mit Hinweis, sonst „eher nicht“; abgerufen 21.11.2026 | ✓ | `kiz-verm-knapp` |
+| Wohngeld bei der Hilfebedürftigkeit: vorsichtige Wohngeld-Schätzung der App statt fester 300 € (DA-KiZ C.4.1 Abs. 7, fiktives Wohngeld) plus erweiterter Zugang: höchstens 100 € dürfen fehlen, wenn die Freibeträge aus Arbeit mindestens 100 € sind (§ 6a Abs. 1a BKGG; DA-KiZ C.4.2); abgerufen 21.11.2026 | ✓ | `kiz-wg-schaetz` |
+| Alleinerziehend mit Altersrente: Rente zählt nur über dem eigenen Bedarf mit Kopfteil der Miete, der Überschuss mindert voll (DA-KiZ D.2 Abs. 1 Satz 9-11, Beispiel 2: 238 €); Paare mit einer Person in Altersrente bei der Tabelle (Beispiel 1: 560 statt 561 €); abgerufen 21.11.2026 | ✓ | `kiz-rentner-kopf` |
 | Ausschluss bei Asylbewerberleistungen (kein Kindergeld) | ✓ | `asyl-ausschluss` |
 | Im Haushalt muss jemand dem Grunde nach zum SGB II gehören (§ 6a Abs. 1 Nr. 3 BKGG i. V. m. § 7, § 8 SGB II; DA-KiZ Stand 20.02.2026, D.2 Abs. 1 Satz 5 und B.1 Abs. 5; BSG 13.07.2022, B 7/14 KG 1/21 R): allein mit Regelaltersgrenze oder voller Erwerbsminderung und nur Kindern unter 14 „eher nicht“; Kinderalter unbekannt oder Kind 14-17: höchstens „möglich“ (nur mit Kind ab 15); junge Erwachsene: normale Rechnung; Paar mit erwerbsfähigem Partner unverändert; beide Rente: höchstens „möglich“; nur Rente ab 60 oder Alter unbekannt (vorgezogene Altersrente, § 7 Abs. 4 SGB II): höchstens „möglich“ | ✓ | `kiz-rentner` |
 | Selbst gezahlter, festgelegter Unterhalt mindert das Einkommen der Eltern (§ 11b Abs. 1 Satz 1 Nr. 7 SGB II) | ✓ | `uz-sgb2` |
@@ -168,6 +181,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Beispiele UVG-RL 2.5.4.4 (Ausbildungsvergütung 700 €: Anrechnung 248,75 €) und 1.3.1 (ab 40 % beim anderen Elternteil kein Anspruch) (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-uvg` |
 | Beträge je Altersstufe 0–5 / 6–11 / 12–17 (nach Abzug des Kindergeldes) | ✓ | `uvg-betrag` |
 | Beträge 2026 = Mindestunterhalt 486/558/653 € minus volles Kindergeld 259 € (§ 2 Abs. 1 und 2; BMBFSFJ, Einlegeblatt 2026) | ✓ | `uvg-amtlich` |
 | Gezahlter Unterhalt wird je Kind angerechnet (§ 2 Abs. 3 Nr. 1); „unwahrscheinlich“ nur bei einem Kind, wenn er den höchsten Betrag nach Alter erreicht; bei mehreren Kindern höchstens „möglich“ (nur die Summe bekannt) | ✓ | `uvg-anrechnung`, `uvg-hand` |
@@ -196,9 +210,11 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | EU-Bürger ohne Arbeit, unter 5 Jahren: BAföG nur mit Daueraufenthaltsrecht, als Arbeitnehmer/Selbstständiger oder Familienangehöriger oder nach Beschäftigung (§ 8 Abs. 1 Nr. 2 bis 4 BAföG): höchstens „möglich“ mit Hinweis, Arbeit der Eltern kennt die App nicht (Abruf 20.11.2026) | ◐ | `bafoeg-eu` |
 | Auto zählt zum Vermögen (§ 27) | ✓ | `auto` |
 | Elternfreibeträge (§ 25) und Grenzbereich | ✓ | `bafoeg-eltern` |
+| Einkommen über dem Freibetrag: 50 % und 5 % je Kind mit Freibetrag anrechnungsfrei (§ 25 Abs. 4 BAföG); „eher nicht“ erst, wenn die Anrechnung den höchsten Bedarf 1.088 € übersteigt (475 + 380 € nach § 13, 185 + 48 € nach § 13a Abs. 2; bafög.de nennt 992 € mit § 13a Abs. 1), Befund 10 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-bafoeg`, `bafoeg-eltern` |
 | Unterhalt eines Elternteils für sich selbst: Einkommen nach § 21 Abs. 1 BAföG nur mit Realsplitting (§ 22 Nr. 1a EStG); entscheidet er über die Grenze, höchstens „möglich“ | ◐ | `unt-bafoeg` |
 | Höhe der Elternfreibeträge 2026: 2.540 € (verheiratet), 1.690 € (je Elternteil sonst), 770 € je weiteres Kind | ✓ (mehrere Quellen übereinstimmend; Änderung erst zum Sommersemester 2027 geplant, nur Wohnpauschale) | `bafoeg-eltern` |
 | Vermögensfreibetrag 15.000 € bis zum 30. Geburtstag, danach 45.000 € (§ 29) | ✓ | `bafoeg-verm` |
+| Vermögen über dem Freibetrag: nur der Rest, geteilt durch 12 Monate Bewilligungszeitraum, mindert das BAföG (§ 30 BAföG, bafög.de Beispiel „Stefan“): „möglich“ mit Hinweis und Betrag im Monat, „eher nicht“ erst über 12 × 1.088 €, Befund 11 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-bafoeg`, `bafoeg-verm`, `auto` |
 | Altersgrenze 45 bei Beginn (§ 10 Abs. 3), Ausnahmen möglich | ✓ | `bafoeg-alter` |
 | Betriebliche Ausbildung: kein BAföG, sondern Berufsausbildungsbeihilfe | ✓ | `bafoeg-betrieb` |
 
@@ -216,6 +232,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Kombinationsleistung Pflegegrad 3, Pflegedienst 1.092,81 €: 161,73 € (Infoblatt Landkreis Esslingen 8/2025) (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-pflege` |
 | Pflegegeld, Entlastungsbetrag | ✓ | `pfl-geld` |
 | Verhinderungspflege, Kurzzeitpflege (Entlastungsbudget 3.539 €), Pflegehilfsmittel, Wohnumfeld | ✓ | `pfl-plus` |
 | Pflegesachleistung und Kombinationsleistung (§§ 36, 38), Tages- und Nachtpflege (§ 41) | ✓ | `pfl-sach` |
@@ -235,6 +252,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Auszahlung bis 31. Januar des Folgejahres (Art. 2 Abs. 4 Satz 2 BayLPflGG), Satz im Antragshinweis in allen Sprachen, als „in der Regel“ (Antrag bis 3 Monate nach Jahresende möglich, Art. 3 Abs. 1 Satz 1); PG 2 in Bayern 500 €, anderes Land nein, Hinweis H3 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-lpg` |
 | Ab Pflegegrad 2, Hauptwohnsitz Bayern, unabhängig vom Einkommen; ab dem Pflegegeldjahr 2026 500 € im Jahr (vorher 1.000 €) | ✓ | `lpg-ja` |
 | Nur in Bayern; ohne Pflegegrad 2 nein, bei laufendem Pflegegrad-Antrag möglich | ✓ | `lpg-voraus` |
 | Antrag einmal beim Bayerischen Landesamt für Pflege; Antragsfrist | ◐ (Fristangaben der Quellen widersprüchlich; die App rät zum baldigen Antrag) | `lpg-ja` |
@@ -249,6 +267,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | EU-Bürger ohne Arbeit, unter 5 Jahren: keine Leistungen nach § 23 Abs. 1 SGB XII, Ausnahmen Härte und nach 5 Jahren (§ 23 Abs. 3 Satz 1, 6, 7 SGB XII): „unwahrscheinlich“ wie Grundsicherung im Alter, Hinweis Sozialhilfe (Abruf 20.11.2026) | ✓ | `sh-eu` |
 | Voraussetzung Pflegegrad 2–5 oder laufender Antrag (§ 61a) | ✓ | `hzp-voraus` |
 | Einkommensgrenze: 2 × Regelsatz Stufe 1 + Wohnkosten + 70 % Familienzuschlag (§ 85) | ✓ | `hzp-grenze` |
+| Einkommensgrenze: Unterkunft mit Heizung, also ganze Warmmiete (BSG 30.04.2020, B 8 SO 1/19 R, Leitsatz; § 85 nennt die Heizung nicht; manche Träger rechnen ohne Heizung, z. B. Infoblatt Nr. 37 Pflegestützpunkte Berlin 12/2025, deshalb Karte „möglich“ und „etwa“), Familienzuschlag auf volle Euro aufgerundet (395 €, § 85 Abs. 1 Nr. 3), Befund 15 (Abgleich 2 und Prüfung, Abruf 21.11.2026) | ✓ | `mb2-hzp` |
 | Schonvermögen 10.000 € je Erwachsenem, 500 € je unterhaltener Person | ✓ | `hzp-verm` |
 | Heim: Eigenanteil; Unterhalt der Kinder erst ab 100.000 € (§ 94 Abs. 1a) | ◐ | `hzp-heim` |
 | Höhe: hängt von den tatsächlichen Pflegekosten ab | ○ (Kosten werden nicht abgefragt; Karte zeigt „möglich“) | |
@@ -258,6 +277,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Pauschbeträge § 33b Abs. 3 EStG (384 bis 2.840 €, 7.400 €) (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-pausch` |
 | Behinderten-Pauschbetrag (§ 33b Abs. 3), Übertragung auf die Eltern (§ 33b Abs. 5) | ✓ | `st-pausch` |
 | Fahrtkostenpauschale 900 / 4.500 € (§ 33 Abs. 2a) | ✓ | `st-fahrt` |
 | Pflege-Pauschbetrag 600 / 1.100 / 1.800 € (§ 33b Abs. 6) | ✓ | `st-pflege` |
@@ -283,6 +303,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Altersrente für schwerbehinderte Menschen, Jahrgänge 1960, 1963, 1964 wie DRV Knappschaft-Bahn-See 20.04.2026 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-srente` |
 | Erwerbsminderungsrente: unter 3 Stunden voll, 3 bis unter 6 Stunden teilweise; Wartezeit 5 Jahre (§ 43) | ✓ | `rente-em` |
 | Werkstatt: volle Erwerbsminderung, Rente nach 20 Jahren (§ 43 Abs. 6) | ✓ | `rente-wfbm` |
 | Altersrente für schwerbehinderte Menschen (§§ 37, 236a), Altersgrenzen je Jahrgang | ✓ | `rente-sb` |
@@ -295,6 +316,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Asylverfahren oder Duldung: § 9 Abs. 1 AsylbLG schließt Leistungen nach „vergleichbaren Landesgesetzen“ aus; ob das Landesblindengeld darunter fällt, ist offen (Art. 1, 3 BayBlindG ohne Regel): höchstens „möglich“ (Abruf 20.11.2026) | ◐ | `blindengeld-asyl` |
 | Blindengeld und Sehbehindertengeld, Beträge Stand 7/2026 | ✓ | `bg-betrag` |
 | Anrechnung von Pflegegeld: 46 % bei Pflegegrad 2, 33 % ab 3, mindestens 20 € (Art. 4) | ✓ | `bg-pflege` |
+| Pflegegrad 3 bis 5 einheitlich 33 % des Pflegegeldes von Pflegegrad 3 (197,67 €, Art. 4 Abs. 1 Satz 2 BayBlindG; ZBFS-Infoblatt 7/2026: 611,33 €), Befund 12 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-blind` |
 | Andere Länder: blinde Menschen „wahrscheinlich“ (Landesblindengeld gibt es in jedem Land), Spanne für Erwachsene etwa 350 bis 950 €; hochgradig Sehbehinderte nur „möglich“; Hinweis Pflegegeld-Anrechnung | ◐ | `bg-land` |
 | Landesblindengeld mit belegtem Betrag (Stand 11/2026): Baden-Württemberg 410 €, Hessen 818,65 € (86 % der Blindenhilfe), Mecklenburg-Vorpommern 430 €, Niedersachsen 450 €, Rheinland-Pfalz 410 €, Schleswig-Holstein 350 €; übrige Länder (Quellen widersprüchlich) weiter mit Spanne | ✓ | `bg-land-betrag` |
 | Genaue Beträge und Anrechnungsregeln der anderen 15 Länder | ○ (die Quellen widersprechen sich stark; ohne geprüfte Quelle je Land keine feste Zahl) | |
@@ -307,6 +329,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Nur für blinde Menschen (§ 72 Abs. 5), nicht bei hochgradiger Sehbehinderung | ✓ | `blh-voraus` |
 | Landesblindengeld wird voll angerechnet (§ 72 Abs. 1 Satz 2); in Bayern meist nur ein kleiner Unterschiedsbetrag | ◐ | `blh-land` |
 | Einkommensgrenze wie bei Hilfe zur Pflege (§ 85), darüber höchstens 40 % eingesetzt (§ 87 Abs. 1 Satz 3) | ✓ | `blh-grenze` |
+| Unterkunft mit Heizung wie bei Hilfe zur Pflege (BSG B 8 SO 1/19 R), Befund 15 (Abgleich 2 und Prüfung, Abruf 21.11.2026) | ✓ | `mb2-blh` |
 | EU-Bürger ohne Arbeit, unter 5 Jahren: Blindenhilfe wie Hilfe zur Pflege ausgeschlossen (§ 23 Abs. 3 SGB XII), Ausnahmen Härte und nach 5 Jahren (Abruf 20.11.2026) | ✓ | `sh-eu` |
 | Schonvermögen 10.000 € je Erwachsenem | ✓ | `blh-verm` |
 | Unter 18 Jahren halber Betrag (§ 72 Abs. 2), Anrechnung von Pflegegeld (§ 72 Abs. 1 Satz 3), Kürzung im Heim (§ 72 Abs. 4) | ◐ | `blh-hinweise` |
@@ -319,6 +342,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Höhe: obere Grenze der Spanne mindestens Leistungsentgelt Steuerklasse III = Brutto − 20 % Sozialversicherungspauschale − Lohnsteuer/Soli (§ 153 Abs. 1 SGB III); amtliches Beispiel Merkblatt 1 Abschnitt 4 (2.400 €, Steuerklasse III, Kind: 1.286,40 €) liegt in der Spanne; Dauer 8 / 24 Monate wie Merkblatt, Befund 13 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-alg` |
 | Asylverfahren oder Duldung: verfügbar nur, wer arbeiten „kann und darf“ (§ 138 Abs. 5 Nr. 1 SGB III), also mit Arbeitserlaubnis: höchstens „möglich“ (Abruf 20.11.2026) | ◐ | `alg-asyl` |
 | Selbstständige nur mit freiwilliger Arbeitslosenversicherung (§ 28a) | ◐ | `selbst` |
 | Anwartschaft 12 Monate in 30 Monaten (§§ 142, 143); Minijob zählt nicht (§ 27 Abs. 2) | ✓ | `alg-anwart` |
@@ -334,6 +358,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Krankengeld: obere Grenze mit dem Netto Steuerklasse III (§ 47 Abs. 1 SGB V); Rechnung zu Fuß nach § 47 Abs. 1 SGB V (brutto 3.000 €, netto 2.100 €: rund 1.655 €) in der Spanne, Befund 13 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-krank` |
 | 2027: Werte der Sozialversicherungs-Rechengrößenverordnung 2027 (BR-Drs. 576/26, Zustimmung Bundesrat 20.11.2026) erst ab 2027 und nur nach Verkündung im BGBl. (Schalter `svrg2027`; Stand 20.11.2026: nicht verkündet, daher auch 2027 Werte 2026): KV-Grenze 6.375 € (Krankengeld, Netto), RV-Grenze 8.850 € (Arbeitslosengeld, Netto), Bezugsgröße 4.130 € (Familienversicherung 590 €, nur noch in „Ich ziehe aus“), Kinderkrankengeld höchstens 148,75 € | ✓ | `recht-geltend` |
 | Minijob-Hinweis bei Krankengeld und Arbeitslosengeld nennt die Grenze des Jahres (2026: 603 €, ab 2027: 633 €), keine feste Zahl im Text | ✓ | `recht-geltend` |
 | Krankengeld 70 % brutto, höchstens 90 % netto, Beitragsbemessungsgrenze (§ 47) | ✓ | `kv-kg` |
@@ -372,6 +397,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Beispiele der Broschüre „Elterngeld und Elternzeit“ (10/2025): 574 €, 1.625 €, Geschwisterbonus 1.430 € (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-eg` |
 | Basiselterngeld 67 %, Ersatzrate bis 100 % unter 1.000 €, bis 65 % über 1.200 € (§ 2 Abs. 2); mindestens 300 €, höchstens 1.800 €; ElterngeldPlus halb so hoch, doppelt so lange (§ 4a); bis zu 14 Monate (§ 4) | ✓ | `eg-satz` |
 | Elterngeld-Netto: Netto minus ein Zwölftel des Arbeitnehmer-Pauschbetrags (§ 2c Abs. 1 BEEG, 83,33 €); 33 Einkommen gleich wie der Elterngeldrechner des Bundes | ✓ | `amtlich-elterngeld` |
 | Geschwisterbonus 10 %, mindestens 75 € (§ 2a BEEG): bei zwei Kindern unter 6 eingerechnet, bei einem als Hinweis (unter 3?); amtlich geprüft | ✓ | `amtlich-elterngeld` |
@@ -384,6 +410,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Familienportal: 13 € am Tag, 210 € Bundesamt für Soziale Sicherung, Schutzfristen 6/8/12 Wochen (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-mutter` |
 | Angestellte: Krankenkasse höchstens 13 € je Kalendertag, Arbeitgeber zahlt den Unterschied zum Netto (§ 20 MuSchG) | ✓ | `mu-lohn` |
 | Nicht gesetzlich versichert oder Minijob ohne eigene Versicherung: Bundesamt für Soziale Sicherung einmalig höchstens 210 € | ◐ (Versicherungsart wird nicht abgefragt, daher Hinweis) | `mu-lohn` |
 | Arbeitslosengeld: Mutterschaftsgeld in Höhe des Arbeitslosengeldes | ✓ | `mu-alg` |
@@ -590,9 +617,11 @@ Brief prüfen → Jobcenter, Sozialamt oder „Anderer Brief oder Formular“ (B
 | Antragsmappe: Empfänger je Anschreiben bearbeitbar (Vorschlag der App vorbefüllt; Änderung sofort in Brief, Kopiertext und PDF; leeres Feld ergibt Linie; Eingabe nie als HTML; Wiederherstellen; Feld nicht im Druck); Suchlink „Zuständige Stelle suchen“ (DuckDuckGo, kurzer Suchbegriff je Leistung und Ortsname, öffnet extern) | ✓ | `empf` |
 | Geburtsjahr im Formular: nur 4 Ziffern von 1900 bis heute minus 15 Jahre (wie in der einfachen Version); sonst sichtbare Meldung „4 Ziffern, zum Beispiel 1962“ und kein Ergebnis (z. B. „54“, „1854“, „2030“) | ✓ | `geb` |
 | Einkommensfelder: „Lohn/Rente im Monat vor Abzügen (brutto)“ je Art; Minijob-Hinweis nur bei Lohn; allein lebend zweites Einkommen über eigenes Feld, zu zweit Summe je Person; Schalter „Kurzer Check für Menschen mit Behinderung (eine Person)“ | ✓ | `formular` |
+| Weitergabe an die SoLo-App des Klienten (nur Beratungsmodus; Öffnen für alle): Auswahl ganzer Vorgang (`Weitergabe.FELDER`, ohne `lotse.beratung-haken`) oder ausgewählte Teile (Blatt als Daten, keine PDF); QR-Code (qrcode-generator, offline, Fehlerkorrektur L, höchstens Version 25, sonst Hinweis „SoLo-Datei“) und SoLo-Datei (.solo); PIN je Weitergabe (Standard an, 6 Ziffern, PBKDF2-SHA-256 600.000 Durchläufe, Salz 16, IV 12, AES-GCM, Kopf-Bytes mit geschützt), PIN steht nicht beim QR-Code, ohne PIN Hinweis; Import von Fremden ist Angriffsfläche (`test/test-weitergabe-boese.js`): Größen (Datei 2 MB, entpackt 512 KB, Entpacken in kleinen Stücken gegen Kompressions-Bomben, Foto 30 MB), nur bekannte Felder und Datentypen je Feld, keine Schlüssel wie `__proto__`/`constructor`/`toString`, keine Steuerzeichen und keine Richtungs-Umkehr (U+202A–U+202E), Anzeige nur mit textContent, Vorschau mit Haken, immer neuer Vorgang (`tresor.importieren`), Fristen mit eigenem, abwählbarem Haken und nur nach Prüfung (`FristenOrdner.normiere`); Blatt in `lotse.klient-blatt`; Lizenzhinweis qrcode-generator (MIT) unter „Über die App“ | ✓ | `weitergabe` |
 | Alte Speicherstände aus allen Ausbaustufen (und der einfachen Version) laden richtig und ergeben dasselbe Ergebnis wie im heutigen Format | ✓ | `altstaende` |
 | Vorgänge (Haushalte): speichern, öffnen, umbenennen, „Kopie zum Ausprobieren“, löschen; zu einem Vorgang gehören Fragebogen mit Briefdaten, einfache Version, Pflege-Einschätzung, Pfändung, Haushaltsplan/-buch, Checklisten-Haken sowie Haken und Notizen aus „Ich ziehe aus“ (`lotse.haken`, `lotse.haushalt`, `lotse.ausziehen` in `Vorgaenge.DATEN`, also mit PIN verschlüsselt; Einstellungen wie Sprache und Beratungsmodus gelten für alle); Vorgänge nur in „Mein Ordner“ (kein Schild im Kopf, kein Kasten beim Ergebnis): mit einem Vorgang keine Liste, nur „+ Weiteren Vorgang anlegen“; ab zwei eine Liste mit Initialen-Kreis, geöffneter markiert, Wechseln mit einem Tipp, „+ Neuen Vorgang anlegen“, Umbenennen/Kopie/Löschen erst nach „Bearbeiten“; Löschen nur in „Sicherheit und Daten“ mit zwei Zeilen („Nur „Name“ löschen“ = dieser Vorgang mit allen Teilen aus `Vorgaenge.DATEN`; „Alles auf diesem Gerät löschen“ = alle Vorgänge und PIN, Sprache/Anzeige/„Automatisch löschen“ bleiben), jede mit Rückfrage („Abbrechen“ / „Ja, endgültig löschen“) und Meldung; im Leistungs-Check nur ein Link dorthin; PIN-Sperre als Schalter, kurze Erklärung (ganze App gesperrt, PIN merken, vergessen = niemand kann öffnen) als Hinweiszeile direkt unter dem Feld „Neue PIN“ (Festlegen und Ändern), Erklärungen unter „Mehr dazu“; alte Speicherstände werden übernommen; Beispiel überschreibt nie einen gespeicherten Vorgang; PIN-Sperre (Sichtschutz) verschlüsselt alles mit WebCrypto (PBKDF2-SHA-256, 600.000 Durchläufe, AES-GCM, zufälliges Salt und IV), PIN nie gespeichert, Wartezeit nach 5 Fehlversuchen; automatisches Löschen nach 30/90 Tagen mit Datum; Speicher voll oder gesperrt wird gemeldet | ✓ | `vorgaenge` |
-| Leiste unten: Start, Mein Ordner, Einstellungen (Leistungen und Briefe über die Startkacheln, markieren Start; #leistungen und #briefe gehen weiter). Mein Ordner: geöffneter Vorgang, letztes Ergebnis, Antragsmappe, Haushaltsplan (Rest im Monat), Pflege-Einschätzung, Pfändung, „Ich ziehe aus“ nur mit Modul; leere Bereiche ausgeblendet, kein Kasten „Los geht's“, darunter die gespeicherten Vorgänge, keine Fristen. Kopfzeile (Logo, Name, Satz „Prüfe in etwa 5 Minuten …“) nur auf der Startseite, sonst nur für Screenreader (h1 bleibt). „Kurzer Check für Menschen mit Behinderung (eine Person)“ als Link am Anfang des Leistungs-Checks, nicht mehr in den Einstellungen. Einstellungen als Liste mit Unterseiten (Anzeige und Sprache mit Schaltern und Hell/Dunkel/wie Gerät, Sicherheit und Daten, Für Fachkräfte, Über die App) | ✓ | `navigation` |
 | Vorgänge (Haushalte): speichern, öffnen, umbenennen, „Kopie zum Ausprobieren“, löschen; zu einem Vorgang gehören Fragebogen mit Briefdaten, einfache Version, Pflege-Einschätzung, Pfändung, Haushaltsplan/-buch, Checklisten-Haken sowie Haken und Notizen aus „Ich ziehe aus“ (`lotse.haken`, `lotse.haushalt`, `lotse.ausziehen` in `Vorgaenge.DATEN`, also mit PIN verschlüsselt; Einstellungen wie Sprache und Beratungsmodus gelten für alle); Vorgänge nur in „Mein Ordner“ (kein Schild im Kopf, kein Kasten beim Ergebnis): mit einem Vorgang keine Liste, nur „+ Weiteren Vorgang anlegen“; ab zwei eine Liste mit Initialen-Kreis, geöffneter markiert, Wechseln mit einem Tipp, „+ Neuen Vorgang anlegen“, Umbenennen/Kopie/Löschen erst nach „Bearbeiten“; Löschen nur in „Sicherheit und Daten“ mit zwei Zeilen („Nur „Name“ löschen“ = dieser Vorgang mit allen Teilen aus `Vorgaenge.DATEN`; „Alles auf diesem Gerät löschen“ = alle Vorgänge und PIN, Sprache/Anzeige/„Automatisch löschen“ bleiben), jede mit Rückfrage („Abbrechen“ / „Ja, endgültig löschen“) und Meldung; im Leistungs-Check nur ein Link dorthin; PIN-Sperre als Schalter, Warnung „PIN vergessen“ erst beim Festlegen, Erklärungen unter „Mehr dazu“; alte Speicherstände werden übernommen; Beispiel überschreibt nie einen gespeicherten Vorgang; PIN-Sperre (Sichtschutz) verschlüsselt alles mit WebCrypto (PBKDF2-SHA-256, 600.000 Durchläufe, AES-GCM, zufälliges Salt und IV), PIN nie gespeichert, Wartezeit nach 5 Fehlversuchen; automatisches Löschen nach 30/90 Tagen mit Datum; Speicher voll oder gesperrt wird gemeldet | ✓ | `vorgaenge` |
+| Einzelne Vorgänge mit eigener PIN sperren (zusätzlich zur App-PIN): PBKDF2-SHA-256 (600.000 Durchläufe, Salz je Vorgang) → AES-GCM 256 (neuer IV je Speichern); Name und Angaben nur verschlüsselt, PIN nie gespeichert, Prüfung nur über Entschlüsselung; Liste zeigt „Gesperrter Vorgang“ mit Schloss (Kurzname nur freiwillig, nur als Text); Öffnen nur mit PIN (4–8 Ziffern), Wartezeit nach 5 Fehlversuchen; nach Wechsel, 2 Minuten Hintergrund und Neustart wieder gesperrt; geöffnet nie im Klartext gespeichert; Fristen nur solange geöffnet; keine Kopie/Umbenennen im gesperrten Zustand; Löschen ohne PIN mit Rückfrage; Sperre aufheben mit PIN; `Vorgaenge.oeffneGesperrt(id, pin)` liest nur; Erklärung nennt „Sichtschutz, kein Schutz gegen Fachleute mit Spezialwerkzeug“; PIN-Versuche laufen nacheinander (Wartezeit nicht durch gleichzeitige Versuche umgehbar); „Rückgängig“ hebt keine Sperre auf und setzt den Zähler nicht zurück; ein mit PIN geöffneter Vorgang bleibt offen, wenn ein anderer gesperrt oder gelöscht wird (Angaben der übrigen bleiben nach Neustart) | ✓ | `vorgang-pin`, `vorgang-pin-dom` |
+| Leiste unten: Start, Mein Ordner, Einstellungen (Leistungen und Briefe über die Startkacheln, markieren Start; #leistungen und #briefe gehen weiter). Mein Ordner: geöffneter Vorgang, letztes Ergebnis, Antragsmappe, Haushaltsplan (Rest im Monat), Pflege-Einschätzung, Pfändung, „Ich ziehe aus“ nur mit Modul; leere Bereiche ausgeblendet, kein Kasten „Los geht's“, darunter die gespeicherten Vorgänge, keine Fristen. Kopfzeile (Logo, Name, Satz „Prüfe in etwa 5 Minuten …“) nur auf der Startseite, sonst nur für Screenreader (h1 bleibt). „Kurzer Check für Menschen mit Behinderung (eine Person)“ als Link am Anfang des Leistungs-Checks, nicht mehr in den Einstellungen. Einstellungen als Liste mit Unterseiten (Anzeige und Sprache mit Schaltern und Hell/Dunkel/wie Gerät, Sicherheit und Daten, Für Fachkräfte, Über die App) | ✓ | `navigation` |
 | Leiste unten: Start, Mein Ordner, Einstellungen (Leistungen und Briefe über die Startkacheln, markieren Start; #leistungen und #briefe gehen weiter). Mein Ordner: geöffneter Vorgang, letztes Ergebnis, Antragsmappe, Haushaltsplan (Rest im Monat), Pflege-Einschätzung, Pfändung, „Ich ziehe aus“ nur mit Modul; leere Bereiche ausgeblendet, kein Kasten „Los geht's“, darunter die gespeicherten Vorgänge, keine Fristen. Kopfzeile (Logo, Name, Satz „Prüfe in etwa 5 Minuten …“) nur auf der Startseite, sonst nur für Screenreader (h1 bleibt). „Kurzer Check für Menschen mit Behinderung (eine Person)“ als dritte Wahl oben im Leistungs-Check (Karte auf der Auswahlseite, sonst Link unter „Schritt für Schritt / Alles auf einer Seite“), nicht in den Einstellungen. Einstellungen als Liste mit Unterseiten (Anzeige und Sprache mit Schaltern und Hell/Dunkel/wie Gerät, Sicherheit und Daten, Für Fachkräfte, Über die App) | ✓ | `navigation` |
 | Hinweise auf der Ergebnisseite: was SoLo nicht einrechnet (Selbstständigkeit, Wohneigentum, Auto, Mitbewohner, angemessene Miete, EU-Bürger) und das Verfahren danach (Widerspruch § 84 SGG, Überprüfungsantrag § 44 SGB X, Beratung § 14 SGB I, Weiterleitung § 16 SGB I) | ✓ | `verfahren` |

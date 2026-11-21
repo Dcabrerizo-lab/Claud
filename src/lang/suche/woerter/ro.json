@@ -1,0 +1,142 @@
+{
+ "l-wohngeld": [
+  "ajutor pentru chirie",
+  "alocație de locuință",
+  "chiria prea mare"
+ ],
+ "l-ggeld": [
+  "ajutor social",
+  "venit minim",
+  "șomaj 2",
+  "Hartz 4"
+ ],
+ "l-gsa": [
+  "pensie prea mică",
+  "pensie mică",
+  "venit minim la bătrânețe"
+ ],
+ "l-kindergeld": [
+  "alocație pentru copii",
+  "alocația copilului"
+ ],
+ "l-kiz": [
+  "supliment pentru copii"
+ ],
+ "l-but": [
+  "excursie școlară",
+  "rechizite",
+  "meditații",
+  "masa la școală"
+ ],
+ "l-uvg": [
+  "pensie alimentară lipsă",
+  "tatăl nu plătește",
+  "părinte singur"
+ ],
+ "p-schaetzen": [
+  "grad de îngrijire",
+  "nivel de îngrijire"
+ ],
+ "pflege": [
+  "îngrijire",
+  "îngrijirea rudelor"
+ ],
+ "l-ausweis": [
+  "certificat de handicap",
+  "handicap"
+ ],
+ "l-rundfunk": [
+  "taxa radio tv",
+  "GEZ"
+ ],
+ "l-alg1": [
+  "șomer",
+  "mi-am pierdut locul de muncă",
+  "ajutor de șomaj"
+ ],
+ "l-elterngeld": [
+  "indemnizație parentală",
+  "bebeluș"
+ ],
+ "l-mutter": [
+  "însărcinată",
+  "sarcină",
+  "concediu de maternitate"
+ ],
+ "l-asylblg": [
+  "azil",
+  "refugiat"
+ ],
+ "brief": [
+  "scrisoare",
+  "scrisoare de la autorități",
+  "poștă",
+  "decizie"
+ ],
+ "b-af": [
+  "formular",
+  "completare formular"
+ ],
+ "g-konto": [
+  "cont poprit",
+  "cont blocat",
+  "poprire pe cont"
+ ],
+ "g-strom": [
+  "curent oprit",
+  "fără curent",
+  "gaz oprit"
+ ],
+ "g-mahn": [
+  "scrisoare de la tribunal",
+  "plic galben",
+  "somație de plată"
+ ],
+ "g-miete": [
+  "evacuare",
+  "reziliere chirie",
+  "datorii la chirie"
+ ],
+ "g-inkasso": [
+  "recuperare datorii",
+  "firmă de recuperare"
+ ],
+ "g-rate": [
+  "rate",
+  "plata în rate"
+ ],
+ "g-hilfe": [
+  "consiliere datorii"
+ ],
+ "g-ablauf": [
+  "insolvență",
+  "faliment personal"
+ ],
+ "geld": [
+  "bani",
+  "datorii"
+ ],
+ "g-haushalt": [
+  "buget",
+  "cheltuieli"
+ ],
+ "ausziehen": [
+  "mutare",
+  "prima locuință",
+  "plec de acasă"
+ ],
+ "e-anzeige": [
+  "limbă",
+  "schimbă limba",
+  "mărimea textului"
+ ],
+ "e-sicher": [
+  "PIN",
+  "parolă",
+  "șterge datele"
+ ],
+ "mappe": [
+  "cerere",
+  "dosar de cereri"
+ ]
+}

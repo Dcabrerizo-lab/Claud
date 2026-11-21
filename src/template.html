@@ -391,6 +391,16 @@
   .kb-wahl legend { font-weight: 700; padding: 0 4px; }
   .kb-wahl .kb-pin input { max-width: 12em; }
   .kb-ds { color: var(--muted); }
+  .kw-box { border-top: 1px solid var(--line); margin-top: 14px; padding-top: 6px; }
+  .kw-box h3 { margin: 6px 0 4px; }
+  .kw-pinwert { font-size: 1.15em; margin: 4px 0; }
+  .kw-pinwert b { letter-spacing: 0.08em; font-size: 1.3em; }
+  .kw-qr { margin: 10px 0; }
+  .kw-qr svg { display: block; width: min(100%, 360px); height: auto; border-radius: var(--r-feld); }
+  .kw-import { margin: 18px 0 0; border: 1px solid var(--line); border-radius: var(--r-feld); padding: 8px 12px; }
+  .kw-import summary { font-weight: 700; cursor: pointer; }
+  .kw-ok { font-weight: 700; }
+  .app[data-ansicht="ordner"] #or-beratung .zeile-sym { background: var(--c-anderer); color: var(--on-c); } /* gruppe ordner */
   .kb-blatt h3, .kb-blatt h4 { margin: 14px 0 4px; }
   .kb-blatt .kb-titel h3 { margin-top: 0; font-size: 1.3em; }
   .kb-blatt p { margin: 2px 0; }
@@ -744,6 +754,9 @@
   .vg-plus { border-style: dashed; border-color: var(--accent); }
   .vg-plus .vg-kreis { background: transparent; color: var(--accent); border: 2px solid var(--accent); font-size: 1.3em; }
   .vg-plus b { color: var(--accent); }
+  /* Einzeln gesperrter Vorgang: Schloss statt Initialen (gleiche Farben wie der Initialen-Kreis) */
+  .vg-schloss svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .vg-gerkl { margin: 6px 0; padding-inline-start: 20px; }
   .vg-liste .btns { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 4px 0; }
   .vg-sicher { margin: 4px 0 0; }
   .vg-ablauf { font-weight: 700; }
@@ -932,6 +945,7 @@
   .einlesen .btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 6px; }
   .einlesen textarea { width: 100%; min-height: 120px; font: inherit; }
   .pp .pp-erkannt { background: var(--mark-bg) !important; border-color: var(--mark-line) !important; color: var(--mark-ink) !important; } /* !important: die Feldstile des Prüfpakets sind spezifischer */
+  .pp .pp-erkannt.pp-unsicher { background: var(--warn-bg) !important; border: 2px solid var(--warn) !important; color: var(--ink) !important; } /* Foto: schwer lesbar oder unplausibel */
   .el-erkl { background: var(--warn-bg); border-radius: 12px; padding: 10px 14px; margin-top: 8px; }
   /* Aufforderung zur Senkung der Wohnkosten (erweiterungen/kostensenkung.js): Rand in der Farbe des Absenders */
   .el-ks { border-inline-start: 4px solid var(--c-briefe-t); display: grid; gap: 8px; }
@@ -996,6 +1010,35 @@
   /* Sprachwahl oben nur auf der Startseite (sonst in den Einstellungen): auf allen anderen Seiten, auch „Deine Angaben“, nicht unsichtbar per Tastatur oder Vorlesefunktion erreichbar */
   .app:not([data-ansicht="start"]) .top .sprach-knopf { display: none; }
   .gruss { font-size: 1.7em; font-weight: 900; margin: 4px 0 6px; }
+  /* Suche auf der Startseite (src/suche.js): dezent, über den Kacheln; Treffer als Zeilen, Symbol in der Bereichsfarbe */
+  .su-suche { max-width: 640px; margin: 0; }
+  .su-feld { position: relative; display: flex; align-items: center; }
+  .su-lupe { position: absolute; inset-inline-start: 14px; width: 20px; height: 20px; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
+  #suFeld { width: 100%; min-height: 46px; padding: 10px 46px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; -webkit-appearance: none; appearance: none; }
+  #suFeld::placeholder { color: var(--muted); opacity: 1; }
+  #suFeld::-webkit-search-cancel-button { display: none; }
+  .su-leeren { position: absolute; inset-inline-end: 4px; width: 40px; height: 40px; border: 0; border-radius: 50%; background: none; color: var(--muted); font-size: 1.5em; line-height: 1; cursor: pointer; }
+  .su-treffer { margin: 10px 0 0; }
+  .su-treffer .zeilen { margin: 0; gap: 8px; max-width: none; }
+  .su-zeile { min-height: 54px; padding: 8px 14px; text-align: start; font: inherit; cursor: pointer; }
+  .su-zeile .zeile-sym { width: 34px; height: 34px; background: none; }
+  .su-L .zeile-sym { color: var(--c-leistungen-t); }
+  .su-B .zeile-sym { color: var(--c-briefe-t); }
+  .su-G .zeile-sym { color: var(--c-sparen-t); }
+  .su-P .zeile-sym { color: var(--c-pflege-t); }
+  .su-A .zeile-sym { color: var(--c-ausziehen-t); }
+  .su-M .zeile-sym, .su-E .zeile-sym, .su-O .zeile-sym { color: var(--muted); }
+  .su-nichts { margin: 4px 0 8px; color: var(--muted); }
+  #inhalt { position: relative; }
+  .su-lupe-knopf { position: absolute; top: 0; inset-inline-end: 0; z-index: 2; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer; }
+  .su-lupe-knopf svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+  .app[data-ansicht="start"] #inhalt > .su-lupe-knopf, .app:not([data-ansicht="start"]) .top .su-lupe-knopf { display: none; }
+  .top .su-lupe-knopf { position: static; align-self: flex-start; flex: none; }
+  .top .sprach-knopf + .su-lupe-knopf { margin-inline-start: -12px; }
+  .app:not([data-ansicht="start"]) #inhalt .pa-zeile { padding-inline-end: 52px; }
+  .su-fenster { position: fixed; inset: 0; z-index: 50; overflow-y: auto; background: var(--bg); padding: max(16px, env(safe-area-inset-top)) 16px 24px; }
+  .su-fenster > * { max-width: 640px; margin-inline: auto; }
+  .su-fenster .su-suche { margin-top: 4px; }
   .gruss-t { color: var(--muted); font-size: 1.05em; margin: 0 0 4px; }
   /* Startseite als Kachel-Raster (Kacheln wie Richtung 3 „Bunt und bildhaft“, Farben aus der warmen Palette; weiße Schrift mind. 4,5:1).
      Spaltenbreite in em: bei 320 px oder großer Schrift bricht das Raster auf eine Spalte um. Jeder Bereich hat seine Farbe. */
@@ -1243,9 +1286,12 @@
         <p class="lead" data-t="lead"></p>
       </div>
       <label class="sprach-knopf"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span class="vh" data-t="lang.top"></span><select id="langTop"></select></label>
+      <button type="button" class="su-lupe-knopf" id="suLupeStart" data-t-aria="su.suchen"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
     </header>
 
     <main id="inhalt">
+    <!-- Lupe oben auf allen Seiten außer Start (dort steht sie in der Kopfzeile neben der Sprache): öffnet das Such-Fenster (src/suche.js) -->
+    <button type="button" class="su-lupe-knopf" id="suLupe" data-t-aria="su.suchen"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
     <!-- Erststart: einmal für jeden Einstieg (gleich welche Kachel), bis „Verstanden“ -->
     <div class="notice info first" id="firstNotice" role="note" hidden>
       <p data-t="first.text"></p>
@@ -1796,6 +1842,16 @@
         <h2 id="h-ordner" class="ans-h" data-t="nav.ordner"></h2>
         <div class="vg-gruppe" id="setHaushalte" hidden></div>
         <ul id="ordnerKarten" class="zeilen"></ul>
+        <!-- Von der Beratung bekommen (src/weitergabe.js, für alle Nutzer): SoLo-Datei öffnen oder QR-Code scannen → neuer Vorgang -->
+        <details class="kw-import" id="kwImport">
+          <summary data-t="kw.imp.h"></summary>
+          <p class="small" data-t="kw.imp.t"></p>
+          <div class="btns"><button type="button" class="btn ghost" id="kwDatei" data-t="kw.imp.datei"></button><button type="button" class="btn ghost" id="kwScan" data-t="kw.imp.scan"></button></div>
+          <input type="file" id="kwDateiEin" accept=".solo,text/plain,application/json" hidden>
+          <input type="file" id="kwFotoEin" accept="image/*" capture="environment" hidden>
+          <p class="msg" id="kwImpMsg" role="status"></p>
+          <div id="kwImpBox" hidden></div>
+        </details>
       </div>
       <!-- Fristen (src/fristen.js): Unterseite von „Mein Ordner“, kein eigener Bereich. Namen v-fristen/startFristen nicht wieder benutzen (1.3.0) -->
       <div id="ordnerFristen" class="unterseite" data-seite="fristen" hidden>
@@ -1952,6 +2008,7 @@
         <li>Schriften Atkinson Hyperlegible (Braille Institute) und Nunito (The Nunito Project Authors): SIL Open Font License 1.1</li>
         <li>Noto Sans (PDF-Erzeugung): SIL Open Font License 1.1</li>
         <li>Capacitor und seine Plugins, pdf-lib: MIT-Lizenz</li>
+        <li>QR-Code erzeugen: qrcode-generator 2.0.4 (Kazuhiko Arase): MIT-Lizenz. „QR Code“ ist eine eingetragene Marke von DENSO WAVE INCORPORATED.</li>
         <li>pdf.js (Mozilla, PDF-Dateien lesen): Apache License 2.0</li>
         <li>Texterkennung Android: Google ML Kit (Nutzungsbedingungen von Google)</li>
         <li>Texterkennung Web-Version: Tesseract.js und Sprachdaten (Apache-Lizenz 2.0)</li>
@@ -2035,6 +2092,7 @@
         </div>
         <p class="small kb-ds" id="kbDs" data-t="kb.datenschutz"></p>
         <p class="msg" id="kbMsg" role="status"></p>
+        <div id="kwBox" class="kw-box" hidden></div><!-- Weitergabe an die SoLo-App des Klienten: QR-Code, SoLo-Datei (src/weitergabe.js) -->
       </div>
       <article class="page kb-blatt" id="kbSeite"></article>
     </section>
@@ -2050,6 +2108,20 @@
   <div class="undo" id="undoBar" hidden><span id="undoText"></span> <button type="button" id="undoBtn" data-t="clear.undo"></button></div>
   <!-- Rückfrage vor „Beispiel laden“, wenn schon eigene Angaben da sind (eigener Dialog, kein window.confirm) -->
 
+  <!-- Such-Fenster: dasselbe Suchfeld wie auf der Startseite; Zurück, Esc, Android-Zurück und Wischen schließen es -->
+  <div class="su-fenster" id="suFenster" role="dialog" aria-modal="true" aria-labelledby="suFensterH" hidden>
+    <!--ZURUECK id=suZu eigen=1-->
+    <h2 id="suFensterH" class="vh" data-t="su.suchen"></h2>
+    <div id="suFensterPlatz">
+    <!-- Suche (src/suche.js): offline, nichts wird gespeichert oder gesendet -->
+      <form class="su-suche" id="suSuche" role="search" autocomplete="off">
+        <label for="suFeld" class="vh" data-t="su.label"></label>
+        <span class="su-feld"><svg class="su-lupe" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input type="search" id="suFeld" data-t-ph="su.label" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" aria-describedby="suStatus"><button type="button" class="su-leeren" id="suLeeren" data-t-aria="su.leeren" hidden><span aria-hidden="true">×</span></button></span>
+        <p class="vh" id="suStatus" role="status" aria-live="polite"></p>
+        <div class="su-treffer" id="suTreffer" hidden></div>
+      </form>
+    </div>
+  </div>
   <nav class="appnav" id="appnav" aria-label="SoLo">
     <button type="button" data-ansicht="start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span data-t="nav.start"></span></button>
     <button type="button" data-ansicht="ordner"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M3 10h18"/></svg><span data-t="nav.ordner"></span></button>
@@ -2082,9 +2154,16 @@ Behoerden.init(/*BEHOERDENDATA*/null);
 /*GELD*/
 /*SCHRITTE*/
 /*KLIENT*/
+/*SUCHE*/
 </script>
 <script>
 /*NAVIGATION*/
+</script>
+<script>
+/*QRCODE*/
+</script>
+<script>
+/*WEITERGABE*/
 </script>
 <script>
 /*FORMULARE*/

@@ -16,7 +16,7 @@ Status je Aussage: BELEGT (amtlicher Wortlaut gelesen) · NUR SEKUNDÄRQUELLE ·
 - Wohngeld: Freibetrag nur nach § 17 WoGG (GdB 100, oder GdB ≥ 50 mit Pflegegrad); Ausschluss bei BAföG/BAB-Berechtigung (§ 20 Abs. 2 WoGG); Miete 0 → kein Wohngeld.
 - WBS Bayern: Grenzen nach Art. 4 BayWoBindG (17.500 / 27.500 / +5.000 / +1.300 €); höhere Werte (Art. 11 BayWoFG) nur als „vielleicht, nur in Gebieten mit erhöhtem Wohnungsbedarf".
 - Grundsicherung: Werkstatt-Beschäftigte gelten als voll erwerbsgemindert → Sozialamt (BA-Weisung § 8 SGB II Rz. 8.8–8.10a); Ausbildungstext auf die belegten Ausnahmen verengt.
-- Blindengeld: Kürzung bei Pflegegrad 2 für Sehbehinderte 159,62 € (83,08 € ist der Restbetrag); ab Pflegegrad 3 kein Betrag genannt.
+- Blindengeld: Kürzung bei Pflegegrad 2 für Sehbehinderte 159,62 € (83,08 € ist der Restbetrag); Pflegegrad 3 bis 5 einheitlich 33 % des Pflegegeldes von Pflegegrad 3 = 197,67 € (Art. 4 Abs. 1 Satz 2 BayBlindG, ZBFS-Infoblatt 7/2026: 611,33 €; Abruf 21.11.2026).
 - Rundfunkbeitrag, WBS: Hinweise auf weitere Befreiungsgründe, Härtefall-Voraussetzung, Pauschalabzüge.
 
 ## Bekannt offen (nicht oder nur sekundär belegt)
