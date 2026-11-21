@@ -23,13 +23,15 @@ const Ref = require('./referenz.js');
 const egGr = {};
 const EG = require('./amtlich-elterngeld.json');
 EG.faelle.forEach((x) => {
-  const e = R.evaluate({ baby: 'bald', egVor: x.vorher, art1: 'lohn', brutto: 2000, netto: 1500, heute: 2026.9, kids: x.geschwister ? 2 : 0, kidsU6: x.geschwister ? 2 : 0 }).results.find((r) => r.id === 'elterngeld');
+  const inp = { baby: 'bald', egVor: x.vorher, art1: 'lohn', brutto: 2000, netto: 1500, heute: 2026.9, kids: x.geschwister ? 2 : 0, kidsU6: x.geschwister ? 2 : 0 };
+  const e = R.evaluate(inp).results.find((r) => r.id === 'elterngeld');
   const solo = e.tx[0][1].basis.eur;
-  const a = Ref.egAbgleich(x, solo, x.amtlich); egGr[a.gruppe] = (egGr[a.gruppe] || 0) + 1;
+  const a = Ref.egAbgleich(x, solo, x.amtlich, inp); egGr[a.gruppe] = (egGr[a.gruppe] || 0) + 1;
   n++; if (a.fehler || a.diff > 0) { fails++; console.log('FAIL [amtlich-elterngeld] Netto vorher ' + x.vorher + ' €: ' + (a.fehler || 'SoLo über dem Schnellrechner (' + a.diff + ' €)')); }
 });
 const nEg = n - nWg;
-// Gegenprobe: Die drei Gruppen müssen alle vorkommen, und SoLo darf nie über dem Schnellrechner liegen (der Abzug ist größer)
+// Gegenprobe: Die drei Gruppen müssen alle vorkommen, und die Formel mit Netto darf nie über dem Schnellrechner liegen (der Abzug ist größer).
+// SoLo selbst kann seit 21.11.2026 etwas darüber liegen: Elterngeld-Netto mit den Pauschalen nach § 2f BEEG (Befund E2, egAbgleich, a.sv).
 if (!(egGr.satz > 0 && egGr.grenze > 0 && egGr.gleitend > 0)) { fails++; console.log('FAIL [amtlich-elterngeld] Gruppen fehlen: ' + JSON.stringify(egGr)); }
 // Kinderzuschlag: 40 Familien im KiZ-Lotsen der Familienkasse (nur Anspruch ja/nein). Lotse „Anspruch“: SoLo nie „eher nicht“;
 // Lotse „kein Anspruch“: SoLo nie „wahrscheinlich“ (dazwischen „möglich“ mit Grund).

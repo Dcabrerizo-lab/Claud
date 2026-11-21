@@ -54,6 +54,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Ausschluss: Rentenalter oder volle Erwerbsminderung (Sozialamt zuständig, § 7 Abs. 1) | ✓ | `gg-alter` |
 | Ausschluss: Studium und förderfähige Ausbildung (§ 7 Abs. 5) | ✓ | `gg-studium` |
 | Ausschluss: Asylbewerberleistungen (§ 7 Abs. 1 Satz 2 Nr. 3) | ✓ | `asyl-ausschluss` |
+| Unterhaltsvorschuss als Einkommen des Kindes (§ 11 Abs. 1 Satz 1, § 9 Abs. 2 SGB II; vorrangig § 12a): sicher erwarteter UVG mindert die Lücke (allein, Kind unter 6, 1.800 € Lohn: 640 -> 410 €); möglicher, nicht sicherer UVG (zweite Person ohne Angabe, anderer Elternteil bei mehreren Kindern) -> höchstens „möglich“ (Befund G2, Rechenplan; abgerufen 21.11.2026) | ✓ | `rechenbefunde-g2` |
 
 ## Grundsicherung im Alter und bei Erwerbsminderung (SGB XII)
 <!-- karten: gsa -->
@@ -125,6 +126,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Selbst gezahlter Unterhalt (§ 18 WoGG): bis 3.000 € im Jahr je Kind oder sonstiger Person, 6.000 € für frühere oder getrennt lebende Ehe- oder Lebenspartner; ohne Titel vorsichtig nur für „möglich“, mit Titel günstig der ganze Betrag (ob ein Titel über den Höchstbetrag hinaus zählt, ist nicht am Gesetzestext geprüft) | ◐ | `uz-wg` |
 | Unterhalt für die Person selbst: ohne Realsplitting voll (§ 14 Abs. 2 Nr. 19 und 20 WoGG), mit Realsplitting sonstige Einkünfte (§ 22 Nr. 1a EStG) nach 102 € Pauschbetrag (§ 9a Satz 1 Nr. 3 EStG); Pauschalabzug § 16 WoGG 0 % (familienversichert) bis 20 % (Steuer und eigene Kranken-/Pflegeversicherung). Realsplitting unbekannt: „wahrscheinlich“ mit 0 % und ohne Pauschbetrag, „möglich“ mit 20 % und Pauschbetrag | ◐ | `unt-wg` |
 | Geschätztes Arbeitslosengeld, Krankengeld oder Elterngeld als künftiges Einkommen (§ 14 WoGG; Elterngeld bis 300 € frei), zweite Rechnung und Einstufung aus beiden | ✓ | `zuk-einkommen` |
+| Möglicher, nicht sicherer Unterhaltsvorschuss (zweite Person ohne Angabe; Kinder ab 12 ohne 600 € des Elternteils, § 1 Abs. 1a Nr. 1 UVG) zählt in der vorsichtigen Schätzung als Einkommen (§ 14 Abs. 2 Nr. 21 WoGG; abgerufen 21.11.2026): „wahrscheinlich“ nur, wenn es auch damit reicht (Befund U1) | ✓ | `rechenbefunde-u1` |
 
 ## Kinderzuschlag (BKGG)
 <!-- karten: kiz -->
@@ -147,6 +149,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Selbst gezahlter, festgelegter Unterhalt mindert das Einkommen der Eltern (§ 11b Abs. 1 Satz 1 Nr. 7 SGB II) | ✓ | `uz-sgb2` |
 | Unterhalt für einen Elternteil selbst: zählt für das Mindesteinkommen (§ 6a Abs. 1 Nr. 2 BKGG: Einkommen nach § 11 Abs. 1 Satz 1 und 2 SGB II, nur Wohngeld, Kindergeld, Kinderzuschlag ausgenommen); mindert als „anderes Einkommen“ in voller Höhe, die Überschreitung gilt zuerst als Erwerbseinkommen (§ 6a Abs. 6 BKGG) | ✓ | `unt-kiz` |
 | Geschätztes Arbeitslosengeld, Krankengeld oder Elterngeld als künftiges Einkommen der Eltern, zweite Rechnung | ✓ | `zuk-einkommen` |
+| Unterhaltsvorschuss mindert den Kinderzuschlag zu 45 % (§ 6a Abs. 3 Satz 1 und 3 BKGG; Satz 4: wer ihn nicht geltend macht, riskiert den KiZ; abgerufen 21.11.2026): allein, Kind unter 6, 1.800 € Lohn: 300 -> 190 €; möglicher UVG (zweite Person ohne Angabe usw.) -> „wahrscheinlich“ nur, wenn es auch damit mindestens 60 € sind (Befund K1) | ✓ | `rechenbefunde-k1` |
 
 ## Kindergeld (EStG, BKGG)
 <!-- karten: kindergeld -->
@@ -225,6 +228,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Altersgrenze bei Beginn: 45. Lebensjahr noch nicht vollendet, also unter 45 (§ 10 Abs. 3, Abruf 21.11.2026), Ausnahmen möglich | ✓ | `bafoeg-alter` |
 | Grob geschätzter Betrag (nur Studium): Bedarf 475 € + 59/380 € Wohnen (§ 13), + 0 / 102 + 35 / bis 185 + 48 € KV/PV (§ 13a), + 160 € je eigenem Kind unter 14 (§ 14b) minus Anrechnung: Eltern §§ 21, 25 (Einkommen über 2.540/1.690 € + 770 € je Kind, davon 50 % − 5 % je Kind), Geschwister in Ausbildung § 11 Abs. 4 (Spanne über alle Fälle), eigenes Einkommen § 23 (389 € frei, Bek. 18.11.2025, BGBl. 2025 I Nr. 279), Ehegatte § 25 Abs. 1 Nr. 2, Vermögen §§ 29, 30; § 51 Abs. 3, 4 (Rundung, unter 10 € nichts). Unbekanntes als Spanne; Elternteil allein und Studierende unter 37 (§ 11 Abs. 3 Nr. 2: maßgeblich ist das Alter bei Beginn des Ausbildungsabschnitts, die App kennt nur das Alter heute): nur „bis etwa“. Annahme im Text `bafoeg.kindHinweis`: Erwachsene im Haushalt sind die Eltern, Einkommen wie heute. Amtlicher Abgleich (BAföG Digital, 200 Fälle, 21.11.2026): alle amtlichen Beträge in SoLos Spanne (`tools/amtlich-vergleich-bafoeg-eg.js`) | ✓ | `bafoeg-betrag` |
 | Betriebliche Ausbildung: kein BAföG, sondern Berufsausbildungsbeihilfe | ✓ | `bafoeg-betrieb` |
+| Einstufung beim Kind mit dem Einkommen nach § 21 BAföG statt Netto: Lohn mit Brutto = (Brutto − 102,50 €) − Sozialpauschale 22,3 % (höchstens 17.200 €/Jahr) − Steuer (Brutto − Netto − Beiträge); ohne Brutto „wahrscheinlich“ weiter mit dem Netto (§ 21 Abs. 1, 2 BAföG, abgerufen 21.11.2026; Befund B1) | ✓ | `rechenbefunde-b1` |
 
 ## Berufsausbildungsbeihilfe (§§ 56 ff. SGB III)
 <!-- karten: bab -->
@@ -395,13 +399,14 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 |---|---|---|
 | Asylverfahren oder Duldung: WBS nur bei Möglichkeit eines dauerhaften Wohnsitzes (§ 27 Abs. 2 WoFG, Art. 14 Abs. 2 BayWoFG): „unwahrscheinlich“ mit Hinweis auf Ausnahmen (z. B. Ausbildungsduldung: VG Berlin, Urteil vom 25.06.2019, VG 8 K 202.18) und Wohnungsamt (Entscheidung David 20.11.2026; Abruf 20.11.2026) | ◐ | `wbs-asyl` |
 | Einkommensgrenzen nach Haushaltsgröße und Kindern; höhere Grenzen per Gebietsverordnung | ✓ | `wbs-grenze` |
-| Freibetrag Schwerbehinderte nach § 24 WoFG (4.500 € / 2.100 €) | ✓ | `wbs-schwerb` |
+| Freibetrag Schwerbehinderte: Bayern 4.000 € je Person mit GdB ab 50 (Art. 5 Abs. 2 Nr. 1 BayWoFG); andere Länder nach dem Muster § 24 WoFG (4.500 € / 2.100 €) | ✓ | `wbs-schwerb` |
 | Arbeitnehmer-Pauschbetrag 1.230 € je Person mit Lohn (und einmal für Einkommen der Kinder) vor den pauschalen 30 % abgezogen (Art. 6 Abs. 1 und 3 BayWoFG über Art. 4 Abs. 1 BayWoBindG; § 21, § 23 WoFG; § 9a Satz 1 Nr. 1 Buchst. a EStG; abgerufen 21.11.2026); nur für „möglich“ und „unwahrscheinlich“, „wahrscheinlich“ bleibt beim Brutto (Abgleich Runde 2, H2; SH-Tabelle ab 06.01.2026, Fußnote) | ✓ | `wbs-werbung` |
 | Länder ohne belegte Landesgrenze (Saarland): unter den Bundeswerten (§ 9 Abs. 2 WoFG: 12.000 / 18.000 €, + 4.100 € je weitere Person, + 500 € je Kind) „wahrscheinlich“, sonst „möglich“ | ◐ | `wbs-land` |
 | Landesgrenzen aller übrigen 15 Länder nach amtlichen Quellen (Tabelle `docs/WBS-GRENZEN.md`), mit Aufrundung (RP, SH) und Zuschlag für 1-2 Personen (SH); auf den Euro geprüft; „nein“ nur über der höchsten Stufe nach 30 % Abzug, Freibeträgen und gezahltem Unterhalt mit 5 % Reserve | ✓ | `wbs-land-grenze` |
 | WBS-Stufen je Land (Berlin WBS 140/180/220, Förderwege HH/SH/MV, NRW Gruppe A/B, HB, RP, ST, TH) mit Grenzen und erreichter Stufe | ✓ | `wbs-stufen` |
 | Empfänger des WBS-Antrags: Wohnungsamt der kreisfreien Stadt mit Anschrift; Bayern: Landratsamt, aber nur in Landkreisen ohne Große Kreisstadt oder Große Delegationsgemeinde (29 + 8 Gemeinden; Liste laut BayernPortal, gegengeprüft am 19.11.2026 mit § 1 BayDVWoR, BayMBl. 2025 Nr. 41 und § 5 Abs. 1 ZustVBau; dort bewusst ohne Anschrift); Landkreise anderer Länder sowie Berlin und Hamburg (Bezirksämter) ohne Anschrift, dort bleibt „Wohnungsamt deiner Stadt oder Gemeinde“; Quelle der Anschrift jeweils Impressum der Behörde | ✓ | `wbs-stelle` |
 | Genaue Einkommensgrenzen der anderen 15 Länder | ○ (Quellen widersprüchlich; Annahme: kein Land liegt unter den Bundeswerten, bitte bestätigen) | |
+| Bayern: gezahlter Unterhalt abgezogen (Art. 5 Abs. 3 BayWoFG: mit Titel ganz, sonst höchstens 4.000 € je Person außerhalb des Haushalts bzw. 6.000 € Ex-Ehegatte) und 4.000 € je Person mit GdB ab 50 ohne Pflegegrad (Art. 5 Abs. 2 Nr. 1 BayWoFG), über Art. 4 Abs. 1 Satz 1 BayWoBindG (gesetze-bayern.de, abgerufen 21.11.2026; Befunde WBS2, WBS4) | ✓ | `rechenbefunde-wbs2` `rechenbefunde-wbs4` |
 
 ## Elterngeld (BEEG)
 <!-- karten: elterngeld -->
@@ -417,6 +422,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Mehrlingszuschlag 300 € je weiteres Kind der Geburt, auch neben dem Geschwisterbonus (§ 2a Abs. 4); Kinder der Geburt zählen nicht als Geschwister (§ 2a Abs. 1 Satz 2); beim ElterngeldPlus halbiert (§ 4a Abs. 2 Satz 3 Nr. 3) (Abruf 21.11.2026) | ✓ | `eg-mehrlinge` |
 | Teilzeit nach der Geburt: Prozentsatz nach dem Einkommen vorher auf den Unterschied, Einkommen vorher höchstens 2.770 € (§ 2 Abs. 3), mindestens 300 € (§ 2 Abs. 4); ElterngeldPlus höchstens die Hälfte des Basiselterngelds ohne Einkommen, Mindestbetrag und Mindest-Geschwisterbonus halbiert (§ 4a Abs. 2) (Abruf 21.11.2026) | ✓ | `eg-teilzeit` |
 | Teilzeit: Hinweis auf höchstens 32 Wochenstunden (§ 1 Abs. 6 Nr. 1); schon laufendes Elterngeld bei Mehrlingen: Freibetrag beim Wohngeld 300 € je Kind der Geburt (§ 10 Abs. 4), bei Grundsicherung, Sozialhilfe und Kinderzuschlag nicht vervielfacht und nur über Mindestbetrag plus Mehrlingszuschlag (§ 10 Abs. 5; Richtlinien zum BEEG 07/2026 Nr. 10.4, 10.5.2) (Abruf 21.11.2026) | ✓ | `eg-mehrlinge-frei` |
+| Elterngeld-Netto nach §§ 2e, 2f BEEG aus dem eingegebenen Netto: Brutto zurückgerechnet, echte Beiträge durch die Pauschale 21 % (9 + 10 + 2 %) ersetzt (2.000 € netto, kinderlos: 2.021,78 € -> 1.248 € statt 1.233 €); Minijob und Übergangsbereich unverändert; Pauschbetrag § 2c bleibt 1.230 €/12 (abgerufen 21.11.2026; Befund E2) | ◐ | `rechenbefunde-e2` |
 
 ## Mutterschaftsgeld (MuSchG, § 24i SGB V)
 <!-- karten: mutter -->

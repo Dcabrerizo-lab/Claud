@@ -10,7 +10,7 @@ const fs = require('fs'), path = require('path');
 const dir = process.argv[2]; const FIX = process.argv.includes('--fixtures');
 const lies = (art) => fs.readdirSync(dir, { recursive: true }).filter((n) => new RegExp('gross-' + art + '(-\\d+)?\\.json$').test(n))
   .flatMap((n) => JSON.parse(fs.readFileSync(path.join(dir, n), 'utf8'))).sort((a, b) => a.i - b.i);
-const { wg, kiz, eg } = require('./gross-solo.js');
+const { wg, kiz, eg, egInp } = require('./gross-solo.js');
 const Ref = require('../../test/referenz.js');
 let fehler = 0;
 const W = ['wohngeld', 'wg2', 'wggrenz'].flatMap(lies);
@@ -47,7 +47,7 @@ if (E.length) {
   let gleich = 0, offen = 0; const anders = [], gr = { satz: 0, grenze: 0, gleitend: 0, teilzeit: 0 };
   for (const x of E) {
     if (x.amtlich === null) { offen++; continue; }
-    const solo = eg(x.f), a = Ref.egAbgleich(x.f, solo, x.amtlich);
+    const solo = eg(x.f), a = Ref.egAbgleich(x.f, solo, x.amtlich, egInp(x.f));
     gr[a.gruppe]++;
     if (!a.fehler && a.diff <= 0) gleich++; else anders.push({ i: x.i, f: x.f, solo, amtlich: x.amtlich, erwartet: Math.round(a.gesetz * 100) / 100, fehler: a.fehler || 'SoLo über dem Schnellrechner' });
   }
