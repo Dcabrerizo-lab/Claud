@@ -30,6 +30,9 @@ const knopf = (root, text) => [...root.querySelectorAll('button')].find((b) => b
 const zeileVon = (name) => { const z = d.querySelector('#setHaushalte [data-vg-name="' + name + '"]'); return z && z.closest('li'); };
 const bearbeiten = () => { const b = d.getElementById('vgBearb'); if (b && b.getAttribute('aria-pressed') !== 'true') b.click(); };
 const speicherText = () => Object.values(mem).join('\n');
+// Kurze Werte wie „640“ nur als eigenes Wort suchen: Base64-Geheimtext und Zeitstempel enthalten die drei Zeichen zufällig,
+// Klartext im JSON stünde zwischen Trennzeichen ("miete":640,) – so bleibt die Prüfung scharf, ohne falschen Alarm (wie test-fristen-dom.js)
+const klarImSpeicher = (wert) => new RegExp('(?<![A-Za-z0-9+/=])' + wert + '(?![A-Za-z0-9+/=])').test(speicherText());
 
 (async () => {
   ck('[vorgang-pin-dom] lädt ohne Skriptfehler', errors.length === 0, errors.join(' | '));
@@ -69,7 +72,7 @@ const speicherText = () => Object.values(mem).join('\n');
   ck('[vorgang-pin-dom] gesperrt: Liste zeigt neutralen Titel und Schloss', !!g && g.querySelector('b').textContent === 'Gesperrter Vorgang' && !!g.querySelector('.vg-schloss svg') && !d.getElementById('setHaushalte').textContent.includes('Familie Geheim'));
   ck('[vorgang-pin-dom] Kurzname nur als Text, kein HTML', g.textContent.includes('<img') && !g.querySelector('img') && w.__xss === 0);
   ck('[vorgang-pin-dom] gesperrt: ein anderer Vorgang ist geöffnet, Angaben weg vom Bildschirm', d.getElementById('miete').value === '' && d.getElementById('p-name').value === '');
-  ck('[vorgang-pin-dom] gesperrt: Name und Angaben nicht im Gerätespeicher, PIN auch nicht', !speicherText().includes('Erika Geheim') && !speicherText().includes('Familie Geheim') && !speicherText().includes('482910') && !speicherText().includes('640'));
+  ck('[vorgang-pin-dom] gesperrt: Name und Angaben nicht im Gerätespeicher, PIN auch nicht', !speicherText().includes('Erika Geheim') && !speicherText().includes('Familie Geheim') && !speicherText().includes('482910') && !klarImSpeicher('640'));
 
   // Öffnen: falsche PIN, dann richtige
   g.querySelector('button.vg-zeile').click();

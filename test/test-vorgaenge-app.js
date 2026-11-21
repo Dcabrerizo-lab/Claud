@@ -158,10 +158,11 @@ const offenName = (s) => { const z = s.d.querySelector('#setHaushalte .vg-offen 
   submit(s, d.getElementById('vgPinForm'));
   for (let i = 0; i < 100 && mem['lotse.state']; i++) await warte(50);
   // Geheimtext (Base64) und Zeitstempel (zuletzt, bis) nicht durchsuchen: Zufallsfolgen wie „640“ wären sonst falscher Alarm
+  // Zusätzlich „640“ nur als eigenes Wort (Base64-sicher, wie test-fristen-dom.js): falls weiterer Geheimtext im Speicher steht
   const neutral = (vg) => Object.assign({}, vg, { pin: { geheim: !!(vg.pin || {}).ct }, zuletzt: vg.zuletzt ? 1 : 0, bis: vg.bis ? 1 : 0 });
   ck('[vorgaenge] Testhilfe: Zeitstempel mit „640“ neutralisiert', !/640/.test(JSON.stringify(neutral({ zuletzt: 1764064000000, bis: 1766406400000, pin: { ct: 'x640' } }))));
   const roh = JSON.stringify(Object.assign({}, mem, { 'lotse.vorgaenge': JSON.stringify(neutral(JSON.parse(mem['lotse.vorgaenge'] || '{}'))) }));
-  ck('[vorgaenge] mit PIN: nichts Lesbares im Speicher, PIN nicht gespeichert', !/Erika|Muster|Familie|640|miete/.test(roh) && !roh.includes('258013') && !mem['lotse.state'] && !mem['lotse.haushalt'] && !mem['lotse.haken'] && !mem['lotse.ausziehen'], roh.slice(0, 300));
+  ck('[vorgaenge] mit PIN: nichts Lesbares im Speicher, PIN nicht gespeichert', !/Erika|Muster|Familie|(?<![A-Za-z0-9+/=])640(?![A-Za-z0-9+/=])|miete/.test(roh) && !roh.includes('258013') && !mem['lotse.state'] && !mem['lotse.haushalt'] && !mem['lotse.haken'] && !mem['lotse.ausziehen'], roh.slice(0, 300));
   { const V = require('../src/vorgaenge.js'); ck('[vorgaenge] Korrektur 6: Haken, Haushalt und Ausziehen gehören zum Vorgang (DATEN), Beratungsmodus nicht', ['lotse.haken', 'lotse.haushalt', 'lotse.ausziehen'].every((k) => V.DATEN.includes(k)) && !V.DATEN.includes('lotse.beratung')); }
   ck('[vorgaenge] PIN-Sperre als „an“ angezeigt', /PIN-Sperre ist an/.test(d.getElementById('setSicher').textContent));
   ck('[vorgaenge] PIN: mindestens 6 Ziffern, Selbstsperre ehrlich im Text', /6 bis 12 Ziffern/.test(require('../dist/i18n.js').de['vg.pin.label']) && /2 Minuten im Hintergrund/.test(d.getElementById('setSicher').textContent));

@@ -80,7 +80,8 @@ const holen = (t, k) => { let r; t.get(k, (v) => { r = v; }); return r; };
     ck('[vorgaenge] pin: zu kurze PIN abgelehnt', (await t.pinSetzen('12')) === false && !t.pinAn());
     ck('[vorgaenge] pin: PIN gesetzt', (await t.pinSetzen('471108')) === true && t.pinAn());
     const roh = JSON.stringify(s.mem);
-    ck('[vorgaenge] pin: nichts Lesbares mehr gespeichert', !/Muster|812|miete/.test(roh) && s.mem['lotse.state'] === undefined, roh.slice(0, 200));
+    // „812“ nur als eigenes Wort: Base64-Geheimtext und Zeitstempel enthalten die drei Zeichen zufällig (Klartext: "miete":812})
+    ck('[vorgaenge] pin: nichts Lesbares mehr gespeichert', !/Muster|(?<![A-Za-z0-9+/=])812(?![A-Za-z0-9+/=])|miete/.test(roh) && s.mem['lotse.state'] === undefined, roh.slice(0, 200));
     ck('[vorgaenge] pin: PIN nicht gespeichert', !roh.includes('471108'));
     const m = JSON.parse(s.mem['lotse.vorgaenge']);
     ck('[vorgaenge] pin: Salt (16 Byte), IV (12 Byte), Durchläufe gespeichert', atob(m.pin.salt).length === 16 && atob(m.pin.iv).length === 12 && m.pin.iter === 2000);
