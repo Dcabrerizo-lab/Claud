@@ -1165,7 +1165,9 @@
   // Satz zur Lage: dieselben Sätze wie auf den Karten (t.ggeld.vorrang …, t.wohngeld.verzicht …), damit es nur eine Formulierung gibt
   function wegLageSatz(w) {
     var wg = w.a.indexOf('wohngeld') >= 0, kz = w.a.indexOf('kiz') >= 0;
-    if (w.lage === 'aVor') return t(w.rente ? 't.gsa.vorrang' : wg && kz ? 't.ggeld.vorrang' : kz ? 't.ggeld.vorrangKiz' : 't.ggeld.vorrangWg');
+    // Rente: echte Wahl (kein Vorrang, BSG 23.03.2021, B 8 SO 2/20 R; siehe wegeLage in src/rules.js)
+    if (w.rente && w.lage !== 'bUeblich') return t('eo.t') + ' ' + t('eo.tipp');
+    if (w.lage === 'aVor') return t(wg && kz ? 't.ggeld.vorrang' : kz ? 't.ggeld.vorrangKiz' : 't.ggeld.vorrangWg');
     if (w.lage === 'bUeblich') return t(w.rente ? 't.wohngeld.verzichtGsa' : wg && kz ? 't.wohngeld.verzichtKiz' : wg ? 't.wohngeld.verzicht' : 'weg.bUeblichKiz');
     if (w.lage === 'wahl') return t('weg.wahl');
     return t('t.weg.unklar');

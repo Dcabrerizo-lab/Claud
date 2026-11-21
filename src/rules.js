@@ -1327,21 +1327,27 @@ const Rules = (function () {
   // bUeblich – Wohngeld (und Kinderzuschlag) reichen nicht: Grundsicherungsgeld ist der übliche Weg, Wohngeld nur durch Verzicht
   //            (§ 8 Abs. 2 WoGG, https://www.gesetze-im-internet.de/wogg/__8.html, Abruf 21.11.2026).
   // unklar   – weniger als 50 € Abstand: beide Wege „möglich“, kein Vorrang-Satz.
-  // rente: Grundsicherung im Alter oder Wohngeld; Sozialhilfe ist nachrangig (§ 2 Abs. 1 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__2.html,
-  // Abruf 21.11.2026), Wohngeld nur durch Verzicht (§ 8 Abs. 2 WoGG). Ohne erweiterten Zugang.
+  // rente: Grundsicherung im Alter oder Wohngeld. Hier gibt es KEINEN Vorrang, der den Anspruch nimmt: Im SGB XII fehlt eine Pflicht wie
+  // § 12a SGB II, und der Nachrang (§ 2 Abs. 1 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__2.html) ist keine Ausschlussnorm. Wohngeld,
+  // das man bekommen könnte, aber nicht bekommt, ist kein Einkommen (BSG, Urteil vom 23.03.2021, B 8 SO 2/20 R,
+  // https://www.bsg.bund.de/SharedDocs/Entscheidungen/DE/2021/2021_03_23_B_08_SO_02_20_R.html; alle Abruf 21.11.2026). Das Sozialamt darf die
+  // Grundsicherung deshalb nicht ablehnen; es kann Wohngeld selbst betreiben (§ 95 SGB XII). Darum bleibt die Karte Grundsicherung im Alter
+  // unverändert (Stufe und Betrag): Lage „wahl“ (echte Wahl) oder, wenn Wohngeld deutlich weniger bringt, „bUeblich“ (Wohngeld nur „möglich“,
+  // Verzicht nach § 8 Abs. 2 WoGG). Prüfung 21.11.2026: vorher „aVor“/„unklar“ mit Herabstufung auf „möglich“ ohne Betrag – rechtlich falsch.
   function wegeLage(r, a, luecke, h, rente) {
     if (!a || h.ohneWege) return r;
     const d = a.summe - luecke, P = R.wege.puffer;
+    if (rente) return Object.defineProperty(r, 'lage', { value: d <= -P ? 'bUeblich' : 'wahl', configurable: true });
     let lage;
     if (d >= P) lage = 'aVor';
     else if (d > -P) lage = 'unklar';
     // Wahl nur, wenn auch die Karte Kinderzuschlag den erweiterten Zugang für erreichbar hält (kizRechnung0: nicht „Einkommen eher zu niedrig“)
-    else if (!rente && a.kzReicht && h.children > 0 && -d <= R.kiz.erweitert + P && haushaltsFreibetrag(h) >= R.kiz.erweitert) lage = 'wahl';
+    else if (a.kzReicht && h.children > 0 && -d <= R.kiz.erweitert + P && haushaltsFreibetrag(h) >= R.kiz.erweitert) lage = 'wahl';
     else lage = 'bUeblich';
     let out = r;
     if (lage === 'aVor') {
       // Kein Betrag: Laien zählen ihn sonst zu Wohngeld und Kinderzuschlag dazu
-      const key = rente ? 'gsa.vorrang' : a.kzOffen ? (a.wg > 0 || a.wgOffen ? 'ggeld.vorrang' : 'ggeld.vorrangKiz') : 'ggeld.vorrangWg';
+      const key = a.kzOffen ? (a.wg > 0 || a.wgOffen ? 'ggeld.vorrang' : 'ggeld.vorrangKiz') : 'ggeld.vorrangWg';
       out = mk(r.id, 'vielleicht', 'vorrang', [[key]].concat(r.tx.filter((t) => t[0].indexOf('schaetz.') !== 0)));
     } else if (lage === 'unklar') out = mk(r.id, 'vielleicht', r.level === 'ja' ? 'vielleicht' : r.hl, r.tx.concat([['weg.unklar']]));
     return Object.defineProperty(out, 'lage', { value: lage }); // nicht aufzählbar: nur für evaluateKern
@@ -1522,8 +1528,9 @@ const Rules = (function () {
       r = mk(id, ja ? 'ja' : 'vielleicht', ja ? 'ja' : 'vielleicht', bedarfTx('ja', bedarf).concat([sch], extra));
     } else if (luecke > -(R.grundsicherung.knappPuffer + offen)) r = mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(extra));
     else return mk(id, 'nein', 'einkoHoch', bedarfTx('nein', bedarf));
-    // Wohngeld geht vor, wenn es zusammen mit der Rente reicht (§ 2 Abs. 1 SGB XII; § 7 Abs. 1 Satz 1 Nr. 5 und Satz 3 Nr. 2 WoGG,
-    // https://www.gesetze-im-internet.de/wogg/__7.html, Abruf 21.11.2026). Nur im eigenen Haushalt (bei den Eltern oder im Wohnheim kein Wohngeld).
+    // Grundsicherung im Alter und Wohngeld gibt es nicht zusammen (§ 7 Abs. 1 Satz 1 Nr. 5 WoGG, https://www.gesetze-im-internet.de/wogg/__7.html,
+    // Abruf 21.11.2026). Die Karte bleibt unverändert, auch wenn Wohngeld reichen würde (kein Ausschluss durch § 2 Abs. 1 SGB XII, siehe wegeLage);
+    // hier nur die Lage für die Anzeige der zwei Wege. Nur im eigenen Haushalt (bei den Eltern oder im Wohnheim kein Wohngeld).
     if (eigen || offen) return r;
     const wr = wohngeld(h);
     if (wr.level !== 'ja' && wr.level !== 'vielleicht') return r;
@@ -2558,7 +2565,7 @@ const Rules = (function () {
     const lageAus = (l) => (l.every((x) => x === l[0]) ? l[0] || 'unklar' : 'unklar');
     let rente = false, b, a, lage;
     if (offen(gg) && !h.bezug.grundsicherungsgeld && !h.bezug.sozialamt && (offen(wg) || offen(kz))) { b = gg; a = [wg, kz].filter(offen); lage = lageAus(lagen); }
-    else if (offen(gsa) && offen(wg)) { rente = true; b = gsa; a = [wg]; lage = lageAus(lagenR); }
+    else if (offen(gsa) && offen(wg)) { rente = true; b = gsa; a = [wg]; lage = lageAus(lagenR); if (lage !== 'bUeblich') lage = 'wahl'; } // Rente: nie „unklar“/„aVor“ (wegeLage)
     else return null;
     if (lage === 'unklar') a.concat([b]).forEach((r) => { kappe(r); if (r.hl !== 'vorrang') zu(r, 'weg.unklar'); });
     if (lage === 'bUeblich') { kappe(wg); zu(wg, rente ? 'wohngeld.verzichtGsa' : offen(kz) ? 'wohngeld.verzichtKiz' : 'wohngeld.verzicht'); }
