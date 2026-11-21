@@ -433,6 +433,7 @@ setTimeout(() => {
     check('[geld] Kacheln in der Form der Startseite (Symbol, Titel, Text)', kacheln().every((b) => b.querySelector('.sk-sym svg') && b.querySelector('.sk-txt b') && b.querySelector('.sk-txt span')));
     check('[geld] weiße Unterkacheln (uk-karte im uk-raster, Design #68)', kacheln().length === 6 && kacheln().every((b) => b.classList.contains('uk-karte') && !b.classList.contains('sk')));
     check('[geld] keine Zeile für Fachkräfte im Privatmodus', !box.querySelector('.ber-nur'));
+    check('[ux-c] Startebene „Geld und Schulden“: großer Bereichstitel, kein Aufgaben-Titel', !d.getElementById('v-sparen').classList.contains('gs-unter') && !box.querySelector('.gs-titel'));
     // 1 Es ist dringend: Krisen-Check zuerst, dann Fälle
     kacheln()[0].click();
     const faelle = kacheln().map((b) => b.className.match(/gs-d-([a-z]+)/)[1]);
@@ -441,6 +442,7 @@ setTimeout(() => {
     check('[geld] Mahnbescheid: Frist offen (kurz fett, Einzelheiten ohne Paragrafen), erster Schritt oben, Einzelheiten zugeklappt', box.querySelector('.gs-frist .gs-frist-kurz b').textContent === I18N.de['gs.d.mahn.frist.kurz'] && box.querySelector('.gs-frist .gs-frist-lang').textContent === FmtN.ohnePara(I18N.de['gs.d.mahn.frist']) && !box.querySelector('.gs-frist details') && box.querySelector('.gs-schritt p').textContent === I18N.de['gs.d.mahn.schritt'] && !box.querySelector('details[data-fall="mahn"]').open);
     const fall = (f) => box.querySelector('[data-fall="' + f + '"] p').textContent;
     check('[schulden-korr] Vollstreckungsbescheid: darf sofort gepfändet werden, Einspruch 2 Wochen (Notfrist), stoppt nicht von selbst; Widerspruch bis zum Vollstreckungsbescheid', /solange das Gericht noch keinen Vollstreckungsbescheid erlassen hat \(§ 694 ZPO\)/.test(fall('mahn')) && /darf sofort gepfändet werden \(§ 700 ZPO\)\. Dagegen hilft nur noch ein Einspruch\. Er muss innerhalb von 2 Wochen/.test(fall('mahn')) && /Notfrist, §§ 700, 339 ZPO/.test(fall('mahn')) && /nicht von selbst.*§ 719 ZPO/.test(fall('mahn')));
+    check('[ux-c] Seitentitel = Aufgabe: „Mahnbescheid“ als Überschrift, „Geld und Schulden“ als kleine Zeile', d.getElementById('v-sparen').classList.contains('gs-unter') && box.querySelector('.gs-titel').getAttribute('role') === 'heading' && box.querySelector('.gs-titel').textContent === I18N.de['gs.d.mahn']);
     check('[geld] Mahnbescheid nennt die 2-Wochen-Frist mit Quelle (Paragraf in „Quellen“, UX-Audit C Nr. 18)', /2 Wochen/.test(box.querySelector('.gs-frist-lang').textContent) && !/§/.test(box.querySelector('.gs-frist').textContent) && /Gesetze auf dieser Seite: § 692 ZPO; §§ 700, 339 ZPO/.test(box.querySelector('.quellen').textContent));
     check('[geld] Mahnbescheid: Knopf „In die Schulden-Liste eintragen“ als Hauptknopf (UX-Audit C)', !!box.querySelector('.gs-in-liste') && !box.querySelector('.gs-in-liste').classList.contains('ghost'));
     // Aufräumen 21.11.2026: alle Fälle gleich aufgebaut – Frist, „Das tust du jetzt“, Knöpfe (Beratungsstelle zuletzt), Quellen

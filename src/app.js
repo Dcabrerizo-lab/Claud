@@ -3002,6 +3002,10 @@
         box.appendChild(quellenEl([t('sp.quellen')]));
       }
     }
+    // Seitentitel = Aufgabe (UX-Audit C Nr. 12): auf Unterseiten wird „Geld und Schulden“ zur kleinen Zeile darüber, die Aufgabe zur Überschrift
+    var vs = $('v-sparen'), ti = box.querySelector('.pf-frage');
+    if (vs) vs.classList.toggle('gs-unter', !!sp.bereich);
+    if (ti && sp.bereich) { ti.classList.add('gs-titel'); ti.setAttribute('role', 'heading'); ti.setAttribute('aria-level', '3'); }
     if (fokusId && $(fokusId)) { $(fokusId).focus(); return; }
     if (fokus) { var h = box.querySelector('.pf-frage'); if (h) { h.setAttribute('tabindex', '-1'); h.focus(); } }
   }
