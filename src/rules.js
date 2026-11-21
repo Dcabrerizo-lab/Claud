@@ -2215,8 +2215,10 @@ const Rules = (function () {
   // https://www.gesetze-im-internet.de/estg/__9a.html, Abruf 21.11.2026). Erst danach kommen die pauschalen Abzüge von je 10 %
   // (Art. 6 Abs. 3 BayWoFG, § 23 WoFG). Der Pauschbetrag gilt einmal je Person (höchstens bis zur Höhe ihres Lohns); nicht bei
   // Selbstständigen (Gewinn). Eigenes Einkommen der Kinder (Ausbildungsvergütung, Minijob) mindestens einmal (sicher nur ein Pauschbetrag,
-  // weil die App die Summe aller Kinder kennt). Beispiel: Schleswig-Holstein, Anlage 1 Einkommensgrenzen Wohnraumförderung ab 06.01.2026,
-  // Fußnote zur Tabelle (Lohn vor Abzug: 1.230 € je erwerbstätige Person).
+  // weil die App die Summe aller Kinder kennt). Gegenprobe (Prüfung 21.11.2026): Schleswig-Holstein, Anlage 1 Einkommensgrenzen ab 06.01.2026
+  // (https://transparenz.schleswig-holstein.de/dataset/cc6f7aed-dd80-444d-94b4-468fe9d64ece/resource/8e11315d-a9a5-4e59-9ffb-fb55ed29d57b/download/anl.-1_einkommensgrenzen_2026.pdf,
+  // Abruf 21.11.2026): 1 Person, Angestellte, Bruttoeinkommen 34.087 € bei Grenze 23.000 € = 23.000 / 0,7 + 1.230; die Fußnote nennt die
+  // Werbungskostenpauschale nach § 9a EStG für einen Erwerbstätigen (Orientierungswert). Nach dem Gesetz gilt der Pauschbetrag je Person mit Lohn.
   function wbsWerbung(h) {
     const topf = {};
     (h.pers || []).forEach(function (x, i) {
@@ -2227,7 +2229,9 @@ const Rules = (function () {
     const erw = Object.keys(topf).reduce((a, p) => a + Math.min(R.wgWerbung.lohn, topf[p]), 0);
     return erw + Math.min(R.wgWerbung.lohn, (h.kindEink || 0) * 12);
   }
-  // Wohnberechtigungsschein Bayern (Art. 11 BayWoFG): Jahres-Einkommensgrenze
+  // Wohnberechtigungsschein Bayern: Jahres-Einkommensgrenze nach Art. 4 Abs. 1 BayWoBindG (17.500 / 27.500 €, + 5.000 € je weitere Person,
+  // + 1.300 € je Kind; https://www.gesetze-bayern.de/Content/Document/BayWoBindG-4, Abruf 21.11.2026). Mit hoechst: Höchstwerte nach
+  // Art. 11 Abs. 1 BayWoFG, bis zu denen eine Gemeinde die Grenze anheben darf (Art. 4 Abs. 3 BayWoBindG). Prüfung 21.11.2026: vorher nur „Art. 11 BayWoFG“.
   function wbsGrenze(h, hoechst) {
     const w = R.wbs;
     const ein = hoechst ? w.maxEin : w.ein, zwei = hoechst ? w.maxZwei : w.zwei, weitere = hoechst ? w.maxWeitere : w.weitere, kind = hoechst ? w.maxKind : w.kind;
