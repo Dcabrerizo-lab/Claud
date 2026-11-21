@@ -31,6 +31,7 @@
     var s = Object.prototype.hasOwnProperty.call(d, key) ? d[key] : (Object.prototype.hasOwnProperty.call(I18N.de, key) ? I18N.de[key] : key);
     if (einfachSprache && lang === 'de' && typeof I18N_EINFACH !== 'undefined' && Object.prototype.hasOwnProperty.call(I18N_EINFACH, key)) s = I18N_EINFACH[key];
     var rtl = d['meta.dir'] === 'rtl';
+    var echt = lang !== 'de' && s !== I18N.de[key] && Object.prototype.hasOwnProperty.call(d, key); // wirklich übersetzt (nicht der deutsche Text als Ersatz)
     // {eur:100000}: fester Betrag im Text; {name}: Parameter, Beträge sind Objekte { eur: Zahl }
     s = s.replace(/\{eur:(\d+(?:\.\d+)?)\}/g, function (m, n) { return Fmt.euro(Number(n), lang, rtl); });
     if (p) s = s.replace(/\{(\w+)\}/g, function (m, k) {
@@ -38,6 +39,7 @@
       var v = p[k];
       return v && typeof v === 'object' && 'eur' in v ? Fmt.euro(v.eur, lang, rtl) : v;
     });
+    if (echt && window.NurDeutsch) window.NurDeutsch.merke(s); // übersetzt: nicht als Deutsch auszeichnen (src/denetz.js, NurDeutsch)
     if (lang !== 'de' && window.DeNetz) DeNetz.merke(key, s, p); // Sicherheitsnetz: wichtige Sätze auch auf Deutsch (src/denetz.js)
     return s;
   }
@@ -642,6 +644,7 @@
   function applyLang() {
     var app = $('app');
     if (window.DeNetz) DeNetz.sprache(); // alte Übersetzungen vergessen
+    if (window.NurDeutsch) window.NurDeutsch.sprache(); // deutsche Blöcke nach dem Neuzeichnen neu auszeichnen
     app.setAttribute('lang', lang);
     document.documentElement.setAttribute('lang', lang);
     document.documentElement.setAttribute('dir', I18N[lang]['meta.dir']);
@@ -2504,6 +2507,8 @@
   bind();
   writeForm();
   if (window.DeNetz) DeNetz.init({ lang: function () { return lang; }, de: tDe, t: t, wurzel: function () { return $('app'); } });
+  // Nur deutsch vorhandene Bereiche: rein deutsche Blöcke mit lang="de" dir="ltr" auszeichnen (src/denetz.js, NurDeutsch)
+  if (window.NurDeutsch) window.NurDeutsch.init({ lang: function () { return lang; }, bereiche: function () { return ['checkBox', 'puInhalt', 'pflegeAssist', 'pflegeInfo'].map($); } });
   lang = detect();
   applyLang();
   initClaude();
@@ -3844,7 +3849,7 @@
       PI_LINKS[id].forEach(function (x) {
         var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'pi-link';
         bt.setAttribute('aria-label', t('pa.erklaerung') + ': ' + x[1]);
-        bt.appendChild(document.createTextNode(x[1])); var pf = document.createElement('span'); pf.setAttribute('aria-hidden', 'true'); pf.textContent = ' ›'; bt.appendChild(pf);
+        bt.appendChild(document.createTextNode(x[1])); bt.appendChild(document.createTextNode(' ')); var pf = document.createElement('span'); pf.className = 'pfeil'; pf.setAttribute('aria-hidden', 'true'); pf.textContent = '›'; bt.appendChild(pf);
         bt.addEventListener('click', function () { pflegeInfo('leistungen', id, x[0]); });
         w.appendChild(bt);
       });
@@ -3892,7 +3897,7 @@
     $('paNurDe').hidden = lang === 'de';
     var pgJetzt = paEchterPg();
     PflegeAssistent.start($('pflegeAssist'), {
-      pgAktuell: pgJetzt, antworten: pa.antworten, ergebnis: zumErgebnis === true, einfach: lang === 'de' && einfachSprache,
+      pgAktuell: pgJetzt, antworten: pa.antworten, ergebnis: zumErgebnis === true, einfach: lang === 'de' && einfachSprache, zurueckText: t('nav.zurueck'),
       speichern: function (a) { pa.antworten = a; paSpeichern(); },
       beimErgebnis: paMerken,
       abbrechen: paVerlassen,
@@ -3963,7 +3968,7 @@
     var body = el('tbody');
     zeilen.forEach(function (z) {
       var tr = el('tr'), td0 = el('td'), ln = el('button', null, 'pi-link pi-link-tab'); ln.type = 'button';
-      ln.appendChild(document.createTextNode(z[0])); var pf = el('span', ' ›'); pf.setAttribute('aria-hidden', 'true'); ln.appendChild(pf);
+      ln.appendChild(document.createTextNode(z[0])); ln.appendChild(document.createTextNode(' ')); var pf = el('span', '›'); pf.className = 'pfeil'; pf.setAttribute('aria-hidden', 'true'); ln.appendChild(pf);
       ln.addEventListener('click', function () { piAbschnitt(z[4]); }); td0.appendChild(ln); tr.appendChild(td0); var td = el('td'); td.appendChild(el('span', z[3] === 'geld' ? 'Geld · ' : 'Budget · ', z[3])); td.appendChild(document.createTextNode(z[1].replace(/^Budget: |^Geld aufs Konto, /, function (m) { return m === 'Geld aufs Konto, ' ? 'aufs Konto, ' : ''; }))); tr.appendChild(td); tr.appendChild(el('td', z[2])); body.appendChild(tr); });
     tb.appendChild(body); tw.appendChild(tb); box.appendChild(tw);
     var abschnitt = function (id, titel, absaetze, liste) {

@@ -166,6 +166,8 @@
   .nav-kopf { justify-content: flex-start; margin: 0 0 4px; }
   .nav-pfeil { display: inline-block; }
   [dir="rtl"] .nav-pfeil { transform: scaleX(-1); }
+  /* Deutsch gebliebener Block (lang="de" dir="ltr") in einer RTL-Sprache: Pfeile darin zeigen wieder nach LTR-Art */
+  [dir="rtl"] [dir="ltr"] :is(.nav-pfeil, .pfeil, .zeile-pfeil) { transform: none; }
   .pa-wo { font-weight: 700; color: var(--ink); }
   .pa-unten { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; margin-top: 18px; }
   .pa-checks { display: grid; gap: 8px; }
@@ -1149,6 +1151,8 @@
   details.mehr > summary::before { content: "i"; flex: none; display: inline-grid; place-items: center; width: 20px; height: 20px; border: 2px solid currentColor; border-radius: 50%; font-size: .8em; font-weight: 900; line-height: 1; }
   details.mehr > summary::after { content: "▸"; font-size: .85em; }
   details.mehr[open] > summary::after { content: "▾"; }
+  [dir="rtl"] details.mehr:not([open]) > summary::after { content: "◂"; } /* zugeklappt zeigt der Pfeil in Leserichtung */
+  [dir="rtl"] [dir="ltr"] details.mehr:not([open]) > summary::after { content: "▸"; }
   details.mehr.quellen { margin-top: 18px; } /* „Quellen und Stand“: immer letzte Zeile der Seite */
   /* Tipp (Geld und Schulden, Pfändung): Linien-Symbol + kurzer Satz, Einzelheiten zum Aufklappen (src/app.js tippEl) */
   details.mehr.tipp { border: 1px solid var(--line); border-radius: var(--r-item); background: var(--surface); padding: 2px 12px; margin: 8px 0; }
@@ -1359,7 +1363,7 @@
       </div>
       <div class="kacheln uk-raster" id="briefKacheln"></div>
       <div id="checkBox" class="pp" hidden>
-        <p class="pp-hinweis small" id="ppNurDe" data-t="briefe.schreibenDe" hidden></p>
+        <p class="pp-hinweis small no-denetz nur-de-hinweis" id="ppNurDe" data-t="briefe.nurDe" hidden></p>
 <!--PRUEFPAKET-->
         <!-- Gemeinsame Kachel „Anderer Brief oder Formular“: erst einlesen (die App erkennt Formular oder Brief), darunter die Wahl von Hand -->
         <section class="pp-teil" id="abWahl" aria-labelledby="h-briefe" hidden>
@@ -1441,20 +1445,20 @@
     <section id="v-pflegestart" class="ansicht" aria-labelledby="h-pflegestart" hidden>
       <!--ZURUECK-->
       <h2 id="h-pflegestart" class="ans-h" data-t="home.pflege"></h2>
-      <p class="pp-hinweis small" id="puNurDe" data-t="pu.nurDe" hidden></p>
+      <p class="pp-hinweis small no-denetz nur-de-hinweis" id="puNurDe" data-t="pu.nurDe" hidden></p>
       <div id="puInhalt" class="pf pu"></div>
     </section>
 
     <!-- Pflegegrad selbst einschätzen (geführt, eine Frage pro Bildschirm) -->
     <section id="v-pflege" class="ansicht" aria-label="Pflegegrad" hidden>
-      <p class="pp-hinweis small" id="paNurDe" data-t="pu.nurDe" hidden></p>
+      <p class="pp-hinweis small no-denetz nur-de-hinweis" id="paNurDe" data-t="pu.nurDe" hidden></p>
       <div id="pflegeAssist" class="pa"></div>
     </section>
 
     <!-- Erklärseite: So funktionieren die Leistungen der Pflegekasse -->
     <section id="v-pflegeinfo" class="ansicht" aria-labelledby="h-pflegeinfo" hidden>
       <!--ZURUECK id=piZurueck-->
-      <p class="pp-hinweis small" id="piNurDe" data-t="pu.nurDe" hidden></p>
+      <p class="pp-hinweis small no-denetz nur-de-hinweis" id="piNurDe" data-t="pu.nurDe" hidden></p>
       <div id="pflegeInfo" class="pi"></div>
     </section>
 
@@ -1462,7 +1466,7 @@
     <!--ZURUECK kid=leistungenKopf-->
     <div class="notices" id="notices">
       <div class="notice" id="sampleNotice" role="note" data-t="sample"></div>
-      <div class="notice info" id="transNotice" role="note" data-t="trans" hidden></div>
+      <div class="notice info no-denetz" id="transNotice" role="note" data-t="trans" hidden></div>
       <div class="notice" id="altNotice" role="alert" hidden></div>
     </div>
 

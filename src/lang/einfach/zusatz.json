@@ -53,7 +53,6 @@
   "bp.w.kdu": "Miete, Nebenkosten und Heizung. Das Jobcenter zahlt sie, wenn sie nicht zu hoch sind (§ 22 SGB II).",
   "bp.w.zb": "=",
   "bp.w.bz": "Die Monate, für die der Bescheid gilt. Danach musst du einen neuen Antrag stellen (Weiterbewilligungsantrag). Das ist nicht das Datum vom Bescheid.",
-  "briefe.schreibenDe": "=",
   "sp.vz.link": "Gesund essen mit wenig Geld: Tipps von der Verbraucher-Zentrale",
   "sp.vz.t": "Die Seite ist in einfacher Sprache. Sie öffnet sich im Browser.",
   "sp.vz.de": "=",
@@ -69,5 +68,6 @@
   "bp.vgl.zaehltNicht": "=",
   "bp.vgl.pg": "=",
   "bp.vgl.kein": "=",
-  "bp.vgl.klein": "So rechnet die Pflegekasse. Plus heißt: Du gibst dort mehr Punkte als das Gutachten. Weiter unten steht, bei welchen Fragen."
+  "bp.vgl.klein": "So rechnet die Pflegekasse. Plus heißt: Du gibst dort mehr Punkte als das Gutachten. Weiter unten steht, bei welchen Fragen.",
+  "briefe.nurDe": "Das Formular und das Ergebnis gibt es nur auf Deutsch. Briefe an Ämter sind immer auf Deutsch."
 }

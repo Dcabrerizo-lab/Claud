@@ -171,3 +171,92 @@
 
   window.DeNetz = { init: init, merke: merke, sprache: sprache, an: function () { return an; }, setzeAn: setzeAn, alles: function () { if (ctx) lauf(ctx.wurzel()); }, istWichtig: istWichtig };
 })();
+
+// Deutsch gebliebene Teile auszeichnen (UX-Audit, WCAG 3.1.2 „Sprache von Teilen“): Einige Bereiche gibt es nur auf Deutsch
+// (Brief prüfen: Formular, Ergebnis, Widerspruch; Pflege: Übersicht, Einschätzung, Erklärseite). Ist eine andere Sprache gewählt,
+// bekommt jeder rein deutsche Block lang="de" dir="ltr": Bildschirmleser lesen ihn deutsch, und in Arabisch, Farsi oder Paschtu
+// steht er links nach rechts (sonst falsch gesetzt, z. B. „Abs. 3 SGB II 21 §“, Punkt am Satzanfang).
+// Woher die App weiß, was übersetzt ist: t() in src/app.js meldet jeden übersetzten Text (merke). Elemente mit data-t sind übersetzt.
+// Text in nicht lateinischer Schrift (Arabisch, Kyrillisch …) ist nie deutsch. Übrig bleibt lateinischer Text, der nicht als
+// Übersetzung gemeldet wurde: der deutsche Text. Ausgezeichnet wird jeweils der größte Block ohne übersetzten Inhalt.
+// Gemischte Zeilen (Knopf übersetzt, Zähler deutsch) bleiben in App-Richtung; nur ihre deutschen Teile werden ausgezeichnet.
+(function () {
+  var ctx = null; // { lang(), bereiche(): Elemente }
+  var uebersetzt = new Set();
+  var MAX = 20000;
+  var geplant = null, obs = null;
+  var MARKE = 'data-nur-de';
+  var SKIP = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1, INPUT: 1, TEMPLATE: 1, svg: 1, SVG: 1 };
+  var FREMD = /[\u0370-\u03FF\u0400-\u052F\u0590-\u05FF\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/; // Griechisch, Kyrillisch, Hebräisch, Arabisch
+  var LATEIN = /[A-Za-zÄÖÜäöüß]{2,}/;
+
+  function norm(x) { return String(x).replace(/\s+/g, ' ').trim(); }
+  function merke(s) {
+    if (typeof s !== 'string') return;
+    var n = norm(s); if (!n) return;
+    uebersetzt.add(n);
+    var o = typeof Fmt !== 'undefined' && Fmt.ohnePara ? norm(Fmt.ohnePara(s)) : n; if (o !== n) uebersetzt.add(o); // tL(): ohne Paragrafen
+    if (uebersetzt.size > MAX) uebersetzt.delete(uebersetzt.values().next().value);
+  }
+  // 0 = kein Text, 1 = deutsch, 2 = übersetzt (oder schon ausgezeichnet in anderer Sprache)
+  function textArt(s) {
+    var n = norm(s);
+    if (!n || !LATEIN.test(n)) return FREMD.test(n) ? 2 : 0;
+    if (FREMD.test(n) || uebersetzt.has(n)) return 2;
+    return 1;
+  }
+  // Art eines Elements; merkt sich die Art für den zweiten Durchgang
+  function art(el, arten) {
+    if (SKIP[el.tagName] || el.classList.contains('de-netz')) { arten.set(el, 0); return 0; }
+    var a = 0;
+    var l = el.hasAttribute(MARKE) ? null : el.getAttribute('lang');
+    if (el.hasAttribute('data-t') || (l && !/^de\b/.test(l))) a = 2;
+    else if (l) a = 1; // schon von der App als deutsch ausgezeichnet
+    else if (uebersetzt.has(norm(el.textContent))) a = 2;
+    else {
+      for (var n = el.firstChild; n; n = n.nextSibling) {
+        var b = n.nodeType === 3 ? textArt(n.nodeValue) : n.nodeType === 1 ? art(n, arten) : 0;
+        if (b > a) a = b;
+      }
+    }
+    arten.set(el, a);
+    return a;
+  }
+  function auszeichnen(el, arten) {
+    var a = arten.get(el);
+    if (a === 1) { if (!el.hasAttribute('lang')) { el.setAttribute('lang', 'de'); el.setAttribute('dir', 'ltr'); el.setAttribute(MARKE, ''); } return; }
+    if (a !== 2) return;
+    for (var c = el.firstElementChild; c; c = c.nextElementSibling) auszeichnen(c, arten);
+  }
+  function weg(root) {
+    root.querySelectorAll('[' + MARKE + ']').forEach(function (e) { e.removeAttribute('lang'); e.removeAttribute('dir'); e.removeAttribute(MARKE); });
+    if (root.hasAttribute(MARKE)) { root.removeAttribute('lang'); root.removeAttribute('dir'); root.removeAttribute(MARKE); }
+  }
+  function lauf() {
+    geplant = null;
+    if (!ctx) return;
+    var de = ctx.lang() === 'de';
+    ctx.bereiche().forEach(function (root) {
+      if (!root) return;
+      weg(root);
+      if (de) return;
+      var arten = new Map();
+      art(root, arten);
+      auszeichnen(root, arten);
+    });
+    if (obs) obs.takeRecords();
+  }
+  function planen() { if (!geplant) geplant = setTimeout(lauf, 30); }
+  function init(c) {
+    ctx = c;
+    if (typeof MutationObserver === 'undefined') return;
+    obs = new MutationObserver(planen);
+    ctx.bereiche().forEach(function (root) { if (root) obs.observe(root, { childList: true, subtree: true, characterData: true }); });
+    planen(); // schon gezeichnete Bereiche (Start in einer Fremdsprache)
+  }
+  // Sprache gewechselt: nach dem Neuzeichnen neu auszeichnen. Gemerkte Übersetzungen bleiben (Teile, die nicht neu gezeichnet
+  // werden, stehen noch in der alten Sprache und sind trotzdem kein Deutsch)
+  function sprache() { planen(); }
+
+  window.NurDeutsch = { init: init, merke: merke, sprache: sprache, jetzt: lauf, uebersetzt: function (s) { return uebersetzt.has(norm(s)); } };
+})();

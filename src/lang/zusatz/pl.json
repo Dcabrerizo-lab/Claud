@@ -60,7 +60,6 @@
   "bp.w.kdu": "Czynsz, koszty dodatkowe i ogrzewanie w zakresie, w jakim Jobcenter uznaje je za odpowiednie (§ 22 SGB II).",
   "bp.w.zb": "Kwota przelewana co miesiąc.",
   "bp.w.bz": "Miesiące, na które obowiązuje decyzja. Potem potrzebny jest wniosek o dalsze przyznanie (Weiterbewilligungsantrag). To nie jest data decyzji.",
-  "briefe.schreibenDe": "Pisma do urzędów, na przykład sprzeciw, są zawsze po niemiecku. Urzędy potrzebują ich w tej formie.",
   "sp.vz.link": "Zdrowe jedzenie za małe pieniądze – porady Verbraucherzentrale",
   "sp.vz.t": "Strona centrali konsumenckiej w prostym języku. Otwiera się w przeglądarce.",
   "sp.vz.de": "Strona jest po niemiecku.",
@@ -98,5 +97,6 @@
   "bp.vgl.pg": "stopień opieki (Pflegegrad) {pg}",
   "bp.vgl.kein": "brak stopnia opieki (Pflegegrad)",
   "bp.vgl.klein": "Punkty ważone, tak jak liczy Pflegekasse (§ 15 SGB XI). Plus oznacza: Państwa ocena daje tam więcej punktów. Poniżej widać, przy których pytaniach dokładnie.",
-  "t.bafoeg.vermTeil": "Majątek przekracza kwotę wolną {verm}. Dodatkowe 2300 € przysługują tylko na małżonka lub zarejestrowanego partnera i na każde własne dziecko. Liczy się tylko nadwyżka ponad kwotę wolną: rozłożona na 12 miesięcy zmniejsza BAföG o około {monat} miesięcznie. Dokładnie wylicza to Amt für Ausbildungsförderung."
+  "t.bafoeg.vermTeil": "Majątek przekracza kwotę wolną {verm}. Dodatkowe 2300 € przysługują tylko na małżonka lub zarejestrowanego partnera i na każde własne dziecko. Liczy się tylko nadwyżka ponad kwotę wolną: rozłożona na 12 miesięcy zmniejsza BAföG o około {monat} miesięcznie. Dokładnie wylicza to Amt für Ausbildungsförderung.",
+  "briefe.nurDe": "Formularz i wynik są na razie tylko po niemiecku. Pisma do urzędów są zawsze po niemiecku."
 }

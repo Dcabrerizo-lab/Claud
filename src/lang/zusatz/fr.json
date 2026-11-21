@@ -60,7 +60,6 @@
   "bp.w.kdu": "Loyer, charges et chauffage, dans la mesure où le Jobcenter les reconnaît comme appropriés (§ 22 SGB II).",
   "bp.w.zb": "Le montant versé chaque mois.",
   "bp.w.bz": "Les mois couverts par la décision. Ensuite, il faut une demande de renouvellement (Weiterbewilligungsantrag). Ce n’est pas la date de la décision.",
-  "briefe.schreibenDe": "Les lettres aux administrations, par exemple une opposition, sont toujours en allemand. Les administrations en ont besoin ainsi.",
   "sp.vz.link": "Bien manger avec peu d'argent – conseils de la Verbraucherzentrale",
   "sp.vz.t": "Page du centre de conseil aux consommateurs en langage simple. S'ouvre dans le navigateur.",
   "sp.vz.de": "La page est en allemand.",
@@ -98,5 +97,6 @@
   "bp.vgl.pg": "degré de dépendance (Pflegegrad) {pg}",
   "bp.vgl.kein": "aucun degré de dépendance (Pflegegrad)",
   "bp.vgl.klein": "Points pondérés, comme les calcule la Pflegekasse (§ 15 SGB XI). Plus signifie : votre estimation donne plus de points à cet endroit. En dessous, vous voyez quelles questions exactement.",
-  "t.bafoeg.vermTeil": "Le patrimoine dépasse l'abattement de {verm}. Les 2 300 € supplémentaires ne sont accordés que pour un conjoint ou partenaire enregistré et pour chacun de vos propres enfants. Seule la partie au-dessus de l'abattement compte : répartie sur 12 mois, elle réduit le BAföG d'environ {monat} par mois. L'Amt für Ausbildungsförderung fait le calcul exact."
+  "t.bafoeg.vermTeil": "Le patrimoine dépasse l'abattement de {verm}. Les 2 300 € supplémentaires ne sont accordés que pour un conjoint ou partenaire enregistré et pour chacun de vos propres enfants. Seule la partie au-dessus de l'abattement compte : répartie sur 12 mois, elle réduit le BAföG d'environ {monat} par mois. L'Amt für Ausbildungsförderung fait le calcul exact.",
+  "briefe.nurDe": "Le formulaire et le résultat existent pour l’instant seulement en allemand. Les lettres aux administrations sont toujours en allemand."
 }

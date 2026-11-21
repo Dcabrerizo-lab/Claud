@@ -60,7 +60,6 @@
   "bp.w.kdu": "Rent, service charges and heating, as far as the Jobcenter recognises them as reasonable (§ 22 SGB II).",
   "bp.w.zb": "The amount paid into your account every month.",
   "bp.w.bz": "The months the decision covers. After that you need an application to continue (Weiterbewilligungsantrag). It is not the date of the decision.",
-  "briefe.schreibenDe": "Letters to authorities, for example an objection, are always in German. The authorities need them that way.",
   "sp.vz.link": "Eating healthily on little money – tips from the Verbraucherzentrale",
   "sp.vz.t": "Page of the consumer advice centre in plain language. Opens in the browser.",
   "sp.vz.de": "The page is in German.",
@@ -98,5 +97,6 @@
   "bp.vgl.pg": "care level (Pflegegrad) {pg}",
   "bp.vgl.kein": "no care level (Pflegegrad)",
   "bp.vgl.klein": "Weighted points, as the Pflegekasse calculates them (§ 15 SGB XI). Plus means: your estimate gives more points there. Below you can see which questions exactly.",
-  "t.bafoeg.vermTeil": "Your assets are above the allowance of {verm}. An extra €2,300 is only allowed for a spouse or registered civil partner and for each of your own children. Only the part above the allowance counts: spread over 12 months, it reduces BAföG by about {monat} a month. The Amt für Ausbildungsförderung calculates the exact amount."
+  "t.bafoeg.vermTeil": "Your assets are above the allowance of {verm}. An extra €2,300 is only allowed for a spouse or registered civil partner and for each of your own children. Only the part above the allowance counts: spread over 12 months, it reduces BAföG by about {monat} a month. The Amt für Ausbildungsförderung calculates the exact amount.",
+  "briefe.nurDe": "The form and the result are only available in German for now. Letters to authorities are always in German."
 }

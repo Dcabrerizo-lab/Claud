@@ -60,7 +60,6 @@
   "bp.w.kdu": "Kirada, kharashaadka dheeraadka ah iyo kuleylinta, inta Jobcenter-ku u aqoonsado inay ku habboon yihiin (§ 22 SGB II).",
   "bp.w.zb": "Lacagta bil kasta lagu shubo.",
   "bp.w.bz": "Bilaha go'aanku ansax yahay. Kadib waxaa loo baahan yahay codsi sii wadid (Weiterbewilligungsantrag). Ma aha taariikhda go'aanka.",
-  "briefe.schreibenDe": "Waraaqaha loo diro hay'adaha dowladda, tusaale ahaan diidmo, had iyo jeer waa Jarmal. Hay'aduhu sidaas ayay ugu baahan yihiin.",
   "sp.vz.link": "Cunto caafimaad leh oo lacag yar – talooyin ka yimid Verbraucherzentrale",
   "sp.vz.t": "Bogga xarunta la-talinta macaamiisha oo luqad fudud ah. Wuxuu ku furmaa browser-ka.",
   "sp.vz.de": "Boggu waa Jarmal.",
@@ -98,5 +97,6 @@
   "bp.vgl.pg": "heerka daryeelka (Pflegegrad) {pg}",
   "bp.vgl.kein": "heer daryeel (Pflegegrad) ma jiro",
   "bp.vgl.klein": "Dhibco miisaaman, sida Pflegekasse u xisaabiso (§ 15 SGB XI). Calaamadda (+) waxay ka dhigan tahay: qiimayntaadu halkaas dhibco ka badan ayay bixisaa. Hoos waxaa ku qoran su’aalaha ay si gaar ah u khusayso.",
-  "t.bafoeg.vermTeil": "Hantidaadu waxay ka badan tahay qadarka la cafiyay ee {verm}. 2.300 € dheeraad ah waxaa la bixiyaa oo keliya xaas ama lammaane diiwaangashan iyo carruur kasta oo adiga kuu dhalatay. Kaliya qaybta ka sarreysa qadarka la cafiyay ayaa la xisaabiyaa: waxaa loo qaybiyaa 12 bilood, waxayna BAföG ka dhimaysaa qiyaastii {monat} bishiiba. Amt für Ausbildungsförderung ayaa si sax ah u xisaabiya."
+  "t.bafoeg.vermTeil": "Hantidaadu waxay ka badan tahay qadarka la cafiyay ee {verm}. 2.300 € dheeraad ah waxaa la bixiyaa oo keliya xaas ama lammaane diiwaangashan iyo carruur kasta oo adiga kuu dhalatay. Kaliya qaybta ka sarreysa qadarka la cafiyay ayaa la xisaabiyaa: waxaa loo qaybiyaa 12 bilood, waxayna BAföG ka dhimaysaa qiyaastii {monat} bishiiba. Amt für Ausbildungsförderung ayaa si sax ah u xisaabiya.",
+  "briefe.nurDe": "Foomka iyo natiijadu hadda waxay ku jiraan Jarmal oo keliya. Waraaqaha loo diro hay'adaha had iyo jeer waa Jarmal."
 }

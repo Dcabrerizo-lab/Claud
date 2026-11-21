@@ -60,7 +60,6 @@
   "bp.w.kdu": "Chiria, costurile suplimentare și încălzirea, în măsura în care Jobcenter le recunoaște ca adecvate (§ 22 SGB II).",
   "bp.w.zb": "Suma virată în fiecare lună.",
   "bp.w.bz": "Lunile pentru care este valabilă decizia. După aceea ai nevoie de o cerere de prelungire (Weiterbewilligungsantrag). Nu este data deciziei.",
-  "briefe.schreibenDe": "Scrisorile către autorități, de exemplu o contestație, sunt mereu în limba germană. Autoritățile au nevoie de ele așa.",
   "sp.vz.link": "Mâncare sănătoasă cu bani puțini – sfaturi de la Verbraucherzentrale",
   "sp.vz.t": "Pagina centrului pentru protecția consumatorilor în limbaj simplu. Se deschide în browser.",
   "sp.vz.de": "Pagina este în limba germană.",
@@ -98,5 +97,6 @@
   "bp.vgl.pg": "grad de îngrijire (Pflegegrad) {pg}",
   "bp.vgl.kein": "fără grad de îngrijire (Pflegegrad)",
   "bp.vgl.klein": "Puncte ponderate, așa cum calculează Pflegekasse (§ 15 SGB XI). Plus înseamnă: estimarea ta dă acolo mai multe puncte. Mai jos vezi la ce întrebări exact.",
-  "t.bafoeg.vermTeil": "Averea depășește suma scutită de {verm}. Cei 2.300 € în plus se acordă doar pentru soț/soție sau partener înregistrat și pentru fiecare copil propriu. Contează doar partea de peste suma scutită: împărțită pe 12 luni, reduce BAföG cu aproximativ {monat} pe lună. Amt für Ausbildungsförderung calculează exact."
+  "t.bafoeg.vermTeil": "Averea depășește suma scutită de {verm}. Cei 2.300 € în plus se acordă doar pentru soț/soție sau partener înregistrat și pentru fiecare copil propriu. Contează doar partea de peste suma scutită: împărțită pe 12 luni, reduce BAföG cu aproximativ {monat} pe lună. Amt für Ausbildungsförderung calculează exact.",
+  "briefe.nurDe": "Formularul și rezultatul există deocamdată doar în limba germană. Scrisorile către autorități sunt mereu în limba germană."
 }

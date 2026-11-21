@@ -76,6 +76,10 @@ const PflegeAssistent = (function () {
     const pgAktuell = opt.pgAktuell == null || opt.pgAktuell === '' ? null : +opt.pgAktuell;
     const merken = () => { if (opt.speichern) try { opt.speichern(JSON.parse(JSON.stringify(a))); } catch (e) {} };
     function weiter() { a.pos++; merken(); zeige(true); }
+    // „Zurück“ wie überall in der App (src/navigation.js): Pfeil als eigenes Zeichen (spiegelt in RTL), Text aus der App-Sprache
+    // (opt.zurueckText), damit der Knopf auch bei der deutschen Einschätzung in Arabisch, Farsi oder Paschtu richtig herum steht
+    const zurKnopf = (onclick) => h('button', { type: 'button', class: 'linkbtn pa-zur', onclick },
+      h('span', { class: 'nav-pfeil', 'aria-hidden': 'true', text: '←' }), ' ', h('span', { text: opt.zurueckText || T('zurueck', '← Zurück').replace(/^←\s*/, '') }));
     function zurueck() { if (a.pos > 0) { a.pos--; merken(); zeige(true); } else if (opt.abbrechen) opt.abbrechen(); }
 
     // Kopf: oben „Zurück“, dann wo man ist (Bereich, Frage x von y) und ein Balken
@@ -89,7 +93,7 @@ const PflegeAssistent = (function () {
       }
       const frac = Math.round(100 * a.pos / Math.max(1, liste.length - 1));
       return h('div', { class: 'es-top pa-kopf' },
-        h('div', { class: 'pa-zeile' }, h('button', { type: 'button', class: 'linkbtn pa-zur', onclick: zurueck, text: T('zurueck', '← Zurück') }), nr ? h('span', { class: 'es-prog', text: nr }) : null),
+        h('div', { class: 'pa-zeile' }, zurKnopf(zurueck), nr ? h('span', { class: 'es-prog', text: nr }) : null),
         h('span', { class: 'es-prog pa-wo', text: wo }),
         h('div', { class: 'es-bar', 'aria-hidden': 'true' }, h('span', { style: `width:${frac}%` })));
     }
@@ -180,7 +184,7 @@ const PflegeAssistent = (function () {
       const g = eingabe(a, pgAktuell), r = P.rechne(g);
       if (opt.beimErgebnis) try { opt.beimErgebnis(r); } catch (e) {}
       const titel = r.pg ? T('erg.titel', 'Wahrscheinlich Pflegegrad {pg}', { pg: r.pg }) : T('erg.titel0', 'Wahrscheinlich kein Pflegegrad');
-      box.append(h('div', { class: 'es-top pa-kopf' }, h('div', { class: 'pa-zeile' }, h('button', { type: 'button', class: 'linkbtn pa-zur', onclick: () => opt.abbrechen && opt.abbrechen(), text: T('zurueck', '← Zurück') })),
+      box.append(h('div', { class: 'es-top pa-kopf' }, h('div', { class: 'pa-zeile' }, zurKnopf(() => opt.abbrechen && opt.abbrechen())),
         h('span', { class: 'es-prog pa-wo', text: T('erg.wo', 'Ergebnis deiner Einschätzung') })),
         h('h2', { class: 'es-q pa-grad', id: 'pa-q', tabindex: '-1', text: titel }),
         h('p', { class: 'es-h pa-hinweis', text: T('erg.hinweis', 'Das ist eine Einschätzung. Entscheiden tut die Pflegekasse.') }));
