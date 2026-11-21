@@ -104,7 +104,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   ok('Pauschbetrag erscheint nicht in der Mappenauswahl, Blindengeld schon', !picks.includes('pausch') && picks.includes('blindengeld') && picks.includes('kgBeh'), picks.join());
   await p.evaluate(() => document.querySelectorAll('[data-pick]').forEach((x) => { if (!x.checked) x.click(); }));
   const txt = await p.inputValue('#mappeText');
-  ok('Kindergeld für Kind mit Behinderung: Formular-Link statt formlosem Brief', !txt.includes('Antrag auf Kindergeld für ein volljähriges Kind mit Behinderung') && (await p.$$eval('#mappeBody .forms a[href]', (e) => e.some((x) => /formulare-erwachsene-mit-behinderungen/.test(x.href)))));
+  ok('Kindergeld für Kind mit Behinderung: Formular-Link statt formlosem Brief', !txt.includes('Antrag auf Kindergeld für ein volljähriges Kind mit Behinderung') && (await p.$$eval('#aufAntraege .ant-form a[href]', (e) => e.some((x) => /formulare-erwachsene-mit-behinderungen/.test(x.href)))));
   ['Rente wegen Erwerbsminderung', 'Blindengeld nach dem Bayerischen Blindengeldgesetz', 'Wohnberechtigungsschein', 'Berufsausbildungsbeihilfe', 'Eingliederungshilfe'].forEach((s) => ok('Mappe enthält "' + s + '"', txt.includes(s)));
   ok('Kein Antrag auf Feststellung der Behinderung, wenn der GdB schon feststeht', !txt.includes('Feststellung der Behinderung'));
   ok('Mappe ohne "undefined"', !/undefined|NaN/.test(txt));

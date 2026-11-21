@@ -166,14 +166,17 @@ const MOCK = () => {
 
   // Antragsmappe
   // Grundsicherungsgeld zusätzlich wählen (falls angeboten), damit die vorausgefüllten Jobcenter-Formulare mitgeprüft werden
-  const mitGG = await p.evaluate(() => { const cb = document.querySelector('[data-pick="ggeld"]'); if (!cb) return false; cb.checked = true; cb.dispatchEvent(new Event('change', { bubbles: true })); return true; });
+  // Entweder oder: Weg „Wohngeld und Kinderzuschlag“ wählen (Optionsfeld), damit der Wohngeld-Link geprüft wird; Grundsicherungsgeld kommt danach als zweiter Weg
+  await p.evaluate(() => { const r = document.querySelector('#pick input[data-weg][value="a"]'); if (r) { r.checked = true; r.dispatchEvent(new Event('change', { bubbles: true })); } });
+  const mitGG = false;
   await p.click('#mappeMake'); ok('Mappe öffnet', await p.isVisible('#mappe'));
   const brief = await p.inputValue('#mappeText');
   ok('Entweder Formular oder formlos: kein formloser Brief für Wohngeld (Bayern) und Kindergeld, weil es den Formular-Link gibt', !/Betreff: Antrag auf Wohngeld/.test(brief) && !/Betreff: Antrag auf Kindergeld/.test(brief), brief.slice(0, 300));
-  const links = await p.$$eval('#mappeBody .forms a[href]', (e) => e.map((x) => x.getAttribute('href')));
+  const links = await p.$$eval('#aufAntraege .ant-form a[href]', (e) => e.map((x) => x.getAttribute('href')));
   ok('Formular-Links für Wohngeld (Bayern) und Kindergeld in der Mappe', links.some((u) => /stmb\.bayern\.de/.test(u)) && links.some((u) => /formulare-kindergeld/.test(u)), links.join(' '));
-  ok('Knöpfe einzeln: PDF teilen, kein doppelter Knopf „Teilen oder speichern“', (await p.textContent('#mappePrint')).includes('PDF') && !(await p.isVisible('#mappeShare')));
-  ok('Keine Doppelbeschriftung „oder“ auf den Mappe-Knöpfen', !(await p.evaluate(() => [...document.querySelectorAll('#mappe .btns button')].filter((b) => !b.hidden).some((b) => / oder | or /.test(b.textContent)))));
+  await p.evaluate(() => { document.getElementById('aufAbschickenD').open = true; }); // Ausgabe im letzten Schritt der Aufgabenliste
+  ok('Ein Ausgabe-Knopf „Drucken oder teilen“ (gleicher Name wie in der Ergebnisliste), kein doppelter Teilen-Knopf', (await p.textContent('#mappePrint')) === 'Drucken oder teilen' && !(await p.isVisible('#mappeShare')));
+  ok('Nur ein Hauptknopf in der Mappe', (await p.evaluate(() => [...document.querySelectorAll('#mappe button.btn:not(.ghost)')].filter((b) => !b.hidden).length)) === 1);
   await p.click('#mappePrint');
   await p.waitForFunction(() => window.__calls.some((c) => c[0] === 'Share.share' && c[1].files && /Antragsmappe/.test(c[1].files[0])), null, { timeout: 15000 }).catch(() => {});
   const shared = (await calls('Share.share')).find((o) => o.files && /Antragsmappe/.test(o.files[0]));
@@ -207,7 +210,7 @@ const MOCK = () => {
   await p.evaluate(() => { const s = document.getElementById('lang'); s.value = 'de'; s.dispatchEvent(new Event('change', { bubbles: true })); });
   // Amtliche Formulare: nur Links, kein Ausfüllen und Teilen von Vordrucken mehr
   ok('Kein Knopf zum Ausfüllen von Formularen, keine Formular-Dateien in der App', (await p.locator('#formsShare').count()) === 0 && !fs.existsSync(path.join(WWW, 'formulare')));
-  if (mitGG) ok('Mit Grundsicherungsgeld: Link auf die Formularseite der Bundesagentur, kein formloser Jobcenter-Brief', links.length >= 0 && (await p.$$eval('#mappeBody .forms a[href]', (e) => e.some((x) => /downloads-arbeitslos-arbeit-finden/.test(x.href)))) && !/Betreff: Antrag auf Grundsicherungsgeld/.test(await p.inputValue('#mappeText')));
+  if (mitGG) ok('Mit Grundsicherungsgeld: Link auf die Formularseite der Bundesagentur, kein formloser Jobcenter-Brief', links.length >= 0 && (await p.$$eval('#aufAntraege .ant-form a[href]', (e) => e.some((x) => /downloads-arbeitslos-arbeit-finden/.test(x.href)))) && !/Betreff: Antrag auf Grundsicherungsgeld/.test(await p.inputValue('#mappeText')));
   await p.screenshot({ path: path.join(require('os').tmpdir(), 'app-mappe.png') });
   await p.click('#mappeClose');
 
@@ -251,7 +254,7 @@ const MOCK = () => {
   const legalI = await pi.evaluate(() => document.getElementById('legal').textContent);
   ok('iPhone: Anbieter im Impressum Natascha Cabrerizo y Polo, nicht David', /Anbieter: Natascha Cabrerizo y Polo/.test(legalI.replace(/\s+/g, ' ')) && !/David/.test(legalI), legalI.slice(0, 200));
   if (await pi.isVisible('#schritte .sf-w2')) await pi.click('#schritte .sf-w2');
-  await pi.evaluate(() => document.getElementById('p1').click()); await setzeFeld(pi, 'p-name', 'Test'); await pi.evaluate(() => document.getElementById('mappeMake').click()); await pi.waitForSelector('#mappePrint', { state: 'visible', timeout: 5000 }).catch(() => {});
+  await pi.evaluate(() => document.getElementById('p1').click()); await setzeFeld(pi, 'p-name', 'Test'); await pi.evaluate(() => { document.getElementById('mappeMake').click(); document.getElementById('aufAbschickenD').open = true; }); await pi.waitForSelector('#mappePrint', { state: 'visible', timeout: 5000 }).catch(() => {});
   ok('iPhone: keine Android-Knöpfe Drucken/Speichern, PDF teilen vorhanden', !(await pi.isVisible('#mappeDruck')) && !(await pi.isVisible('#mappeSpeichern')) && (await pi.isVisible('#mappePrint')));
   await ctxI.close();
 

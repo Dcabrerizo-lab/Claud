@@ -1564,7 +1564,6 @@
     var tipp = function (r) { return r ? '<p class="small ant-tipp">' + esc(tL(r.steps.tip)) + '</p>' : ''; };
     var g = function (id) { return ids.filter(function (r) { return r.id === id; })[0]; };
     var fp = formPlan(), hinweise = {}, h = '';
-    if (ohneOrt && briefe.length) h += '<p class="warn" id="mappeAdrNote">' + esc(t('f.adrFehlt')) + '</p>';
     fp.forEach(function (f) {
       if (f.art !== 'link') { if (HINWEIS_FUER[f.id]) hinweise[HINWEIS_FUER[f.id]] = f; return; }
       var r = g(LINK_FUER[f.id]);
@@ -1647,6 +1646,7 @@
     empfHinweisDa = false;
     // Fehlt der Wohnort, kann die App keine Anschriften einsetzen (Anschriften gibt es für Bayern): Hinweis über den Anschreiben
     var ohneOrt = Behoerden.available() && !aktAgs() && (!state.bundesland || state.bundesland === 'BY') && ids.some(function (r) { return Behoerden.brauchtKreis(r.id); });
+    $('mappeAdrNote').hidden = !(ohneOrt && briefe.length); // bei „PLZ und Ort“: dort kann man es gleich eintragen
     $('aufAntraege').innerHTML = ids.length ? antraegeHtml(ids, briefe, ohneOrt) : '';
     $('aufUnterlagen').innerHTML = ids.length ? unterlagenHtml(ids) + '<label class="haken"><input type="checkbox" data-haken="mappe|unterlagen"' + (haken['mappe|unterlagen'] ? ' checked' : '') + '><span>' + esc(t('f.auf.erledigt')) + '</span></label>' : '';
     $('aufAbschicken').innerHTML = ids.length ? abschickenHtml(ids, briefe) : '';
@@ -1761,7 +1761,17 @@
     return gruppen;
   }
   function wegGruppeVon(wege, id) { return (wege || []).filter(function (g) { return g.alle.indexOf(id) >= 0; })[0] || null; }
-  function wegAktiv(g) { return g.optionen.some(function (o) { return o.id === wegWahl[g.id]; }) ? wegWahl[g.id] : g.vorwahl; }
+  // Aktiver Weg: selbst gewählt (wegWahl), sonst aus gesetzten Haken (z. B. Mappe aus der einfachen Version), sonst die Vorbelegung
+  function wegAktiv(g) {
+    if (g.optionen.some(function (o) { return o.id === wegWahl[g.id]; })) return wegWahl[g.id];
+    var hat = Object.prototype.hasOwnProperty;
+    if (g.alle.some(function (id) { return hat.call(pickedUser, id); })) {
+      var an = g.alle.filter(function (id) { return pickedUser[id]; });
+      var o = g.optionen.filter(function (x) { return x.ids.length && an.length && an.every(function (id) { return x.ids.indexOf(id) >= 0; }); })[0];
+      return o ? o.id : 'offen';
+    }
+    return g.vorwahl;
+  }
   function wegIdsVon(g, w) { var o = g.optionen.filter(function (x) { return x.id === w; })[0]; return o ? o.ids : []; }
   function wegHtml(g) {
     var akt = wegAktiv(g), r = function (id) { return (lastOut ? lastOut.results : []).filter(function (x) { return x.id === id; })[0]; };
