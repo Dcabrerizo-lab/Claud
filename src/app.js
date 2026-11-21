@@ -165,7 +165,7 @@
     'sp.strom.1': 'aus', 'sp.strom.2': 'waesche', 'sp.strom.3': 'topf', 'sp.strom.4': 'thermo', 'sp.strom.5': 'zaehler', 'sp.strom.6': 'hausCheck',
     'sp.heizen.1': 'thermo', 'sp.heizen.2': 'fenster', 'sp.heizen.3': 'heizung', 'sp.heizen.4': 'wind', 'sp.heizen.5': 'einreichen',
     'sp.essen.1': 'liste', 'sp.essen.2': 'blatt', 'sp.essen.3': 'frost', 'sp.essen.4': 'korb', 'sp.essen.5': 'teller',
-    'sp.vertraege.1': 'radio', 'sp.vertraege.2': 'telefon', 'sp.vertraege.3': 'ticket', 'sp.vertraege.5': 'bank', 'sp.vertraege.6': 'schere',
+    'sp.vertraege.1': 'radio', 'sp.vertraege.3': 'ticket', 'sp.vertraege.5': 'bank', 'sp.vertraege.6': 'schere',
     'tv.bonus': 'geld', 'tv.vorkasse': 'warn', 'tv.laufzeit': 'kalender', 'tv.kuendigung': 'uhr', 'tv.fernwaerme': 'heizung',
     'sp.schulden.1': 'post', 'sp.schulden.2': 'haus', 'sp.schulden.3': 'stopp',
     'sp.schulden.inkasso': 'lupe', 'sp.schulden.rate': 'kalender', 'sp.schulden.unserioes': 'warn', 'sp.schulden.insolvenz': 'waage',
@@ -2632,11 +2632,11 @@
     ['strom', 'sp.strom', 'sp.strom.t', 6, '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'],
     ['heizen', 'sp.heizen', 'sp.heizen.t', 5, '<path d="M12 21a6 6 0 0 0 6-6c0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-2 2-3 5-3 8a6 6 0 0 0 6 6z"/>'],
     ['essen', 'sp.essen', 'sp.essen.t', 5, '<path d="M4 11h16a8 8 0 0 1-16 0zM8 7c0-2 2-2 2-4M12 7c0-2 2-2 2-4"/>'],
-    ['vertraege', 'sp.vertraege', 'sp.vertraege.t', 5, '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>']
+    ['vertraege', 'sp.vertraege', 'sp.vertraege.t', 4, '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>']
   ];
   // Reihenfolge: die wirksamsten Tipps zuerst; Tipps mit Frist oder Nachzahlung stehen vorn. Jeder Tipp: Symbol + kurzer Satz, Rest zum Aufklappen.
   var SP_TIPPS = { strom: ['sp.strom.6', 'sp.strom.5', 'sp.strom.1', 'sp.strom.2', 'sp.strom.3', 'sp.strom.4'], heizen: ['sp.heizen.5', 'sp.heizen.1', 'sp.heizen.2', 'sp.heizen.3', 'sp.heizen.4'],
-    essen: ['sp.essen.5', 'sp.essen.4', 'sp.essen.1', 'sp.essen.2', 'sp.essen.3'], vertraege: ['sp.vertraege.1', 'sp.vertraege.6', 'sp.vertraege.5', 'sp.vertraege.2', 'sp.vertraege.3'] };
+    essen: ['sp.essen.5', 'sp.essen.4', 'sp.essen.1', 'sp.essen.2', 'sp.essen.3'], vertraege: ['sp.vertraege.1', 'sp.vertraege.6', 'sp.vertraege.5', 'sp.vertraege.3'] };
   // Schulden: Tipps nach gemeinnützigen Schuldnerberatungen, sinngemäß in eigenen Worten. Quellen (abgerufen 20.11.2026):
   //  Verbraucherzentralen: verbraucherzentrale.nrw „Erste Schritte, wenn die Schulden drücken“; verbraucherzentrale.de „Gerichtliches Mahnverfahren:
   //  Was tun bei einem Mahnbescheid?“, „Ratenvereinbarung beim Inkasso“, „Schuldnerberatungen: So erkennen Sie unseriöse Angebote“, „Privatinsolvenz –
