@@ -3291,9 +3291,9 @@
     if ($('pflegeAssist')) $('pflegeAssist').textContent = '';
     paVonStart = false; paRueck = '';
     // „Von der Beratung bekommen“ (src/weitergabe.js): offene Vorschau oder PIN-Abfrage einer fremden Datei schließen (vergisst den entschlüsselten Inhalt)
-    var ia = $('kwImpAbbr'); if (ia) ia.click();
-    var ib = $('kwImpBox'); if (ib) { ib.textContent = ''; ib.hidden = true; } if ($('kwImpMsg')) $('kwImpMsg').textContent = '';
-    ['kwDateiEin', 'kwFotoEin'].forEach(function (id) { var e = $(id); if (e) e.value = ''; });
+    // importLeeren verwirft auch ein Entschlüsseln, das gerade noch läuft (sonst erschiene die Vorschau erst nach dem Wechsel)
+    if (window.Weitergabe && Weitergabe.importLeeren) Weitergabe.importLeeren();
+    var vg = $('vgGForm'); if (vg) vg.remove(); // offene PIN-Abfrage eines Vorgangs (getippte PIN, Kurzname)
   }
   function pfLeer() { return { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; }
   function pfLaden(v) {

@@ -115,6 +115,47 @@ const wechsel = (s, name) => { ordner(s); s.d.querySelector('#setHaushalte butto
   }
 
   // ---------- S2: Bildschirmfoto-Schutz ----------
+  // ---------- S4, dritter Teil (nach dem Zusammenführen mit Weitergabe und Vorgang-PIN): Import-Dialog und PIN-Abfrage eines Vorgangs ----------
+  {
+    const mem3 = { 'lotse.ack': '1', 'lotse-lang': 'de' };
+    const u = seite(mem3), g = (id) => u.d.getElementById(id), W = u.w.Weitergabe;
+    await warte(50);
+    anlegen(u, 'Klient C'); await warte(20); anlegen(u, 'Klient D'); await warte(20);
+    const bis = async (f) => { for (let i = 0; i < 200; i++) { if (f()) return true; await warte(25); } return false; };
+    const blatt = (name) => ({ s: 1, typ: 'auswahl', name, blatt: { l: 'de', rtl: false, zwei: false, titel: { art: 'h', k: 'Blatt von ' + name }, kopf: { art: 'p', k: 'k' }, abschnitte: [{ teil: 'hilfen', h: { art: 'h', k: 'Hilfen ' + name }, zeilen: [{ art: 'p', k: 'Geheimzeile ' + name }] }] } });
+    const ohnePin = await W.packen(blatt('Fremd Eins'), null), mitPin = await W.packen(blatt('Fremd Zwei'), '482915');
+    ordner(u);
+    // (a) Vorschau einer Datei ohne PIN offen, dann Wechsel
+    W.importStart(ohnePin);
+    ck('[wechsel3] Vorbereitung: Vorschau der fremden Datei offen', await bis(() => g('kwImpTeile')) && /Fremd Eins/.test(g('kwImpBox').textContent + (g('kwImpName') || {}).value), g('kwImpBox').textContent.slice(0, 80));
+    const vorher = u.d.querySelectorAll('#setHaushalte button.vg-zeile').length;
+    wechsel(u, 'Klient C'); await warte(20);
+    ck('[wechsel3] Wechsel: Vorschau, Name und Meldung des Imports weg', g('kwImpBox').hidden && g('kwImpBox').textContent === '' && !g('kwImpName') && g('kwImpMsg').textContent === '');
+    ck('[wechsel3] Wechsel: entschlüsselter Inhalt vergessen (Speichern legt nichts an)', W.importSpeichern() == null && u.d.querySelectorAll('#setHaushalte button.vg-zeile').length === vorher);
+    // (b) PIN-Abfrage mit getippter PIN, dann Wechsel
+    W.importStart(mitPin); await bis(() => g('kwImpPin'));
+    g('kwImpPin').value = '482915';
+    wechsel(u, 'Klient D'); await warte(20);
+    ck('[wechsel3] Wechsel: PIN-Abfrage des Imports weg', !g('kwImpPin') && g('kwImpBox').hidden);
+    // (c) Entschlüsseln läuft noch, Wechsel währenddessen: die Vorschau darf danach nicht mehr erscheinen
+    W.importStart(mitPin); await bis(() => g('kwImpPin'));
+    g('kwImpPin').value = '482915'; g('kwImpPinOk').click();
+    wechsel(u, 'Klient C');
+    await warte(1500);
+    ck('[wechsel3] Wechsel während des Entschlüsselns: keine Vorschau danach', !g('kwImpTeile') && g('kwImpBox').hidden && g('kwImpBox').textContent === '' && g('kwImpMsg').textContent === '' && !/Fremd Zwei|Geheimzeile/.test(u.d.body.textContent), g('kwImpBox').textContent.slice(0, 80));
+    // (d) Vorgang-PIN: Formular „Mit PIN sperren“ mit getippter PIN und Kurzname offen, dann Wechsel
+    ordner(u);
+    const be = g('vgBearb'); if (be && be.getAttribute('aria-pressed') !== 'true') be.click();
+    const zeile = u.d.querySelector('#setHaushalte [data-vg-name="Klient C"]').closest('li');
+    [...zeile.querySelectorAll('button')].find((b) => b.textContent === 'Mit PIN sperren').click();
+    ck('[wechsel3] Vorbereitung: PIN-Formular des Vorgangs offen', !!g('vgGForm') && !!g('vgGPin') && !!g('vgGKurz'));
+    if (g('vgGForm')) { g('vgGPin').value = '482915'; g('vgGPin2').value = '482915'; g('vgGKurz').value = 'Kurzname C'; }
+    wechsel(u, 'Klient D'); await warte(20);
+    ck('[wechsel3] Wechsel: PIN-Formular des Vorgangs weg (keine getippte PIN, kein Kurzname)', !g('vgGForm') && !g('vgGPin') && ![...u.d.querySelectorAll('input')].some((i) => i.value === '482915' || i.value === 'Kurzname C'));
+    ck('[wechsel3] PIN und Inhalt der fremden Datei in keinem Speicher', !/482915|Fremd Eins|Fremd Zwei|Geheimzeile|Kurzname C/.test(Object.values(mem3).join('\n')));
+    ck('[wechsel3] keine Fehler', u.errors.length === 0, u.errors);
+  }
+
   const schutz = [], mem2 = { 'lotse.ack': '1', 'lotse-lang': 'de' };
   const t = seite(mem2, schutz), $$ = (id) => t.d.getElementById(id);
   await warte(50);

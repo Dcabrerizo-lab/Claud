@@ -11,8 +11,9 @@ private enum SpeicherFehler: Error { case ort, pruefen }
 /// und Datenschutzklasse „bis zum ersten Entsperren“ (wie bisher).
 /// JavaScript: dieselben Aufrufe wie Preferences (get, set, remove, keys, clear); src/app.js nimmt es statt Preferences, wenn vorhanden.
 /// Übernahme: Beim ersten Start werden alle Werte aus Preferences (UserDefaults, Schlüssel „CapacitorStorage.<key>“) in die Datei
-/// geschrieben, wieder gelesen und verglichen; erst danach aus UserDefaults gelöscht. Klappt das Anlegen oder Schreiben nicht, arbeitet
-/// das Plugin wie bisher mit UserDefaults weiter (kein Datenverlust; dann aber mit Sicherung, siehe info → ohneSicherung).
+/// geschrieben, wieder gelesen und verglichen; erst danach aus UserDefaults gelöscht. Klappt das Anlegen oder Schreiben nicht und gibt es
+/// die Datei noch nicht, arbeitet das Plugin wie bisher mit UserDefaults weiter (kein Datenverlust; dann aber mit Sicherung, siehe info → ohneSicherung).
+/// Gibt es die Datei schon, wird nie auf UserDefaults ausgewichen (Unabhängige Prüfung 21.11.2026, zweiter Durchgang).
 /// Ist eine vorhandene Datei gerade nicht lesbar, wird nichts gelesen und nichts geschrieben, bis sie lesbar ist (Unabhängige Prüfung 21.11.2026).
 @objc(SoloSpeicherPlugin)
 public class SoloSpeicherPlugin: CAPPlugin, CAPBridgedPlugin {
@@ -32,6 +33,7 @@ public class SoloSpeicherPlugin: CAPPlugin, CAPBridgedPlugin {
     private var werte: [String: String] = [:]
     private var ausweich = false // true: Datei nicht nutzbar, dann wie bisher UserDefaults
     private var bereit = false // true: Datei gelesen oder neu angelegt
+    private var ohneMerkmal = false // true: Ordner ließ sich nicht von der Sicherung ausnehmen
     private var datei: URL?
 
     override public func load() {
@@ -48,26 +50,34 @@ public class SoloSpeicherPlugin: CAPPlugin, CAPBridgedPlugin {
     /// Liest die Datei und übernimmt alte Werte. Läuft beim Laden und, solange es nicht geklappt hat, vor jedem Aufruf erneut.
     /// Drei Ausgänge:
     ///   bereit   – Datei gelesen oder neu angelegt: alle Aufrufe arbeiten mit der Datei.
-    ///   ausweich – Ordner oder Datei lassen sich nicht anlegen oder schreiben: wie bisher UserDefaults (nichts wurde verändert).
-    ///   keins    – die Datei gibt es, sie ist aber gerade nicht lesbar (z. B. Gerät seit dem Einschalten noch nie entsperrt):
+    ///   ausweich – es gibt noch keine Datei, und Ordner oder Datei lassen sich nicht anlegen oder schreiben: wie bisher UserDefaults (nichts wurde verändert).
+    ///   keins    – die Datei gibt es, sie ist aber gerade nicht lesbar oder nicht schreibbar (z. B. Gerät seit dem Einschalten noch nie entsperrt):
     ///              Lesen und Schreiben werden abgelehnt, bis sie lesbar ist. So überschreibt ein leerer Start nie vorhandene Angaben.
     private func vorbereiten() {
         if bereit || ausweich { return }
         let fm = FileManager.default
-        let url: URL
+        guard let basis = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else { ausweich = true; return }
+        let ordner = basis.appendingPathComponent("SoLo", isDirectory: true)
+        let url = ordner.appendingPathComponent("angaben.json", isDirectory: false)
+        var gab = fm.fileExists(atPath: url.path)
+        // Auf UserDefaults ausweichen nur, solange es die Datei noch nicht gibt. Liegen die Angaben schon in der Datei, bleibt es bei der Datei:
+        // sonst sähe die App leer aus, neue Eingaben gingen in UserDefaults und würden beim nächsten Start mit der Datei vermischt.
         do {
-            let basis = try fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-            let ordner = basis.appendingPathComponent("SoLo", isDirectory: true)
             try fm.createDirectory(at: ordner, withIntermediateDirectories: true, attributes: nil)
-            try SoloSpeicherPlugin.ausSicherung(ordner)
-            url = ordner.appendingPathComponent("angaben.json", isDirectory: false)
-            datei = url
         } catch {
+            if gab { return } // später erneut versuchen, bis dahin nichts lesen und nichts schreiben
             ausweich = true
             return
         }
+        do {
+            try SoloSpeicherPlugin.ausSicherung(ordner)
+            ohneMerkmal = false
+        } catch {
+            if !gab { ausweich = true; return }
+            ohneMerkmal = true // Datei weiter benutzen; info meldet dann ohneSicherung = false
+        }
+        datei = url
         var geladen: [String: String] = [:]
-        var gab = fm.fileExists(atPath: url.path)
         if gab {
             let data: Data
             do { data = try Data(contentsOf: url) } catch { return } // gerade nicht lesbar: später erneut, bis dahin nichts schreiben
@@ -81,12 +91,14 @@ public class SoloSpeicherPlugin: CAPPlugin, CAPBridgedPlugin {
                 gab = false
             }
         }
-        // Werte aus Preferences übernehmen (UserDefaults gewinnt: dort steht nur etwas aus der Zeit vor der Datei oder aus einem Start im Ausweich-Betrieb)
+        // Werte aus Preferences übernehmen. Steht ein Schlüssel schon in der Datei, gewinnt die Datei (sie ist nie älter:
+        // UserDefaults wird nur benutzt, solange es die Datei nicht gibt; Reste dort stammen von einer abgebrochenen Übernahme).
         let ud = UserDefaults.standard
         var alt: [String] = []
         for (k, v) in ud.dictionaryRepresentation() where k.hasPrefix(SoloSpeicherPlugin.praefix) {
             guard let s = v as? String else { continue }
-            geladen[String(k.dropFirst(SoloSpeicherPlugin.praefix.count))] = s
+            let kurz = String(k.dropFirst(SoloSpeicherPlugin.praefix.count))
+            if geladen[kurz] == nil { geladen[kurz] = s }
             alt.append(k)
         }
         werte = geladen
@@ -96,9 +108,13 @@ public class SoloSpeicherPlugin: CAPPlugin, CAPBridgedPlugin {
                 let pruef = try JSONSerialization.jsonObject(with: Data(contentsOf: url), options: []) as? [String: String]
                 guard pruef == werte else { throw SpeicherFehler.pruefen }
             } catch {
-                // Schreiben oder Nachlesen klappt nicht: UserDefaults bleibt unangetastet und wird wie bisher benutzt
+                // Schreiben oder Nachlesen klappt nicht: UserDefaults bleibt unangetastet.
+                // Ohne Datei wird wie bisher UserDefaults benutzt; mit Datei wird später erneut versucht (bis dahin nichts lesen, nichts schreiben).
                 werte = [:]
-                ausweich = true
+                if !gab {
+                    try? fm.removeItem(at: url) // keine halb geprüfte Datei liegen lassen: sie würde beim nächsten Start gegen neuere Werte in UserDefaults gewinnen
+                    ausweich = true
+                }
                 return
             }
             for k in alt { ud.removeObject(forKey: k) } // erst nach geprüftem Schreiben
@@ -184,8 +200,8 @@ public class SoloSpeicherPlugin: CAPPlugin, CAPBridgedPlugin {
 
     /// Für Tests auf dem Gerät: ob die Datei ohne Sicherung benutzt wird
     @objc func info(_ call: CAPPluginCall) {
-        let stand: (Bool, Bool) = warteschlange.sync { self.vorbereiten(); return (self.bereit, self.ausweich) }
-        call.resolve(["ohneSicherung": stand.0 && !stand.1, "bereit": stand.0, "ausweich": stand.1])
+        let stand: (Bool, Bool, Bool) = warteschlange.sync { self.vorbereiten(); return (self.bereit, self.ausweich, self.ohneMerkmal) }
+        call.resolve(["ohneSicherung": stand.0 && !stand.1 && !stand.2, "bereit": stand.0, "ausweich": stand.1])
     }
 }
 
