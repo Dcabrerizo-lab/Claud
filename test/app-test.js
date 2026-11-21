@@ -98,6 +98,52 @@ const MOCK = () => {
   for (const l of ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so']) { await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, l); ok('Sprache ' + l, (await p.locator('#cards .card').count()) === KARTEN.length); }
   await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'de');
 
+  // Sprachen nur bei Bedarf (src/sprachladen.js, Entscheidung David 21.11.2026): Startgröße, Dateien im Paket, Wechsel ohne Netz, Fehlerfall
+  {
+    const T = new Function(require('../scripts/build.js').i18nSource().replace(/if \(typeof module[^\n]*\n/, '') + '; return I18N;')();
+    const startBytes = fs.statSync(path.join(WWW, 'index.html')).size + fs.readdirSync(path.join(WWW, 'js')).reduce((a, f) => a + fs.statSync(path.join(WWW, 'js', f)).size, 0);
+    const langDir = path.join(WWW, 'lang'), langDateien = fs.existsSync(langDir) ? fs.readdirSync(langDir) : [];
+    const langBytes = langDateien.reduce((a, f) => a + fs.statSync(path.join(langDir, f)).size, 0);
+    console.log('Größe App-Paket (www): beim Start ' + (startBytes / 1024).toFixed(0) + ' KB, Sprachdateien zusammen ' + (langBytes / 1024).toFixed(0) + ' KB');
+    ok('[sprachladen] Beim Start geladen (index.html + js/) unter 3 MB', startBytes < 3 * 1024 * 1024, (startBytes / 1024).toFixed(0) + ' KB');
+    ok('[sprachladen] 12 Sprachdateien im App-Paket (alle außer Deutsch)', langDateien.length === 12 && !langDateien.includes('de.js') && Object.keys(T).filter((l) => l !== 'de').every((l) => langDateien.includes(l + '.js')), langDateien.join());
+    ok('[sprachladen] Sprachen nur aus dem App-Paket nachgeladen', reqs.some((u) => u === origin + '/lang/ar.js') && reqs.filter((u) => /\/lang\//.test(u)).every((u) => u.startsWith(origin + '/lang/')));
+    // Ohne Netz (Flugmodus): jede Anfrage außerhalb des App-Pakets wird abgebrochen; gespeicherte Sprache Ukrainisch, App neu starten
+    const ctxO = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', serviceWorkers: 'block' });
+    await ctxO.addInitScript(MOCK);
+    const draussen = [];
+    await ctxO.route('**/*', (r) => { const u = r.request().url(); if (u.startsWith(origin)) return r.continue(); draussen.push(u); return r.abort('internetdisconnected'); });
+    const po = await ctxO.newPage(), errO = [];
+    po.on('pageerror', (e) => errO.push(e.message));
+    await po.addInitScript(SF_ALLES); await po.addInitScript(() => { try { localStorage.setItem('lotse-lang', 'uk'); } catch (e) {} });
+    await po.goto(origin + '/index.html', { waitUntil: 'domcontentloaded' });
+    const zustand = () => po.evaluate(() => ({ l: document.getElementById('app').getAttribute('lang'), dir: document.getElementById('app').getAttribute('dir'), nav: (document.querySelector('[data-t="nav.ordner"]') || {}).textContent, fehler: !!document.getElementById('sprachFehler'), wahl: document.getElementById('lang').value }));
+    let z = await zustand();
+    ok('[sprachladen] Neustart ohne Netz: App startet gleich auf Ukrainisch (Datei vor dem Programm eingebunden)', z.l === 'uk' && z.nav === T.uk['nav.ordner'], JSON.stringify(z));
+    const waehle = (l) => po.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, l);
+    for (const l of ['ar', 'so', 'uk']) {
+      await waehle(l);
+      await po.waitForFunction((x) => document.getElementById('app').getAttribute('lang') === x, l, { timeout: 5000 }).catch(() => {});
+      z = await zustand();
+      ok('[sprachladen] Ohne Netz Sprache wechseln: ' + l, z.l === l && z.nav === T[l]['nav.ordner'] && z.dir === T[l]['meta.dir'] && !z.fehler, JSON.stringify(z));
+    }
+    // Fehlerfall: Sprachdatei lädt nicht → Deutsch und kurzer Hinweis; später wieder wählbar
+    await po.route(origin + '/lang/fr.js', (r) => r.abort('failed'));
+    await waehle('fr');
+    await po.waitForSelector('#sprachFehler', { timeout: 5000 }).catch(() => {});
+    z = await zustand();
+    ok('[sprachladen] Sprache lädt nicht: Deutsch und Hinweis', z.l === 'de' && z.wahl === 'de' && z.fehler && z.nav === T.de['nav.ordner'], JSON.stringify(z));
+    await po.unroute(origin + '/lang/fr.js');
+    await waehle('fr');
+    await po.waitForFunction(() => document.getElementById('app').getAttribute('lang') === 'fr', null, { timeout: 5000 }).catch(() => {});
+    z = await zustand();
+    ok('[sprachladen] Danach geht die Sprache wieder, Hinweis weg', z.l === 'fr' && !z.fehler, JSON.stringify(z));
+    const nav = await po.evaluate(() => { const n = performance.getEntriesByType('navigation')[0]; return n ? Math.round(n.domContentLoadedEventEnd) : -1; });
+    console.log('Startzeit im Test (DOMContentLoaded, Ukrainisch, ohne Netz): ' + nav + ' ms');
+    ok('[sprachladen] Ohne Netz: keine Anfrage nach draußen, keine Skriptfehler', draussen.length === 0 && errO.length === 0, draussen.concat(errO).join('|'));
+    await ctxO.close();
+  }
+
   // Foto-Scan: Kamera -> Texterkennung -> Felder, Foto wird danach gelöscht
   await p.evaluate(() => document.getElementById('p1').click()); await setzeFeld(p, 'p-name', 'Maria Muster');
   // „Brief prüfen“: die Übersicht hat kein Scannen; in der Kachel Antragsformular: Kamera → Texterkennung → Felder erklärt
