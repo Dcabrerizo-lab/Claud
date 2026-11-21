@@ -43,7 +43,7 @@ const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + nam
     ok(`${schema}: unter 2 Jahren erscheint Monatsfeld`, await p.isVisible('#pf-monate'));
     await p.fill('#pf-monate', '10');
     ok(`${schema}: Säugling: Sonderregel erklärt`, /eine Stufe höher/.test(await p.textContent('#pf-erg')));
-    ok(`${schema}: Kind: Frühförderung sichtbar`, await p.isVisible('#pf-zeile-5K'));
+    ok(`${schema}: Kind: Frühförderung sichtbar`, await p.evaluate(() => !document.getElementById('pf-zeile-5K').hidden)); // Bereich 5 ist zugeklappt
     await p.fill('#pf-monate', ''); await p.fill('#pf-alter', '9');
     ok(`${schema}: Kind 9 Jahre: Vergleich mit gesunden Kindern`, /gesunden Kindern/.test(await p.textContent('#pf-erg')) && !(await p.isVisible('#pf-monate')));
     await p.fill('#pf-alter', '');

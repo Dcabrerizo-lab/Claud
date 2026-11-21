@@ -89,5 +89,13 @@
   "kw.imp.nichts": "Nimic ales.",
   "kw.imp.f.format": "Acesta nu este un fișier SoLo valid.",
   "kw.imp.f.zuGross": "Fișierul este prea mare.",
-  "kw.imp.f.speicher": "Salvarea nu merge acum. Este SoLo blocat? Deblochează și încearcă din nou."
+  "kw.imp.f.speicher": "Salvarea nu merge acum. Este SoLo blocat? Deblochează și încearcă din nou.",
+  "kb.s1": "1 · Ce primește clientul tău?",
+  "kb.s2": "2 · Cum îi transmiți?",
+  "kb.zaehler": "{titel} ({n} din {m})",
+  "kb.weg.blatt": "Ca foaie: pe hârtie sau ca fișier",
+  "kb.vorschau": "Arată previzualizarea foii",
+  "kb.vorschau.zu": "Ascunde previzualizarea",
+  "kw.qr.zuViel": "E prea mult pentru un cod QR. Trimite ca fișier SoLo sau bifează mai puțin.",
+  "kw.imp.pinZeigen": "Arată PIN-ul"
 }

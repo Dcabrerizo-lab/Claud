@@ -89,5 +89,13 @@
   "kw.imp.nichts": "Nothing selected.",
   "kw.imp.f.format": "This is not a valid SoLo file.",
   "kw.imp.f.zuGross": "The file is too large.",
-  "kw.imp.f.speicher": "Saving is not possible right now. Is SoLo locked? Please unlock and try again."
+  "kw.imp.f.speicher": "Saving is not possible right now. Is SoLo locked? Please unlock and try again.",
+  "kb.s1": "1 · What will your client receive?",
+  "kb.s2": "2 · How will you pass it on?",
+  "kb.zaehler": "{titel} ({n} of {m})",
+  "kb.weg.blatt": "As a sheet: on paper or as a file",
+  "kb.vorschau": "Show preview of the sheet",
+  "kb.vorschau.zu": "Hide preview",
+  "kw.qr.zuViel": "This is too much for a QR code. Share it as a SoLo file or tick fewer items.",
+  "kw.imp.pinZeigen": "Show PIN"
 }

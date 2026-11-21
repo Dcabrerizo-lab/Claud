@@ -89,5 +89,13 @@
   "kw.imp.nichts": "Hiçbir şey seçilmedi.",
   "kw.imp.f.format": "Bu geçerli bir SoLo dosyası değil.",
   "kw.imp.f.zuGross": "Dosya çok büyük.",
-  "kw.imp.f.speicher": "Şu anda kaydedilemiyor. SoLo kilitli mi? Lütfen kilidi aç ve tekrar dene."
+  "kw.imp.f.speicher": "Şu anda kaydedilemiyor. SoLo kilitli mi? Lütfen kilidi aç ve tekrar dene.",
+  "kb.s1": "1 · Danışanın ne alacak?",
+  "kb.s2": "2 · Nasıl ileteceksin?",
+  "kb.zaehler": "{titel} ({n} / {m})",
+  "kb.weg.blatt": "Sayfa olarak: kâğıtta veya dosya olarak",
+  "kb.vorschau": "Sayfanın önizlemesini göster",
+  "kb.vorschau.zu": "Önizlemeyi gizle",
+  "kw.qr.zuViel": "Bu bir QR kodu için fazla. SoLo dosyası olarak paylaş veya daha az işaretle.",
+  "kw.imp.pinZeigen": "PIN'i göster"
 }

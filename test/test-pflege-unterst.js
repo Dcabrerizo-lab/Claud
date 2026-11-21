@@ -20,7 +20,7 @@ Object.keys(FEST).forEach((id) => [2, 3, 4, 5].forEach((pg) => check('[pu-betrag
   check('Entlastungsbetrag 131 € pro Monat (§ 45b) PG ' + pg, wert(pg, 'entl') === 131);
   check('Pflegehilfsmittel zum Verbrauch 42 € (§ 40 Abs. 2) PG ' + pg, wert(pg, 'hilfs') === 42);
   check('Wohnumfeld 4.180 € je Maßnahme (§ 40 Abs. 4) PG ' + pg, wert(pg, 'umbau') === 4180);
-  check('Wohngruppenzuschlag 224 € (§ 38a) PG ' + pg, wert(pg, 'wg') === 224);
+  check('Wohngruppenzuschlag 224 € (§ 45f) PG ' + pg, wert(pg, 'wg') === 224);
 });
 [2, 3, 4, 5].forEach((pg) => check('Gemeinsamer Jahresbetrag 3.539 € (§ 42a) PG ' + pg, wert(pg, 'verh') === 3539));
 

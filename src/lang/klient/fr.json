@@ -89,5 +89,13 @@
   "kw.imp.nichts": "Rien de sélectionné.",
   "kw.imp.f.format": "Ce n’est pas un fichier SoLo valide.",
   "kw.imp.f.zuGross": "Le fichier est trop grand.",
-  "kw.imp.f.speicher": "Impossible d’enregistrer pour le moment. SoLo est-il verrouillé ? Déverrouille et réessaie."
+  "kw.imp.f.speicher": "Impossible d’enregistrer pour le moment. SoLo est-il verrouillé ? Déverrouille et réessaie.",
+  "kb.s1": "1 · Que reçoit ton client ?",
+  "kb.s2": "2 · Comment le transmets-tu ?",
+  "kb.zaehler": "{titel} ({n} sur {m})",
+  "kb.weg.blatt": "Comme feuille : sur papier ou en fichier",
+  "kb.vorschau": "Afficher l'aperçu de la feuille",
+  "kb.vorschau.zu": "Masquer l'aperçu",
+  "kw.qr.zuViel": "C'est trop pour un QR code. Partage-le comme fichier SoLo ou coche moins d'éléments.",
+  "kw.imp.pinZeigen": "Afficher le PIN"
 }

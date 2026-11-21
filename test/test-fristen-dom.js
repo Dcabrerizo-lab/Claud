@@ -29,7 +29,7 @@ function seite(mem) {
   const w = dom.window;
   return { w, d: w.document, $: (id) => w.document.getElementById(id), errors, mem, klick: (el) => el.dispatchEvent(new w.MouseEvent('click', { bubbles: true })) };
 }
-const knopf = (wurzel, text) => [...wurzel.querySelectorAll('button')].find((b) => b.textContent.trim() === text);
+const knopf = (wurzel, text) => [...wurzel.querySelectorAll('button')].find((b) => b.textContent.trim() === text || (text === 'Frist merken' && b.classList.contains('fri-merken-btn'))); // nach dem Tipp heißt der Knopf „Gemerkt ✓“
 const XSS = '<img src=x onerror="window.__xss=1">';
 const liste = (e) => JSON.stringify({ v: 1, e, wb: {} });
 const E = {
@@ -150,6 +150,7 @@ const E = {
     ck('[fristen-dom] Knopf mit freiwilligem Feld „Brief bekommen am“, nichts gespeichert', !!k.querySelector('input[type=date]') && /Brief bekommen am/.test(k.textContent) && !m7['lotse.fristliste']);
     s.klick(knopf(k, 'Frist merken'));
     const gespeichert = JSON.parse(m7['lotse.fristliste'] || '{"e":[]}').e;
+    ck('[fristen-dom] Nach dem Tipp: Knopf zeigt „Gemerkt ✓“', knopf(k, 'Frist merken').textContent === 'Gemerkt ✓');
     ck('[fristen-dom] Nach dem Tipp gespeichert (Ungefähr), Meldung', gespeichert.length === 1 && gespeichert[0].art === 'mit' && gespeichert[0].wort === 'ungefaehr' && /In „Mein Ordner“ gemerkt/.test(k.textContent), gespeichert);
     ck('[fristen-dom] Kein Brieftext gespeichert', !/Musterstadt|Unterlagen/.test(m7['lotse.fristliste']));
     s.klick(knopf(k.querySelector('.msg'), 'Rückgängig'));

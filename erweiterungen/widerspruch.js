@@ -17,17 +17,22 @@ const Widerspruch = (function () {
     z.push(`${a.ort ? a.ort.replace(/^\d{5}\s*/, '') + ', ' : ''}${de(w.heute)}`);
     z.push('');
     const was = { pflege: 'Bescheid über die Feststellung des Pflegegrades', wohngeld: 'Wohngeldbescheid', kiz: 'Bescheid über den Kinderzuschlag', gsa: 'Bescheid über Leistungen der Grundsicherung im Alter und bei Erwerbsminderung' }[w.art] || 'Bescheid über Leistungen zur Sicherung des Lebensunterhalts (Grundsicherungsgeld)';
-    z.push(`Widerspruch gegen den ${was} vom ${de(w.bescheidDatum)}`);
+    // Frist nach SoLos Rechnung vorbei (Rechtsprüfung rechtsfragen-rot.md, Frage 1; § 44 SGB X, gesetze-im-internet.de, abgerufen 21.11.2026):
+    // ueberpruefung = Antrag auf Überprüfung statt Widerspruch; hilfsweise44 = Widerspruch, hilfsweise Überprüfung (üblich, schadet nicht)
+    if (w.ueberpruefung) z.push(`Antrag auf Überprüfung nach § 44 SGB X: ${was} vom ${de(w.bescheidDatum)}`);
+    else z.push(`Widerspruch gegen den ${was} vom ${de(w.bescheidDatum)}${w.hilfsweise44 ? ', hilfsweise Antrag auf Überprüfung nach § 44 SGB X' : ''}`);
     if (w.zeichen) z.push(({ pflege: 'Versichertennummer', wohngeld: 'Wohngeldnummer / Aktenzeichen', kiz: 'Kindergeldnummer', gsa: 'Aktenzeichen' }[w.art] || 'Nummer der Bedarfsgemeinschaft / Aktenzeichen') + ': ' + w.zeichen);
     z.push('');
     z.push('Sehr geehrte Damen und Herren,');
     z.push('');
-    z.push(`hiermit lege ich Widerspruch gegen den oben genannten Bescheid ein.`);
+    if (w.ueberpruefung) z.push(`ich beantrage, den Bescheid vom ${de(w.bescheidDatum)} zu überprüfen (§ 44 SGB X).`);
+    else z.push(`hiermit lege ich Widerspruch gegen den oben genannten Bescheid ein.`);
+    if (w.hilfsweise44 && !w.ueberpruefung) z.push('Sollte die Widerspruchsfrist bereits abgelaufen sein, beantrage ich hilfsweise die Überprüfung des Bescheids nach § 44 SGB X.');
     z.push('');
     // Ohne geprüfte Begründung (Angaben unvollständig oder kein Grund gefunden): fristwahrender Widerspruch, Begründung folgt – nie eine halbe Zahlen-Begründung
     const ohne = w.art !== 'pflege' && !(w.punkte || []).length;
     if (ohne) {
-      z.push('Die Begründung reiche ich nach, sobald ich den Bescheid vollständig prüfen konnte.');
+      z.push(w.ueberpruefung ? 'Begründung: Die Begründung reiche ich nach, sobald ich den Bescheid vollständig prüfen konnte.' : 'Die Begründung reiche ich nach, sobald ich den Bescheid vollständig prüfen konnte.');
     } else if (w.art === 'pflege') {
       z.push(`Festgestellt wurde Pflegegrad ${w.pflege && w.pflege.pgBescheid != null ? w.pflege.pgBescheid : '…'}. Nach meiner Überzeugung sind die Beeinträchtigungen im Alltag höher, als im Gutachten bewertet.${w.pflege && w.pflege.pgZiel ? ` Ich beantrage die Feststellung von Pflegegrad ${w.pflege.pgZiel}.` : ''}`);
       z.push('');
@@ -41,12 +46,12 @@ const Widerspruch = (function () {
       z.push('Ich bitte um eine erneute Begutachtung, möglichst im häuslichen Umfeld und in Anwesenheit der Pflegeperson.');
       z.push('');
     } else {
-      z.push('Ich beantrage, den Bescheid aufzuheben bzw. zu ändern und mir die zustehenden Leistungen in richtiger Höhe nachzuzahlen.');
+      z.push(w.ueberpruefung ? 'Ich beantrage, den Bescheid zurückzunehmen, soweit er rechtswidrig ist, und mir die zustehenden Leistungen in richtiger Höhe nachzuzahlen.' : 'Ich beantrage, den Bescheid aufzuheben bzw. zu ändern und mir die zustehenden Leistungen in richtiger Höhe nachzuzahlen.');
       z.push('');
     }
     if (w.akteneinsicht) { z.push('Zugleich beantrage ich Akteneinsicht (§ 25 SGB X) bzw. die Übersendung einer Kopie der Unterlagen, auf denen die Entscheidung beruht.'); z.push(''); }
     if (w.unterlagenNachreichen && !ohne) { z.push('Eine ausführliche Begründung und weitere Unterlagen reiche ich nach.'); z.push(''); }
-    z.push('Bitte bestätigen Sie mir den Eingang dieses Widerspruchs.');
+    z.push(w.ueberpruefung ? 'Bitte bestätigen Sie mir den Eingang dieses Antrags.' : 'Bitte bestätigen Sie mir den Eingang dieses Widerspruchs.');
     z.push('');
     z.push('Mit freundlichen Grüßen');
     z.push('');

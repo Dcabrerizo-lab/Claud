@@ -76,5 +76,6 @@
   "fri.art.wid.offen": "Widerspruch, Einspruch oder Klage",
   "fri.art.wid.wg": "Widerspruch oder Klage gegen den Brief vom Amt ({stelle})",
   "fri.wid.offen": "Du willst dich gegen den Brief wehren? Das heißt nicht bei jedem Amt gleich. Meistens heißt es Widerspruch. Beim Kindergeld heißt es Einspruch. Manchmal geht nur eine Klage beim Gericht. Was für dich gilt, steht am Ende vom Brief. Der Teil heißt Rechtsbehelfsbelehrung. Dein Brief muss bis zu dem Tag dort sein.",
-  "fri.wid.wg": "Beim Wohngeld gibt es in manchen Bundesländern keinen Widerspruch. Dann geht nur eine Klage beim Gericht. Die Zeit dafür ist gleich lang. Was für dich gilt, steht am Ende vom Bescheid. Der Teil heißt Rechtsbehelfsbelehrung."
+  "fri.wid.wg": "Beim Wohngeld gibt es in manchen Bundesländern keinen Widerspruch. Dann geht nur eine Klage beim Gericht. Die Zeit dafür ist gleich lang. Was für dich gilt, steht am Ende vom Bescheid. Der Teil heißt Rechtsbehelfsbelehrung.",
+  "fri.gemerktKnopf": "="
 }

@@ -52,6 +52,7 @@
   "fri.erledigtListe.t": "Erledigte Fristen verschwinden nach 30 Tagen.",
   "fri.vorgangWeg": "Achtung: Dieser Vorgang wird am {datum} automatisch gelöscht, also vor der Frist am {bis}. Die Frist geht dann mit verloren. Du kannst „Automatisch löschen“ in den Einstellungen ändern.",
   "fri.merken": "Frist merken",
+  "fri.gemerktKnopf": "Gemerkt ✓",
   "fri.merken.t": "Die Frist kommt in „Mein Ordner“. Sie bleibt auf deinem Gerät.",
   "fri.gemerkt": "In „Mein Ordner“ gemerkt: {titel}, bis {datum}.",
   "fri.schonDa": "Diese Frist steht schon in „Mein Ordner“.",

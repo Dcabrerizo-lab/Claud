@@ -49,6 +49,12 @@ const dateiWaehlen = (w, input, text) => { Object.defineProperty(input, 'files',
   $('beratungBtn').click();
   $('kbOpen').click();
   check('Weitergabe-Bereich im Blatt sichtbar, PIN standardmäßig an (6 Ziffern)', !$('kwBox').hidden && $('kwPinAn').checked && /^\d{3} \d{3}$/.test($('kwPin').textContent));
+  const passt0 = await w.Klient.qrPruefen();
+  check('[rot-d] QR-Vorprüfung: Hinweis „zu viel“ schon vor dem Tippen genau dann, wenn es nicht passt', $('kwQrHinweis').hidden === !!passt0 && $('kwQrBtn').hasAttribute('aria-disabled') === !passt0);
+  const auf = d.querySelector('#kbHilfenAuf');
+  check('[rot-d] Klient-Seite: zwei Schritte, Gruppen zugeklappt mit Zähler, Vorschau zugeklappt', d.querySelectorAll('#klientBlatt .kb-schritt').length === 2 && auf && !auf.open && /\(\d+ von \d+\)$/.test(auf.querySelector('summary').textContent) && $('kbSeite').classList.contains('kb-zu') && $('kbVorschau').getAttribute('aria-expanded') === 'false');
+  $('kbVorschau').click();
+  check('[rot-d] Vorschau zeigen klappt das Blatt auf', !$('kbSeite').classList.contains('kb-zu') && $('kbVorschau').getAttribute('aria-expanded') === 'true');
   check('Auswahl a/b: „Nur ausgewählte Teile“ voreingestellt', $('kwModus-blatt').checked && !$('kwModus-vorgang').checked && !!$('kbHilfen'));
   // (b) nur gewählte Teile → QR
   [...d.querySelectorAll('#kbHilfen input[data-kb]')].slice(1).forEach((c) => { c.checked = false; fire(w, c, 'change'); });
@@ -105,7 +111,8 @@ const dateiWaehlen = (w, input, text) => { Object.defineProperty(input, 'files',
   dateiWaehlen(w2, $2('kwDateiEin'), dateiA);
   check('Datei mit PIN: PIN-Abfrage', await bis(() => $2('kwImpPin')));
   $2('kwImpPin').value = pinA === '000000' ? '111111' : '000000'; $2('kwImpPinOk').click();
-  check('Falsche PIN: Meldung, Abfrage bleibt', await bis(() => $2('kwImpMsg').textContent === DE['kw.imp.pinFalsch']) && !!$2('kwImpPin'));
+  check('Falsche PIN: Meldung, Abfrage bleibt', await bis(() => $2('kwImpPinFehler') && !$2('kwImpPinFehler').hidden) && !!$2('kwImpPin') && $2('kwImpMsg').textContent === '');
+  check('[rot-d] Falsche PIN: Meldung rot am Feld, Feld nicht geleert, „PIN zeigen“ schaltet um', !$2('kwImpPinFehler').hidden && $2('kwImpPinFehler').textContent === DE['kw.imp.pinFalsch'] && $2('kwImpPin').getAttribute('aria-invalid') === 'true' && $2('kwImpPin').value !== '' && ($2('kwImpPinZeigen').click(), $2('kwImpPin').type === 'text'));
   $2('kwImpPin').value = pinA; $2('kwImpPinOk').click();
   check('Richtige PIN: Vorschau „Das bekommst du“ mit Haken', await bis(() => $2('kwImpTeile')) && $2('kwImpBox').textContent.includes(DE['kw.imp.vorschau']) && [...d2.querySelectorAll('#kwImpTeile input')].every((c) => c.checked));
   const vorher = JSON.parse(store['lotse.vorgaenge'] || '{"klar":{"liste":[1]}}').klar.liste.length;

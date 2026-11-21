@@ -78,7 +78,7 @@ setTimeout(() => {
 
     // ---------- S2: Frist ganz oben, vor „Widerspruch erstellen“; Art des Briefs ----------
     const karte = $('p-bescheid').querySelector('.card'), box = $('bs-fristbox');
-    check('S2: Frist-Bereich in der ersten Karte, vor dem Einlesen', !!box && karte.contains(box) && karte.contains($('bs-datum')) && !!(box.compareDocumentPosition($('einlesen')) & 4));
+    check('S2: Frist-Bereich in der ersten Karte, nach dem Einlesen (Scannen zuerst, UX-Audit B)', !!box && karte.contains(box) && karte.contains($('bs-datum')) && !!($('einlesen').compareDocumentPosition(box) & 4));
     check('S2: Datum 12.11.2026 -> „Widerspruch bis 16.12.2026“ im Frist-Muster', !!box.querySelector('.frist .frist-wann') && /16\.12\.2026/.test(box.querySelector('.frist-wann').textContent), box.textContent.slice(0, 200));
     check('S2: Frist steht vor dem Knopf „Widerspruch erstellen“', !!(box.compareDocumentPosition($('bs-wid-mach')) & 4));
     const anh = box.querySelector('input[name="bs-briefart"][value="anh"]');
@@ -119,6 +119,21 @@ setTimeout(() => {
     w.__solo.lang('de');
     klick(w, $('bs-erk-ok'));
     check('erkannt: nach „Werte stimmen“ Markierung weg und Ergebnis da', $('bs-erk').hidden && !d.querySelector('#p-bescheid .pp-erkannt') && $('bs-erg').textContent.indexOf(I18N.de['bp.erk.warte']) < 0);
+    check('erkannt: „Werte stimmen“ steht unter den Werten (nach dem Formular)', !!$('bs-erk-unten') && $('bs-form').nextElementSibling === $('bs-erk-unten'));
+    // ---------- Widerspruchsfrist nach SoLos Rechnung vorbei (rechtsfragen-rot.md, Frage 1) ----------
+    const datumSetzen = (id, v) => { $(id).value = v; $(id).dispatchEvent(new w.Event('input', { bubbles: true })); };
+    datumSetzen('bs-datum', '2023-02-10');
+    check('vorbei: Kasten statt „Widerspruch bis“, kein „Frist merken“', !!$('bs-vorbei-box') && !$('bs-fristbox').querySelector('.fri-merken') && $('bs-vorbei-box').textContent.indexOf(I18N.de['bp.vb.btn']) >= 0, $('bs-fristbox').textContent.slice(0, 300));
+    check('vorbei: Jobcenter nur 1 Jahr zurück, Feld für den Zugang sichtbar', /1\. Januar/.test($('bs-vorbei-box').textContent) && !$('bs-zugang-box').hidden);
+    check('vorbei: Widerspruch nur als Nebenweg', $('bs-wid-mach').textContent === I18N.de['bp.vb.wid'] && !$('bs-wid-mach').classList.contains('primary'));
+    klick(w, $('bs-ue-mach'));
+    check('vorbei: Knopf erstellt Antrag auf Überprüfung (§ 44 SGB X)', /Antrag auf Überprüfung nach § 44 SGB X/.test($('bs-wid-text').value) && !/hiermit lege ich Widerspruch/.test($('bs-wid-text').value), $('bs-wid-text').value.slice(0, 300));
+    klick(w, $('bs-wid-mach'));
+    check('vorbei: Widerspruch trotzdem, hilfsweise § 44 SGB X', /hilfsweise Antrag auf Überprüfung nach § 44 SGB X/.test($('bs-wid-text').value) && !$('bs-merken'));
+    const vorKurzem = new Date(Date.now() - 3 * 864e5).toISOString().slice(0, 10);
+    datumSetzen('bs-zugang', vorKurzem);
+    check('vorbei: später zugegangen → Frist läuft noch, Kasten weg', !$('bs-vorbei-box') && !!$('bs-fristbox').querySelector('.frist-wann') && $('bs-wid-mach').classList.contains('primary'));
+    datumSetzen('bs-zugang', ''); datumSetzen('bs-datum', '');
     klick(w, $('briefZurueck'));
 
     // ---------- Stand mit übersetztem Monat ----------

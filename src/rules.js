@@ -285,7 +285,7 @@ const Rules = (function () {
     // Pflege-Startkachel „Welche Unterstützung gibt es?“. Beträge oben (pflege, pflegeSach, pflegeTages, entlastungsbudget, beh.verbrauch,
     // beh.wohnumfeld). Quelle: BMG, Online-Ratgeber Pflege „Verhinderungspflege“, „Pflege zu Hause“, „Weitere Leistungen und Angebote zur
     // Unterstützung im Alltag“ und „Pflege-Wohngemeinschaften“ (alle Stand 14.9.2026, abgerufen 20.11.2026); §§ 36–45b SGB XI.
-    // wohngruppe: Wohngruppenzuschlag 224 € im Monat ab Pflegegrad 1 (§ 38a SGB XI, BMG „Pflege-Wohngemeinschaften“, Stand 14.9.2026).
+    // wohngruppe: Wohngruppenzuschlag 224 € im Monat ab Pflegegrad 1 (§ 45f SGB XI, früher § 38a; BMG „Pflege-Wohngemeinschaften“, Stand 14.9.2026).
     // Familienentlastende Dienste: laut BMG Beispiel für anerkannte Angebote zur Unterstützung im Alltag (Entlastungsbetrag, § 45a/§ 45b);
     // Verhinderungspflege „kann auch stundenweise in Anspruch genommen werden“ (BMG „Verhinderungspflege“, Stand 14.9.2026).
     // Ohne festen Betrag: Kombination (anteilig, § 38), Hausnotruf (Zuschuss nach Hilfsmittelverzeichnis, § 40 Abs. 1), Pflegekurse (§ 45),
@@ -2092,7 +2092,7 @@ const Rules = (function () {
       { id: 'hilfs', ab: 1, art: 'budget', betrag: je(R.beh.verbrauch, 1), einheit: 'monat', bis: true, recht: '§ 40 Abs. 2 SGB XI' },
       { id: 'notruf', ab: 1, art: 'zuschuss', betrag: null, recht: '§ 40 Abs. 1 SGB XI' },
       { id: 'umbau', ab: 1, art: 'zuschuss', betrag: je(R.beh.wohnumfeld, 1), einheit: 'mass', bis: true, recht: '§ 40 Abs. 4 SGB XI' },
-      { id: 'wg', ab: 1, art: 'zuschuss', betrag: je(U.wohngruppe, 1), einheit: 'monat', bis: false, recht: '§ 38a SGB XI' },
+      { id: 'wg', ab: 1, art: 'zuschuss', betrag: je(U.wohngruppe, 1), einheit: 'monat', bis: false, recht: '§ 45f SGB XI' },
       { id: 'kurs', ab: 0, art: 'frei', betrag: null, recht: '§ 45 SGB XI' },
       { id: 'beratung', ab: 0, art: 'frei', betrag: null, recht: '§§ 7a, 7c, 37 Abs. 3 SGB XI' },
       { id: 'rente', ab: 2, art: 'schutz', betrag: null, recht: '§ 44 SGB XI' },

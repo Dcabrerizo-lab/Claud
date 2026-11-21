@@ -52,6 +52,7 @@
   "fri.erledigtListe.t": "Termenele rezolvate dispar după 30 de zile.",
   "fri.vorgangWeg": "Atenție: acest dosar va fi șters automat pe {datum}, deci înainte de termenul din {bis}. Termenul se pierde atunci și el. Poți schimba „Șterge automat” în setări.",
   "fri.merken": "Reține termenul",
+  "fri.gemerktKnopf": "Salvat ✓",
   "fri.merken.t": "Termenul ajunge în „Dosarul meu”. Rămâne pe dispozitivul tău.",
   "fri.gemerkt": "Reținut în „Dosarul meu”: {titel}, până la {datum}.",
   "fri.schonDa": "Acest termen este deja în „Dosarul meu”.",

@@ -121,7 +121,10 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Höherstufung ist gewählt', await p.isChecked('#pf-art-h'));
   ok('Antworten übernommen (1.1 überwiegend unselbständig, Alter 84)', (await p.inputValue('#pf-1\\.1')) === '2' && (await p.inputValue('#pf-alter')) === '84');
   ok('Vergleich: gleiche Werte, keine Abweichung', /keiner Frage/.test(await p.textContent('#pf-vergleich')));
+  // Bereiche stehen als zugeklappte Aufgabenliste (UX-Audit B/D): Stand je Bereich sichtbar
+  ok('Pflege: Bereiche zugeklappt mit Stand', await p.evaluate(() => document.querySelectorAll('#pf-module details.pf-bereich:not([open])').length === 6 && /von \d+ eingetragen/.test(document.querySelector('#pf-bereich-1 .pf-zahl').textContent)));
   // Gutachten bewertet niedriger: 1.1 und 1.2 „selbständig“ → zwei Abweichungen, Übernahme in den Widerspruch
+  await p.evaluate(() => document.querySelectorAll('#pf-module details.pf-bereich').forEach((x) => { x.open = true; })); // Bereiche sind zugeklappt
   await p.selectOption('#pf-1\\.1', '0'); await p.selectOption('#pf-1\\.2', '0'); await warte(() => /Bei 2 Fragen/.test(document.getElementById('pf-vergleich').textContent) && document.querySelectorAll('#pf-wid-liste .pw[data-auto="1"]').length === 2);
   ok('Vergleich zeigt zwei Abweichungen', /Bei 2 Fragen/.test(await p.textContent('#pf-vergleich')), await p.textContent('#pf-vergleich'));
   ok('Abweichungen stehen von selbst als Karten mit Beschreibungsfeld da', (await p.locator('#pf-wid-liste .pw[data-auto="1"]').count()) === 2 && (await p.locator('#pf-wid-liste .pw[data-id="1.1"] textarea').count()) === 1);

@@ -52,6 +52,7 @@
   "fri.erledigtListe.t": "Completed deadlines disappear after 30 days.",
   "fri.vorgangWeg": "Warning: this case will be deleted automatically on {datum}, which is before the deadline on {bis}. The deadline will then be lost too. You can change “Delete automatically” in the settings.",
   "fri.merken": "Save deadline",
+  "fri.gemerktKnopf": "Saved ✓",
   "fri.merken.t": "The deadline goes into “My folder”. It stays on your device.",
   "fri.gemerkt": "Saved in “My folder”: {titel}, by {datum}.",
   "fri.schonDa": "This deadline is already in “My folder”.",

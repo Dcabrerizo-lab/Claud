@@ -52,6 +52,7 @@
   "fri.erledigtListe.t": "Tamamlanan süreler 30 gün sonra kaybolur.",
   "fri.vorgangWeg": "Dikkat: Bu dosya {datum} tarihinde otomatik olarak silinecek, yani {bis} tarihindeki süreden önce. Süre de o zaman kaybolur. „Otomatik sil“ ayarını ayarlardan değiştirebilirsin.",
   "fri.merken": "Süreyi kaydet",
+  "fri.gemerktKnopf": "Kaydedildi ✓",
   "fri.merken.t": "Süre „Klasörüm“e eklenir. Cihazında kalır.",
   "fri.gemerkt": "„Klasörüm“e kaydedildi: {titel}, son gün {datum}.",
   "fri.schonDa": "Bu süre zaten „Klasörüm“de var.",
