@@ -1,4 +1,7 @@
 {
+  "t.ggeld.vermAlter": "Si votre patrimoine est inférieur au montant protégé dépend de l’âge des deux adultes. Le montant protégé s’applique par personne et il est plus faible pour les plus jeunes. Le Jobcenter le vérifie.",
+  "t.kiz.vermKnapp": "Votre patrimoine dépasse à peine la limite. Dans ce cas, seul le Kinderzuschlag du premier mois est réduit ; ensuite, il est versé en entier. La Familienkasse calcule le montant exact.",
+  "t.gsa.mzGBeide": "Si vous avez tous les deux le Merkzeichen G (mention G), chaque personne reçoit un besoin supplémentaire (Mehrbedarf) d’environ {betrag}. Le montant est alors plus élevé.",
   "ww.h0": "Deux voies : Grundsicherungsgeld ou Wohngeld",
   "ww.a.t0": "Couvre tout le besoin : forfait de base, loyer et chauffage, plus l’assurance maladie. En échange, il y a des obligations : documents, rendez-vous et recherche d’emploi.",
   "ww.b.h0": "Voie 2 : Wohngeld",

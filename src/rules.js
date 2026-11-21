@@ -15,13 +15,24 @@ const Rules = (function () {
     kindergeld: 259,
     // Wohnkostenanteil der Eltern (§ 6a Abs. 5 BKGG): Tabelle der Familienkasse nach dem Existenzminimumbericht
     // (DA-KiZ C.3.1.2, Stand 20.02.2026), Index = Zahl der Kinder 1-10; ab 10 Kindern gilt der Wert für 10
-    kiz: { vermZwei: 55000, vermDrei: 70000, vermJeWeiteres: 15000, max: 297, minAlleinerziehend: 600, minPaar: 900, anrechnung: 0.45, puffer: 300, ampelGruenAb: 60,
+    kiz: { vermZwei: 55000, vermDrei: 70000, vermJeWeiteres: 15000, max: 297, minAlleinerziehend: 600, minPaar: 900, anrechnung: 0.45, ampelGruenAb: 60,
+      // Erweiterter Zugang § 6a Abs. 1a BKGG: Kinderzuschlag auch, wenn der Bedarfsgemeinschaft mit Kinderzuschlag (und Wohngeld)
+      // höchstens 100 € fehlen (u. a. Absetzbeträge aus Arbeit mindestens 100 €, kein Antrag auf SGB II/XII).
+      // https://www.gesetze-im-internet.de/bkgg_1996/__6a.html, Abruf 21.11.2026
+      erweitert: 100,
       wohnAllein: [1, 0.77, 0.63, 0.53, 0.46, 0.40, 0.36, 0.33, 0.30, 0.27, 0.25], wohnPaar: [1, 0.83, 0.71, 0.62, 0.55, 0.50, 0.45, 0.41, 0.38, 0.35, 0.33] },
     wohngeld: {
       // Keine Beträge im Gesetzestext (§ 21 Nr. 3 WoGG: nur "erhebliches Vermögen"); die Beträge sind die Regelvermutung der Verwaltungsvorschrift (nur Sekundärquellen)
       vermoegenErste: 60000,
       vermoegenJeWeitere: 30000,
-      mindestAnteil: 0.8, // reine Heuristik, keine Rechtsgrundlage
+      // Plausibilitätsprüfung Nr. 15.01 WoGVwV. Amtlich veröffentlicht: WoGVwV vom 28.06.2017 Nr. 15.01 Abs. 1 Satz 3 („Einnahmen zuzüglich
+      // eines zu leistenden Wohngeldes 80 Prozent des Bedarfs nach dem SGB XII“;
+      // https://www.verwaltungsvorschriften-im-internet.de/bsvwvbund_28062017_SWII4.htm, Abruf 21.11.2026). Die strengere Lesart unten stammt aus
+      // den BMI-Hinweisen vom 11.03.2020 zu Nr. 15.01 Abs. 1 Satz 6-9 mit Beispiel (nicht amtlich veröffentlicht, nur als Kopie abrufbar:
+      // https://www.tacheles-sozialhilfe.de/files/Weisungen/WoGG/200311-hinweisezurplausibilittsprfung_geschwaerzt.pdf, Abruf 21.11.2026):
+      // Einnahmen EINSCHLIESSLICH des zu leistenden Wohngelds (auch Kindergeld, Kinderzuschlag) müssen 100 % der Gesamtmiete und rund 80 %
+      // der Regelbedarfe decken; Mehrbedarfe zählen nicht. Unterschreitung heißt nicht Ablehnung: die Person muss darlegen, wovon sie lebt (Abs. 2).
+      mindestAnteil: 0.8,
       freibetragBehinderungMonat: 150,
       freibetragAlleinerzMonat: 110,
       abzugMittel: 0.8
@@ -312,10 +323,23 @@ const Rules = (function () {
     M = Math.max(M, WG_MMIN[wgIdx(n)]); Y = Math.max(Y, WG_YMIN[wgIdx(n)]);
     return 1.15 * (M - (a + b * M + c * Y) * Y);
   }
+  // Grenze bei 9,50 € ungerundetem Wohngeld: Unter 10 € im Monat gibt es kein Wohngeld (§ 21 Nr. 1 WoGG,
+  // https://www.gesetze-im-internet.de/wogg/__21.html), gerundet wird kaufmännisch auf volle Euro (Anlage 3 Nr. 3 WoGG,
+  // https://www.gesetze-im-internet.de/wogg/anlage_3.html; beides Abruf 21.11.2026). Abgleich: Einkommensgrenzen der Stadt München 2025
+  // (Stufe VII, 1-6 Personen: 1.619 / 2.181 / 2.717 / 3.671 / 4.200 / 4.717 €) treffen genau.
+  const WG_MIN_ROH = 9.5;
   function wgYmax(n, M) {
     const [a, b, c] = WGF[wgIdx(n)];
     const p = a + b * M;
-    return (-p + Math.sqrt(p * p + 4 * c * M)) / (2 * c);
+    return (-p + Math.sqrt(p * p + 4 * c * (M - WG_MIN_ROH / 1.15))) / (2 * c);
+  }
+  // § 19 Abs. 3 WoGG (https://www.gesetze-im-internet.de/wogg/__19.html, Abruf 21.11.2026): Bei mehr als 12 Haushaltsmitgliedern erhöht sich
+  // das für 12 berechnete (gerundete) Wohngeld je weiteres Mitglied um 65 €, höchstens bis zur zu berücksichtigenden Miete.
+  // Beispiel BMWSB-Hinweise vom 02.12.2024 zu Nr. 19.31 WoGVwV: 14 Personen, Stufe III, Miete 1.600 €, Y 4.688,25 € -> 1.205 + 2 × 65 = 1.335 €.
+  const WG_MEHR_UEBER12 = 65;
+  function wgUeber12(n, wg, M) {
+    const k = Math.floor(n) - 12;
+    return k > 0 && wg > 0 ? Math.min(wg + WG_MEHR_UEBER12 * k, M) : wg;
   }
   // Die Miete M, mit der Wohngeld rechnet: Bruttokaltmiete (bis zur Höchstmiete) plus Heizkostenkomponente.
   // Die Warmmiete dient als Näherung: Wohngeld ersetzt die Heizkosten durch die Pauschale.
@@ -888,21 +912,8 @@ const Rules = (function () {
     const r = wohngeld0(h);
     return h.asyl && (r.level === 'ja' || r.level === 'vielleicht') ? { ...r, tx: [['wohngeld.asyl']].concat(r.tx) } : r;
   }
-  function wohngeld0(h) {
-    const id = 'wohngeld';
-    if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'nein', 'ausschluss', [['wohngeld.ausschluss']]);
-    if (h.bezug.wohngeld) return mk(id, 'na', 'na', [['wohngeld.na']]);
-    // Bei den Eltern: Wohngeld gibt es nur für den ganzen Haushalt (Antrag der Eltern); im Wohnheim geht die Grundsicherung vor
-    if (h.wohnform) return mk(id, 'nein', 'vorausFehlt', [['wohngeld.' + h.wohnform]]);
-    const vermLimit = R.wohngeld.vermoegenErste + R.wohngeld.vermoegenJeWeitere * (h.persons - 1);
-    if (h.vermoegen > vermLimit) return mk(id, 'nein', 'vermHoch', [['wohngeld.verm', { n: h.persons, limit: eur(vermLimit) }]]);
-
-    // § 20 Abs. 2 WoGG: kein Wohngeld, wenn allen Haushaltsmitgliedern BAföG oder BAB dem Grunde nach zusteht
-    if (h.ausbildung === 'ich' && h.adults === 1 && h.children === 0 && (!h.babBetrieb || h.babWohnt) && bafoegAlter(h)) {
-      return mk(id, 'nein', 'ausschluss', [['wohngeld.ausbildung']]);
-    }
-    if (h.miete <= 0) return mk(id, 'nein', 'vorausFehlt', [['wohngeld.keineMiete']]);
-
+  // Einkommen nach §§ 14-17a WoGG und Grenzwerte (Formel § 19 WoGG) für die Wohngeld-Karte und die Wohngeld-Schätzung beim Kinderzuschlag
+  function wgEinkommen(h) {
     const stufen = h.stufe ? [h.stufe, h.stufe] : [1, 7];
     // Höchstes Einkommen Y (nach Pauschalabzug und Freibeträgen) mit der tatsächlichen Miete (Formel § 19 WoGG):
     // vorsichtig für "wahrscheinlich" mit 90 % der Bruttokaltmiete, für "möglich" mit 100 %
@@ -957,10 +968,42 @@ const Rules = (function () {
     // der Kinder mit Freibetrag (§ 17 Nr. 4 WoGG); Elterngeld bis 300 € frei (§ 10 Abs. 1 BEEG); Freibeträge nach § 17 WoGG.
     // § 17a WoGG: Grundrentenfreibetrag bei 33 Jahren Grundrentenzeiten (100 € + 30 % des Rests, höchstens 50 % RS1)
     // Betriebs-, Riester- oder private Rente zählt beim Wohngeld wie Rente, bekommt aber keinen Grundrentenfreibetrag
+    // Der Freibetrag wird „vom Einkommen aus der gesetzlichen Rente“ abgezogen (§ 17a Abs. 1 Satz 2 WoGG): nie höher als diese Rente (Prüfung 21.11.2026)
     const zusWG = zusatzVerteilt(h, pers.map((x) => x[1]));
-    const grFrei = h.grundrente33 ? pers.reduce((a, x, i) => a + (x[0] === 'rente' ? Math.min(R.grundrente.sockel + R.grundrente.quote * Math.max(0, x[1] - zusWG[i] - R.grundrente.sockel), R.grundrente.max * R.regelbedarf.alleinstehend) : 0), 0) : 0;
+    const grFrei = h.grundrente33 ? pers.reduce((a, x, i) => a + (x[0] === 'rente' ? Math.min(Math.max(0, x[1] - zusWG[i]), R.grundrente.sockel + R.grundrente.quote * Math.max(0, x[1] - zusWG[i] - R.grundrente.sockel), R.grundrente.max * R.regelbedarf.alleinstehend) : 0), 0) : 0;
     const extra = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - R.wgKindFrei) + (h.kapWG || 0) - freib - grFrei;
     const yPess = Math.max(0, yA + extra - (h.uzWGpess || 0)), yOpt = Math.max(0, yB + extra - (h.uzWGopt || 0));
+
+    return { yMaxLo, yMaxHi, lo, hi, yPess, yOpt };
+  }
+  // Vorsichtige Schätzung des Wohngelds im Monat (0, wenn eher keins): Einkommen mit kleinem Pauschalabzug (yPess), ohne bekannte
+  // Mietenstufe mit Stufe I (kleinster Höchstbetrag). Für die Plausibilitätsprüfung (Nr. 15.01 WoGVwV) und den Kinderzuschlag (§ 6a Abs. 1
+  // Nr. 3 BKGG: Hilfebedürftigkeit unter Einbeziehung des Wohngelds, auch fiktiv; DA-KiZ Stand 20.02.2026, C.4.1 Abs. 7,
+  // https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf, Abruf 21.11.2026).
+  function wgVorsichtig(h, y) {
+    if (h.ausreise || h.asylBezug || h.bezug.grundsicherungsgeld || h.bezug.sozialamt || h.wohnform || !(h.miete > 0)) return 0;
+    if (h.vermoegen > R.wohngeld.vermoegenErste + R.wohngeld.vermoegenJeWeitere * (h.persons - 1)) return 0;
+    const yP = y != null ? y : wgEinkommen(h).yPess;
+    const M = wgMiete(h.stufe || 1, h.persons, h.miete, 1, h.heizkosten);
+    const w = wgBetrag(h.persons, M, yP);
+    return w >= WG_MIN_ROH ? wgUeber12(h.persons, w, M) : 0;
+  }
+  function wohngeld0(h) {
+    const id = 'wohngeld';
+    if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'nein', 'ausschluss', [['wohngeld.ausschluss']]);
+    if (h.bezug.wohngeld) return mk(id, 'na', 'na', [['wohngeld.na']]);
+    // Bei den Eltern: Wohngeld gibt es nur für den ganzen Haushalt (Antrag der Eltern); im Wohnheim geht die Grundsicherung vor
+    if (h.wohnform) return mk(id, 'nein', 'vorausFehlt', [['wohngeld.' + h.wohnform]]);
+    const vermLimit = R.wohngeld.vermoegenErste + R.wohngeld.vermoegenJeWeitere * (h.persons - 1);
+    if (h.vermoegen > vermLimit) return mk(id, 'nein', 'vermHoch', [['wohngeld.verm', { n: h.persons, limit: eur(vermLimit) }]]);
+
+    // § 20 Abs. 2 WoGG: kein Wohngeld, wenn allen Haushaltsmitgliedern BAföG oder BAB dem Grunde nach zusteht
+    if (h.ausbildung === 'ich' && h.adults === 1 && h.children === 0 && (!h.babBetrieb || h.babWohnt) && bafoegAlter(h)) {
+      return mk(id, 'nein', 'ausschluss', [['wohngeld.ausbildung']]);
+    }
+    if (h.miete <= 0) return mk(id, 'nein', 'vorausFehlt', [['wohngeld.keineMiete']]);
+
+    const { yMaxLo, yMaxHi, lo, hi, yPess, yOpt } = wgEinkommen(h);
 
     const grenze = h.stufe
       ? ['wohngeld.grenzeStufe', { n: h.persons, stufe: roman(h.stufe), lo: eur(lo), hi: eur(hi) }]
@@ -973,20 +1016,28 @@ const Rules = (function () {
     let hl = level;
     let tx = [[level === 'ja' ? 'wohngeld.ja' : 'wohngeld.vielleicht'], grenze].concat(unb);
     // Grobe Höhe (nur mit bekannter Mietenstufe): Formel § 19 WoGG mit dem Einkommen bei kleinem und großem Abzug
+    // Mehr als 12 Personen: Mehrbetrag je weiteres Mitglied (§ 19 Abs. 3 WoGG, siehe wgUeber12)
+    let sch = null;
     if (h.stufe) {
       const M = wgMiete(h.stufe, h.persons, h.miete, 1, h.heizkosten);
-      const a = Math.max(0, r10(wgBetrag(h.persons, M, yPess))), b = Math.max(0, r10(wgBetrag(h.persons, M, yOpt)));
-      if (b >= 10) tx.push(a >= 10 && a < b ? ['schaetz.spanne', { a: eur(a), b: eur(b) }] : a >= 10 ? ['schaetz.eins', { a: eur(a) }] : ['schaetz.bis', { b: eur(b) }]);
+      const roh = (y) => { const w = wgBetrag(h.persons, M, y); return w >= WG_MIN_ROH ? wgUeber12(h.persons, w, M) : 0; };
+      const a = Math.max(0, r10(roh(yPess))), b = Math.max(0, r10(roh(yOpt)));
+      if (b >= 10) sch = a >= 10 && a < b ? ['schaetz.spanne', { a: eur(a), b: eur(b) }] : a >= 10 ? ['schaetz.eins', { a: eur(a) }] : ['schaetz.bis', { b: eur(b) }];
+      if (sch) tx.push(sch);
     }
 
-    const mittel = h.netto + h.kids * R.kindergeld + (h.kindZahl || 0) + (h.kindEink || 0) - (h.uzBetrag || 0);
-    const mindest = R.wohngeld.mindestAnteil * (h.regel + h.miete + (h.mehrAE || 0));
+    // Plausibilitätsprüfung Nr. 15.01 WoGVwV (Quelle bei R.wohngeld.mindestAnteil): Einnahmen plus vorsichtig geschätztes Wohngeld
+    // (plus Kindergeld) müssen die ganze Miete und 80 % der Regelbedarfe decken, ohne Mehrbedarfe. Vorher (bis 21.11.2026) ohne Wohngeld:
+    // Rentner mit 800 bis 1.300 € Rente sahen fälschlich „Einkommen eher zu niedrig“ (Abgleich mit den Musterberechnungen der Stadt Hannover 2025).
+    const mittel = h.netto + h.kids * R.kindergeld + (h.kindZahl || 0) + (h.kindEink || 0) - (h.uzBetrag || 0) + wgVorsichtig(h, yPess);
+    const mindest = h.miete + R.wohngeld.mindestAnteil * h.regel;
     if (h.miete > 0 && mittel < mindest) {
       level = 'vielleicht'; hl = 'einkoNiedrig';
       const schonGS = (h.alter || h.erwerbsgemindert)
         ? R.grundsicherung.schonAllein * h.adults + 500 * h.children
         : R.sgb2.schon[h.gruppe] * h.adults + R.sgb2.schon['<30'] * h.children;
-      tx = [[h.vermoegen > schonGS ? 'wohngeld.zuNiedrigVerm' : 'wohngeld.zuNiedrig'], grenze];
+      // Keine Ablehnung (Nr. 15.01 Abs. 2 WoGVwV: die Person kann darlegen, wovon sie lebt): geschätzter Betrag bleibt sichtbar
+      tx = [[h.vermoegen > schonGS ? 'wohngeld.zuNiedrigVerm' : 'wohngeld.zuNiedrig'], grenze].concat(sch ? [sch] : []);
     }
     return mk(id, level, hl, tx);
   }
@@ -1026,14 +1077,32 @@ const Rules = (function () {
     if (!hinweis || r.level === 'nein') return r;
     return mk(id, 'vielleicht', r.level === 'ja' ? 'vielleicht' : r.hl, [[hinweis]].concat(r.tx));
   }
+  // Vermögen über der Grenze (§ 6a Abs. 3 Satz 5-7 BKGG, https://www.gesetze-im-internet.de/bkgg_1996/__6a.html, Abruf 21.11.2026;
+  // KiZ-Merkblatt 7/2026 Nr. 2.3; DA-KiZ Stand 20.02.2026 C.2.2.2): Das übersteigende Vermögen mindert nur den Kinderzuschlag des ersten Monats.
+  // Ist es kleiner als der Monatsbetrag, gibt es den Kinderzuschlag (1. Monat gekürzt, danach voll); sonst entfällt der Anspruch.
+  // Der Monatsbetrag ist hier nur geschätzt: knapp darüber höchstens „möglich“ mit Hinweis.
   function kizRechnung(h, id) {
     const vermGrenze = h.persons <= 2 ? R.kiz.vermZwei : R.kiz.vermDrei + R.kiz.vermJeWeiteres * (h.persons - 3);
-    if (h.vermoegen > vermGrenze) return mk(id, 'nein', 'vermHoch', [['kiz.verm', { n: h.persons, limit: eur(vermGrenze) }]]);
+    const vermUeber = h.vermoegen - vermGrenze;
+    const vermNein = () => mk(id, 'nein', 'vermHoch', [['kiz.verm', { n: h.persons, limit: eur(vermGrenze) }]]);
     const minEink = h.adults === 2 ? R.kiz.minPaar : R.kiz.minAlleinerziehend;
+    if (vermUeber > 0 && h.brutto < minEink) return vermNein();
     if (h.brutto < minEink) return mk(id, 'nein', 'minEink', [['kiz.minEink', { min: eur(minEink) }]]);
-
+    const r = kizRechnung0(h, id);
+    if (!(vermUeber > 0)) return r;
+    if (!(r.est > vermUeber)) return vermNein();
+    return hoechstensMoeglich(r, 'kiz.vermKnapp');
+  }
+  function kizRechnung0(h, id) {
     const gmax = R.kiz.max * h.children;
-    const elternAnteil = kizWohnanteil(h.adults, h.children);
+    // Alleinerziehend mit Altersrente (Regelaltersgrenze erreicht, nur Rente): Die Rente zählt nur, soweit sie den eigenen Bedarf
+    // (Regelbedarf, Mehrbedarf, KOPFTEIL der Miete) übersteigt; der Überschuss mindert voll (DA-KiZ Stand 20.02.2026, D.2 Abs. 1 Satz 9-11,
+    // Beispiel 2: Rente 900 €, Kind 16, Miete 360 € -> 238 €; https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf, Abruf 21.11.2026).
+    // Rechnerisch: Wohnanteil des Elternteils = Kopfteil statt Tabellenanteil. Paare mit einer Person in Altersrente (Beispiel 1) bleiben
+    // bei der Tabelle (Abweichung im Beispiel unter 1 %).
+    const pe = (h.pers || []).filter((x) => x[1] > 0);
+    const rentnerAllein = h.adults === 1 && h.alter && pe.length > 0 && pe.every((x) => x[0] === 'rente');
+    const elternAnteil = rentnerAllein ? 1 / h.persons : kizWohnanteil(h.adults, h.children);
     // Mehrbedarfe der Eltern gehören zum Bedarf der Eltern (Schwangerschaft, Warmwasser, 35 % bei Teilhabe am Arbeitsleben)
     const maK = mehrAllg(h, false), mbK = mehrBehSGB2(h);
     const mehrEltern = maK.eltern + (h.bhPerson === 'erwNach25' ? mbK.fest : 0);
@@ -1044,6 +1113,7 @@ const Rules = (function () {
     const est = Math.max(0, gmax - kizMinderungEltern(h, bemessung) - R.kiz.anrechnung * kindAnr);
     const gesamtBedarf = h.regel + h.miete + (h.mehrAE || 0) + maK.fest + mbK.fest;
 
+    const mkE = (level, hl, tx) => Object.defineProperty(mk(id, level, hl, tx), 'est', { value: est }); // nicht aufzählbar: nur für kizRechnung
     if (est <= 0) {
       // Kind vielleicht erst 6 Jahre (Mehrbedarf 36 % statt 12 %): dann ist Kinderzuschlag möglich
       const estHoch = Math.max(0, gmax - kizMinderungEltern(h, bemessung - (h.mehrAE || 0) + (h.mehrAEhoch || 0)) - R.kiz.anrechnung * kindAnr);
@@ -1051,15 +1121,19 @@ const Rules = (function () {
       return mk(id, 'nein', 'einkoHoch', [['kiz.zuHoch']]);
     }
     // Hilfebedürftigkeit muss mit dem Kinderzuschlag enden (§ 6a Abs. 1 Nr. 3 BKGG): bereinigtes Einkommen nach SGB II (mit Freibetrag
-    // für Arbeit) plus Kindergeld, Einkommen der Kinder und geschätzter Kinderzuschlag; der Puffer steht für ein mögliches Wohngeld.
+    // für Arbeit) plus Kindergeld, Einkommen der Kinder und geschätzter Kinderzuschlag. Dazu zählt ein (auch fiktives) Wohngeld
+    // (DA-KiZ C.4.1 Abs. 7): bis 21.11.2026 ein fester Puffer von 300 €, jetzt die vorsichtige Wohngeld-Schätzung der App (wgVorsichtig;
+    // Abgleich KiZ-Merkblatt 7/2026 Nr. 1.3/1.4: Familien bekommen 450 bis 800 € Wohngeld). Plus erweiterter Zugang: es dürfen
+    // höchstens 100 € fehlen, wenn die Absetzbeträge aus Arbeit mindestens 100 € sind (§ 6a Abs. 1a BKGG, Quelle bei R.kiz.erweitert; DA-KiZ C.4.2).
     // (Abgleich mit dem KiZ-Lotsen der Familienkasse: bisher mit vollem Netto zu optimistisch.)
     const mitKiz = elternEinkSGB2(h) + h.children * R.kindergeld + (h.kindZahl || 0) + (h.kindEink || 0) + est;
-    if (mitKiz + R.kiz.puffer < gesamtBedarf) return mk(id, 'vielleicht', 'einkoNiedrig', [['kiz.zuNiedrig']]);
+    const erweitert = haushaltsFreibetrag(h) >= R.kiz.erweitert ? R.kiz.erweitert : 0;
+    if (mitKiz + wgVorsichtig(h) + erweitert < gesamtBedarf) return mkE('vielleicht', 'einkoNiedrig', [['kiz.zuNiedrig']]);
     // Reicht es nur mit zusätzlichem Wohngeld, ist der Kinderzuschlag offen: beides beantragen
-    if (mitKiz < gesamtBedarf) return mk(id, 'vielleicht', 'vielleicht', [['kiz.mitWg', { max: eur(R.kiz.max) }], ['schaetz.eins', { a: eur(Math.max(10, r10(est))) }]]);
+    if (mitKiz < gesamtBedarf) return mkE('vielleicht', 'vielleicht', [['kiz.mitWg', { max: eur(R.kiz.max) }], ['schaetz.eins', { a: eur(Math.max(10, r10(est))) }]]);
     const sch = ['schaetz.eins', { a: eur(Math.max(10, r10(est))) }];
-    if (est >= R.kiz.ampelGruenAb) return mk(id, 'ja', 'ja', [['kiz.ja', { max: eur(R.kiz.max) }], sch]);
-    return mk(id, 'vielleicht', 'vielleicht', [['kiz.rand', { max: eur(R.kiz.max) }], sch]);
+    if (est >= R.kiz.ampelGruenAb) return mkE('ja', 'ja', [['kiz.ja', { max: eur(R.kiz.max) }], sch]);
+    return mkE('vielleicht', 'vielleicht', [['kiz.rand', { max: eur(R.kiz.max) }], sch]);
   }
 
   // ---------------------------------------------------------------
@@ -1096,6 +1170,16 @@ const Rules = (function () {
     // § 12 Abs. 2 SGB II: je Person der Bedarfsgemeinschaft ein Freibetrag nach Alter; Kinder und junge Erwachsene bis 30: 5.000 €
     const schon = R.sgb2.schon[h.gruppe] * h.adults + R.sgb2.schon['<30'] * h.children;
     if (h.vermoegen > schon) return mk(id, 'nein', 'vermHoch', [['ggeld.verm', { schon: eur(schon) }]]);
+    // Paar: Der Freibetrag gilt je Person nach ihrem eigenen Alter (§ 12 Abs. 2 SGB II, https://www.gesetze-im-internet.de/sgb_2/__12.html,
+    // Abruf 21.11.2026; Merkblatt SGB II der BA, Stand 8/2026, Nr. 9.5: Paar 32 und 59 Jahre -> 10.000 + 20.000 €). Die App kennt nur
+    // das Alter der ältesten Person (h.gruppe). Liegt das Vermögen über der kleinsten möglichen Grenze (zweite Person unter 30, vermGrenzen
+    // ggeldMin), ist es offen: höchstens „möglich“ mit Hinweis. Bis 21.11.2026 galt der Freibetrag der ältesten Person für beide.
+    const vMin = vermGrenzen(h).ggeldMin;
+    const r = ggeldRechnung0(h);
+    return h.adults === 2 && vMin && h.vermoegen > vMin ? hoechstensMoeglich(r, 'ggeld.vermAlter') : r;
+  }
+  function ggeldRechnung0(h) {
+    const id = 'ggeld';
     const einkommen = elternEinkSGB2(h) + h.children * R.kindergeld + unterhaltAnrechenbar(h);
     const mb = mehrBehSGB2(h), ma = mehrAllg(h, false);
     const bedarf = h.regel + h.miete + (h.mehrAE || 0) + mb.fest + ma.fest;
@@ -1270,6 +1354,10 @@ const Rules = (function () {
     const extra = (h.alterGrenz ? [['gsa.grenz']] : []).concat(h.wfbmEssen ? [['gsa.essen']] : [], kduOffen ? [[h.wohnform === 'heim' ? 'gsa.heim' : 'gsa.eltern']] : [],
       hatRente && !h.grundrente33 ? [['gsa.grundrente']] : [], teilFest ? [['mehr.teilhabe', { betrag: eur(teilFest) }]] : [], teilOffen ? [['ggeld.mehrBeh']] : [], maG.tx,
       !eigen && h.miete > 0 ? [['kdu.angemessen']] : []);
+    // Merkzeichen G fragt die App nur für eine Person ab. Der Mehrbedarf von 17 % gilt für jede leistungsberechtigte Person mit Merkzeichen G
+    // (§ 30 Abs. 1 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__30.html, Abruf 21.11.2026; Beispiel b) im Merkblatt Grundsicherung
+    // der Stadt Bochum: Ehepaar, beide G). Bei Paaren deshalb ein Hinweis, dass der Betrag dann höher ist (vorsichtige Seite).
+    if (h.mzG && h.adults === 2 && !eigen) extra.push(['gsa.mzGBeide', { betrag: eur(R.mehr.g * regelP) }]);
     const ja = !h.alterGrenz;
     if (luecke >= R.grundsicherung.sicherAb) {
       const sch = offen ? ['schaetz.mind', { a: eur(r10(luecke)) }] : ['schaetz.eins', { a: eur(r10(luecke)) }];
@@ -2105,7 +2193,7 @@ const Rules = (function () {
     return { h, results: sorted, zusammen: zus, grenzen: vermGrenzen(h) };
   }
 
-  return { evaluate, famversGrenze, pflegeLeistungen, pflegeFuer, pflegeKombi, nettoLohn, bruttoAusNetto, nettoRente, bruttoAusNettoRente, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgMiete, wgCap, wgHeiz, wgHoechst, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, RECHT, ZUST_LAND, zustLand };
+  return { evaluate, famversGrenze, pflegeLeistungen, pflegeFuer, pflegeKombi, nettoLohn, bruttoAusNetto, nettoRente, bruttoAusNettoRente, lohnAnnahmen, pfaendung, pfaendFreibetrag, pkonto, RULES: R, WG, limits, wgYmax, wgUeber12, wgMiete, wgCap, wgHeiz, wgHoechst, wgBetrag, roman, sgb2Freibetrag, kizWohnanteil, haushaltsFreibetrag, derive, NAMES, STEPS, RECHT, ZUST_LAND, zustLand };
 })();
 
 if (typeof module !== 'undefined') module.exports = Rules;

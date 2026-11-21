@@ -500,7 +500,7 @@ Ergebnis: Pflegegrad 2`;
 
   // ---------------- Bescheid Wohngeld ----------------
   let wz = 0;
-  const ARTEN = [['lohn', 'Lohn'], ['rente', 'Rente'], ['alg', 'Arbeitslosengeld I'], ['eg', 'Elterngeld'], ['ohne', 'nur Unterhalt / kein Einkommen']];
+  const ARTEN = [['lohn', 'Lohn'], ['rente', 'Rente'], ['rente33', 'Rente mit 33 Jahren Grundrentenzeiten'], ['alg', 'Arbeitslosengeld I'], ['eg', 'Elterngeld'], ['ohne', 'nur Unterhalt / kein Einkommen']];
   function wgZeile(w) {
     wz++; const n = wz; w = w || {};
     const art = h('select', { id: `wm-art-${n}`, 'aria-label': `Einkommen ${n}: Art` }, ARTEN.map(([v, t]) => h('option', { value: v, text: t, selected: v === (w.art || 'lohn') })));

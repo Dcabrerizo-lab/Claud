@@ -1,4 +1,7 @@
 {
+  "t.ggeld.vermAlter": "Whether your assets are below the protected amount depends on the age of both adults. The protected amount applies per person and is smaller for younger people. The Jobcenter checks this.",
+  "t.kiz.vermKnapp": "Your assets are just above the limit. Then only the Kinderzuschlag for the first month is reduced; after that you get it in full. The Familienkasse calculates the exact amount.",
+  "t.gsa.mzGBeide": "If both of you have the Merkzeichen G (mark G), each person gets an additional allowance (Mehrbedarf) of about {betrag}. The amount is then higher.",
   "ww.h0": "Two routes: Grundsicherungsgeld or housing benefit (Wohngeld)",
   "ww.a.t0": "Covers your whole need: standard rate, rent and heating, plus health insurance. In return there are duties: documents, appointments and looking for work.",
   "ww.b.h0": "Route 2: housing benefit (Wohngeld)",

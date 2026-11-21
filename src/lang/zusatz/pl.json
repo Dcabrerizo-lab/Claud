@@ -1,4 +1,7 @@
 {
+  "t.ggeld.vermAlter": "To, czy wasz majątek mieści się w kwocie wolnej, zależy od wieku obojga dorosłych. Kwota wolna obowiązuje na osobę i jest niższa dla młodszych osób. Jobcenter to sprawdza.",
+  "t.kiz.vermKnapp": "Wasz majątek jest tylko trochę powyżej granicy. Wtedy obniża się tylko Kinderzuschlag za pierwszy miesiąc, potem przysługuje w pełnej wysokości. Familienkasse wylicza dokładną kwotę.",
+  "t.gsa.mzGBeide": "Jeśli oboje macie Merkzeichen G (znak G), każda osoba dostaje dodatkowe zapotrzebowanie (Mehrbedarf) w wysokości około {betrag}. Kwota jest wtedy wyższa.",
   "ww.h0": "Dwie drogi: Grundsicherungsgeld albo Wohngeld",
   "ww.a.t0": "Pokrywa całą potrzebę: stawkę podstawową, czynsz i ogrzewanie oraz ubezpieczenie zdrowotne. W zamian są obowiązki: dokumenty, terminy i szukanie pracy.",
   "ww.b.h0": "Droga 2: Wohngeld",
