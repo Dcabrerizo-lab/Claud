@@ -60,6 +60,8 @@
   .pp-erk-hinweis[hidden] { display: none; }
   .pp-erk-fehlt { flex: 1 1 100%; } .pp-erk-fehlt p { margin: 0 0 4px; }
   .pp-erk-unten[hidden] { display: none; }
+  .frist-vorbei ol { margin: 4px 0 8px; padding-inline-start: 1.4em; } .frist-vorbei p { margin: 4px 0; }
+  .pp-zugang[hidden] { display: none; }
   /* Pflegegutachten: je Bereich eine Zeile mit Stand (Aufgabenliste), aufklappen zum Prüfen */
   .pf-bereich { border: 1px solid var(--line); border-radius: 10px; margin: 8px 0; padding: 0 12px; }
   .pf-bereich > summary { flex-wrap: wrap; gap: 2px 10px; padding: 8px 0; }
@@ -165,6 +167,7 @@
         <div><label for="pf-vnr">Versichertennummer</label><input type="text" id="pf-vnr"></div>
         <div><label for="pf-datum" id="pf-datum-label">Datum des Bescheids</label><input type="date" id="pf-datum"></div>
       </div>
+      <div id="pf-vorbei"></div>
       <div class="btns"><button type="button" class="btn primary" id="pf-wid-mach">Schreiben erstellen</button></div>
       <p class="small" id="pf-frist" role="status"></p>
       <label for="pf-wid-text" class="vh">Text des Schreibens</label>
