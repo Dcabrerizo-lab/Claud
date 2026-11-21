@@ -58,6 +58,8 @@ for (const [ad, k, b, miete, txt] of kz) {
   add(KZ, txt, ad + ' Erwachsene, ' + k + ' Kinder (6 bis 13 Jahre); Lohn brutto ' + b + ' €, netto ' + e.netto + ' €; Warmmiete ' + miete + ' €; kein Unterhalt, kein Vermögen', ev(e).kiz);
 }
 // ---------- Elterngeld (Elterngeldrechner des Bundesfamilienministeriums) ----------
+// Achtung beim Vergleich: SoLo zieht nach § 2c Abs. 1 BEEG 102,50 € ab (1.230 € / 12), der Schnellrechner 83,33 €. SoLo liegt deshalb bis etwa 13 € darunter
+// (mit Geschwisterbonus bis etwa 14 €); bei Mindest- und Höchstbetrag gleich. Entscheidung David, 21.11.2026.
 const EG = 'Elterngeldrechner (Bundesfamilienministerium)';
 for (const vor of [0, 500, 900, 1100, 1300, 1800, 2600, 3200]) {
   const x = ev({ baby: 'da', egVor: vor }).elterngeld;

@@ -60,9 +60,10 @@ ok('[mb2-wohngeld] VG Bayreuth: zu berücksichtigende Miete 438,00 €', nah(R.w
 {
   const eg = (v, extra) => karte(Object.assign({ adults: 1, baby: 'bald', egVor: v, art1: 'lohn', brutto: 2000, netto: 1500, kids: 0 }, extra || {}), 'elterngeld');
   const b = (k) => par(k, 'eg.ja').basis.eur;
-  ok('[mb2-eg] EG-Br 1.4.2: 783,33 € -> 574 €', nah(b(eg(783.33)), 574, 0.5));
-  ok('[mb2-eg] EG-Br 2.2: 2.583,33 € -> 1.625 €', nah(b(eg(2583.33)), 1625, 0.5));
-  ok('[mb2-eg] EG-Br 1.4.4: zwei Geschwister unter 6 -> 1.430 €', nah(b(eg(2083.33, { kids: 2, kidsU6: 2 })), 1430, 0.5));
+  // Die Broschüre nennt das Elterngeld-Netto (700 / 2.500 / 2.000 €). Eingabe in SoLo plus 102,50 € (§ 2c Abs. 1 BEEG: 1.230 € / 12)
+  ok('[mb2-eg] EG-Br 1.4.2: 802,50 € -> 574 €', nah(b(eg(802.5)), 574, 0.5));
+  ok('[mb2-eg] EG-Br 2.2: 2.602,50 € -> 1.625 €', nah(b(eg(2602.5)), 1625, 0.5));
+  ok('[mb2-eg] EG-Br 1.4.4: zwei Geschwister unter 6 -> 1.430 €', nah(b(eg(2102.5, { kids: 2, kidsU6: 2 })), 1430, 0.5));
 }
 
 // ---------------------------------------------------------------- Mutterschaftsgeld (Familienportal)
