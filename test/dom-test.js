@@ -393,6 +393,11 @@ setTimeout(() => {
   d.querySelector('#v-sparen [data-nav-zurueck]').click();
   check('Geld und Schulden „← Zurück“ führt zur Startseite', sicht() === 'start');
   check('Startseite: eine Kachel „Geld und Schulden“, keine eigenen Kacheln für Sparen und Pfändung', !!d.getElementById('goGeld') && !d.getElementById('goSparen') && !d.getElementById('goPfaendung') && d.getElementById('goGeld').classList.contains('sk'));
+  { // Reihenfolge der Startkacheln im DOM (= Tastatur- und Vorlese-Reihenfolge), Wunsch David 21.11.2026: Pflege direkt unter „Welche Hilfen stehen mir zu?“
+    const ids = [...d.querySelectorAll('.start-raster > .sk')].map((e) => e.id).join(',');
+    check('Startseite: Kachel-Reihenfolge Leistungen, Pflege, Briefe, Geld, Ausziehen (DOM)', ids === 'goLeistungen,goPflege,goBriefe,goGeld,goAusziehen', ids);
+    check('Startseite: Pflege-Kachel behält ihre Farbe (sk-pflege)', d.getElementById('goPflege').classList.contains('sk-pflege'));
+  }
   d.getElementById('goPflege').click();
   if (sicht() === 'pflege') {
     check('Start → Pflege: Leiste markiert Start', navAkt() === 'start');

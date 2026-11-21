@@ -18,6 +18,7 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 - **Brief-Seiten aufgeräumt**: kein großer weißer Rahmen mehr um den Inhalt; „Anderer Brief“ ohne doppelte Überschrift. Beim Jobcenter passt die Überschrift zur Briefart (Einladung, Anhörung, Unterlagen); Bescheid-Erklärungen nur beim Bescheid.
 - **Pflege – Unterstützung nach Pflegegrad**: Einleitung in einem Satz (Rest zum Aufklappen), grüner Knopf „Pflegegrad selbst einschätzen“, Tipp „Kostenlose Hilfe: Pflegekasse oder Pflegestützpunkt“.
 - Aufklapper überall im gleichen Stil ohne Sonderrahmen (Wörter im Bescheid, Eigene Frist, Weitere Punkte, So rechnet der Check); Versicherungs-Stufen ohne Farbbalken; „Über die App“: Stand in einer Zeile.
+- **Startseite**: Die Kachel „Pflege“ steht jetzt direkt unter „Welche Hilfen stehen mir zu?“ (auch in der Tastatur- und Vorlese-Reihenfolge). Farbe unverändert, die anderen Kacheln behalten ihre Reihenfolge.
 - **Hilfen-Check übersichtlicher**: grüner Knopf „Briefe für die Anträge machen“ direkt unter den Ergebnis-Karten; Name und Anschrift fragt erst die Antragsmappe (großer Kasten „Ausfüllhilfe“ entfällt). „Zwei Wege“, „Gut zu wissen“ und „Unsicher? Beratungsstelle“ als kurze Tipps zum Aufklappen. Ohne Angaben kein Kasten „So geht's“; „Kurzer Check für Menschen mit Behinderung“ als Wahl oben. Startseite: Datenschutz-Satz als kleine Zeile.
 
 ## 1.8.0 (ab Versionsnummer 150, November 2026)
