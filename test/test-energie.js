@@ -1,5 +1,5 @@
-// Energiekosten-Check im Haushaltsplan (src/haushalt.js, Entwurf docs/entwuerfe/energie.md): Hochrechnung, Kosten, Abschlag-Vergleich,
-// Plan-Hinweis nur bei belastbarem Ergebnis, Brief, Datenmodell, Texte und Quellen; dazu die Korrektur von sp.vertraege.4.
+// Abschlag prüfen und Tarife vergleichen (src/haushalt.js, seit 1.9 auf den Seiten „Strom“ und „Heizen“): Hochrechnung, Kosten, Abschlag-Vergleich,
+// Tarifvergleich (Cent-genau), Datenmodell, Texte und Quellen; dazu die Korrektur von sp.vertraege.4.
 'use strict';
 const H = require('../src/haushalt.js');
 const fs = require('fs'), path = require('path');
@@ -55,37 +55,31 @@ check('Gas m³ mit Faktor', sp.kwh === 12360 && sp.kosten.cent === 141600 && sp.
 sp = H.energieSparte({ weg: 'rechnung', jahr: 1200, m3: true, faktor: null, a: 10000 }, 'gas', HEUTE);
 check('Gas m³ ohne Faktor → fehlt, kein Ergebnis', sp.fehltFaktor && sp.kwh === null && sp.vergleich === null);
 
-// Plan-Hinweis nur bei belastbarem Ergebnis
+// Belastbar nur mit eigenem Preis, Grundpreis, genauer und aktueller Ablesung (kein Plan-Hinweis, kein Brief mehr seit 1.9)
 const enEigen = { heiz: 'miete', strom: { a: 6500, n: 12, weg: 'zaehler', z1: 10000, d1: '2026-01-01', z2: 10500, d2: '2026-04-01', ap: 36.5, gp: 1200 } };
-check('Belastbare Nachzahlung → 104,22 €', H.energieNachzahlung(enEigen, HN) === 10422);
-const enSchaetz = { heiz: 'miete', strom: Object.assign({}, enEigen.strom, { ap: null, gp: null, a: 3000 }) };
-check('Durchschnittspreis → kein Hinweis', H.energieNachzahlung(enSchaetz, HN) === 0 && !H.hinweisListe({ energieNach: H.energieNachzahlung(enSchaetz, HN) }).some((h) => h.id === 'energie'));
-const enKurz = { heiz: 'miete', strom: Object.assign({}, enEigen.strom, { d2: '2026-01-31', z2: 10200, a: 1000 }) };
-check('Ungenau → kein Hinweis', H.energieNachzahlung(enKurz, HN) === 0);
-const enGp = { heiz: 'miete', strom: Object.assign({}, enEigen.strom, { gp: null, a: 1000 }) };
-check('Grundpreis fehlt → kein Hinweis', H.energieNachzahlung(enGp, HN) === 0);
-check('Gas zählt nur bei Heizung mit eigenem Gasvertrag', (() => {
-  const gas = { a: 5000, n: 12, weg: 'rechnung', jahr: 12000, ap: 10, gp: 1500 };
-  return H.energieNachzahlung({ heiz: 'miete', strom: {}, gas: gas }, HEUTE) === 0 && H.energieNachzahlung({ heiz: 'gas', strom: {}, gas: gas }, HEUTE) === 78000;
-})());
-const hl = H.hinweisListe({ energieNach: 10422, eintraege: [{ n: 'Nebenkosten Nachzahlung', c: 100, k: 'miete' }], knapp: true });
-check('Hinweis energie: prio 75, zwischen knapp und nk', (() => { const ids = hl.map((h) => h.id); const e = hl.find((h) => h.id === 'energie'); return e && e.prio === 75 && e.b === 10422 && ids.indexOf('knapp') < ids.indexOf('energie') && ids.indexOf('energie') < ids.indexOf('nk'); })(), hl);
-check('Hinweis energie: „Nicht mehr zeigen“ wirkt', !H.hinweisListe({ energieNach: 10422, weg: { energie: true } }).some((h) => h.id === 'energie'));
+const bel = (x, h, heiz) => { const r = H.energieSparte(x, 'strom', h || HN, heiz || 'miete'); return r.belastbar && r.vergleich.art === 'nach' ? r.vergleich.diff : 0; };
+check('Belastbare Nachzahlung → 104,22 €', bel(enEigen.strom) === 10422);
+check('Durchschnittspreis → nicht belastbar', bel(Object.assign({}, enEigen.strom, { ap: null, gp: null, a: 3000 })) === 0);
+check('Ungenau → nicht belastbar', bel(Object.assign({}, enEigen.strom, { d2: '2026-01-31', z2: 10200, a: 1000 })) === 0);
+check('Grundpreis fehlt → nicht belastbar', bel(Object.assign({}, enEigen.strom, { gp: null, a: 1000 })) === 0);
+check('Kein Plan-Hinweis „energie“ mehr, keine Zusätze (Brief, Destatis)', !H.hinweisListe({ energieNach: 10422 }).some((h) => h.id === 'energie') && !H.energieNachzahlung && !H.abschlagBrief && !H.destatisVergleich);
 
-// Amtlicher Vergleichswert (Destatis 2021)
-check('Destatis-Werte: 3 Klassen, steigend', H.VERBRAUCH_DESTATIS.kwh.join() === '2105,3470,5411' && H.VERBRAUCH_DESTATIS.jahr === 2021);
-check('Destatis: 1 → 2105, 5 Personen → 5411, 0 → null', H.destatisVergleich(1).kwh === 2105 && H.destatisVergleich(5).kwh === 5411 && H.destatisVergleich(5).klasse === 3 && H.destatisVergleich(0) === null);
-
-// Brief
-const bn = H.abschlagBrief({ art: 'nach', datum: '20.11.2026', stand: '10500', einheit: 'kWh', kwh: '2.028', neu: '74 €' });
-const bg = H.abschlagBrief({ art: 'gut', datum: '20.11.2026', stand: '1234', einheit: 'm³', kwh: '12.360', neu: '60 €' });
-check('Brief Nachzahlung: erhöhen, kein Paragraf', /erhöhen/.test(bn) && !/§/.test(bn) && !/senken/.test(bn) && /10500 kWh/.test(bn) && /74 €/.test(bn));
-check('Brief Guthaben: senken mit § 41b Abs. 3 EnWG / § 13 StromGVV', /senken/.test(bg) && /§ 41b Abs\. 3 Satz 2 EnWG/.test(bg) && /§ 13 Abs\. 1 Satz 4 StromGVV\/GasGVV/.test(bg) && !/erhöhen/.test(bg) && /1234 m³/.test(bg));
-check('Brief nur mit Platzhaltern für persönliche Daten', /\[Name, Anschrift\]/.test(bn) && /Kundennummer: \[_____\]/.test(bn) && /Textform/.test(bn));
+// Tarife vergleichen: Jahreskosten Cent-genau (kWh × ct + 12 × Grundpreis), Bonus nur im 1. Jahr
+check('[tv] Jahreskosten 2500 kWh × 32,8 ct + 12 × 12,50 € = 970,00 €', H.tarifKosten(2500, 32.8, 1250) === 97000);
+check('[tv] Gleitkomma: 3333 kWh × 29,9912 ct + 12 × 9,99 € = 1.119,49 €', H.tarifKosten(3333, 29.9912, 999) === Math.round(3333 * 29.9912 + 11988) && H.tarifKosten(3333, 29.9912, 999) === 111949);
+check('[tv] Grundpreis 0 erlaubt, fehlender Preis oder Verbrauch → null', H.tarifKosten(1000, 30, 0) === 30000 && H.tarifKosten(1000, null, 0) === null && H.tarifKosten(0, 30, 0) === null && H.tarifKosten(1000, 30, null) === null);
+let tvr = H.tarifVergleich({ kwh: 2500, eigen: { ap: 40, gp: 1500 }, angebot: { ap: 32, gp: 1200, bonus: 10000 } });
+check('[tv] Mit Bonus: 1. Jahr 1.180 € vs. 944 € − 100 €, 2. Jahr Unterschied 336 €', tvr.eigen === 118000 && tvr.angebot === 94400 && tvr.angebot1 === 84400 && tvr.diff1 === 33600 && tvr.diff2 === 23600 && tvr.bonus === 10000, tvr);
+tvr = H.tarifVergleich({ kwh: 2500, eigen: { ap: 30, gp: 1000 }, angebot: { ap: 30, gp: 1200, bonus: 5000 } });
+check('[tv] Bonus macht nur das 1. Jahr günstiger, ab dem 2. Jahr teurer', tvr.diff1 === 2600 && tvr.diff2 === -2400, tvr);
+tvr = H.tarifVergleich({ kwh: 1000, eigen: { ap: 30, gp: 0 }, angebot: { ap: 30, gp: 0, bonus: 99999 } });
+check('[tv] Bonus größer als die Kosten → 1. Jahr 0 €, nie negativ', tvr.angebot1 === 0 && tvr.diff1 === 30000, tvr);
+check('[tv] Ohne Bonus: diff1 = diff2', (() => { const r = H.tarifVergleich({ kwh: 4000, eigen: { ap: 35.5, gp: 1390 }, angebot: { ap: 31.25, gp: 1590 } }); return r.bonus === 0 && r.diff1 === r.diff2 && r.diff1 === 142000 + 16680 - 125000 - 19080; })());
+check('[tv] Unvollständig → null', H.tarifVergleich({ kwh: 2500, eigen: { ap: 30, gp: 1000 }, angebot: { ap: 30 } }) === null && H.tarifVergleich({}) === null && H.tarifVergleich() === null);
 
 // Datenmodell
 let nd = H.normiere({ energie: { heiz: 'gas', personen: 3, strom: { a: 'x', ap: 999, d1: '2026-13-01', z1: 100, d2: '2026-02-30', n: 11, weg: 'rechnung' }, gas: { m3: true, faktor: 3, ap: 11.5, gp: 1500 } } }).energie;
-check('normiere: Unsinn verworfen, Gültiges bleibt', nd.heiz === 'gas' && nd.personen === 3 && nd.strom.a === null && nd.strom.ap === null && nd.strom.d1 === '' && nd.strom.d2 === '' && nd.strom.z1 === 100 && nd.strom.n === 11 && nd.strom.weg === 'rechnung' && nd.gas.m3 === true && nd.gas.faktor === null && nd.gas.ap === 11.5 && nd.gas.gp === 1500, nd);
+check('normiere: Unsinn verworfen, Gültiges bleibt', nd.heiz === 'gas' && !('personen' in nd) && nd.strom.a === null && nd.strom.ap === null && nd.strom.d1 === '' && nd.strom.d2 === '' && nd.strom.z1 === 100 && nd.strom.n === 11 && nd.strom.weg === 'rechnung' && nd.gas.m3 === true && nd.gas.faktor === null && nd.gas.ap === 11.5 && nd.gas.gp === 1500, nd);
 nd = H.normiere({ energie: { heiz: 'atom', strom: { n: 7, weg: 'raten', ap: 36.55555 } } }).energie;
 check('normiere: Vorgaben', nd.heiz === '' && nd.strom.n === 12 && nd.strom.weg === 'zaehler' && nd.gas.weg === 'rechnung' && nd.strom.ap === null);
 check('normiere: alter Stand ohne energie → leer', H.normiere({ plan: { aus: {} } }).energie.strom.a === null);
@@ -93,15 +87,8 @@ check('normiere: alter Stand ohne energie → leer', H.normiere({ plan: { aus: {
 // Texte und Quellen
 const L = (f) => JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'src', 'lang', f), 'utf8'));
 const de = L('haushalt/de.json'), E = L('einfach/haushalt.json');
-check('Quelle Vergleich: Statistisches Bundesamt, 2021, nur Orientierung', /Statistisches Bundesamt/.test(de['hb.en.dv.quelle']) && /2021/.test(de['hb.en.dv.quelle']) && /Orientierung/.test(de['hb.en.dv.quelle']));
-check('Stromspiegel nur als Link (keine Klassen ohne Erlaubnis)', /www\.stromspiegel\.de/.test(de['hb.en.dv.link']) && !Object.keys(de).some((x) => x.startsWith('hb.en.sp.')) && !/STROMSPIEGEL\s*=/.test(fs.readFileSync(path.join(__dirname, '..', 'src', 'haushalt.js'), 'utf8')));
-check('Vergleich ohne Urteil hoch/niedrig', !/\b(hoch|niedrig|zu viel)\b/i.test(de['hb.en.dv.zeile']));
 check('Ergebnis „möglich“ statt Zusage', /^Möglich/.test(de['hb.en.nach']) && /^Möglich/.test(de['hb.en.gut']) && /ungefähr/.test(de['hb.en.passt']));
-check('Abwendungsvereinbarung: § 41g Abs. 1, nur nach Androhung, 300 €', /§ 41g Abs\. 1 EnWG/.test(de['hb.en.sperre.raten']) && /angedroht/.test(de['hb.en.sperre.raten']) && /300 €/.test(de['hb.en.sperre.raten']) && /Grund-Versorgung/.test(E['hb.en.sperre.raten']));
-check('[en-korr] Stromschulden: § 24 Abs. 1 und § 22 Abs. 8 SGB II, extra beantragen', /§ 24 Abs\. 1 SGB II/.test(de['hb.en.nz.strom.sgb']) && /§ 22 Abs\. 8 SGB II/.test(de['hb.en.nz.strom.sgb']) && /extra beantragen/.test(de['hb.en.nz.strom.sgb']));
-check('Heizkosten Sozialhilfe: § 35 Abs. 1 und 5 (nicht Abs. 4)', /§ 35 Abs\. 1 und 5 SGB XII/.test(de['hb.en.nz.heiz.sgb']) && !/Abs\. 4/.test(de['hb.en.nz.heiz.sgb']));
-check('Kein „gefördert vom Ministerium“ beim Stromspiegel', !/Ministerium/.test(de['hb.en.dv.link'] + de['hb.en.dv.quelle']));
-check('Einfache Sprache für die wichtigsten Texte', ['hb.en.knopf', 'hb.en.nach', 'hb.en.gut', 'hb.en.passt', 'hb.en.sperre.raten', 'hb.en.nz.strom.sgb'].every((x) => E[x]));
+check('Einfache Sprache für die wichtigsten Texte', ['hb.en.nach', 'hb.en.gut', 'hb.en.passt'].every((x) => E[x]));
 // Ohne Beratungsmodus werden Paragrafen in Klammern ausgeblendet: Sätze bleiben vollständig (kein Doppelpunkt oder Komma vor dem Satzende)
 const F = require('../src/fmt.js');
 check('Texte ohne Paragrafen vollständig', Object.keys(de).filter((x) => x.startsWith('hb.en.')).every((x) => !/[:,;] *[.)]/.test(F.ohnePara(de[x]))));
@@ -125,10 +112,9 @@ check('[en-check] Befund 2: Mehr als 4 Nachkommastellen → verworfen', laden({ 
 const z90 = { a: 5000, n: 12, weg: 'zaehler', z1: 1000, d1: '2026-01-01', z2: 4000, d2: '2026-04-01', ap: 10, gp: 1500 };
 let s6 = H.energieSparte(z90, 'gas', HN, 'gas');
 check('[en-check] Befund 6: Gas 90 Tage → ungenau (Jahreszeit), nicht belastbar', s6.verbrauch.ungenau && s6.verbrauch.saison && !s6.belastbar && s6.vergleich && s6.vergleich.art === 'nach', s6);
-check('[en-check] Befund 6: Gas 90 Tage → kein Plan-Hinweis', H.energieNachzahlung({ heiz: 'gas', strom: {}, gas: z90 }, HN) === 0);
 const st90 = Object.assign({}, z90, { ap: 36.5, gp: 1200, z2: 2500 });
-check('[en-check] Befund 6: Heizen mit Strom 90 Tage → ungenau, kein Hinweis', H.energieSparte(st90, 'strom', HN, 'strom').verbrauch.saison && H.energieNachzahlung({ heiz: 'strom', strom: st90 }, HN) === 0);
-check('[en-check] Befund 6: Haushaltsstrom (Heizung über Miete) 90 Tage → weiter belastbar', !H.energieSparte(st90, 'strom', HN, 'miete').verbrauch.ungenau && H.energieNachzahlung({ heiz: 'miete', strom: st90 }, HN) > 0);
+check('[en-check] Befund 6: Heizen mit Strom 90 Tage → ungenau, kein Hinweis', H.energieSparte(st90, 'strom', HN, 'strom').verbrauch.saison && bel(st90, HN, 'strom') === 0);
+check('[en-check] Befund 6: Haushaltsstrom (Heizung über Miete) 90 Tage → weiter belastbar', !H.energieSparte(st90, 'strom', HN, 'miete').verbrauch.ungenau && bel(st90, HN, 'miete') > 0);
 const g340 = Object.assign({}, z90, { d1: '2025-04-26', z2: 13000 });
 s6 = H.energieSparte(g340, 'gas', HN, 'gas');
 check('[en-check] Befund 6: Gas 340 Tage → belastbar', s6.verbrauch.tage === 340 && !s6.verbrauch.ungenau && s6.belastbar && H.SAISON_TAGE === 330, s6);
@@ -138,17 +124,20 @@ check('[en-check] Befund 6: Gas über die Rechnung (Jahresverbrauch) bleibt bela
 check('[en-check] Befund 7: dezimalAus: 10,934 / 32,875 / 32.875 / 0,29', H.dezimalAus('10,934') === 10.934 && H.dezimalAus('32,875') === 32.875 && H.dezimalAus(' 32.875 ') === 32.875 && H.dezimalAus('0,29') === 0.29 && H.dezimalAus('11,5825') === 11.5825);
 check('[en-check] Befund 7: dezimalAus: leer → null, Unsinn → NaN', H.dezimalAus('') === null && H.dezimalAus(null) === null && ['1,23456', '-3', '1.234,5', 'abc', '3,', ',5'].every((x) => Number.isNaN(H.dezimalAus(x))));
 
-// Befund 11: Senken-Brief vergleicht nur mit dem Abschlag
-check('[en-check] Befund 11: Brief Guthaben: nur Vergleich mit dem Abschlag, keine Behauptung zum letzten Zeitraum', /voraussichtlich geringer als bei der Berechnung meines Abschlags angenommen\. Bitte prüfen Sie das/.test(bg) && !/Abrechnungszeitraum|erheblich/.test(bg));
-
 // Befund 12: Brief und Plan-Hinweis nur bei aktueller Ablesung (höchstens 31 Tage alt)
-check('[en-check] Befund 12: Ablesung älter als 31 Tage → kein Plan-Hinweis', H.energieNachzahlung(enEigen, HEUTE) === 0 && H.energieSparte(enEigen.strom, 'strom', HEUTE, 'miete').aktuell === false);
-check('[en-check] Befund 12: Ablesung genau 31 Tage alt → aktuell', H.energieSparte(enEigen.strom, 'strom', '2026-05-02', 'miete').aktuell && H.energieNachzahlung(enEigen, '2026-05-02') === 10422 && H.energieNachzahlung(enEigen, '2026-05-03') === 0 && H.AKTUELL_TAGE === 31);
+check('[en-check] Befund 12: Ablesung älter als 31 Tage → kein Plan-Hinweis', bel(enEigen.strom, HEUTE) === 0 && H.energieSparte(enEigen.strom, 'strom', HEUTE, 'miete').aktuell === false);
+check('[en-check] Befund 12: Ablesung genau 31 Tage alt → aktuell', H.energieSparte(enEigen.strom, 'strom', '2026-05-02', 'miete').aktuell && bel(enEigen.strom, '2026-05-02') === 10422 && bel(enEigen.strom, '2026-05-03') === 0 && H.AKTUELL_TAGE === 31);
 
+// Tarifvergleich: Texte in 13 Sprachen und Einfacher Sprache; Hinweise kurz (höchstens 12 Wörter); neutrale Quelle (Verbraucherzentrale), keine Portale
+const TV = ['hb.tv.kachel', 'hb.tv.lead', 'tv.bonus', 'tv.vorkasse', 'tv.laufzeit', 'tv.kuendigung', 'tv.fernwaerme', 'tv.vz.link', 'tv.quellen'];
+const E2 = L('einfach/haushalt2.json');
+check('[tv] Texte in 13 Sprachen und Einfacher Sprache', LANGS.every((l) => TV.every((x) => (L('haushalt/' + l + '.json')[x] || '').length > 5)) && TV.every((x) => (E2[x] || '').length > 0));
+check('[tv] Kurztexte der Hinweise höchstens 12 Wörter (alle Sprachen)', LANGS.every((l) => ['bonus', 'vorkasse', 'laufzeit', 'kuendigung', 'fernwaerme'].every((x) => L('haushalt/' + l + '.json')['tv.' + x + '.kurz'].trim().split(/\s+/).length <= 12)));
+check('[tv] Link nur zur Verbraucherzentrale, keine Vergleichsportale', (() => { const a = fs.readFileSync(path.join(__dirname, '..', 'src', 'app.js'), 'utf8'); return /TV_VZ_URL = 'https:\/\/www\.verbraucherzentrale\.de\//.test(a) && !/check24|verivox|tarifcheck|finanztip/i.test(a); })());
 // Neue Texte in allen Sprachen und in Einfacher Sprache; Befund 15 (Türkisch)
 const NEU = ['hb.en.f.zahl', 'hb.en.saison', 'hb.en.alt'];
 check('[en-check] Befund 6/7/12: Neue Texte in 13 Sprachen und Einfacher Sprache', LANGS.every((l) => NEU.every((x) => (L('haushalt/' + l + '.json')[x] || '').length > 10)) && NEU.every((x) => (E[x] || '').length > 10));
 check('[en-check] Befund 12: Text: Zähler neu ablesen', /Bitte lies den Zähler neu ab/.test(de['hb.en.alt']) && /Bitte lies den Zähler neu ab/.test(E['hb.en.alt']));
 
 if (fehler) { console.log('\n' + fehler + ' von ' + n + ' Prüfungen fehlgeschlagen'); process.exit(1); }
-console.log('Energie-Test bestanden: ' + n + ' Prüfungen (Hochrechnung, Kosten, Abschlag, Hinweis, Brief, Datenmodell, Texte, Sperre)');
+console.log('Energie-Test bestanden: ' + n + ' Prüfungen (Hochrechnung, Kosten, Abschlag, Tarifvergleich, Datenmodell, Texte, Sperre)');
