@@ -79,17 +79,17 @@ ok('[mb2-wohngeld] VG Bayreuth: zu berücksichtigende Miete 438,00 €', nah(R.w
   ok('[mb2-bafoeg] Olga: 2.689,39 € -> möglich', el(2689.39).level === 'vielleicht');
   // Befund 10: § 25 Abs. 4 BAföG. 1.500 € über dem Freibetrag -> Anrechnung 750 €, 105 € bleiben -> nicht „eher nicht“
   ok('[mb2-bafoeg] Befund 10: 1.500 € über dem Freibetrag -> möglich', el(2540 + 1500).level === 'vielleicht', el(2540 + 1500).tx);
-  // Grenze: 50 % von (Netto − 2.540) > 1.088 € -> „eher nicht“ erst über 4.716 €
-  ok('[mb2-bafoeg] Befund 10: Grenze 4.716 € (Paar, 1 Kind)', el(4716).level === 'vielleicht' && el(4717).level === 'nein', [el(4716).level, el(4717).level]);
-  // Mit einem weiteren Kind: Freibetrag 3.310 €, frei 55 %: 1.088 / 0,45 = 2.417,78 € -> Grenze 5.727,78 €
-  ok('[mb2-bafoeg] Befund 10: 5 % mehr frei je Kind mit Freibetrag (Grenze 5.727 €)', el(5727, { kids: 1 }).level === 'vielleicht' && el(5729, { kids: 1 }).level === 'nein', [el(5727, { kids: 1 }).level, el(5729, { kids: 1 }).level]);
+  // Grenze: 50 % von (Netto − 2.540) > 1.078,50 € (1.088 € minus Mindestbetrag 10 € mit Rundung, § 51 Abs. 3, 4) -> „eher nicht“ erst über 4.697 €
+  ok('[mb2-bafoeg] Befund 10: Grenze 4.697 € (Paar, 1 Kind; 1.088 € − 9,50 €, § 51 Abs. 3, 4)', el(4697).level === 'vielleicht' && el(4698).level === 'nein', [el(4697).level, el(4698).level]);
+  // Mit einem weiteren Kind: Freibetrag 3.310 €, frei 55 %: 1.078,50 / 0,45 = 2.396,67 € -> Grenze 5.706,67 €
+  ok('[mb2-bafoeg] Befund 10: 5 % mehr frei je Kind mit Freibetrag (Grenze 5.706 €)', el(5706, { kids: 1 }).level === 'vielleicht' && el(5707, { kids: 1 }).level === 'nein', [el(5706, { kids: 1 }).level, el(5707, { kids: 1 }).level]);
   // Befund 11: § 30 BAföG. Stefan: 14.500 € + Pkw 2.500 € -> 2.000 € über dem Freibetrag, 166,67 € im Monat weniger
   const st = karte({ adults: 1, kids: 0, ausbildung: 'ich', einkommen: [], wohnform: 'eltern', gebJahr: 2007, vermoegen: 14500, autoWert: 2500 }, 'bafoeg');
   const vt = par(st, 'bafoeg.vermTeil');
   ok('[mb2-bafoeg] Befund 11: Stefan 17.000 € -> möglich, etwa 167 € im Monat weniger', st.level === 'vielleicht' && vt && vt.verm.eur === 15000 && vt.monat.eur === 167, st.tx);
   const v = (verm, geb) => karte({ adults: 1, kids: 0, ausbildung: 'ich', einkommen: [], wohnform: 'eltern', gebJahr: geb || 2007, vermoegen: verm }, 'bafoeg');
   ok('[mb2-bafoeg] Befund 11: unter dem Freibetrag kein Hinweis', !par(v(15000), 'bafoeg.vermTeil') && v(15000).level === 'vielleicht');
-  ok('[mb2-bafoeg] Befund 11: über 15.000 + 12 × 1.088 € -> eher nicht', v(28057).level === 'nein' && v(28057).hl === 'vermHoch' && v(28056).level === 'vielleicht');
+  ok('[mb2-bafoeg] Befund 11: über 15.000 + 12 × (1.088 − 9,50) € -> eher nicht (§ 51 Abs. 4)', v(27943).level === 'nein' && v(27943).hl === 'vermHoch' && v(27942).level === 'vielleicht');
   ok('[mb2-bafoeg] Befund 11: ab 30 Freibetrag 45.000 € (§ 29 Abs. 1 Nr. 1)', par(v(50000, 1990), 'bafoeg.vermTeil').verm.eur === 45000 && v(58057, 1990).level === 'nein');
   ok('[mb2-bafoeg] Text vermTeil in allen Sprachen', Object.keys(I18N).every((l) => typeof I18N[l]['t.bafoeg.vermTeil'] === 'string' && I18N[l]['t.bafoeg.vermTeil'].includes('12')));
 }

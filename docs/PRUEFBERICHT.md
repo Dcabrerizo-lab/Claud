@@ -186,8 +186,8 @@ Unabhängige Prüfung von PR #99 (Abgleich 2, Befunde 10 bis 15 und H3). Alle Pa
 Geänderte Testerwartungen geprüft: Alle Änderungen folgen den Korrekturen (keine Erwartung nur „passend gemacht“). Keine Werte ab 1.1.2027 vorgezogen. Keine Änderung an Speicherung, Farben oder Startkacheln.
 
 Offen (bewusst nicht geändert):
-- BAföG: Beträge unter 10 € im Monat werden nicht gezahlt (§ 51 Abs. 4 BAföG). Die Grenze für „eher nicht“ liegt deshalb um bis zu 10 € zu hoch (Seite „möglich“, keine falsche Zusage).
-- BAföG Vermögen: 2.300 € Freibetrag je Ehegatte und Kind (§ 29 Abs. 1 Nr. 2 und 3) rechnet die App nicht mit (vorsichtige Seite, „eher nicht“ etwas zu früh bei Studierenden mit Familie).
+- ~~BAföG: Beträge unter 10 € im Monat werden nicht gezahlt (§ 51 Abs. 4 BAföG).~~ Erledigt 21.11.2026 (Branch claude/b-rest-19): Grenze jetzt Bedarf − 9,50 € (§ 51 Abs. 3 Rundung, Abs. 4).
+- ~~BAföG Vermögen: 2.300 € Freibetrag je Ehegatte und Kind (§ 29 Abs. 1 Nr. 2 und 3) fehlte.~~ Erledigt 21.11.2026 (Branch claude/b-rest-19), dazu Kinderbetreuungszuschlag 160 € je Kind beim Bedarf (§ 14b); Ehe und eigene Kinder werden nicht abgefragt -> vorsichtig mitgerechnet.
 - Arbeitslosengeld und Krankengeld: Die obere Grenze mit Steuerklasse III gilt auch für Alleinstehende, die diese Klasse fast nie haben. Die Spanne ist dort oben zu weit; die Mitte liegt aber näher am echten Wert als vorher.
 - Landespflegegeld: Die Antragsfrist steht jetzt klar im Gesetz (3 Monate nach Ende des Pflegegeldjahres, Art. 3 Abs. 1 Satz 1). Der Text sagt weiter „es gibt eine Frist; welche, sagt dir das Landesamt“. Kann man in einem eigenen Auftrag konkret nennen.
 - Die Broschüre der Rentenversicherung (S. 18) war am 21.11.2026 nicht im Volltext abrufbar (nur Stand 01.05.2026, 20. Auflage bestätigt).
@@ -232,3 +232,22 @@ Offen (nicht in diesem PR gelöst):
 - Grundsicherungsgeld ohne Altersangabe: Die App rechnet mit 10.000 € je Erwachsenem und sagt darüber „eher nicht“. Bei Personen ab 40 liegt die Grenze höher. Das war schon vor diesem PR so.
 - Hinweis „danach gibt es ihn voll“ (Kinderzuschlag, Vermögen knapp): gemeint ist „ohne Kürzung wegen Vermögen“, nicht der Höchstbetrag.
 - Wenn das Wohngeld-Gesetz für 2027 verkündet ist: Formel, Heizkostenkomponente und die Grenze bei 10 € neu prüfen.
+
+## Prüfvermerk (21.11.2026)
+
+Unabhängige Prüfung von PR #104 (Branch claude/b-rest-19, nur eigener Anteil gegenüber claude/b-buendel-1): BAföG in `src/rules.js`, gemeinsames Krypto-Modul `src/krypto.js`, Cache-Aufräumen in `src/klient.js`. Alle Paragraphen am 21.11.2026 selbst bei gesetze-im-internet.de abgerufen (BAföG, zuletzt geändert durch Art. 11 Abs. 1 G v. 16.4.2026, BGBl. 2026 I Nr. 107).
+
+| Befund | Schwere | Korrektur | Quelle |
+|---|---|---|---|
+| Vermögen: 2.300 € frei für Ehegatte oder Lebenspartner und für jedes Kind, zusätzlich zu 15.000 € (unter 30) oder 45.000 € | stimmt | keine | § 29 Abs. 1 Nr. 1 bis 3 BAföG, https://www.gesetze-im-internet.de/baf_g/__29.html |
+| Kinderbetreuungszuschlag 160 € im Monat je eigenem Kind unter 14 im Haushalt erhöht den Bedarf | stimmt | keine; App kennt Alter und Elternschaft nicht und rechnet für jedes Kind (Seite „möglich“) | § 14b Abs. 1 BAföG, https://www.gesetze-im-internet.de/baf_g/__14b.html |
+| Keine Zahlung unter 10 € im Monat; Rundung ab 0,50 € nach oben. „Eher nicht“ erst bei Rest unter 9,50 € | stimmt | keine; von Hand nachgerechnet: 1.088 − 9,50 = 1.078,50 €; Grenzen 4.697 € (Paar, 1 Kind), 5.706,67 € (2 Kinder), 27.942 € Vermögen | § 51 Abs. 3 und 4 BAföG, https://www.gesetze-im-internet.de/baf_g/__51.html; § 30 BAföG, https://www.gesetze-im-internet.de/baf_g/__30.html |
+| Geänderte Testgrenzen (test-strict, test-musterbescheide-2, test-unterhalt-selbst, test.js) | stimmt | keine; folgen der Korrektur, 4 neue Mutationen im Mutationstest | Nachrechnung |
+| Krypto-Modul: PBKDF2-SHA-256 mit 600.000 Durchläufen, Salz 16 Byte, IV 12 Byte, AES-GCM 256, AAD (Kopf) bei der Weitergabe, Schlüssel nicht exportierbar | ohne Befund | keine. Gegenprobe mit dem alten Code (claude/b-buendel-1): alt verschlüsselt, neu gelesen und umgekehrt, für App-PIN und SoLo-Kode. Fehlversuchszähler und Wartezeit unverändert (nach 5 Fehlversuchen 30 Sekunden, richtige PIN in der Wartezeit abgelehnt) | Durchsicht des Diffs, `test/test-krypto.js`, eigene Gegenprobe |
+| Reihenfolge im Build: `krypto.js` steht vor Weitergabe und Vorgängen | ohne Befund | keine | `scripts/build.js`, `src/template.html` |
+| Cache-Aufräumen: CSV-Dateien aus Haushaltsbuch, Belegen und Schulden-Liste (Geld-Daten) blieben nach einem Abbruch beim Teilen liegen | mittel | Muster ergänzt: nur genau `Haushaltsbuch-JJJJ-MM-TT.csv`, `Schulden-JJJJ-MM-TT.csv`, `Belege-JJJJ.csv`; 2 neue Prüfungen in `test/test-cache-reste.js` | `src/haushalt.js`, `src/schulden.js` |
+| Cache-Aufräumen löscht nur im App-eigenen Cache (oberste Ebene, keine Ordner, keine Pfade): dort schreibt nur die App, Nutzer legen dort nichts ab | ohne Befund | keine | `src/klient.js`, `src/app.js`, `PdfAusgabePlugin.java` |
+
+Offen (nicht in diesem PR gelöst):
+- Hinweis „Freibetrag von …“ (bafoeg.vermTeil): Bei Paaren und Kindern nennt die App den Freibetrag mit 2.300 € je Person als festen Wert. Er gilt nur bei Ehe oder Lebenspartnerschaft und für eigene Kinder. Ohne diese liegt der echte Freibetrag tiefer und die Kürzung höher. Das Ergebnis bleibt „möglich“. Ein Zusatz im Text (13 Sprachen, Einfache Sprache) wäre ein eigener Auftrag.
+- Fotos der Kamera (Brief prüfen) löscht die App direkt nach dem Lesen. Bleibt eines nach einem Abbruch liegen, räumt der Start es nicht auf (Name kommt vom Kamera-Plugin, nicht geprüft).

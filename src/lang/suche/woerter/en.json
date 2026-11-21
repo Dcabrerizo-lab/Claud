@@ -80,7 +80,11 @@
   "letter",
   "mail from authority",
   "official letter",
-  "notice"
+  "notice",
+  "objection",
+  "appeal",
+  "Widerspruch",
+  "wrong decision"
  ],
  "b-af": [
   "form",
@@ -157,5 +161,11 @@
   "application",
   "apply",
   "application folder"
+ ],
+ "b-jc": [
+  "repayment",
+  "overpayment",
+  "pay back Jobcenter",
+  "Rückforderung"
  ]
 }

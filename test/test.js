@@ -163,6 +163,15 @@ check('BAföG: Kind angegeben, aber kein Kind im Haushalt nein', lv(ev({ ausbild
 check('BAföG: selbst, Vermögen 20.000 bis 29: nur 5.000 € darüber zählen, möglich (§ 30 BAföG)', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 20000 }), 'bafoeg') === 'vielleicht');
 check('BAföG: selbst, Vermögen 30.000 bis 29: 15.000 € : 12 über dem Bedarf, nein', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 30000 }), 'bafoeg') === 'nein');
 check('BAföG: selbst, Vermögen im Rahmen vielleicht', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 5000 }), 'bafoeg') === 'vielleicht');
+// § 29 Abs. 1 Nr. 2, 3, § 14b, § 51 Abs. 3, 4 BAföG (gesetze-im-internet.de, Abruf 21.11.2026)
+check('BAföG § 51 Abs. 4: Kind, Anrechnung lässt unter 9,50 € übrig -> nein (1.690 + 2 × 1.078,60)', lv(ev({ kids: 1, netto: 3847.2, ausbildung: 'kind' }), 'bafoeg') === 'nein');
+check('BAföG § 51 Abs. 3: Kind, genau 9,50 € übrig -> gerundet 10 €, vielleicht', lv(ev({ kids: 1, netto: 3847, ausbildung: 'kind' }), 'bafoeg') === 'vielleicht');
+check('BAföG § 51 Abs. 4: selbst, Vermögen 27.950 bis 29: 1.079,17 € Anrechnung, Rest unter 9,50 € -> nein', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 27950 }), 'bafoeg') === 'nein');
+check('BAföG § 51 Abs. 3: selbst, Vermögen 27.940 -> Rest über 9,50 €, vielleicht', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 27940 }), 'bafoeg') === 'vielleicht');
+check('BAföG § 29 Abs. 1 Nr. 2, 3 und § 14b: Partner + 2 Kinder, 38.000 € -> Freibetrag 21.900 €, Bedarf bis 1.408 €, vielleicht', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', adults: 2, kids: 2, vermoegen: 38000 }), 'bafoeg') === 'vielleicht');
+check('BAföG § 29 Abs. 1 Nr. 2, 3: Partner + 2 Kinder, 38.700 € -> nein', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', adults: 2, kids: 2, vermoegen: 38700 }), 'bafoeg') === 'nein');
+check('BAföG § 29 Abs. 1 Nr. 3: allein + 1 Kind, 17.000 € -> nur 0 € über 17.300 €, ohne Teilanrechnung', !keys(ev({ ausbildung: 'ich', alterGruppe: '<30', kids: 1, vermoegen: 17000, netto: 500 }), 'bafoeg').includes('bafoeg.vermTeil'));
+check('BAföG § 29 Abs. 1 Nr. 1: allein ohne Kind, 17.000 € -> Teilanrechnung', keys(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 17000, netto: 500 }), 'bafoeg').includes('bafoeg.vermTeil'));
 check('BAföG: selbst, ab 50 nein, 41 bis 50 vielleicht', lv(ev({ ausbildung: 'ich', alterGruppe: '50+' }), 'bafoeg') === 'nein' && lv(ev({ ausbildung: 'ich', alterGruppe: '40-49' }), 'bafoeg') === 'vielleicht');
 
 // 10) Pflegegeld

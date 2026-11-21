@@ -71,7 +71,10 @@
   "scrisoare",
   "scrisoare de la autorități",
   "poștă",
-  "decizie"
+  "decizie",
+  "contestație",
+  "opoziție",
+  "Widerspruch"
  ],
  "b-af": [
   "formular",
@@ -138,5 +141,10 @@
  "mappe": [
   "cerere",
   "dosar de cereri"
+ ],
+ "b-jc": [
+  "restituire",
+  "plată în plus",
+  "Rückforderung"
  ]
 }
