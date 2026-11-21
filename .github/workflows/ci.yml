@@ -92,8 +92,12 @@ jobs:
         run: echo 'DPkg::Lock::Timeout "600";' | sudo tee /etc/apt/apt.conf.d/99lock >/dev/null; for i in 1 2 3; do timeout 600 npx playwright install-deps chromium && exit 0; echo "Versuch $i fehlgeschlagen"; sleep 20; done; exit 1
       - name: Lint (nicht deklarierte Namen, unbenutzte Variablen)
         run: npm run lint
-      - name: Regel- und Oberflächentests
-        run: npm test
+      # Wie „npm test“ (build:web, test:rules, test:dom), nur 3 Tests gleichzeitig: dieselben Testlisten (test/listen/*.txt),
+      # jeder Test als eigener Prozess; rot, sobald einer rot ist, abstürzt oder beendet wird (Tabelle am Ende des Schritts).
+      - name: Web-Version bauen
+        run: npm run build:web
+      - name: Regel- und Oberflächentests (3 gleichzeitig)
+        run: node tools/tests.js regeln oberflaeche -j 3
       - name: Erweiterungen (Prüfpaket, mit Browsertest der Vorschau)
         run: npm run test:erweiterungen
 
