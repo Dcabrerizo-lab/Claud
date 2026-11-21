@@ -7,6 +7,10 @@
   "Beispiel laden": "=",
   "Alles leeren": "=",
   "Wer wird gepflegt?": "=",
+  "· {1} von {2} eingetragen": "=",
+  "Deine Einschätzung in SoLo: Pflegegrad {1}": "=",
+  "Deine Einschätzung in SoLo: kein Pflegegrad": "=",
+  "Trage darunter die Werte aus dem Gutachten ein, Bereich für Bereich. SoLo zeigt dann jede Bewertung, die im Gutachten niedriger ist.": "Trag darunter die Werte aus dem Gutachten ein. Mach es Bereich für Bereich. Dann zeigt SoLo jede Bewertung, die im Gutachten niedriger ist.",
   "Alter der gepflegten Person (Jahre)": "=",
   "Alter in Monaten (bei Kindern unter 2 Jahren)": "=",
   "Das Alter ist wichtig: Bei Kindern vergleicht der Gutachter mit gesunden Kindern im gleichen Alter, und bis 18 Monate gelten Sonderregeln.": "Das Alter ist wichtig. Bei Kindern vergleicht der Gutachter mit gesunden Kindern im gleichen Alter. Bis 18 Monate gelten besondere Regeln.",
@@ -459,10 +463,6 @@
   "Bis wann? (Datum aus dem Brief)": "=",
   "Bescheid Grundsicherungsgeld prüfen": "=",
   "Anhörung vor einer Entscheidung": "Anhörung: Das Amt fragt dich vor der Entscheidung",
-  "Unterlagen nachreichen": "=",
-  "· {1} von {2} eingetragen": "=",
-  "Deine Einschätzung in SoLo: Pflegegrad {1}": "=",
-  "Deine Einschätzung in SoLo: kein Pflegegrad": "=",
-  "Trage darunter die Werte aus dem Gutachten ein, Bereich für Bereich. SoLo zeigt dann jede Bewertung, die im Gutachten niedriger ist.": "Trag darunter die Werte aus dem Gutachten ein. Mach es Bereich für Bereich. Dann zeigt SoLo jede Bewertung, die im Gutachten niedriger ist."
+  "Unterlagen nachreichen": "="
  }
 }
