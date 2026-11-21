@@ -25,6 +25,7 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 - **BAföG genauer (Prüfvermerk zu Abgleich 2)**: Beim eigenen Vermögen bleiben zusätzlich 2.300 € je Ehe- oder Lebenspartner und je Kind frei (§ 29 Abs. 1 BAföG), der Kinderbetreuungszuschlag 160 € je Kind zählt zum Bedarf (§ 14b). Beträge unter 10 € im Monat werden nicht gezahlt (§ 51 Abs. 4): „eher nicht“ jetzt schon, wenn weniger als 10 € übrig blieben.
 - **Keine Datei-Reste mehr**: Beim Start der App werden liegengebliebene .solo- und PDF-Dateien vom Teilen aus dem App-eigenen Zwischenspeicher gelöscht (z. B. wenn die App beim Teilen beendet wurde).
 - **Startseite auf dem Tablet**: Die vier Kacheln unter „Welche Hilfen stehen mir zu?“ stehen jetzt 2 × 2 – „Ich ziehe aus“ bleibt nicht mehr allein und schmal in der zweiten Reihe. Am Handy unverändert.
+- **Große Schrift (200 %)**: Lange Wörter in den Titeln der Ergebnis-Karten werden umgebrochen, die Seite scrollt nicht mehr seitlich.
 
 ## 1.8.0 (ab Versionsnummer 150, November 2026)
 - **Geld und Schulden neu geordnet**: Es ist dringend · Was bleibt mir? · Meine Schulden-Liste · **Post vom Inkasso** · Mein Geld planen (mit Spartipps) · **Schuldnerberatung**.

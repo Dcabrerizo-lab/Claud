@@ -890,6 +890,9 @@
   .card:has(.pill.nein), .card:has(.pill.na) { border-inline-start-color: var(--line); }
   .card.dim { background: var(--surface); box-shadow: var(--shadow-s); }
   .card header h3 { font-size: 1.15em; font-weight: 700; }
+  /* Große Schrift (200 %): lange Wörter im Kartentitel umbrechen statt seitlich zu scrollen */
+  .card header > div { min-width: 0; flex: 1 1 10em; }
+  .card header h3, .card .desc, .es-karte h3 { overflow-wrap: anywhere; hyphens: auto; }
   .together { border-inline-start-color: var(--accent); }
   .pill { border: 0; padding: 5px 12px; }
   .card .behoerde { border-radius: var(--r-ctl); border-inline-start-width: 4px; }
