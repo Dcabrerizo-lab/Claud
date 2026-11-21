@@ -1457,7 +1457,7 @@
   "gs.frist": "Deadline",
   "gs.d.konto.frist": "Within one month after the garnishment has reached the bank. Then money that is already blocked is protected too (§ 899 Abs. 1 ZPO).",
   "gs.d.konto.frist.kurz": "Convert within 1 month after the seizure.",
-  "gs.d.konto.schritt": "Have your bank convert your current account into a garnishment protection account (P-Konto) right away. The bank must do this from the 4th business day after your request at the latest (§ 850k ZPO).",
+  "gs.d.konto.schritt": "Have your bank convert your current account into a garnishment protection account (P-Konto) right away. The bank must do this from the 4th business day after your request at the latest (§ 850k ZPO). Everyone may have only one P-Konto (§ 850k Abs. 3 ZPO).",
   "gs.d.konto.schritt.kurz": "Have your current account converted to a P-Konto right away.",
   "gs.d.strom.frist": "The cut-off must be threatened 4 weeks before and announced 8 working days before (§ 41f EnWG).",
   "gs.d.strom.frist.kurz": "Cut-off: warning 4 weeks ahead, notice 8 working days ahead.",

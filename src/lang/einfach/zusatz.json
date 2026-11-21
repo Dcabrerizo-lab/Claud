@@ -53,5 +53,18 @@
   "briefe.schreibenDe": "=",
   "sp.vz.link": "Gesund essen mit wenig Geld: Tipps von der Verbraucher-Zentrale",
   "sp.vz.t": "Die Seite ist in einfacher Sprache. Sie öffnet sich im Browser.",
-  "sp.vz.de": "="
+  "sp.vz.de": "=",
+  "bp.vgl.h": "=",
+  "bp.vgl.satz": "=",
+  "bp.vgl.mehr": "In {n} von 6 Bereichen gibt das Gutachten weniger Punkte als du. Diese Bereiche sind fett.",
+  "bp.vgl.keinMehr": "=",
+  "bp.vgl.bereich": "=",
+  "bp.vgl.eigen": "=",
+  "bp.vgl.gutachten": "=",
+  "bp.vgl.diff": "=",
+  "bp.vgl.gesamt": "=",
+  "bp.vgl.zaehltNicht": "=",
+  "bp.vgl.pg": "=",
+  "bp.vgl.kein": "=",
+  "bp.vgl.klein": "So rechnet die Pflegekasse. Plus heißt: Du gibst dort mehr Punkte als das Gutachten. Weiter unten steht, bei welchen Fragen."
 }
