@@ -2142,7 +2142,9 @@ const Rules = (function () {
     const erw = Object.keys(topf).reduce((a, p) => a + Math.min(R.wgWerbung.lohn, topf[p]), 0);
     return erw + Math.min(R.wgWerbung.lohn, (h.kindEink || 0) * 12);
   }
-  // Wohnberechtigungsschein Bayern (Art. 11 BayWoFG): Jahres-Einkommensgrenze
+  // Wohnberechtigungsschein Bayern: Jahres-Einkommensgrenze nach Art. 4 Abs. 1 BayWoBindG (17.500 / 27.500 €, + 5.000 € je weitere Person,
+  // + 1.300 € je Kind; https://www.gesetze-bayern.de/Content/Document/BayWoBindG-4, Abruf 21.11.2026). Mit hoechst: Höchstwerte nach
+  // Art. 11 Abs. 1 BayWoFG, bis zu denen eine Gemeinde die Grenze anheben darf (Art. 4 Abs. 3 BayWoBindG). Prüfung 21.11.2026: vorher nur „Art. 11 BayWoFG“.
   function wbsGrenze(h, hoechst) {
     const w = R.wbs;
     const ein = hoechst ? w.maxEin : w.ein, zwei = hoechst ? w.maxZwei : w.zwei, weitere = hoechst ? w.maxWeitere : w.weitere, kind = hoechst ? w.maxKind : w.kind;
