@@ -100,9 +100,9 @@ Quellen: gesetze-im-internet.de, arbeitsagentur.de, familienportal.de, bmas.de, 
 Nur Deutsch (weitere Sprachen für die Neuigkeiten sind in dieser Datei nicht angelegt).
 
 ```
-Neu: Suche mit Lupe auf jeder Seite, auch mit Alltagswörtern. Einzelne Vorgänge mit eigener PIN sperren. Mit App-PIN Schutz vor Bildschirmfotos. Beratung: Blatt für Klienten, Weitergabe per QR-Code oder SoLo-Datei. Raten anbieten mit Empfehlung, Tarife vergleichen, Pflegegutachten vergleichen. Wichtige Sätze in Fremdsprachen auch auf Deutsch. Wohngeld, Kinderzuschlag, BAföG und weitere Leistungen genauer. Übersetzungen verbessert, Fehler behoben. Weiter alles offline auf deinem Gerät.
+Neu: Pflege jetzt in allen 13 Sprachen. Die Antragsmappe führt dich Schritt für Schritt wie eine Aufgabenliste. Gibt es zwei Wege (z. B. Wohngeld oder Grundsicherungsgeld), zeigt das Ergebnis beide. Geld und Schulden: Beratungsstelle in deiner Nähe suchen, Musterschreiben bei Mietschulden und drohender Stromsperre, Fristen klarer. SoLo-Dateien von der Beratung öffnen sich direkt. Sprachen laden schneller, auch offline. Besserer Datenschutz am iPhone. Viele Leistungen genauer gerechnet.
 ```
-(489 Zeichen; Version 1.9.0, Build 151. Text von 1.8.0 steht im Git-Verlauf.)
+(490 Zeichen; Version [Versionsname], Build [VersionCode] – legt David fest. Gilt nur, wenn die PRs #152–#173 im Build sind, sonst Sätze streichen: siehe docs/entwuerfe/release-naechstes.md. Text von 1.9.0 steht im Git-Verlauf.)
 
 ### Kategorie und Tags (Vorschlag)
 
@@ -170,9 +170,9 @@ Wohngeld,Bürgergeld,Grundsicherung,Kinderzuschlag,Bescheid,Widerspruch,Pflegegr
 Gleicher Text wie „Neuigkeiten in dieser Version“ bei Google Play:
 
 ```
-Neu: Suche mit Lupe auf jeder Seite, auch mit Alltagswörtern. Einzelne Vorgänge mit eigener PIN sperren. Mit App-PIN Schutz vor Bildschirmfotos. Beratung: Blatt für Klienten, Weitergabe per QR-Code oder SoLo-Datei. Raten anbieten mit Empfehlung, Tarife vergleichen, Pflegegutachten vergleichen. Wichtige Sätze in Fremdsprachen auch auf Deutsch. Wohngeld, Kinderzuschlag, BAföG und weitere Leistungen genauer. Übersetzungen verbessert, Fehler behoben. Weiter alles offline auf deinem Gerät.
+Neu: Pflege jetzt in allen 13 Sprachen. Die Antragsmappe führt dich Schritt für Schritt wie eine Aufgabenliste. Gibt es zwei Wege (z. B. Wohngeld oder Grundsicherungsgeld), zeigt das Ergebnis beide. Geld und Schulden: Beratungsstelle in deiner Nähe suchen, Musterschreiben bei Mietschulden und drohender Stromsperre, Fristen klarer. SoLo-Dateien von der Beratung öffnen sich direkt. Sprachen laden schneller, auch offline. Besserer Datenschutz am iPhone. Viele Leistungen genauer gerechnet.
 ```
-(489 Zeichen; Version 1.9.0, Build 151. Text von 1.8.0 steht im Git-Verlauf.)
+(490 Zeichen; Version [Versionsname], Build [VersionCode] – legt David fest. Gilt nur, wenn die PRs #152–#173 im Build sind, sonst Sätze streichen: siehe docs/entwuerfe/release-naechstes.md. Text von 1.9.0 steht im Git-Verlauf.)
 
 ### URLs
 
@@ -193,18 +193,20 @@ Neu: Suche mit Lupe auf jeder Seite, auch mit Alltagswörtern. Einzelne Vorgäng
 
 ### Hinweise für die App-Prüfung (App Review Information → Notes)
 
-Die Testschritte passen zu Version 1.8.0 (Startkacheln, Leiste unten: Start, Mein Ordner, Einstellungen; Beispiele sind nicht mehr sichtbar; Stand 21.11.2026).
+Die Testschritte passen zur Version [Versionsname] (Antragsmappe als Aufgabenliste mit „Drucken oder teilen“, SoLo-Datei direkt öffnen; Stand 21.11.2026).
 
 ```
 Die App läuft vollständig offline. Es gibt keine Anmeldung und kein Konto, ein Demo-Zugang ist nicht nötig. Die App überträgt keine Daten: keine Server, keine Werbung, kein Tracking. Alle Angaben bleiben auf dem Gerät.
 
-Zum Testen: Auf der Startseite „Welche Hilfen stehen mir zu?“ tippen, „Schritt für Schritt“ oder „Alles auf einer Seite“ wählen, einige Fragen beantworten (z. B. 1 Erwachsener, 1 Kind, Miete 600 €), Ergebnisse ansehen, unten „Antragsmappe erstellen“ → „PDF teilen“. Auf der Startseite „Ich habe einen Brief bekommen“ → eine Kachel (z. B. „Jobcenter“) → „Werte selbst eingeben“ zeigt die Prüfung eines Bescheids. „Pflegegrad selbst einschätzen“ öffnet sich über die Startkachel „Pflege“ oder den Knopf im Fragebogen unter Gesundheit. „Geld und Schulden“ → „Es ist dringend“ → „Was ist zuerst dran?“ zeigt den Krisen-Check. Die PIN-Sperre unter „Einstellungen“ ist freiwillig und für die Prüfung nicht nötig.
+Zum Testen: Auf der Startseite „Welche Hilfen stehen mir zu?“ tippen, „Schritt für Schritt“ oder „Alles auf einer Seite“ wählen, einige Fragen beantworten (z. B. 1 Erwachsener, 1 Kind, Miete 600 €), Ergebnisse ansehen, „Antrag vorbereiten“ tippen. Die Antragsmappe führt Schritt für Schritt durch die Aufgaben; im letzten Schritt „Drucken oder teilen“. Auf der Startseite „Ich habe einen Brief bekommen“ → eine Kachel (z. B. „Jobcenter“) → „Werte selbst eingeben“ zeigt die Prüfung eines Bescheids. „Pflegegrad selbst einschätzen“ öffnet sich über die Startkachel „Pflege“ oder den Knopf im Fragebogen unter Gesundheit. „Geld und Schulden“ → „Es ist dringend“ → „Was ist zuerst dran?“ zeigt den Krisen-Check. Die PIN-Sperre unter „Einstellungen“ ist freiwillig und für die Prüfung nicht nötig.
 
 Brief-Scan: „Diesen Brief scannen“ in der Kachel nutzt die Kamera. Die Texterkennung läuft lokal auf dem Gerät (Apple Vision), das Foto wird nicht gespeichert und nicht übertragen. „PDF wählen“ liest eine PDF-Datei ebenfalls nur auf dem Gerät.
 
+SoLo-Dateien (.solo) aus dem Beratungsmodus lassen sich über Teilen → SoLo öffnen; auch das läuft ohne Netzverbindung.
+
 Die App ist eine Orientierungshilfe, keine Rechtsberatung und keine App einer Behörde.
 ```
-(1.259 Zeichen)
+(1.466 Zeichen)
 
 ---
 

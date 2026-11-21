@@ -73,17 +73,17 @@ Wichtigste zuerst. Nichts Echtes eingeben. Die Nummern in Klammern verweisen auf
 - [ ] **Startzeit** (3× Stoppuhr, alt gegen neu) und **Paketgröße** notieren. (S.10, S.11)
 - [ ] **Pflege in einer Fremdsprache** (z. B. Arabisch): Übersicht und Einschätzung übersetzt, nichts abgeschnitten, auch bei großer Schrift. (8.2 sinngemäß)
 
-## 3. docs/STORE.md: Vorschläge (nicht umgesetzt)
+## 3. docs/STORE.md: Vorschläge (zwei umgesetzt, Rest offen)
 
 | Stelle | Vorschlag | Grund |
 |---|---|---|
-| Play „Neuigkeiten“, App Store „Neu in dieser Version“ | Text aus Abschnitt 1 einsetzen | Der jetzige Text beschreibt 1.9.0 |
+| Play „Neuigkeiten“, App Store „Neu in dieser Version“ | **umgesetzt** (21.11.2026): Text aus Abschnitt 1, Version als Platzhalter | Der jetzige Text beschreibt 1.9.0 |
 | Beschreibung, „Mein Ordner“ | Satz ergänzen: „SoLo-Dateien von deiner Beratungsstelle öffnest du direkt aus Messenger oder Mail.“ | #161 |
 | Beschreibung, „Pflege“ | „… auch in deiner Sprache.“ | #173 |
 | Beschreibung, „Antragsmappe“ | „Schritt für Schritt wie eine Aufgabenliste. Drucken oder als PDF teilen.“ | #159 (Knopf heißt jetzt „Drucken oder teilen“) |
 | Beschreibung, „Geld und Schulden“ | „Schuldnerberatung: Stelle in deiner Nähe suchen“ statt „Stelle finden“; „Sparen im Alltag … mit Energie-Check (Abschlag und Tarif)“ | #152 (Link zur BAG-SB-Suche, Energie-Check an einer Stelle) |
 | Beschreibung, Länge | Nach den Ergänzungen neu zählen (jetzt 3.982 von 4.000). Dafür Kürzungen nötig, z. B. in der Liste „Was die App prüft“ | Grenze 4.000 Zeichen |
-| App-Prüfung „Notes“ | Testschritte anpassen: „Briefe für die Anträge machen“ bzw. „Drucken oder teilen“ statt „Antragsmappe erstellen → PDF teilen“. Satz ergänzen: „.solo-Dateien (Beratungsmodus) lassen sich über Teilen → SoLo öffnen; keine Netzverbindung.“ | #159, #161; die Notes nennen noch Stand 1.8.0 |
+| App-Prüfung „Notes“ | **umgesetzt** (21.11.2026). Testschritte angepasst: „Briefe für die Anträge machen“ bzw. „Drucken oder teilen“ statt „Antragsmappe erstellen → PDF teilen“. Satz ergänzen: „.solo-Dateien (Beratungsmodus) lassen sich über Teilen → SoLo öffnen; keine Netzverbindung.“ | #159, #161; die Notes nennen noch Stand 1.8.0 |
 | Apple „Nutritional Label“ | Bleibt „keine Daten erfasst“; Hinweis zu .solo steht schon da | #161 bringt keine neue Berechtigung |
 | Google „Datensicherheit“ | Bleibt bis zum ML-Kit-Mitschnitt (Gerätetest Android) so; danach Datenschutzerklärung und Formular angleichen | weiter offen |
 | Datenschutzerklärung (datenschutz.html / -ios.html) | Prüfen, ob „Speicherschutz iPhone: nur bei entsperrtem Gerät lesbar“ und „.solo öffnen: SoLo liest eine Kopie und löscht sie“ erwähnt werden sollen | #161; nur Klarstellung, keine neue Datenverarbeitung |
