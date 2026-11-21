@@ -90,9 +90,9 @@ const Rules = (function () {
     famvers: { bezug2026: 3955, bezug2027: 4130 },
     pfaendung: { grund: 1587.4, erste: 597.42, weitere: 332.83, hoechst: 4866.3, gueltigBis: '2027-06-30' },
     // Arbeitslosengeld I (SGB III): 60 %, mit Kind 67 % des pauschalierten Nettos (§ 149); Beitragsbemessungsgrenze 2026: 8.450 € im Monat;
-    // Netto grob 60-72 % des Bruttos; Dauer § 147 Abs. 2: [Monate versichert in 5 Jahren, Mindestalter, Monate Anspruch]
+    // Netto grob 60-72 % des Bruttos, oben mindestens Brutto minus 20 % Sozialversicherungspauschale und Lohnsteuer Steuerklasse III (§ 153 SGB III); Dauer § 147 Abs. 2: [Monate versichert in 5 Jahren, Mindestalter, Monate Anspruch]
     // 2027 (bbg2027, RV-Grenze 8.850 €) nur nach Verkündung der SV-Rechengrößenverordnung 2027 (svrg2027)
-    alg: { nebenFrei: 165, sperrWochen: 12, satz: 0.6, satzKind: 0.67, bbg: 8450, bbg2027: 8850, netto: [0.6, 0.72], nettoKlein: 0.8, kleinBis: 2000, dauer: [[48, 58, 24], [36, 55, 18], [30, 50, 15], [24, 0, 12], [20, 0, 10], [16, 0, 8], [12, 0, 6]] },
+    alg: { nebenFrei: 165, sperrWochen: 12, satz: 0.6, satzKind: 0.67, bbg: 8450, bbg2027: 8850, netto: [0.6, 0.72], nettoKlein: 0.8, kleinBis: 2000, svPausch: 0.2, dauer: [[48, 58, 24], [36, 55, 18], [30, 50, 15], [24, 0, 12], [20, 0, 10], [16, 0, 8], [12, 0, 6]] },
     // Krankengeld (§ 47 SGB V): 70 % des Bruttos, höchstens 90 % des Nettos, bis zur Beitragsbemessungsgrenze 2026 (5.812,50 € im Monat);
     // davon gehen Beiträge zur Renten-, Arbeitslosen- und Pflegeversicherung ab (rund 12,5 %); höchstens 78 Wochen (§ 48 SGB V)
     // 2027 (bbg2027, KV-Grenze 6.375 €) nur nach Verkündung der SV-Rechengrößenverordnung 2027 (svrg2027)
@@ -237,7 +237,14 @@ const Rules = (function () {
     // Auto: im SGB II ist ein angemessenes Auto je erwerbsfähiger Person geschützt. Eine feste Grenze nennt das Gesetz nicht;
     // bis 2026 galt nach den Weisungen ein Wert bis 15.000 € als angemessen. Darüber prüft das Jobcenter -> nur „möglich“.
     autoPruefen: 15000,
-    bafoeg: { freiAllein: 1690, freiPaar: 2540, jeKind: 770, spanne: 1200, vermBis29: 15000, vermAb30: 45000 },
+    // BAföG (https://www.gesetze-im-internet.de/baf_g/, Abruf 21.11.2026): Freibeträge Elterneinkommen § 25 Abs. 1 und 3 (2.540 / 1.690 / 770 €);
+    // § 25 Abs. 4: vom Einkommen über dem Freibetrag bleiben 50 % und je Kind mit Freibetrag weitere 5 % frei (anrechFrei, anrechFreiKind).
+    // bedarfMax: höchster Bedarf ohne Kinderbetreuungszuschlag = 475 € Grundbedarf + 380 € Wohnen auswärts (§ 13 Abs. 1 Nr. 2, Abs. 2 Nr. 2)
+    // + 185 € Kranken- und 48 € Pflegeversicherung freiwillig versichert (§ 13a Abs. 2) = 1.088 €. bafög.de nennt als Höchstsatz 992 €
+    // (mit 102 + 35 € nach § 13a Abs. 1, Flyer und FAQ, Abruf 21.11.2026); 1.088 € ist die vorsichtige Seite (eher „möglich“ als „eher nicht“).
+    // Vermögen § 29 Abs. 1 Nr. 1: 15.000 € bis zur Vollendung des 30. Lebensjahres, danach 45.000 €; § 30: nur der Betrag darüber,
+    // geteilt durch die Monate des Bewilligungszeitraums (in der Regel 12 Monate, § 50 Abs. 3), mindert den Bedarf (bafög.de Beispiel „Stefan“).
+    bafoeg: { freiAllein: 1690, freiPaar: 2540, jeKind: 770, anrechFrei: 0.5, anrechFreiKind: 0.05, bedarfMax: 1088, bwzMonate: 12, vermBis29: 15000, vermAb30: 45000 },
     pflege: { geld: { 2: 347, 3: 599, 4: 800, 5: 990 }, entlastung: 131 },
     // Pflege-Startkachel „Welche Unterstützung gibt es?“. Beträge oben (pflege, pflegeSach, pflegeTages, entlastungsbudget, beh.verbrauch,
     // beh.wohnumfeld). Quelle: BMG, Online-Ratgeber Pflege „Verhinderungspflege“, „Pflege zu Hause“, „Weitere Leistungen und Angebote zur
@@ -1297,7 +1304,7 @@ const Rules = (function () {
     const rs1 = R.regelbedarf.alleinstehend;
     // Netto je Einkommen: in der ausführlichen Version anteilig aus dem Haushaltsnetto
     const nettos = pers.map((x) => (h.liste ? x[2] : sumB > 0 ? h.netto * x[1] / sumB : h.netto / pers.length));
-    const zus = zusatzVerteilt(h, nettos);
+    const zus = zusatzVerteilt(h, nettos), zusB = zusatzVerteilt(h, pers.map((x) => x[1]));
     // Freibetrag für Arbeit (§ 82 Abs. 3 Satz 1 SGB XII): 30 %, höchstens 50 % RS 1, je Person aus allen ihren Löhnen zusammen
     const lohnP = {};
     pers.forEach((x, i) => { if (x[0] === 'lohn') { const p = h.liste ? x[5] : i + 1; lohnP[p] = (lohnP[p] || 0) + nettos[i]; } });
@@ -1313,7 +1320,10 @@ const Rules = (function () {
       if (art === 'lohn') return a + n;
       if (art === 'eg') return a + Math.max(0, n - (b > R.elterngeldFrei ? R.elterngeldFrei : 0));
       // Rente: Grundrentenfreibetrag nur auf die gesetzliche Rente (§ 82a), Freibetrag für zusätzliche Altersvorsorge auf Betriebs-, Riester- oder private Rente (§ 82 Abs. 4)
-      if (art === 'rente') { const z = zus[i], gesetzlich = n - z; return a + n - (h.grundrente33 ? freiStaffel(gesetzlich, R.grundrente, rs1) : 0) - freiStaffel(z, R.vorsorge, rs1); }
+      // § 82a Abs. 1 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__82a.html, Abruf 21.11.2026): 100 € + 30 % „aus der gesetzlichen Rente“,
+      // also aus der Bruttorente (Broschüre der Rentenversicherung „Die Grundsicherung“, 5/2026, S. 18: „Brutto Rente 870,00“ -> 281,50 €).
+      // Brutto der gesetzlichen Rente: Brutto des Eintrags minus Zusatzrente (anteilig wie beim Wohngeld), mindestens das Netto; höchstens das Netto abgezogen
+      if (art === 'rente') { const z = zus[i], gesetzlich = n - z, gesB = Math.max(gesetzlich, b - zusB[i]); return a + n - (h.grundrente33 ? Math.min(gesetzlich, freiStaffel(gesB, R.grundrente, rs1)) : 0) - freiStaffel(z, R.vorsorge, rs1); }
       if (art === 'ohne') return a;
       return a + n;
     }, 0);
@@ -1392,7 +1402,11 @@ const Rules = (function () {
       // Unterhalt eines Elternteils für sich selbst zählt beim BAföG nur, wenn er versteuert wird (Realsplitting, § 21 Abs. 1 BAföG
       // i. V. m. § 22 Nr. 1a EStG): ohne ihn unter der Grenze -> höchstens „möglich“
       const untE = (h.pers || []).reduce((a, x) => a + (x[0] === 'unt' ? (h.liste ? x[2] : x[1]) : 0), 0);
-      if (h.netto - untE <= fb + R.bafoeg.spanne) return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.kindRand', p]]);
+      // § 25 Abs. 4 BAföG: angerechnet wird nur der Teil über dem Freibetrag, davon 50 % minus 5 % je Kind mit Freibetrag (Abruf 21.11.2026).
+      // „Eher nicht“ erst, wenn diese Anrechnung den höchsten Bedarf (bedarfMax) übersteigt; geteilt auf mehrere Geschwister in Ausbildung
+      // (§ 11 Abs. 4) wäre sie kleiner -> darunter „möglich“
+      const quote = R.bafoeg.anrechFrei - R.bafoeg.anrechFreiKind * Math.max(0, h.children - 1);
+      if (quote <= 0 || (h.netto - untE - fb) * quote <= R.bafoeg.bedarfMax) return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.kindRand', p]]);
       return mk(id, 'nein', 'einkoHoch', [['bafoeg.kindNein', p]]);
     }
     // ich selbst: Elterneinkommen unbekannt
@@ -1401,7 +1415,11 @@ const Rules = (function () {
       return mk(id, h.gruppe === '50+' ? 'nein' : 'vielleicht', h.gruppe === '50+' ? 'vorausFehlt' : 'vielleicht', [['bafoeg.alter']]);
     }
     const vermGrenze = h.gruppe === '<30' ? R.bafoeg.vermBis29 : R.bafoeg.vermAb30; // § 29: 15.000 € bis zur Vollendung des 30. Lebensjahres
-    if (h.vermoegen + (h.autoWert || 0) > vermGrenze) return mk(id, 'nein', 'vermHoch', [['bafoeg.vermHoch', { verm: eur(vermGrenze) }]]);
+    // § 30 BAföG (Abruf 21.11.2026): nur der Betrag über dem Freibetrag, geteilt durch 12 Monate, mindert das BAföG. „Eher nicht“ erst,
+    // wenn das mehr ist als der höchste Bedarf; darunter „möglich“ mit Hinweis
+    const vermUeber = h.vermoegen + (h.autoWert || 0) - vermGrenze;
+    if (vermUeber / R.bafoeg.bwzMonate > R.bafoeg.bedarfMax) return mk(id, 'nein', 'vermHoch', [['bafoeg.vermHoch', { verm: eur(vermGrenze) }]]);
+    if (vermUeber > 0) return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.vermTeil', { verm: eur(vermGrenze), monat: eur(Math.round(vermUeber / R.bafoeg.bwzMonate)) }], ['bafoeg.ich']]);
     return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.ich']]);
   }
 
@@ -1458,8 +1476,11 @@ const Rules = (function () {
     return mk(id, 'vielleicht', 'vielleicht', [[art], ['emrente.warte']]);
   }
 
-  // Netto grob als Anteil vom Brutto: 60 % (Steuerklasse V, hohe Abzüge) bis 72 %, bei kleinem Brutto (bis 2.000 €) bis 80 %
-  const nettoSpanne = (b) => [R.alg.netto[0], b <= R.alg.kleinBis ? R.alg.nettoKlein : R.alg.netto[1]];
+  // Netto grob als Anteil vom Brutto: 60 % (Steuerklasse V, hohe Abzüge) bis 72 %, bei kleinem Brutto (bis 2.000 €) bis 80 %.
+  // Obere Grenze mindestens so hoch wie das Netto in Steuerklasse III (Paar, oft mit Kindern, wenig oder keine Lohnsteuer):
+  // nettoIII = Brutto minus Sozialversicherung (sv, beim Arbeitslosengeld pauschal 20 %) minus Lohnsteuer und Soli in Steuerklasse III.
+  const nettoSpanne = (b, nettoIII) => [R.alg.netto[0], Math.max(b <= R.alg.kleinBis ? R.alg.nettoKlein : R.alg.netto[1], b > 0 ? nettoIII / b : 0)];
+  const lstIII = (b, h) => { const t = lohnsteuerMonat(b, { stkl: 3, heute: h.heute }); return t.lst + t.soli; };
 
   // Arbeitslosengeld I (§§ 136 ff. SGB III). Verfügbar ist nur, wer eine Beschäftigung ausüben „kann und darf“ (§ 138 Abs. 1 Nr. 3,
   // Abs. 5 Nr. 1 SGB III, https://www.gesetze-im-internet.de/sgb_3/__138.html, Abruf 20.11.2026): im Asylverfahren oder mit Duldung
@@ -1488,7 +1509,10 @@ const Rules = (function () {
     } else tx.push(['alg1.dauerMin']);
     if (h.lohnVorher > 0) {
       const b = Math.min(h.lohnVorher, sv27(h.heute) ? R.alg.bbg2027 : R.alg.bbg);
-      const q = nettoSpanne(b);
+      // § 153 Abs. 1 SGB III (https://www.gesetze-im-internet.de/sgb_3/__153.html, Abruf 21.11.2026): Leistungsentgelt = Brutto minus
+      // Sozialversicherungspauschale 20 % minus Lohnsteuer und Soli. Merkblatt 1 für Arbeitslose (BA), Abschnitt 4: 2.400 € brutto,
+      // Steuerklasse III, Kind -> 42,88 € am Tag (1.286,40 € im Monat); muss in der Spanne liegen
+      const q = nettoSpanne(b, b * (1 - R.alg.svPausch) - lstIII(b, h));
       tx.push(['schaetz.spanne', { a: eur(r10(b * q[0] * p)), b: eur(r10(b * q[1] * p)) }]);
     }
     // Sperrzeit bei eigener Kündigung oder Aufhebungsvertrag (§ 159 SGB III); Nebeneinkommen 165 € frei (§ 155 SGB III)
@@ -1517,7 +1541,8 @@ const Rules = (function () {
       const b = Math.min(h.lohnVorher, sv27(h.heute) ? R.krank.bbg2027 : R.krank.bbg);
       // Netto grob 60-72 % des Bruttos; Krankengeld = min(70 % brutto, 90 % netto), abzüglich der Beiträge
       const kgv = (q) => r10(Math.min(R.krank.satz * b, R.krank.nettoMax * b * q) * (1 - R.krank.abzug));
-      const q = nettoSpanne(b);
+      // Krankengeld rechnet mit dem echten Netto (§ 47 Abs. 1 SGB V): obere Grenze mindestens das Netto in Steuerklasse III (nettoLohn)
+      const q = nettoSpanne(b, nettoLohn(b, { stkl: 3, heute: h.heute }).netto);
       tx.push(['schaetz.spanne', { a: eur(kgv(q[0])), b: eur(kgv(q[1])) }]);
     }
     tx.push(['krank.78']);
@@ -1558,6 +1583,17 @@ const Rules = (function () {
     return mk(id, h.egVor == null ? 'vielleicht' : 'ja', h.egVor == null ? 'vielleicht' : 'ja', tx);
   }
 
+  // Einkommensgrenze § 85 Abs. 1 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__85.html, Abruf 21.11.2026): zweifache Regelbedarfsstufe 1
+  // + Aufwendungen für die Unterkunft + Familienzuschlag 70 % der Regelbedarfsstufe 1, „auf volle Euro aufgerundet“ (563 € -> 395 €), je weitere Person.
+  // Unterkunft MIT Heizung (ganze Warmmiete): BSG, Urteil vom 30.04.2020, B 8 SO 1/19 R, Leitsatz: Auch ab dem 1.1.2016 sind die Heizkosten
+  // als Aufwendungen für die Unterkunft einzustellen (https://www.bsg.bund.de/SharedDocs/Entscheidungen/DE/2020/2020_04_30_B_08_SO_01_19_R.html,
+  // Abruf 21.11.2026; ambulante Leistungen). § 85 nennt die Heizung nicht. Manche Träger rechnen trotzdem ohne Heizung (Pflegestützpunkte
+  // Berlin, Informationsblatt Nr. 37, 12/2025); die Karte bleibt deshalb „möglich“ und nennt die Grenze mit „etwa“.
+  function hzpGrenze(h) {
+    const rs1 = R.regelbedarf.alleinstehend;
+    return R.hzp.grund * rs1 + h.miete + Math.ceil(R.hzp.familie * rs1) * (h.persons - 1);
+  }
+
   // Hilfe zur Pflege (SGB XII, 7. Kapitel): wenn Pflegekasse und eigenes Geld nicht reichen (Pflegedienst, Tagespflege, Heim)
   function hilfeZurPflege(h) {
     const id = 'hzp';
@@ -1571,7 +1607,7 @@ const Rules = (function () {
     // Abruf 20.11.2026). Nach 36 Monaten SGB XII entsprechend (§ 2 Abs. 1 AsylbLG), davor nur im Einzelfall (§ 6 Abs. 1 AsylbLG,
     // https://www.gesetze-im-internet.de/asylblg/__6.html, Abruf 20.11.2026)
     if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['hzp.asyl'], ['hzp.heim']]);
-    const grenze = R.hzp.grund * R.regelbedarf.alleinstehend + h.miete + R.hzp.familie * R.regelbedarf.alleinstehend * (h.persons - 1);
+    const grenze = hzpGrenze(h);
     return mk(id, 'vielleicht', 'vielleicht', [[h.netto <= grenze ? 'hzp.unter' : 'hzp.ueber', { grenze: eur(grenze) }], ['hzp.heim']]);
   }
 
@@ -1608,6 +1644,8 @@ const Rules = (function () {
     const id = 'lpg';
     if (h.land && h.land !== 'BY') return mk(id, 'nein', 'land', [['lpg.land']]);
     if (h.pflegegrad < 2 && !h.pflegeAntrag) return mk(id, 'nein', 'vorausFehlt', [['lpg.keine']]);
+    // lpg.antrag: Auszahlung bis 31. Januar des Folgejahres (Art. 2 Abs. 4 Satz 2 BayLPflGG, https://www.gesetze-bayern.de/Content/Document/BayLPflGG-2, Abruf 21.11.2026);
+    // im Text „in der Regel“, weil der Antrag noch bis 3 Monate nach Ende des Pflegegeldjahres gestellt werden kann (Art. 3 Abs. 1 Satz 1)
     const tx = [['lpg.ja', { betrag: eur(R.lpg.betrag), stand: R.lpg.stand }], ['lpg.antrag']];
     return h.pflegegrad >= 2 ? mk(id, 'ja', 'ja', tx) : mk(id, 'vielleicht', 'vielleicht', [['lpg.pflegeAntrag', { betrag: eur(R.lpg.betrag) }]]);
   }
@@ -1624,7 +1662,7 @@ const Rules = (function () {
     // § 2 Abs. 1 AsylbLG (https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026)
     if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['blh.asyl']]);
     if (vermSGB12(h) > R.grundsicherung.schonAllein * h.adults + 500 * h.children) return mk(id, 'nein', 'vermHoch', [['blh.verm']]);
-    const grenze = R.hzp.grund * R.regelbedarf.alleinstehend + h.miete + R.hzp.familie * R.regelbedarf.alleinstehend * (h.persons - 1);
+    const grenze = hzpGrenze(h);
     const tx = [h.netto <= grenze ? ['blh.unter', { grenze: eur(grenze) }] : ['blh.ueber', { grenze: eur(grenze), prozent: Math.round(R.blh.einsatzUeber * 100) }],
       [h.land && h.land !== 'BY' ? 'blh.landAnders' : 'blh.bayern']];
     // Höhe: Blindenhilfe minus Landesblindengeld (voll angerechnet, § 72 Abs. 1 Satz 2), wo das Landesblindengeld belegt ist
@@ -1733,10 +1771,12 @@ const Rules = (function () {
     }
     const b = R.beh.blind;
     const tx = [[h.blind === 'blind' ? 'blindengeld.blind' : 'blindengeld.hoch', { betrag: eur2(h.blind === 'blind' ? b.blind : b.hoch), stand: b.stand }]];
-    // Art. 4 Abs. 1 BayBlindG: Pflegegeld wird angerechnet, PG 2: 46 %, PG 3-5: 33 % des Pflegegeldes; Mindestzahlbetrag 20 € (Abs. 4)
+    // Art. 4 Abs. 1 Satz 2 BayBlindG (https://www.gesetze-bayern.de/Content/Document/BayBlindG-4, Abruf 21.11.2026): PG 2: 46 % des Pflegegeldes
+    // nach § 37 Abs. 1 Satz 3 Nr. 1 SGB XI (Pflegegrad 2); PG 3 bis 5 einheitlich 33 % des Betrags nach Nr. 2 (Pflegegeld Pflegegrad 3 = 197,67 €);
+    // Mindestzahlbetrag 20 € (Abs. 4). ZBFS-Infoblatt Blindengeld 7/2026: 611,33 € bei Pflegegrad 3 bis 5
     if (h.pflegegrad >= 2) {
       const grund = h.blind === 'blind' ? b.blind : b.hoch;
-      const anrech = (h.pflegegrad === 2 ? 0.46 : 0.33) * R.pflege.geld[h.pflegegrad];
+      const anrech = h.pflegegrad === 2 ? 0.46 * R.pflege.geld[2] : 0.33 * R.pflege.geld[3];
       const rest = Math.max(20, Math.round((grund - anrech) * 100) / 100);
       tx.push(['blindengeld.pflege', { pg: String(h.pflegegrad), kuerz: eur2(Math.round(anrech * 100) / 100), rest: eur2(rest) }]);
     }

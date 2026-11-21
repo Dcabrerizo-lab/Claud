@@ -160,7 +160,8 @@ check('BAföG: Kind, etwas über Freibetrag vielleicht', lv(ev({ kids: 1, netto:
 check('BAföG: Kind, weit über Freibetrag nein', lv(ev({ kids: 1, netto: 4000, ausbildung: 'kind' }), 'bafoeg') === 'nein');
 check('BAföG: Paar mit 2 jungen Erwachsenen, Freibetrag 2.540 + 770', lv(ev({ adults: 2, young: 2, netto: 3300, ausbildung: 'kind' }), 'bafoeg') === 'ja' && lv(ev({ adults: 2, young: 2, netto: 3400, ausbildung: 'kind' }), 'bafoeg') === 'vielleicht');
 check('BAföG: Kind angegeben, aber kein Kind im Haushalt nein', lv(ev({ ausbildung: 'kind', netto: 1000 }), 'bafoeg') === 'nein');
-check('BAföG: selbst, Vermögen über 15.000 bis 29 nein', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 20000 }), 'bafoeg') === 'nein');
+check('BAföG: selbst, Vermögen 20.000 bis 29: nur 5.000 € darüber zählen, möglich (§ 30 BAföG)', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 20000 }), 'bafoeg') === 'vielleicht');
+check('BAföG: selbst, Vermögen 30.000 bis 29: 15.000 € : 12 über dem Bedarf, nein', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 30000 }), 'bafoeg') === 'nein');
 check('BAföG: selbst, Vermögen im Rahmen vielleicht', lv(ev({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 5000 }), 'bafoeg') === 'vielleicht');
 check('BAföG: selbst, ab 50 nein, 41 bis 50 vielleicht', lv(ev({ ausbildung: 'ich', alterGruppe: '50+' }), 'bafoeg') === 'nein' && lv(ev({ ausbildung: 'ich', alterGruppe: '40-49' }), 'bafoeg') === 'vielleicht');
 

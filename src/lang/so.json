@@ -991,7 +991,7 @@
   "t.lpg.land": "Landespflegegeld waxaa la bixiyaa oo keliya Bayern.",
   "t.lpg.keine": "Landespflegegeld Bayern waxaa la bixiyaa laga bilaabo Pflegegrad 2.",
   "t.lpg.ja": "Bayern, laga bilaabo Pflegegrad 2 waxaa la bixiyaa Landespflegegeld: {betrag} sannadkii (laga bilaabo {stand}), iyadoon loo eegin dakhliga. Waxay dheer tahay Pflegegeld-ka Pflegekasse.",
-  "t.lpg.antrag": "Codsiga hal mar ayaad u gudbinaysaa Bayerisches Landesamt für Pflege, kadib lacagtu sannad kasta ayay imanaysaa. Dhakhso u gudbi, maxaa yeelay waxaa jira muddo go'an; midka ay tahay, Landesamt ayaa kuu sheegaya.",
+  "t.lpg.antrag": "Codsiga hal mar ayaad u gudbinaysaa Bayerisches Landesamt für Pflege, kadib lacagtu sannad kasta ayay imanaysaa. Dhakhso u gudbi, maxaa yeelay waxaa jira muddo go'an; midka ay tahay, Landesamt ayaa kuu sheegaya. Lacagta hal sano waxay inta badan timaadaa ilaa 31 Janaayo ee sannadka xiga.",
   "t.lpg.pflegeAntrag": "Marka Pflegegrad 2 ama ka badan la go'aamiyo, Bayern waxaa dheeri ahaan la helaa Landespflegegeld: {betrag} sannadkii.",
   "t.kindergeld.familiengeld": "Bayern oo keliya: carruurta dhashay ilaa dhammaadka 2024, ilaa dhalashada 3-aad waxaa weli la bixiyaa Familiengeld ({betrag} bishii, laga bilaabo ilmaha 3-aad {ab3}), xanaanada carruurta yaryar (Krippe) waxaa la bixiyaa ilaa {krippe} Krippengeld bishii, iyadoo ku xidhan dakhliga. Carruurta dhashay laga bilaabo 2025, labadaba ma jiraan.",
   "t.ausweis.gl": "Dhegoole (Merkzeichen Gl): Bundesländer qaar waxay leeyihiin Gehörlosengeld u gaar ah, tusaale ahaan Hessen iyo Sachsen-Anhalt; Bayern ma laha. Weydii Versorgungsamt-ka gobolkaaga.",

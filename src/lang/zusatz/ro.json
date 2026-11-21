@@ -72,5 +72,6 @@
   "bp.vgl.zaehltNicht": "nu contează",
   "bp.vgl.pg": "grad de îngrijire (Pflegegrad) {pg}",
   "bp.vgl.kein": "fără grad de îngrijire (Pflegegrad)",
-  "bp.vgl.klein": "Puncte ponderate, așa cum calculează Pflegekasse (§ 15 SGB XI). Plus înseamnă: estimarea ta dă acolo mai multe puncte. Mai jos vezi la ce întrebări exact."
+  "bp.vgl.klein": "Puncte ponderate, așa cum calculează Pflegekasse (§ 15 SGB XI). Plus înseamnă: estimarea ta dă acolo mai multe puncte. Mai jos vezi la ce întrebări exact.",
+  "t.bafoeg.vermTeil": "Averea depășește suma scutită de {verm}. Contează doar partea de peste: împărțită pe 12 luni, reduce BAföG cu aproximativ {monat} pe lună. Amt für Ausbildungsförderung calculează exact."
 }

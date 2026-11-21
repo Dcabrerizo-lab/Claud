@@ -123,7 +123,8 @@ const T = (o, id, key) => { const x = res(o).m[id].tx.find((a) => a[0] === key);
 // § 147 Abs. 2 SGB III: ab 58 Jahren und 48 Monaten Versicherung 24 Monate; mit Kind 67 % (§ 149)
 const a1 = { adults: 2, kids: 2, arbeitSit: 'arbeitslos', algZeit: true, algMonate: 48, gebJahr: 1966, heute: 2026.8, lohnVorher: 4000 };
 ck('[alg-dauer] ALG I: 60 Jahre, 48 Monate → 24 Monate, mit Kindern 67 %', L(a1, 'alg1') === 'ja' && T(a1, 'alg1', 'alg1.dauer').m === 24 && T(a1, 'alg1', 'alg1.ja').p === 67);
-ck('ALG I: Schätzung 4.000 € x (60-72 %) x 67 % = 1.610 bis 1.930 €', T(a1, 'alg1', 'schaetz.spanne').a === E(1610) && T(a1, 'alg1', 'schaetz.spanne').b === E(1930), JSON.stringify(T(a1, 'alg1', 'schaetz.spanne')));
+// Oben: Leistungsentgelt Steuerklasse III (§ 153 SGB III): 4.000 − 20 % − 207,66 € Lohnsteuer = 2.992,34 € × 67 % = 2.004,87 -> 2.000 €
+ck('ALG I: Schätzung 4.000 € x 60 % x 67 % = 1.610 bis 2.000 € (Steuerklasse III)', T(a1, 'alg1', 'schaetz.spanne').a === E(1610) && T(a1, 'alg1', 'schaetz.spanne').b === E(2000), JSON.stringify(T(a1, 'alg1', 'schaetz.spanne')));
 ck('ALG I: 57 Jahre mit 48 Monaten → 18 Monate (ab 55 und 36 Monaten)', T({ ...a1, gebJahr: 1969 }, 'alg1', 'alg1.dauer').m === 18);
 ck('ALG I: 30 Jahre, 20 Monate → 10 Monate, ohne Kind 60 %', T({ ...a1, adults: 1, kids: 0, gebJahr: 1996, algMonate: 20 }, 'alg1', 'alg1.dauer').m === 10 && T({ ...a1, adults: 1, kids: 0, gebJahr: 1996, algMonate: 20 }, 'alg1', 'alg1.ja').p === 60);
 ck('ALG I: über der Beitragsbemessungsgrenze gedeckelt (8.450 €)', T({ ...a1, lohnVorher: 12000 }, 'alg1', 'schaetz.spanne').b === E(Math.round(8450 * 0.72 * 0.67 / 10) * 10));
@@ -134,7 +135,8 @@ ck('ALG I: Krankengeld läuft aus → Nahtlosigkeit möglich (§ 145 SGB III)', 
 // § 47 SGB V: 70 % brutto, höchstens 90 % netto; abzüglich Beiträge 12,5 %. 3.000 € brutto: netto 60-72 % → 1.620/1.944 x 0,9
 const k1 = { arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 3000 };
 ck('Krankengeld läuft: wahrscheinlich, Hinweis auf 78 Wochen', L(k1, 'krankengeld') === 'ja' && K(k1, 'krankengeld').includes('krank.78'));
-ck('Krankengeld: Schätzung 3.000 € → 1.420 bis 1.700 €', T(k1, 'krankengeld', 'schaetz.spanne').a === E(Math.round(3000 * 0.6 * 0.9 * 0.875 / 10) * 10) && T(k1, 'krankengeld', 'schaetz.spanne').b === E(Math.round(Math.min(2100, 3000 * 0.72 * 0.9) * 0.875 / 10) * 10), JSON.stringify(T(k1, 'krankengeld', 'schaetz.spanne')));
+// Oben: Netto Steuerklasse III 2.327,17 € × 90 % = 2.094,45 € (unter 70 % brutto 2.100 €) × 0,875 = 1.832,64 -> 1.830 €
+ck('Krankengeld: Schätzung 3.000 € → 1.420 bis 1.830 €', T(k1, 'krankengeld', 'schaetz.spanne').a === E(Math.round(3000 * 0.6 * 0.9 * 0.875 / 10) * 10) && T(k1, 'krankengeld', 'schaetz.spanne').b === E(Math.round(Math.min(2100, R.nettoLohn(3000, { stkl: 3, heute: 2026.8 }).netto * 0.9) * 0.875 / 10) * 10), JSON.stringify(T(k1, 'krankengeld', 'schaetz.spanne')));
 // Kleines Brutto (1.500 €): Netto bis 80 % -> 90 % davon = 1.080 € liegt über 70 % brutto = 1.050 € -> die 70-%-Grenze greift
 ck('Krankengeld bei 1.500 € brutto: 70-%-Grenze greift (oben 1.050 € x 0,875 = 920 €)', T({ ...k1, lohnVorher: 1500 }, 'krankengeld', 'schaetz.spanne').b === E(920), JSON.stringify(T({ ...k1, lohnVorher: 1500 }, 'krankengeld', 'schaetz.spanne')));
 ck('Krankengeld: unter 6 Wochen zahlt der Arbeitgeber (möglich)', L({ ...k1, krankWochen: 'unter6' }, 'krankengeld') === 'vielleicht' && K({ ...k1, krankWochen: 'unter6' }, 'krankengeld')[0] === 'krank.lfz');
@@ -286,7 +288,8 @@ ck('Elterngeld ohne Kind: nein; ohne Betrag: möglich mit Spanne', L({ miete: 50
 ck('Elterngeld schon bezogen: na', L({ baby: 'da', einkommen: [{ art: 'eg', b: 400 }], miete: 500 }, 'elterngeld') === 'na');
 // Hilfe zur Pflege: Einkommensgrenze 2 x 563 + Miete + 70 % von 563 je weiterer Person
 ck('[hzp-voraus] Hilfe zur Pflege: ohne Pflegegrad nein', L({ miete: 500 }, 'hzp') === 'nein');
-ck('[hzp-grenze] Hilfe zur Pflege: Paar, Miete 600, Grenze 2 x 563 + 600 + 394,10 = 2.120 €', (() => { const x = T({ adults: 2, pflegegrad: '4', art1: 'rente', brutto: 1500, netto: 1500, miete: 600, vermoegen: 0, gebJahr: 1950, heute: 2026.8 }, 'hzp', 'hzp.unter'); return x && x.grenze === E(2 * 563 + 600 + 0.7 * 563); })());
+// § 85 Abs. 1 SGB XII: Heizkosten gehören zur Unterkunft (BSG 30.04.2020, B 8 SO 1/19 R), Familienzuschlag 70 % aufgerundet (394,10 -> 395 €)
+ck('[hzp-grenze] Hilfe zur Pflege: Paar, Warmmiete 600 (davon Heizung 80, zählt mit), Grenze 2 x 563 + 600 + 395 (aufgerundet) = 2.121 €', (() => { const x = T({ adults: 2, pflegegrad: '4', art1: 'rente', brutto: 1500, netto: 1500, miete: 600, heizkosten: 80, vermoegen: 0, gebJahr: 1950, heute: 2026.8 }, 'hzp', 'hzp.unter'); const y = T({ adults: 2, pflegegrad: '4', art1: 'rente', brutto: 1500, netto: 1500, miete: 600, vermoegen: 0, gebJahr: 1950, heute: 2026.8 }, 'hzp', 'hzp.unter'); return x && y && x.grenze === E(2121) && y.grenze === E(2121); })());
 ck('Hilfe zur Pflege: Einkommen über der Grenze -> Hinweis auf Eigenanteil', K({ pflegegrad: '3', art1: 'rente', brutto: 2500, netto: 2500, miete: 500, vermoegen: 0, gebJahr: 1950, heute: 2026.8 }, 'hzp')[0] === 'hzp.ueber');
 ck('[hzp-verm] Hilfe zur Pflege: Vermögen über 10.000 € -> nein', L({ pflegegrad: '3', art1: 'rente', brutto: 900, netto: 900, miete: 500, vermoegen: 15000, gebJahr: 1950, heute: 2026.8 }, 'hzp') === 'nein');
 // Asylbewerber: eigene Leistung, kein Grundsicherungsgeld, keine Grundsicherung im Alter, kein Kinderzuschlag (§ 7 Abs. 1 SGB II, § 23 Abs. 2 SGB XII); Wohngeld höchstens möglich (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG); weitere Fälle: test/test-aufenthalt.js
@@ -299,7 +302,7 @@ ck('Ohne Asyl: Asylbewerberleistungen nein', L({ ...asyl, aufenthalt: '' }, 'asy
 
 // ---------- Blindenhilfe (§ 72 SGB XII) ----------
 const blind = { art1: 'rente', brutto: 900, netto: 900, miete: 450, vermoegen: 0, gebJahr: 1960, heute: 2026.8, bhPerson: 'erwNach25', gdb: '100', blind: 'blind' };
-ck('Blindenhilfe: blind, wenig Einkommen -> möglich, unter der Grenze 2 x 563 + 450 = 1.576 €', L(blind, 'blh') === 'vielleicht' && T(blind, 'blh', 'blh.unter') && T(blind, 'blh', 'blh.unter').grenze === E(2 * 563 + 450) && K(blind, 'blh').includes('blh.bayern'));
+ck('Blindenhilfe: blind, wenig Einkommen -> möglich, unter der Grenze 2 x 563 + 450 (Warmmiete, BSG B 8 SO 1/19 R) = 1.576 €', L(blind, 'blh') === 'vielleicht' && T(blind, 'blh', 'blh.unter') && T(blind, 'blh', 'blh.unter').grenze === E(2 * 563 + 450) && K(blind, 'blh').includes('blh.bayern'));
 ck('[blh-grenze] Blindenhilfe: über der Grenze höchstens 40 % angerechnet', T({ ...blind, brutto: 2500, netto: 2500 }, 'blh', 'blh.ueber').prozent === 40);
 ck('[blh-voraus] Blindenhilfe: hochgradig sehbehindert -> nein; nicht blind -> nein', L({ ...blind, blind: 'hoch' }, 'blh') === 'nein' && K({ ...blind, blind: 'hoch' }, 'blh')[0] === 'blh.hoch' && L({ ...blind, blind: '' }, 'blh') === 'nein');
 ck('[blh-verm] Blindenhilfe: Vermögen 15.000 € -> nein', L({ ...blind, vermoegen: 15000 }, 'blh') === 'nein');
@@ -436,7 +439,7 @@ ck('[uvg-volljaehrig] Nur volljährige Kinder: kein Unterhaltsvorschuss, Hinweis
 }
 ck('[uvg-anrechnung] Höchstbetrag nach Alter: Kind unter 6 mit 230 € Unterhalt nein (≥ 227 €), Kind 6-11 mit 230 € möglich', L(uv({ kidsU6: 1, unterhalt: 230 }), 'uvg') === 'nein' && L(uv({ unterhalt: 230 }), 'uvg') === 'vielleicht');
 ck('[uvg-einkommen] Unterhaltsvorschuss zählt bei neuer Partnerschaft ohne Trauschein als Einkommen der Kinder, bei Heirat nicht', R.derive(uv({ adults: 2, uvgPartner: 'neu' })).uvgEst === 299 && R.derive(uv({ adults: 2, uvgPartner: 'ehe' })).uvgEst === 0 && R.derive(uv({ adults: 2 })).uvgEst === 0);
-ck('[bafoeg-verm] BAföG-Vermögen: unter 30 Jahren bis 15.000 €', L({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 16000 }, 'bafoeg') === 'nein' && L({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 14000 }, 'bafoeg') === 'vielleicht');
+ck('[bafoeg-verm] BAföG-Vermögen: unter 30 Jahren 15.000 € frei, darüber mindert nur der Rest (§ 30)', L({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 16000 }, 'bafoeg') === 'vielleicht' && K({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 16000 }, 'bafoeg')[0] === 'bafoeg.vermTeil' && L({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 30000 }, 'bafoeg') === 'nein' && L({ ausbildung: 'ich', alterGruppe: '<30', vermoegen: 14000 }, 'bafoeg') === 'vielleicht');
 ck('[bafoeg-alter] BAföG-Altersgrenze 45: ab 50 nein, 41 bis 50 nur möglich', L({ ausbildung: 'ich', alterGruppe: '50+' }, 'bafoeg') === 'nein' && L({ ausbildung: 'ich', alterGruppe: '40-49' }, 'bafoeg') === 'vielleicht');
 ck('[bafoeg-betrieb] Betriebliche Ausbildung: kein BAföG', L({ young: 1, ausbildung: 'kindBetrieb' }, 'bafoeg') === 'nein');
 // Pflege
@@ -473,9 +476,9 @@ ck('[alg-neben] Hinweis Nebeneinkommen 165 € frei', T(algT, 'alg1', 'alg1.nebe
 ck('[alg-nahtlos] Krankengeld läuft aus: Nahtlosigkeit', K({ arbeitSit: 'krank', krankWochen: 'ende' }, 'alg1')[0] === 'alg1.nahtlos');
 ck('[alg-alter] Im Rentenalter kein Arbeitslosengeld', L({ ...algT, gebJahr: 1955 }, 'alg1') === 'nein');
 // Krankenversicherung
-// 3.000 € brutto: 70 % = 2.100, 90 % netto (60-72 %) = 1.620-1.944, kleinerer Wert, minus 12,5 % Beiträge -> 1.417,50 bis 1.700,95
+// 3.000 € brutto: 70 % = 2.100, 90 % netto (60 % bis Steuerklasse III 2.327,17 €) = 1.620-2.094,45, kleinerer Wert, minus 12,5 % -> 1.417,50 bis 1.832,64
 const kvT = { arbeitSit: 'krank', krankWochen: 'laeuft', lohnVorher: 3000 };
-ck('[kv-kg] Krankengeld bei 3.000 € brutto: etwa 1.420 bis 1.700 €', T(kvT, 'krankengeld', 'schaetz.spanne').a === E(1420) && T(kvT, 'krankengeld', 'schaetz.spanne').b === E(1700));
+ck('[kv-kg] Krankengeld bei 3.000 € brutto: etwa 1.420 bis 1.830 €', T(kvT, 'krankengeld', 'schaetz.spanne').a === E(1420) && T(kvT, 'krankengeld', 'schaetz.spanne').b === E(1830));
 ck('[kv-78] Erste 6 Wochen Lohnfortzahlung, Krankengeld bis 78 Wochen', K({ ...kvT, krankWochen: 'unter6' }, 'krankengeld')[0] === 'krank.lfz' && K(kvT, 'krankengeld').includes('krank.78'));
 ck('[kv-minijob] Minijob: kein Krankengeld', L({ ...kvT, lohnVorher: 500 }, 'krankengeld') === 'nein');
 ck('[kv-zuzahl] Chronisch krank ab GdB 60 oder Pflegegrad 3: 1 %-Grenze; GdB 50 ohne', K({ gdb: '60', bhPerson: 'erwNach25' }, 'zuzahl').includes('zuzahl.chron') && K({ pflegegrad: '3' }, 'zuzahl').includes('zuzahl.chron') && !K({ gdb: '50', bhPerson: 'erwNach25' }, 'zuzahl').includes('zuzahl.chron'));
@@ -576,16 +579,16 @@ ck('[uz-sgb2] Ohne gezahlten Unterhalt keine Unterhalts-Hinweise', !K(uzA, 'ggel
 const Z = (o) => R.evaluate({ ...base, ...o });
 const ZR = (o, id) => Z(o).results.find((x) => x.id === id);
 const zAlg = { art1: 'ohne', miete: 600, mietstufe: 3, vermoegen: 1000, arbeitSit: 'arbeitslos', algZeit: true, lohnVorher: 3000, gebJahr: 1985 };
-// Arbeitslosengeld: 3.000 € brutto, Netto 60-72 %, 60 % davon: 1.080 bis 1.300 €, Mitte 1.190 €; danach 1.190 - 30 € Pauschale = 1.160 € gegen Bedarf 1.163 €
-ck('[zuk-einkommen] Arbeitslos ohne Einkommen: Grundsicherungsgeld jetzt wahrscheinlich, mit 1.190 € Arbeitslosengeld nur noch knapp -> „möglich“ mit Hinweis',
-  L({ ...zAlg, arbeitSit: '' }, 'ggeld') === 'ja' && L(zAlg, 'ggeld') === 'vielleicht' && ZR(zAlg, 'ggeld').tx.some((t) => t[0] === 'zuk.alg' && t[1].a === E(1190)) && K(zAlg, 'ggeld').includes('bedarfJa') && K(zAlg, 'ggeld').includes('zuk.vielleicht'));
+// Arbeitslosengeld: 3.000 € brutto, Netto 60 % bis Leistungsentgelt Steuerklasse III (2.361,67 €), 60 % davon: 1.080 bis 1.420 €, Mitte 1.250 € gegen Bedarf 1.163 €
+ck('[zuk-einkommen] Arbeitslos ohne Einkommen: Grundsicherungsgeld jetzt wahrscheinlich, mit 1.250 € Arbeitslosengeld nur noch knapp -> „möglich“ mit Hinweis',
+  L({ ...zAlg, arbeitSit: '' }, 'ggeld') === 'ja' && L(zAlg, 'ggeld') === 'vielleicht' && ZR(zAlg, 'ggeld').tx.some((t) => t[0] === 'zuk.alg' && t[1].a === E(1250)) && K(zAlg, 'ggeld').includes('bedarfJa') && K(zAlg, 'ggeld').includes('zuk.vielleicht'));
 ck('[zuk-einkommen] Hinweis „Arbeitslosengeld zuerst beantragen“ auf der Ergebnisseite, vor dem Stichtag-Hinweis', Z(zAlg).zusammen.map((a) => a[0]).join() === 'z.ggVsWg,z.zuk.alg,z.grenzen,z.verfahren,z.stichtag');
 ck('[zuk-einkommen] Wohngeld: ohne Einkommen nur „möglich“ (Mindesteinkommen), mit Arbeitslosengeld danach wahrscheinlich, Betrag dazu', K(zAlg, 'wohngeld').includes('zuk.ja') && K(zAlg, 'wohngeld').includes('zuk.betragEins'));
 ck('[zuk-einkommen] Ohne Kinder kein Kinderzuschlag, auch kein Hinweis', L(zAlg, 'kiz') === 'nein' && !K(zAlg, 'kiz').some((k) => /^zuk\./.test(k)));
 const zKg = { kids: 1, art1: 'lohn', brutto: 2500, netto: 1800, miete: 700, mietstufe: 4, vermoegen: 1000, arbeitSit: 'krank', krankWochen: 'unter6', lohnVorher: 2500 };
-// Krankengeld: min(70 % brutto, 90 % netto) minus 12,5 % Beiträge: 1.180 bis 1.420 €, Mitte 1.300 €, statt des Lohns
-ck('[zuk-einkommen] Krankgeschrieben (Lohnfortzahlung): Krankengeld 1.300 € ersetzt den Lohn, Grundsicherungsgeld danach wahrscheinlich -> „möglich“, Kinderzuschlag höher',
-  L({ ...zKg, arbeitSit: '' }, 'ggeld') !== 'ja' && L(zKg, 'ggeld') === 'vielleicht' && ZR(zKg, 'ggeld').tx.some((t) => t[0] === 'zuk.kg' && t[1].a === E(1300)) && K(zKg, 'ggeld').includes('zuk.ohneLohn') && K(zKg, 'kiz').includes('zuk.betragEins'));
+// Krankengeld: min(70 % brutto, 90 % netto) minus 12,5 % Beiträge: 1.180 bis 1.530 € (oben 70 % brutto), Mitte 1.360 €, statt des Lohns
+ck('[zuk-einkommen] Krankgeschrieben (Lohnfortzahlung): Krankengeld 1.360 € ersetzt den Lohn, Grundsicherungsgeld danach wahrscheinlich -> „möglich“, Kinderzuschlag höher',
+  L({ ...zKg, arbeitSit: '' }, 'ggeld') !== 'ja' && L(zKg, 'ggeld') === 'vielleicht' && ZR(zKg, 'ggeld').tx.some((t) => t[0] === 'zuk.kg' && t[1].a === E(1360)) && K(zKg, 'ggeld').includes('zuk.ohneLohn') && K(zKg, 'kiz').includes('zuk.betragEins'));
 const zEg = { art1: 'lohn', brutto: 2350, netto: 1600, miete: 650, mietstufe: 3, vermoegen: 1000, baby: 'bald', egVor: 1600 };
 // Elterngeld: 1.600 € Netto - 83,33 € (§ 2c BEEG) = 1.516,67 € -> Untergrenze 65 %: 986 € (wie Elterngeldrechner des Bundes)
 ck('[zuk-einkommen] Baby kommt bald (alleinstehend): Elterngeld rund 990 € statt Lohn, Wohngeld danach wahrscheinlich',
@@ -675,8 +678,8 @@ ck('[auto] Auto: im SGB II geschützt, über 15.000 € nur „möglich“; gebr
   L({ ...bz, autoWert: 9000 }, 'ggeld') === 'ja' && L({ ...bz, autoWert: 20000 }, 'ggeld') === 'vielleicht' && K({ ...bz, autoWert: 20000 }, 'ggeld').includes('auto.hoch') && L({ ...bz, autoWert: 20000, autoBraucht: true }, 'ggeld') === 'ja');
 ck('[auto] Grundsicherung im Alter: angemessenes Auto geschützt (§ 90 Abs. 2 Nr. 10 SGB XII); über 15.000 € nur „möglich“, gebraucht ohne Einschränkung',
   L(f2, 'gsa') === 'ja' && L({ ...f2, autoWert: 8000 }, 'gsa') === 'ja' && L({ ...f2, autoWert: 20000 }, 'gsa') === 'vielleicht' && K({ ...f2, autoWert: 20000 }, 'gsa').includes('auto.hochSgb12') && L({ ...f2, autoWert: 20000, autoBraucht: true }, 'gsa') === 'ja');
-ck('[auto] BAföG: Auto zählt zum Vermögen (10.000 € + Auto 6.000 € über 15.000 € Freibetrag unter 30)',
-  L({ ausbildung: 'ich', gebJahr: 2004, vermoegen: 10000, brutto: 0, netto: 0, miete: 400 }, 'bafoeg') !== 'nein' && L({ ausbildung: 'ich', gebJahr: 2004, vermoegen: 10000, autoWert: 6000, brutto: 0, netto: 0, miete: 400 }, 'bafoeg') === 'nein');
+ck('[auto] BAföG: Auto zählt zum Vermögen (10.000 € + Auto 6.000 € über 15.000 € Freibetrag unter 30: Hinweis; + Auto 20.000 €: eher nicht)',
+  L({ ausbildung: 'ich', gebJahr: 2004, vermoegen: 10000, brutto: 0, netto: 0, miete: 400 }, 'bafoeg') !== 'nein' && K({ ausbildung: 'ich', gebJahr: 2004, vermoegen: 10000, autoWert: 6000, brutto: 0, netto: 0, miete: 400 }, 'bafoeg')[0] === 'bafoeg.vermTeil' && L({ ausbildung: 'ich', gebJahr: 2004, vermoegen: 10000, autoWert: 20000, brutto: 0, netto: 0, miete: 400 }, 'bafoeg') === 'nein');
 ck('[hh-andere] Verwandte in der Wohnung: Vermutung der Unterstützung (§ 9 Abs. 5 SGB II) und Wohngeld-Haushalt -> nur „möglich“; WG: Hinweis eigener Mietanteil',
   L({ ...bz, hhAndere: 'verwandte' }, 'ggeld') === 'vielleicht' && K({ ...bz, hhAndere: 'verwandte' }, 'ggeld').includes('ggeld.verwandte') && L({ ...bz, hhAndere: 'wg' }, 'ggeld') === 'ja' && K({ ...bz, hhAndere: 'wg' }, 'ggeld').includes('wg.anteil'));
 // Angemessene Unterkunftskosten: 1 Person, Mietenstufe III: (456 € + 19,20 € Klima) × 1,1 + 110,40 € Heizung = 633,12 € -> etwa 630 €
