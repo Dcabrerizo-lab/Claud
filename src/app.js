@@ -896,15 +896,16 @@
     $('ebKuerzel').addEventListener('input', ebBauen);
     $('ebDruck').addEventListener('click', function () { ebAusgeben(NATIVE ? (plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen') : 'web'); });
     if (NATIVE) { $('ebDruck').setAttribute('data-t', plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'f.druck' : 'f.pdf'); $('ebDruck').textContent = t($('ebDruck').getAttribute('data-t')); }
+    // „Zum Ergebnis“: nicht bei jedem Scrollen messen (getBoundingClientRect erzwingt Layout), sondern beobachten. Die oberen 60 % des
+    // Fensters sind der Bereich (rootMargin unten -40 %); dann tut jumpPruefen bei scroll/resize nichts. Ohne IntersectionObserver wie bisher.
+    if (window.IntersectionObserver && $('ergebnis')) { jumpIO = new window.IntersectionObserver(function (en) { jumpSetzen(en[en.length - 1].boundingClientRect); }, { rootMargin: '0px 0px -40% 0px' }); jumpIO.observe($('ergebnis')); }
     $('jumpBtn').addEventListener('click', function () {
       var el = $('ergebnis');
       el.scrollIntoView({ behavior: smooth(), block: 'start' });
       el.focus({ preventScroll: true });
     });
-    // „Zum Ergebnis“: nicht bei jedem Scrollen messen (getBoundingClientRect erzwingt Layout), sondern beobachten. Die obere 60 % des
-    // Fensters sind der Bereich (rootMargin unten -40 %); ohne IntersectionObserver wie bisher über scroll/resize.
-    if (window.IntersectionObserver && $('ergebnis')) new window.IntersectionObserver(function (en) { jumpSetzen(en[en.length - 1].boundingClientRect); }, { rootMargin: '0px 0px -40% 0px' }).observe($('ergebnis'));
-    else { window.addEventListener('scroll', jumpPruefen, { passive: true }); window.addEventListener('resize', jumpPruefen); }
+    window.addEventListener('scroll', jumpPruefen, { passive: true });
+    window.addEventListener('resize', jumpPruefen);
     [['p-name', 'name'], ['p-geb', 'geb'], ['p-strasse', 'strasse'], ['p-ort', 'ort'], ['p-tel', 'tel']].forEach(function (x) {
       $(x[0]).addEventListener('input', function () {
         person[x[1]] = $(x[0]).value; save();
@@ -3181,7 +3182,8 @@
     else if (a === 'pflegestart' && /^pg/.test(sub)) puOeffnen('pg');
     else if (a === 'pflegestart' && /^liste\d$/.test(sub)) puOeffnen('liste', +sub.slice(5));
   }
-  function jumpPruefen() { var e = $('ergebnis'); if (e) jumpSetzen(e.getBoundingClientRect()); }
+  var jumpIO; // IntersectionObserver für „Zum Ergebnis“ (falls vorhanden); ohne Startwert, weil er früher gesetzt werden kann (var-Hoisting)
+  function jumpPruefen(ev) { if (ev && jumpIO) return; var e = $('ergebnis'); if (e) jumpSetzen(e.getBoundingClientRect()); } // ev: scroll/resize
   function jumpSetzen(r) { var j = $('jump'); if (j && r) j.classList.toggle('am-ergebnis', r.height > 0 && r.top < (window.innerHeight || 0) * 0.6); }
   function zurueckZurHerkunft(a) { var h = herkunftVon(a); delete herkunft[a]; zeigeAnsicht(h, true); window.scrollTo(0, 0); }
   var BRIEFE = [

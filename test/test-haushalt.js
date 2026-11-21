@@ -196,25 +196,28 @@ if (fs.existsSync(ef)) { const E = JSON.parse(fs.readFileSync(ef, 'utf8')); cons
 // „Zum Ergebnis“ (src/app.js, Technik 3): beobachtet mit IntersectionObserver statt bei jedem Scrollen zu messen; Rückfall scroll/resize
 {
   const app = fs.readFileSync(path.join(__dirname, '..', 'src', 'app.js'), 'utf8');
-  const zeile = (app.match(/^ *if \(window\.IntersectionObserver && \$\('ergebnis'\)\).*\n *else \{.*\}\n/m) || [''])[0];
-  const fn = (app.match(/^ *function jumpPruefen\(\) \{.*\}\n *function jumpSetzen\(r\) \{.*\}\n/m) || [''])[0];
-  check('[app-jump] IntersectionObserver mit Rückfall, kein scroll-Handler mit getBoundingClientRect, wenn vorhanden', !!zeile && !!fn);
+  const io = (app.match(/^ *if \(window\.IntersectionObserver && \$\('ergebnis'\)\) \{ jumpIO = .*\n/m) || [''])[0];
+  const hoer = (app.match(/^ *window\.addEventListener\('scroll', jumpPruefen, \{ passive: true \}\);\n *window\.addEventListener\('resize', jumpPruefen\);\n/m) || [''])[0];
+  const fn = (app.match(/^ *var jumpIO;.*\n *function jumpPruefen\(ev\) \{.*\n *function jumpSetzen\(r\) \{.*\}\n/m) || [''])[0];
+  check('[app-jump] IntersectionObserver mit Rückfall in src/app.js gefunden', !!io && !!hoer && !!fn);
   const lauf = (mitIO) => {
-    const cls = {}, hoerer = [], beob = [];
-    const el = { ergebnis: { getBoundingClientRect: () => ({ top: 100, height: 50 }) }, jump: { classList: { toggle: (c, an) => { cls[c] = an; } } } };
-    const win = { innerHeight: 1000, addEventListener: (e) => hoerer.push(e) };
+    const cls = {}, hoerer = {}, beob = [];
+    let gemessen = 0;
+    const el = { ergebnis: { getBoundingClientRect: () => { gemessen++; return { top: 100, height: 50 }; } }, jump: { classList: { toggle: (c, an) => { cls[c] = an; } } } };
+    const win = { innerHeight: 1000, addEventListener: (e, f) => { hoerer[e] = f; } };
     if (mitIO) win.IntersectionObserver = function (cb, opt) { this.observe = (x) => beob.push({ cb, opt, x }); };
-    new Function('window', '$', fn + zeile)(win, (id) => el[id]);
-    return { cls, hoerer, beob };
+    new Function('window', '$', fn + io + hoer)(win, (id) => el[id]);
+    hoerer.scroll({ type: 'scroll' }); hoerer.resize({ type: 'resize' });
+    return { cls, beob, gemessen };
   };
   const a = lauf(true);
-  check('[app-jump] mit IntersectionObserver: kein Scroll-Hörer, Bereich obere 60 %', a.hoerer.length === 0 && a.beob.length === 1 && a.beob[0].opt.rootMargin === '0px 0px -40% 0px');
+  check('[app-jump] mit IntersectionObserver: Scrollen misst nicht, Bereich obere 60 %', a.gemessen === 0 && a.beob.length === 1 && a.beob[0].opt.rootMargin === '0px 0px -40% 0px', a);
   a.beob[0].cb([{ boundingClientRect: { top: 700, height: 50 } }]); const unten = a.cls['am-ergebnis'];
   a.beob[0].cb([{ boundingClientRect: { top: -300, height: 50 } }]); const oben = a.cls['am-ergebnis'];
   a.beob[0].cb([{ boundingClientRect: { top: 0, height: 0 } }]);
   check('[app-jump] Ergebnis unten: aus; darüber gescrollt: an; ausgeblendet: aus', unten === false && oben === true && a.cls['am-ergebnis'] === false);
   const b = lauf(false);
-  check('[app-jump] ohne IntersectionObserver: Rückfall über scroll und resize', b.hoerer.join() === 'scroll,resize' && b.beob.length === 0);
+  check('[app-jump] ohne IntersectionObserver: Rückfall, scroll und resize messen wie bisher', b.gemessen === 2 && b.beob.length === 0 && b.cls['am-ergebnis'] === true);
 }
 
 if (fehler) { console.log('\n' + fehler + ' von ' + n + ' Prüfungen fehlgeschlagen'); process.exit(1); }
