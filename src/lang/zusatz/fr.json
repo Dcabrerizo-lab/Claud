@@ -61,6 +61,7 @@
   "bp.vb.verh": "As-tu été empêché sans que ce soit ta faute (par exemple à l’hôpital) ? Alors envoie tout de suite le recours et écris pourquoi ce n’était pas possible plus tôt (« Antrag auf Wiedereinsetzung », demande de relevé de forclusion). Tu n’as que peu de temps pour cela : {zeit} après la fin de l’empêchement.",
   "bp.vb.2w": "2 semaines",
   "bp.vb.1m": "1 mois",
+  "wg.plzStufe": "Calculé avec le niveau de loyer {stufe} pour {ort}. Si ton adresse dépend d’une autre commune, le montant peut être différent.",
   "bp.vb.erfolg": "C’est le service qui décide si tu obtiens gain de cause. SoLo ne peut pas le promettre.",
   "bp.vb.quellen": "Sources : (§ 44 SGB X ; § 40 Abs. 1 SGB II ; § 116a SGB XII ; §§ 66, 67, 84 SGG ; Wohngeld: §§ 58, 60, 70 VwGO).",
   "bp.vb.zugang": "Jour où la lettre est vraiment arrivée (si plus tard)",

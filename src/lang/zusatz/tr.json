@@ -61,6 +61,7 @@
   "bp.vb.h": "Bu hesaba göre itiraz (Widerspruch) süresi {datum} tarihinden beri dolmuş.",
   "bp.vb.pruef": "Önce iki şeyi kontrol et:",
   "bp.vb.1": "Mektup sana daha geç mi ulaştı? O zaman süre daha geç biter. Yukarıya mektubun gerçekten geldiği günü yaz.",
+  "wg.plzStufe": "{ort} için kira kademesi {stufe} ile hesaplandı. Adresin başka bir belediyeye bağlıysa tutar farklı olabilir.",
   "bp.vb.2": "Kararın sonunda „Rechtsbehelfsbelehrung“ (itiraz yolları hakkında bilgi) bölümü eksik mi ya da yanlış mı? O zaman bir yıl vaktin var.",
   "bp.vb.sonst": "Aksi halde: yeniden inceleme başvurusu yap.",
   "bp.vb.sonst.t": "Karar yanlışsa kurum onu şimdi de değiştirmek zorunda. Bu ücretsizdir.",

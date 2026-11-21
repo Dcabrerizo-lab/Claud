@@ -61,6 +61,7 @@
   "bp.vb.verh": "Czy nie mogłeś działać bez własnej winy (na przykład w szpitalu)? Wtedy od razu wyślij sprzeciw i dopisz, dlaczego nie dało się wcześniej („Antrag auf Wiedereinsetzung”, wniosek o przywrócenie terminu). Masz na to mało czasu: {zeit} od ustania przeszkody.",
   "bp.vb.2w": "2 tygodnie",
   "bp.vb.1m": "1 miesiąc",
+  "wg.plzStufe": "Obliczono ze stopniem czynszu {stufe} dla {ort}. Jeśli twój adres należy do innej gminy, kwota może być inna.",
   "bp.vb.erfolg": "O tym, czy ci się uda, decyduje urząd. SoLo nie może tego obiecać.",
   "bp.vb.quellen": "Źródła: (§ 44 SGB X; § 40 Abs. 1 SGB II; § 116a SGB XII; §§ 66, 67, 84 SGG; Wohngeld: §§ 58, 60, 70 VwGO).",
   "bp.vb.zugang": "Dzień, w którym list naprawdę dotarł (jeśli później)",
