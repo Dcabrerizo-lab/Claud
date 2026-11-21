@@ -1011,6 +1011,8 @@
   .hero-los { display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 24px; border-radius: 999px; background: var(--on-c); color: var(--c-leistungen); font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; }
   [dir="rtl"] .pfeil { display: inline-block; transform: scaleX(-1); }
   .start-raster > .sk:last-child:nth-child(even) { grid-column: 1 / -1; min-height: 0; }
+  /* Tablet: bei 640 px passen 3 Spalten, dann stünde „Ich ziehe aus“ allein und schmal in der zweiten Reihe -> 2 Spalten wie am Handy (2 × 2) */
+  @media (min-width: 768px) { .start-raster { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .sk-briefe { --c: var(--c-briefe); } .sk-geld { --c: var(--c-sparen); } .sk-pflege { --c: var(--c-pflege); } .sk-ausziehen { --c: var(--c-ausziehen); }
   .sk-sym { flex: none; width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; background: color-mix(in srgb, var(--on-c) 20%, transparent); color: var(--on-c); }
   .sk-sym svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
