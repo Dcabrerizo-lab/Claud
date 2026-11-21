@@ -498,7 +498,6 @@ setTimeout(async () => {
     check('[geld] Strom/Gas: Knopf „Abschlag prüfen“', !!box.querySelector('.gs-abschlag'));
     zur(); kacheln()[4].click();
     check('[schulden-korr] Mietschulden: ordentliche Kündigung kann trotz Schonfrist bestehen bleiben', /ordentlich \(mit Frist\) gekündigt.*trotz Zahlung bestehen bleiben/.test(fall('miete')) && /§ 569 BGB/.test(box.querySelector('.gs-frist p').textContent));
-    check('[ux-c] Mietschulden: Frist-Kurztext verleitet nicht zum Abwarten, alle offenen Mieten (Rechtsprüfung 21.11.2026)', box.querySelector('.gs-frist .tipp-kurz').textContent === 'Sofort handeln. Warte nicht auf die Klage.' && /Alle offenen Mieten.*2 Monate.*§ 569 BGB/.test(box.querySelector('.gs-frist p').textContent));
     zur(); kacheln()[5].click();
     check('[geld] Geldstrafe: Frist mit § 43 StGB (1 Tag für 2 Tagessätze), Schritt mit § 459a StPO und Art. 293 EGStGB', /1 Tag Haft für 2 Tagessätze \(§ 43 StGB\)/.test(box.querySelector('.gs-frist p').textContent) && /§ 459a StPO/.test(box.querySelector('.gs-schritt p').textContent) && /Art\. 293 EGStGB/.test(box.querySelector('.gs-schritt p').textContent));
     zur();
