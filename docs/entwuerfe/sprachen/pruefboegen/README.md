@@ -2,10 +2,34 @@
 
 Entwurf, 22.11.2026. Grundlage: `docs/entwuerfe/sprachen/verfahren-fehlerfrei.md` (Branch `claude/b-sprachverfahren`), Schritt 6 „Muttersprachler prüft die kritischen Texte“. An der App wird nichts geändert.
 
+## Zuerst diesen: Kurzbogen
+
+**Helfern zuerst den Kurzbogen `<sprache>-kurz.html` geben.** Der lange Bogen (`<sprache>.html`) ist erst der zweite Schritt.
+
+| | Kurzbogen | Langer Bogen |
+|---|---|---|
+| Texte je Sprache | 377 | 1 246 (ps, so: 1 103) |
+| Inhalt | Fristen/Daten, Beträge (€), Warnungen, Rechtsfolgen (Sperre, Pfändung, Kündigung, Kürzung), Verbote in Handlungsanweisungen („Nichts unterschreiben“), plus alles aus `src/lang/denetz/wichtig.json` | alle Regeln, Teil A und Teil B |
+| Gleicher deutscher Text | nur einmal (weitere Schlüssel in der CSV-Spalte `weitere_schluessel_gleicher_text`) | jeder Schlüssel einzeln |
+| Pflege-Texte in so/ps | enthalten (Übersetzung aus `../pflege-wartet/`) | fehlen, dafür eigene Pflege-Bögen |
+| Aufbau | Deutsch und Übersetzung nebeneinander, darunter Kästchen und Platz für „besser so“ | Tabelle mit 5 Spalten |
+
+**Umfang ehrlich:** Allein `wichtig.json` liefert 278 der 377 Texte; die Texte sind im Schnitt 159 Zeichen lang. Bei großer Schrift ergibt das geschätzt **45–60 Seiten**, nicht 15. Für ca. 15 Seiten müsste man sich auf ca. 100 Texte beschränken (z. B. nur Frist, Datum, Betrag und Rechtsfolge, ohne die übrigen Muster aus `wichtig.json`). Bis dahin: Kurzbogen in Abschnitten verteilen (z. B. Nr. 1–100 pro Termin).
+
+Bei einem Fehler in einem Text, der mehrfach vorkommt, alle Schlüssel aus `weitere_schluessel_gleicher_text` mit korrigieren.
+
+## Bekannte Fehler (beim Erstellen der Bögen gesehen)
+
+| Sprache | Datei | Schlüssel | Deutsch | Übersetzung jetzt | Problem |
+|---|---|---|---|---|---|
+| ps | `src/lang/ps.json` | `vertrauen` | „Stand: {stand} · nach amtlichen Quellen“ | „تر {stand} پورې · …“ | heißt „bis {stand}“ statt „Stand: {stand}“ (falscher Sinn: klingt wie ein Ablaufdatum). Vorschlag zum Prüfen durch Muttersprachler: „نېټه: {stand}“ wie bei `stand` („د قواعدو نېټه {stand}“). |
+
 ## Was liegt hier?
 
 | Datei | Inhalt |
 |---|---|
+| `<sprache>-kurz.html` | **Kurzbogen** (zuerst diesen), 377 Texte |
+| `<sprache>-kurz.csv` | Zuordnungsliste zum Kurzbogen |
 | `<sprache>.html` | Druckbarer Bogen (A4, große Schrift) mit den kritischen Texten einer Sprache |
 | `<sprache>.csv` | Zuordnungsliste: Nr. → Datei und Schlüssel (Trennzeichen `;`, UTF-8, öffnet in Excel/LibreOffice) |
 | `pflege-so.html`, `pflege-ps.html` | Alle 404 Texte der Pflege-Einschätzung in Somali/Paschtu (noch nicht in der App, liegen in `../pflege-wartet/`) |
@@ -42,7 +66,7 @@ Ergebnis (Stand `claude/test-update-naechstes`, 22.11.2026): 1 246 deutsche Text
 ## So gibt man die Bögen an Helfer
 
 1. **Passende Person finden**: Muttersprachler, die auch gut Deutsch lesen (Wege: AWO-Sprachmittlerpool, ZAB Nürnberg, Migrationsberatung, Studierende – siehe Verfahrenspapier, Abschnitt 1.2). Technik- oder Rechtswissen ist nicht nötig.
-2. **Bogen ausdrucken**: Datei im Browser öffnen → Drucken → A4, Hochformat, „Hintergrundgrafiken“ einschalten (sonst fehlen die Markierungen). Die Bögen sind lang (Teil A allein ca. 60–80 Seiten); lieber in Abschnitte aufteilen (z. B. Nr. 1–150 pro Termin) oder als PDF am Tablet ausfüllen lassen.
+2. **Bogen ausdrucken** (zuerst den Kurzbogen): Datei im Browser öffnen → Drucken → A4, Hochformat, „Hintergrundgrafiken“ einschalten (sonst fehlen die Markierungen). Die Bögen sind lang (Teil A allein ca. 60–80 Seiten); lieber in Abschnitte aufteilen (z. B. Nr. 1–150 pro Termin) oder als PDF am Tablet ausfüllen lassen.
 3. **Kurz erklären** (oben auf dem Bogen steht die Anleitung auf Deutsch und in der Zielsprache):
    - links Deutsch, rechts die Übersetzung,
    - je Zeile „stimmt“ oder „stimmt nicht“ ankreuzen,
@@ -57,7 +81,7 @@ Die Anleitungssätze in den Zielsprachen wurden maschinell erstellt. Verbindlich
 ## Rückläufe einarbeiten
 
 1. Ausgefüllten Bogen (Papier, Foto, Scan) annehmen, Datum des Bogens notieren.
-2. Die CSV der Sprache vom gleichen Stand öffnen (z. B. `ps.csv`). In Spalte `ergebnis` „ok“ oder „falsch“ eintragen, in `besser_so` den Vorschlag abtippen.
+2. Die CSV des Bogens vom gleichen Stand öffnen (z. B. `ps-kurz.csv` oder `ps.csv`). In Spalte `ergebnis` „ok“ oder „falsch“ eintragen, in `besser_so` den Vorschlag abtippen.
 3. Jede Zeile mit „falsch“: Nr. → Spalten `datei` und `schluessel` zeigen, wo der Text steht (z. B. `src/lang/fristen/ps.json`, Schlüssel `fri.rest.tage`). Bei Pflege so/ps steht dort `docs/entwuerfe/sprachen/pflege-wartet/<sprache>.json`.
 4. Vorschlag prüfen, bevor er in die App kommt:
    - Platzhalter `{…}` alle noch da und unverändert?

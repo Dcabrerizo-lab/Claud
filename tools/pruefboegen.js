@@ -85,6 +85,42 @@ function kritischeTexte() {
   return liste.filter((x) => x.teil === 'A').concat(liste.filter((x) => x.teil === 'B'));
 }
 
+// ---------- Kurzbogen (ca. 15 Seiten): nur das Allerwichtigste ----------
+// Frist/Datum, Betrag, Warnung, Rechtsfolge, Verneinung in Handlungsanweisungen, plus ALLES aus wichtig.json.
+// Gleicher deutscher Text nur einmal (weitere Schlüssel stehen in der CSV).
+const KURZ = [
+  { id: 'frist', re: /Frist(?!en\b)|spätestens|innerhalb (von|eines|der)|rückwirkend|Rückwirkend|bis zum \d|abgelaufen|verfällt|verfallen|\{frist\}/ },
+  { id: 'datum', re: /\b\d{1,2}\.\d{1,2}\.(\d{2,4})?|\b(Januar|Februar|März|April|Juni|Juli|August|September|Oktober|November|Dezember)\b|\{datum\}/ },
+  { id: 'geld', re: /€|\bEuro\b|\{eur:/ },
+  { id: 'warnung', re: /Warnung|Achtung|Vorsicht|\bdroht|drohen|Gefahr/ },
+  { id: 'folge', re: /Sperre|gesperrt|Sanktion|Kürzung|gekürzt|kürz|Pfändung|pfänd|Kündigung|kündig|Räumung|Rückforderung|zurückzahlen/ },
+  { id: 'verneinung', re: /^(Nicht|Keine?n?|Nie)\s+(?!mehr zeigen|alles|angehakt)\S+(\s+\S+){3,}|\b(nichts|nicht|nie|keine?n?)\s+(\w+\s+){0,2}(unterschreib|zahl|überweis|ignorier|wegwerf|umzieh|kündig|abheb|zusag|aufnehm|verpass|liegen lassen)|\b(unterschreib|ignorier|überweis|kündig|wirf|zieh)\w*\s+(\w+\s+){0,3}(nicht|nichts|nie)\b|\b[Vv]ergiss\b/ }
+];
+function kurzTexte() {
+  const liste = [];
+  const nachText = new Map();
+  for (const dir of ordner()) {
+    const de = ladeJson(datei(dir, 'de'));
+    for (const [key, text] of Object.entries(de)) {
+      if (typeof text !== 'string' || key.startsWith('_') || /^meta\./.test(key)) continue;
+      const ids = KURZ.filter((r) => r.re.test(text)).map((r) => r.id);
+      const wichtig = W_TEXT.test(text) || W_KEY.some((r) => r.test(key));
+      if (wichtig) ids.push('wichtig');
+      if (!ids.length) continue;
+      const hart = ids.some((i) => ['geld', 'datum', 'frist'].includes(i));
+      if (!hart && W_NIE.some((r) => r.test(key))) continue; // Überschriften, Knöpfe
+      // ohne wichtig.json: keine App-Sperre (PIN/Vorgang) und keine kurzen Beschriftungen ohne Zahl
+      if (!wichtig && (/^(vg|vgp|clear)\./.test(key) || (text.trim().split(/\s+/).length < 4 && !/\d|€|\{eur:/.test(text)))) continue;
+      const norm = text.trim();
+      if (nachText.has(norm)) { nachText.get(norm).weitere.push({ dir, key }); continue; }
+      const x = { dir, key, de: text, regeln: ids, weitere: [] };
+      nachText.set(norm, x);
+      liste.push(x);
+    }
+  }
+  return liste;
+}
+
 // ---------- Platzhalter mit Beispielwerten ----------
 const BEISPIEL_NAME = {
   n: '3', datum: '15.03.2027', stand: '01.01.2027', d: '15.03.2027', tage: '14', monate: '6', wochen: '2', monat: 'März',
@@ -196,10 +232,11 @@ function zelleBeispiel(de) {
   return '<span class="bsp">Beispiel: ' + teile.join(' · ') + '</span>';
 }
 
-function seite({ lang, titel, untertitel, zeilen, mitPflege, stufeMarke }) {
+function seite({ lang, titel, untertitel, zeilen, mitPflege, stufeMarke, kurz }) {
   const t = T[lang];
   const dir = RTL.has(lang) ? 'rtl' : 'ltr';
   let teil = null;
+  if (kurz) return seiteKurz({ lang, titel, untertitel, zeilen });
   const rows = zeilen.map((z) => {
     let kopf = '';
     if (z.teil && z.teil !== teil) {
@@ -235,7 +272,52 @@ ${anleitungHtml(lang, mitPflege)}
 ${rows}
 </tbody>
 </table>
-<p class="fuss">Die Nummern gehören zur Liste ${esc(lang)}${mitPflege ? ' (Pflege)' : ''}.csv im selben Ordner. Bitte den ausgefüllten Bogen (Papier, Foto oder Scan) zurückgeben.</p>
+<p class="fuss">Die Nummern gehören zur Liste ${mitPflege ? 'pflege-' : ''}${esc(lang)}${kurz ? '-kurz' : ''}.csv im selben Ordner. Bitte den ausgefüllten Bogen (Papier, Foto oder Scan) zurückgeben.</p>
+</body>
+</html>
+`;
+}
+
+// Kurzbogen: platzsparend. Deutsch und Übersetzung nebeneinander über die volle Breite,
+// darunter eine Zeile mit den Kästchen und Platz für „besser so“.
+const CSS_KURZ = `
+body { font-size: 12.5pt; line-height: 1.35; }
+.rtl, [dir=rtl] { font-size: 14pt; line-height: 1.5; }
+table.k col.nr { width: 9mm; } table.k col.de, table.k col.ue { width: auto; }
+table.k tbody { break-inside: avoid; page-break-inside: avoid; }
+table.k td { padding: 1.5mm 2mm; }
+table.k tr.pruef td { border-top: 1px dashed #777; font-size: 11.5pt; padding-top: 1mm; padding-bottom: 5mm; }
+table.k tr.pruef .bl { display: inline-block; margin-inline-end: 5mm; }
+table.k .bsp { font-size: 10.5pt; }
+`;
+function seiteKurz({ lang, titel, untertitel, zeilen }) {
+  const t = T[lang];
+  const dir = RTL.has(lang) ? 'rtl' : 'ltr';
+  const rows = zeilen.map((z) => `<tbody><tr><td class="nr" rowspan="2">${z.nr}</td>` +
+    `<td lang="de" dir="ltr">${markiere(z.de)}${zelleBeispiel(z.de)}</td>` +
+    `<td lang="${lang}" dir="${dir}">${markiere(z.ue)}</td></tr>` +
+    `<tr class="pruef"><td colspan="2"><span class="bl"><span class="box"></span>${esc(DE.stimmt)} <span lang="${lang}" dir="${dir}">(${esc(t.stimmt)})</span></span>` +
+    `<span class="bl"><span class="box"></span>${esc(DE.nicht)} <span lang="${lang}" dir="${dir}">(${esc(t.nicht)})</span></span>` +
+    `<span class="bl">${esc(DE.besser)} <span lang="${lang}" dir="${dir}">(${esc(t.besser)})</span>: </span></td></tr></tbody>`).join('\n');
+  return `<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(titel)}</title>
+<style>${CSS}${CSS_KURZ}</style>
+</head>
+<body>
+<h1>${esc(titel)}</h1>
+<div class="kopf">Name (freiwillig): <span>&nbsp;</span> Datum: <span>&nbsp;</span></div>
+<p style="font-size:11pt;margin:0 0 3mm">${esc(untertitel)} Wenn der Platz für „besser so“ nicht reicht: Nummer und besseren Text auf der Rückseite notieren.</p>
+${anleitungHtml(lang, false)}
+<table class="k">
+<colgroup><col class="nr"><col class="de"><col class="ue"></colgroup>
+<thead><tr><th>${DE.nr}</th><th>${DE.deutsch}</th><th>${DE.uebers} / <span lang="${lang}" dir="${dir}">${esc(t.uebers)}</span></th></tr></thead>
+${rows}
+</table>
+<p class="fuss">Die Nummern gehören zur Liste ${esc(lang)}-kurz.csv im selben Ordner. Bitte den ausgefüllten Bogen (Papier, Foto oder Scan) zurückgeben.</p>
 </body>
 </html>
 `;
@@ -271,6 +353,36 @@ function main() {
     schreibeCsv(path.join(OUT, lang + '.csv'), ['nr', 'teil', 'datei', 'schluessel', 'regeln', 'deutsch', 'uebersetzung', 'ergebnis', 'besser_so'],
       zeilen.map((z) => [z.nr, z.teil, rel(datei(z.dir, lang)), z.key, z.regeln.join(' '), z.de, z.ue, '', '']));
     bericht.push({ lang, n: zeilen.length, a: zeilen.filter((z) => z.teil === 'A').length, fehlt });
+  }
+
+  // Kurzbögen
+  const kurz = kurzTexte();
+  for (const lang of SPRACHEN) {
+    const cache = {};
+    const lade = (dir) => {
+      if (!(dir in cache)) {
+        cache[dir] = ladeJson(datei(dir, lang)) || {};
+        // Pflege in so/ps ist noch nicht in der App: Übersetzung aus pflege-wartet nehmen
+        if (dir === 'pflege' && !fs.existsSync(datei(dir, lang))) cache[dir] = ladeJson(path.join(WARTET, lang + '.json')) || {};
+      }
+      return cache[dir];
+    };
+    const quelle = (dir) => (dir === 'pflege' && !fs.existsSync(datei(dir, lang))) ? 'docs/entwuerfe/sprachen/pflege-wartet/' + lang + '.json' : rel(datei(dir, lang));
+    const zeilen = [];
+    for (const x of kurz) {
+      const ue = lade(x.dir)[x.key];
+      if (typeof ue !== 'string') continue;
+      zeilen.push({ nr: zeilen.length + 1, dir: x.dir, key: x.key, de: x.de, ue, regeln: x.regeln, weitere: x.weitere });
+    }
+    const html = seite({
+      lang, zeilen, kurz: true,
+      titel: `Kurzbogen ${SPRACHNAME_DE[lang]} (${lang}) – SoLo`,
+      untertitel: `${zeilen.length} besonders wichtige Texte (Fristen, Daten, Beträge, Warnungen, Rechtsfolgen, Verbote). Bitte diesen Bogen zuerst prüfen. Stand der Texte: Branch claude/test-update-naechstes, erzeugt am ${stand}.`
+    });
+    fs.writeFileSync(path.join(OUT, lang + '-kurz.html'), html);
+    schreibeCsv(path.join(OUT, lang + '-kurz.csv'), ['nr', 'datei', 'schluessel', 'weitere_schluessel_gleicher_text', 'regeln', 'deutsch', 'uebersetzung', 'ergebnis', 'besser_so'],
+      zeilen.map((z) => [z.nr, quelle(z.dir), z.key, z.weitere.map((w) => quelle(w.dir) + ':' + w.key).join(' | '), z.regeln.join(' '), z.de, z.ue, '', '']));
+    bericht.push({ lang: lang + '-kurz', n: zeilen.length, a: zeilen.length, fehlt: kurz.length - zeilen.length });
   }
 
   // Pflege-Einschätzung so/ps: alle Schlüssel, Antwortstufen markiert
