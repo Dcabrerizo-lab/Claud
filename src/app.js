@@ -1717,10 +1717,10 @@
     return h + '<label class="haken"><input type="checkbox" data-haken="mappe|antraege" data-haken-alt="' + esc(JSON.stringify(['mappe|brief', 'mappe|formular'])) + '"' + (antraegeErledigt() ? ' checked' : '') + '><span>' + esc(t('f.auf.erledigt')) + '</span></label>';
   }
   // Entweder-oder mit „Ich weiß es noch nicht“ (UX-Nachprüfung 22.11.2026, Nr. 2): oben in „Anträge stellen“ eine Zeile „Weg noch nicht gewählt“
-  // mit Knopf „Weg wählen“ (springt zur Weg-Wahl) und einem sachlichen Tipp ohne Empfehlung eines Wegs. Rechtslage: docs/entwuerfe/entweder-oder.md
-  // (Stand 21.11.2026): Rente: Grundsicherung im Alter und Wohngeld nie gleichzeitig, echte Wahl (§ 7 Abs. 1 Satz 1 Nr. 5 WoGG, § 2 SGB XII,
-  // BSG B 8 SO 2/20 R; Satz nach Nr. 14). Sonst: Wohngeld/Kinderzuschlag und Grundsicherungsgeld nicht zusammen (§ 7 Abs. 1 Satz 1 Nr. 1 WoGG,
-  // § 6a Abs. 1 Satz 1 Nr. 3 BKGG); die Stellen prüfen den Vorrang (§ 12a SGB II; Nr. 2). Bewusst kein „Stell zuerst den Antrag bei …“: Ein Antrag auf
+  // mit Knopf „Weg wählen“ (springt zur Weg-Wahl) und einem sachlichen Tipp ohne Empfehlung eines Wegs. Rechtslage: docs/PRUEFLISTE.md,
+  // Zeile „UX-Nachprüfung 22.11.2026, Nr. 2“ (Testmarke ux-weg-offen), Gesetze abgerufen 21.11.2026 auf gesetze-im-internet.de: Rente: Grundsicherung im Alter und Wohngeld nie gleichzeitig, echte Wahl (§ 7 Abs. 1 Satz 1 Nr. 5 WoGG, § 2 SGB XII,
+  // BSG B 8 SO 2/20 R). Sonst: Wohngeld/Kinderzuschlag und Grundsicherungsgeld nicht zusammen (§ 7 Abs. 1 Satz 1 Nr. 1 WoGG,
+  // § 6a Abs. 1 Satz 1 Nr. 3 BKGG); die Stellen prüfen den Vorrang (§ 12a SGB II). Bewusst kein „Stell zuerst den Antrag bei …“: Ein Antrag auf
   // Grundsicherungsgeld sperrt den erweiterten Zugang zum Kinderzuschlag (§ 6a Abs. 1a Nr. 3 BKGG).
   function wegeOffen() { return (letzteWege || []).filter(function (g) { return wegAktiv(g) === 'offen'; }); }
   function wegeOffenHtml() {

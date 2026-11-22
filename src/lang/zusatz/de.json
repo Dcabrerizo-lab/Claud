@@ -137,5 +137,5 @@
   "u.eink.basis": "Einkommensnachweise",
   "u.eink.mit": "{basis} ({teile})",
   "u.eink.wg": "für Wohngeld von allen im Haushalt, meist der letzten 12 Monate",
-  "u.eink.kiz": "für Kinderzuschlag von den Eltern, meist der letzten 6 Monate"
+  "u.eink.kiz": "für Kinderzuschlag von den Eltern und zum Einkommen der Kinder (z. B. Unterhalt), meist der letzten 6 Monate"
 }
