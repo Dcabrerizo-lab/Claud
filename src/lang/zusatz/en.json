@@ -135,7 +135,7 @@
   "f.auf.antraegeOffen": "Submit applications ({n} + {m} open)",
   "f.empfKurz": "Add your town in the search yourself and enter the address above.",
   "u.eink.basis": "Proof of income",
-  "u.eink.mit": "{basis} ({teile})",
+  "u.eink.mit": "{basis}: {teile}",
   "u.eink.wg": "for Wohngeld from everyone in the household, usually for the last 12 months",
   "u.eink.kiz": "for Kinderzuschlag from the parents and on the children’s income (e.g. maintenance), usually for the last 6 months"
 }

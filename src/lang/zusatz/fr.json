@@ -135,7 +135,7 @@
   "f.auf.antraegeOffen": "Faire les demandes ({n} + {m} en attente)",
   "f.empfKurz": "Ajoute toi-même ta ville dans la recherche et inscris l’adresse plus haut.",
   "u.eink.basis": "Justificatifs de revenus",
-  "u.eink.mit": "{basis} ({teile})",
+  "u.eink.mit": "{basis}: {teile}",
   "u.eink.wg": "pour le Wohngeld de tous les membres du foyer, en général des 12 derniers mois",
   "u.eink.kiz": "pour le Kinderzuschlag des parents et sur les revenus des enfants (p. ex. pension alimentaire), en général des 6 derniers mois"
 }

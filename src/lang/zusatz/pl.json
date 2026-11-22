@@ -135,7 +135,7 @@
   "f.auf.antraegeOffen": "Złożyć wnioski ({n} + {m} otwarte)",
   "f.empfKurz": "Swoją miejscowość dopisz w wyszukiwarce sam(a) i wpisz adres powyżej.",
   "u.eink.basis": "Dowody dochodów",
-  "u.eink.mit": "{basis} ({teile})",
+  "u.eink.mit": "{basis}: {teile}",
   "u.eink.wg": "do Wohngeld od wszystkich w gospodarstwie, zwykle z ostatnich 12 miesięcy",
   "u.eink.kiz": "do Kinderzuschlag od rodziców i o dochodach dzieci (np. alimenty), zwykle z ostatnich 6 miesięcy"
 }
