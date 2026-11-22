@@ -6,7 +6,9 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 
 (noch keine Einträge)
 
-## Version 1.10.0 (VersionCode/Build 152, 22.11.2026)
+## Version 1.10.0 (VersionCode/Build 153, 22.11.2026)
+
+Build 152 (gleiche Version) war fehlerhaft (schwere Tests rot: Android-Ordner „Pictures“, 320 px in RTL-Sprachen, Mutationstest BAföG) und wurde nicht veröffentlicht; behoben in #184–#186.
 
 | Bereich | Was ist neu |
 |---|---|

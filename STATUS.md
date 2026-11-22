@@ -1,6 +1,6 @@
 # STATUS – SoLo (Sozialleistungslotse)
 
-Stand: 22.11.2026. Letzte gebaute Version: **1.10.0, VersionCode/Build 152** (Bau am 22.11.2026 von David freigegeben, vom gemergten Stand auf `main`: Android-AAB und Test-APK lokal signiert (Signatur C8:E4:5D:61), Upload in die Play Console macht David; iOS Build 152 per Workflow zu TestFlight; Browser-Datei). Davor: 1.9.0 / 151 (21.11.2026). **Nächster VersionCode: 153.**
+Stand: 22.11.2026. Letzte gebaute Version: **1.10.0, VersionCode/Build 153** (Bau am 22.11.2026 von David freigegeben, vom gemergten Stand auf `main` nach grünen schweren Tests: Android-AAB und Test-APK lokal signiert (Signatur C8:E4:5D:61), Upload in die Play Console macht David; iOS Build 153 per Workflow zu TestFlight; Browser-Datei). Build 152 (1.10.0) war fehlerhaft und wurde nicht veröffentlicht. Davor: 1.9.0 / 151 (21.11.2026). **Nächster VersionCode: 154.**
 Übergabe für neue Sitzungen: zuerst diese Datei, dann `CLAUDE.md` (verbindliche Arbeitsregeln).
 Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/VERLAUF.md`, Abschnitt „Entwicklungsverlauf“.
 
@@ -70,7 +70,7 @@ Ausführlicher Verlauf (Erledigtes, alte Pläne): `docs/VERLAUF.md`, Abschnitt �
 - pdf.js 4: Umstieg von 3.11.174.
 - `src/lang/de.json` „lead“ sagt noch „in zwei Minuten“ (Startseite und Store sagen „etwa 5 Minuten“), in allen Sprachen angleichen.
 - Muttersprachliche Prüfung Dari, Farsi, Paschtu, Somali, Französisch; Expertenprüfung Pflege.
-- Version 1.10.0 (Build 152) gebaut (22.11.2026). Offen bei David: AAB in die Play Console hochladen, TestFlight-Build freigeben, Store-Texte/-Fotos eintragen, Play-Datensicherheit korrigieren (ML Kit sendet Diagnosedaten, siehe docs/STORE.md).
+- Version 1.10.0 (Build 153) gebaut (22.11.2026). Offen bei David: AAB in die Play Console hochladen, TestFlight-Build freigeben, Store-Texte/-Fotos eintragen, Play-Datensicherheit korrigieren (ML Kit sendet Diagnosedaten, siehe docs/STORE.md).
 - Play Store: AAB hochladen (nur auf Wunsch). Alte Branches auf github.com löschen.
 
 ## 4. Nächste Schritte
