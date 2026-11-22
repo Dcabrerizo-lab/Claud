@@ -16,7 +16,9 @@ const ok = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x
 
 const pruefen = () => {
   const W = window.innerWidth, out = [];
-  const sichtbar = (e) => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e); return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && !e.closest('[hidden], .sr-only, .visually-hidden, dialog:not([open])'); };
+  // Nur für Screenreader versteckt (.vh, Kopfzeile außerhalb der Startseite: clip auf 1 px): nicht sichtbar, zählt nicht
+  const versteckt = (e) => { for (let x = e; x && x !== document.body; x = x.parentElement) { const c = getComputedStyle(x); if ((c.clip && c.clip !== 'auto') || c.clipPath === 'inset(50%)') return true; } return false; };
+  const sichtbar = (e) => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e); return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && !e.closest('[hidden], .sr-only, .visually-hidden, .vh, dialog:not([open])') && !versteckt(e); };
   const ov = document.documentElement.scrollWidth - W;
   if (ov > 1) {
     // Verursacher nennen, auch unsichtbare oder absolut positionierte Elemente
@@ -60,20 +62,25 @@ const pruefen = () => {
       }, [lang, HH, modus === 'gross']);
       const p = await ctx.newPage(); await p.addInitScript(SF_ALLES);
       const err = []; p.on('pageerror', (e) => err.push(e.message));
-      await p.goto(APP);
+      await p.goto(APP + '#leistungen'); // ausführliche Version direkt (ohne Adresszusatz öffnet die Startseite, die Karten wären verborgen)
       if (modus === 'system200') await p.addStyleTag({ content: 'html { font-size: 200% !important; } html.big { font-size: 200% !important; }' });
       await p.waitForTimeout(300);
-      const karten = await p.locator('#cards .card:not(.startcard)').count();
-      ok(`${modus} ${lang}: ausführliche Version mit Karten, ohne Skriptfehler`, karten > 20 && err.length === 0, karten + ' ' + err.join('; '));
+      const karten = await p.locator('#cards .card:not(.startcard)').count(), sichtbar = await p.isVisible('#cards .card:not(.startcard)');
+      ok(`${modus} ${lang}: ausführliche Version mit sichtbaren Karten, ohne Skriptfehler`, sichtbar && karten > 20 && err.length === 0, karten + ' sichtbar=' + sichtbar + ' ' + err.join('; '));
       const f1 = await p.evaluate(pruefen);
       ok(`${modus} ${lang}: ausführliche Version passt auf 320 px`, f1.length === 0, f1.join(' | '));
-      // Antragsmappe öffnen (falls vorhanden)
-      if (await p.locator('#mappeBtn').count()) {
-        await p.click('#mappeBtn').catch(() => {});
+      // Antragsmappe über den Hauptknopf „Antrag vorbereiten“ (#mappeMake) öffnen, alle Schritte aufgeklappt
+      const mk = await p.isVisible('#mappeMake');
+      ok(`${modus} ${lang}: Knopf „Antrag vorbereiten“ sichtbar`, mk);
+      if (mk) {
+        await p.evaluate(() => document.getElementById('mappeMake').click()); // Leiste unten kann den Knopf verdecken
+        await p.evaluate(() => document.querySelectorAll('#mappeAufgaben details').forEach((d) => { d.open = true; }));
         await p.waitForTimeout(200);
+        const offen = await p.isVisible('#mappe');
         const f2 = await p.evaluate(pruefen);
-        ok(`${modus} ${lang}: Antragsmappe passt auf 320 px`, f2.length === 0, f2.join(' | '));
-        await p.click('#mappeClose').catch(() => {});
+        ok(`${modus} ${lang}: Antragsmappe offen und passt auf 320 px`, offen && f2.length === 0, 'offen=' + offen + ' ' + f2.join(' | '));
+        await p.evaluate(() => document.getElementById('mappeClose').click());
+        await p.waitForTimeout(150);
       }
       // Einfache Version: erste Frage
       await p.evaluate(() => document.getElementById('einfachBtn').click()); // Leiste unten kann den Knopf je nach Scrollstand verdecken

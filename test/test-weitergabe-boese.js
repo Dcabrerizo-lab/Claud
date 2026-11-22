@@ -171,7 +171,7 @@ const modulVarianten = typVarianten.map((v, i) => ({ s: 1, typ: 'vorgang', name:
       const b = d.querySelectorAll('#ordnerKarten button')[i]; if (!b) continue;
       b.click(); await warte(40);
       [...d.querySelectorAll('.unterseite:not([hidden]) button.tab, .hb-tabs button, [role="tab"]')].slice(0, 8).forEach((x) => { try { x.click(); } catch (e) {} });
-      const ps = $('paStart'); if (b.id === 'or-pflege' && ps) { ps.click(); await warte(40); besucht.pflege = true; [...d.querySelectorAll('#paBox button, .pa-wahl button')].slice(0, 3).forEach((x) => { try { x.click(); } catch (e) {} }); }
+      const ps = $('paStart'); if (b.id === 'or-pflege' && ps) { ps.click(); await warte(40); besucht.pflege = true; [...d.querySelectorAll('#pflegeAssist button')].slice(0, 3).forEach((x) => { try { x.click(); } catch (e) {} }); }
       if (b.id === 'or-pfaendung') besucht.pfaendung = true;
       const kb = $('kbClose'); if (kb && !$('klientBlatt').hidden) kb.click();
     }
