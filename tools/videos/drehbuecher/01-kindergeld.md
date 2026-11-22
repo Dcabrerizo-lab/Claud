@@ -3,8 +3,8 @@ titel: Kindergeld
 datei: 01-kindergeld
 serie: SoLo erklärt
 folge: 1
-stimme: lotsin
-tempo: 1.1
+stimme: erzaehler
+tempo: 1.0
 musik: ja
 musik_abstand_db: 25
 untertitel: auto

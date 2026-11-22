@@ -3,14 +3,13 @@ titel: Grundsicherung im Alter
 datei: 06-grundsicherung-im-alter
 serie: SoLo erklärt
 folge: 6
-stimme: lotsin
-tempo: 1.1
+stimme: erzaehler
+tempo: 1.0
 musik: ja
 musik_abstand_db: 25
 untertitel: auto
 untertitel_y: 1040
 hervorhebung: [SoLo]
-aussprache: {"Wohngeld": "Wohn-Geld", "erwerbsgemindert": "erwerbs-gemindert", "Sozialamt": "Sozial-Amt"}
 ---
 
 # Folge 6 · Grundsicherung im Alter und bei Erwerbsminderung

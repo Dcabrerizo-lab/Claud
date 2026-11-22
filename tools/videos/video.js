@@ -29,7 +29,13 @@ const HINTERGRUND = {
 
 // ---------- Aussprache ----------
 const AUSSPRACHE = [
-  [/\bSozialleistungslotse\b/g, 'Sozial-Leistungs-Lohtse'], [/\bLotsin\b/g, 'Lohtsinn'], [/\bLotsen?\b/g, (m) => (m.endsWith('n') ? 'Lohtsen' : 'Lohtse')],
+  // Schreibweisen für die Stimme, per Lautschrift (--aussprache) geprüft: Lotsin → lˈoːtsɪn, Lotse → lˈoːtsə, Jobcenter → dʒˈɔpsˈɛntɜ
+  [/\bSozialleistungslotse\b/g, 'Sozial-Leistungs-Lohtße'], [/\bLotsin\b/g, 'Lohtsinn'], [/\bLotsen?\b/g, (m) => (m.endsWith('n') ? 'Lohtßen' : 'Lohtße')],
+  [/\bJobcenter/g, 'Dschopp-ßenter'], [/\bWohngeldstelle/g, 'Wohn-Geld-Stelle'], [/\bWohngeld/g, 'Wohn-Geld'],
+  [/\bPflegekasse/g, 'Pflege-Kasse'], [/\bPflegegeld/g, 'Pflege-Geld'], [/\bPflegegrad/g, 'Pflege-Grad'],
+  [/\bGrundsicherungsgeld/g, 'Grund-Sicherungs-Geld'], [/\bGrundsicherung/g, 'Grund-Sicherung'], [/\bKontoauszüge/g, 'Konto-Auszüge'],
+  [/\bRegelbedarf/g, 'Regel-Bedarf'], [/\bSozialamt/g, 'Sozial-Amt'], [/\berwerbsgemindert/g, 'erwerbs-gemindert'],
+  [/\bSteuer-Identifikationsnummer/g, 'Steuer-Identifikations-Nummer'], [/\bBeratungsbesuch/g, 'Berahtungs-Besuch'],
   [/\bSoLo\b/g, 'Solo'], [/\bBAföG\b/g, 'Bafög'], [/(\d+(?:,\d+)?)\s*€/g, '$1 Euro'], [/€/g, 'Euro'],
   [/\bz\.\s?B\./g, 'zum Beispiel'], [/\bu\.\s?a\./g, 'unter anderem'], [/\bd\.\s?h\./g, 'das heißt'], [/\bca\./g, 'circa'],
   [/\bbzw\./g, 'beziehungsweise'], [/\bggf\./g, 'gegebenenfalls'], [/\bNr\./g, 'Nummer'], [/§\s?/g, 'Paragraf '],
@@ -48,6 +54,10 @@ function sprechText(t, extra = {}) {
   for (const [k, v] of Object.entries(extra)) s = s.split(k).join(v);
   for (const [re, v] of AUSSPRACHE) s = s.replace(re, v);
   s = s.replace(/\b(\d{1,2})\b(?![.,]\d)/g, (m, d) => zahlWort(+d));
+  // kurze Pause ("|", in stimme.py Stille) vor wichtigen Zahlen: Beträge, Fristen, Zahlen mit hundert/tausend – nicht am Satzanfang
+  const ZW = '(?:\\d[\\d.,]*|(?:ein|eins|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn|elf|zwölf|zwanzig|dreißig|vierzig|fünfzig|sechzig|siebzig|achtzig|neunzig|hundert|tausend|und|zehn)+)';
+  s = s.replace(new RegExp(`([\\p{L}\\d]) (${ZW})(?= (?:Euro|Monate?n?|Minuten|Leistungen|Sprachen)\\b)`, 'gu'), (m, a, z) => (/^(?:und|ein|eins)$/.test(z) ? m : `${a} | ${z}`));
+  s = s.replace(/([\p{L}\d]) ([\p{L}]*(?:hundert|tausend)[\p{L}]*)/gu, (m, a, w) => (/^(?:ein|eins|zwei|drei|vier|fünf|sechs|sieben|acht|neun|zehn|elf|zwölf|zwanzig|dreißig|vierzig|fünfzig|sechzig|siebzig|achtzig|neunzig|hundert|tausend|und)+$/.test(w) ? `${a} | ${w}` : m));
   return s.replace(/\s+/g, ' ').trim();
 }
 
@@ -557,7 +567,7 @@ async function main() {
   // Stimme
   const ohneTon = !!o['ohne-ton'] || db.ton === false;
   let stimmen = {};
-  const texte = db.szenen.map((sz, i) => (sz.sprecher && !ohneTon ? { id: `s${String(i + 1).padStart(2, '0')}`, text: sprechText(sz.sprecher, db.aussprache), stimme: sz.stimme || db.stimme || 'lotsin', tempo: sz.tempo || db.tempo || 1.1 } : null));
+  const texte = db.szenen.map((sz, i) => (sz.sprecher && !ohneTon ? { id: `s${String(i + 1).padStart(2, '0')}`, text: sprechText(sz.sprecher, db.aussprache), stimme: sz.stimme || db.stimme || 'erzaehler', tempo: sz.tempo || db.tempo || 1.0 } : null));
   if (o.aussprache) { // Lautschrift ausgeben, um Aussprache ohne Anhören zu prüfen
     const f = path.join(tmp, 'lautschrift.json');
     fs.writeFileSync(f, JSON.stringify({ stimmen: STIMMEN, texte: texte.filter(Boolean) }));

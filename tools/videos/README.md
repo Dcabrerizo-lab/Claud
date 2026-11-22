@@ -54,8 +54,8 @@ titel: So hilft dir SoLo          # Anzeige im Protokoll
 datei: 00-so-hilft-dir-solo       # Name der Ausgabedatei
 serie: SoLo erklärt               # Folgen-Abzeichen oben links (Serien-Erkennung)
 folge: 0                          # Folgen-Nummer; weglassen = kein Abzeichen
-stimme: lotsin                    # lotsin (weiblich) | erzaehler (männlich)
-tempo: 1.1                        # Sprechtempo (1.0 normal, 1.1 = Social-Tempo, Standard)
+stimme: erzaehler                 # erzaehler (Standard, männlich, freundlich) | thorsten | lotsin (alt, weiblich)
+tempo: 1.0                        # Sprechtempo (1.0 = Standard, langsam und deutlich; length_scale = 1/tempo)
 musik: ja                         # nein = ohne Musik
 musik_abstand_db: 25              # Musik so viel dB unter der Stimme
 untertitel: auto                  # auto = kinetische Untertitel in Szenen ohne Sprechblase
@@ -82,7 +82,7 @@ Alternativ eine reine YAML- oder JSON-Datei: dieselben Kopf-Felder auf oberster 
 
 | Feld | Bedeutung |
 |---|---|
-| `sprecher` | gesprochener Text (Anzeigeschreibweise; Aussprache wird automatisch angepasst: SoLo→Solo, Lotsin→Lohtsinn, Lotse→Lohtse, BAföG→Bafög, €→Euro, Zahlen 0–99 → Wort, z. B.→zum Beispiel, § → Paragraf …). Bestimmt die Szenendauer. |
+| `sprecher` | gesprochener Text (Anzeigeschreibweise; Aussprache wird automatisch angepasst: SoLo→Solo, Lotsin→Lohtsinn [ˈloːtsɪn], Lotse→Lohtße, Jobcenter→Dschopp-ßenter, Wohngeld→Wohn-Geld, Pflegekasse→Pflege-Kasse, BAföG→Bafög, €→Euro, Zahlen 0–99 → Wort, z. B.→zum Beispiel, § → Paragraf …). Pausen: 0,25 s zwischen Sätzen, 0,15 s vor wichtigen Zahlen (Beträge, Fristen, Zahlen mit hundert/tausend; automatisch). Bestimmt die Szenendauer. Erzähler-Perspektive: die Lotsin nicht in Ich-Form sprechen lassen („Die Lotsin zeigt dir …“); Ich-Form nur in Sprechblasen. |
 | `dauer` | Mindestdauer in s (sonst Sprechzeit + 0,6 s) |
 | `sprecher_start` | Beginn der Stimme in der Szene (Standard: Szene 1 sofort 0,05 s, sonst nach dem Panelwechsel) |
 | `stimme`, `tempo` | wie im Kopf, nur für diese Szene |
@@ -157,16 +157,17 @@ Handy-Mitte x ≤ 660, sonst ragt Bildschirmtext in die rechte Sicherheitszone.
 
 | Name | Modell | Lizenz (MODEL_CARD, geprüft 22.11.2026) | Hinweis |
 |---|---|---|---|
-| `lotsin` | `de_DE-mls-medium`, Sprecher-Index 130 (MLS-Sprecher 4463, weiblich, ca. 200 Hz) | Datensatz Multilingual LibriSpeech, **CC BY 4.0** – kommerziell erlaubt, **Namensnennung nötig** | Quelle: huggingface.co/rhasspy/piper-voices, Datensatz openslr.org/94 |
-| `erzaehler` | `de_DE-thorsten-medium` | Datensatz Thorsten-Voice **CC0**, Basismodell rdh CC0 | Quelle: huggingface.co/rhasspy/piper-voices, github.com/thorstenMueller/Thorsten-Voice |
+| `erzaehler` (Standard, alle Videos) | `de_DE-thorsten_emotional-medium`, Sprecher „amused“ (Index 0, freundlicher Ton), männlich | Datensatz Thorsten-Voice **CC0**, feinjustiert aus `de_DE-thorsten-medium` (CC0) – **keine Namensnennung nötig** | Quelle: huggingface.co/rhasspy/piper-voices, github.com/thorstenMueller/Thorsten-Voice |
+| `thorsten` | `de_DE-thorsten-medium` | Datensatz Thorsten-Voice **CC0**, Basismodell rdh CC0 | wie oben |
+| `lotsin` (nicht mehr verwendet) | `de_DE-mls-medium`, Sprecher-Index 130 (weiblich) | Datensatz Multilingual LibriSpeech, **CC BY 4.0** – Namensnennung nötig, falls wieder genutzt | schwer verständlich (Entscheidung David, 22.11.2026) |
 
-Namensnennung für Videos mit der Lotsin-Stimme (z. B. in der Videobeschreibung):
-„Stimme: Piper (rhasspy), Modell de_DE-mls-medium, trainiert auf Multilingual LibriSpeech (CC BY 4.0).“
+Alle Videos sprechen mit EINER Männerstimme (`erzaehler`) als Erzähler; die Figur Lotsin bleibt im Bild eine Frau.
+Da die MLS-Stimme nicht mehr genutzt wird, ist **keine Namensnennung** in der Videobeschreibung nötig.
 
 Nicht verwenden: `kerstin`, `karlsson`, `pavoque` (Basismodell Ryan bzw. Datensatz CC BY-NC-SA), `thorsten-high`
 (Basismodell lessac, Blizzard-Lizenz), `eva_k`, `ramona` (M-AILABS ohne klare Lizenz).
-Die weibliche Sprecherin wurde per Tonhöhen-Messung unter 236 MLS-Sprechern ausgewählt; anderer Sprecher:
-`STIMMEN` in `stimme.py` anpassen. Aussprache mit `--aussprache` prüfen.
+Anderer Sprecher: `STIMMEN` in `stimme.py` anpassen (Pausen: `SATZPAUSE`, `ZAHLPAUSE`). Aussprache mit `--aussprache` prüfen
+(Lautschrift; `|` = Satzgrenze, `‖` = Zahlpause). Ohne Hörprobe prüfen: Lautschrift, Lautheit −14 LUFS, keine abgeschnittenen Wörter.
 
 Musik (`musik.py`) und Ton-Akzente (`mischen.py`) sind vollständig selbst synthetisiert (numpy), keine fremden Samples.
 Schriften: Schibsted Grotesk und Atkinson Hyperlegible, SIL Open Font License 1.1, werden eingebettet (base64) – offline.

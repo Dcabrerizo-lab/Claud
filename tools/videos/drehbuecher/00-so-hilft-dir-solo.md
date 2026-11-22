@@ -3,8 +3,8 @@ titel: So hilft dir SoLo
 datei: 00-so-hilft-dir-solo
 serie: SoLo erklärt
 folge: 0
-stimme: lotsin
-tempo: 1.1
+stimme: erzaehler
+tempo: 1.0
 musik: ja
 musik_abstand_db: 25
 untertitel: auto
@@ -39,7 +39,7 @@ bausteine:
 hintergrund: hellblau
 kamera: zoom-in
 fokus: [600, 900]
-sprecher: "Ich bin deine Lotsin. Ich zeig dir SoLo."
+sprecher: "Das ist die Lotsin. Sie zeigt dir SoLo."
 blase: {text: "Ich bin deine Lotsin. Ich zeig dir SoLo!", x: 80, y: 380, breite: 560, zipfel: [620, 940]}
 bausteine:
   - {was: lotsin, pose: winken, x: 720, y: 1880, hoehe: 1040, auftritt: rechts, start: 0.1}

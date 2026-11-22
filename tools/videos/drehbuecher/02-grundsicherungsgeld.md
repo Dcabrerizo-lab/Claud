@@ -3,14 +3,13 @@ titel: Grundsicherungsgeld
 datei: 02-grundsicherungsgeld
 serie: SoLo erklärt
 folge: 2
-stimme: lotsin
-tempo: 1.1
+stimme: erzaehler
+tempo: 1.0
 musik: ja
 musik_abstand_db: 25
 untertitel: auto
 untertitel_y: 1060
 hervorhebung: [SoLo]
-aussprache: {"Jobcenter": "Dschopßenter"}
 ---
 
 # Folge 2 · Grundsicherungsgeld (früher Bürgergeld)
@@ -181,7 +180,6 @@ ruck_bei: 2.5
 fokus: [540, 560]
 sprecher: "Vielleicht passt Wohngeld besser. Prüf es in etwa fünf Minuten mit SoLo."
 hervorhebung: [SoLo]
-aussprache: {"Jobcenter": "Dschopßenter"}
 oben: "SoLo vergleicht, was wahrscheinlich oder möglich ist."
 blase: {text: "Prüf es in etwa 5 Minuten mit SoLo.", x: 300, y: 500, breite: 560, zipfel: [820, 1000]}
 bausteine:

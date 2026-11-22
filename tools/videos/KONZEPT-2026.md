@@ -22,7 +22,7 @@ Quellen: dev.to „Hook Engineering 2026“, opus.pro (Analyse von 13,5 Mio. Cli
 4. **Takt**: jede 3–5 s neues Panel oder Kamerabewegung; Mitte = großer Bruch (Zahl/Betrag knallt groß ins Bild mit Ton-Akzent, Hintergrundfarbe wechselt).
 5. **Checklisten-Moment** „Trifft das auf dich zu?“ mit 2–3 Häkchen, die nacheinander einschnappen (Zuschauer prüft innerlich mit).
 6. **Kinetische Untertitel**: wortweise einblenden, Schlüsselwort farbig hervorheben (Gold/Grün), große Schrift, in den sicheren Bereichen.
-7. **Ton**: Stimme klar und warm, etwas zügig (Social-Tempo), kurze Pausen nur vor der Pointe; Ton-Akzente selbst erzeugt (Pop beim Aufploppen, Wusch beim Panelwechsel, „Ding“ beim Häkchen), leise Musik darunter.
+7. **Ton**: EINE Männerstimme als Erzähler, klar und freundlich, langsam und deutlich (Tempo 1.0), kurze Pausen an Satzenden und vor wichtigen Zahlen; die Lotsin spricht nur in Sprechblasen in Ich-Form (Entscheidung David, 22.11.2026); Ton-Akzente selbst erzeugt (Pop beim Aufploppen, Wusch beim Panelwechsel, „Ding“ beim Häkchen), leise Musik darunter.
 8. **Schluss**: Ergebnis in einem Satz + eine Handlung („Prüf in fünf Minuten mit SoLo, ob du es bekommst“) + Merk-/Teil-Aufforderung („Schick das jemandem, der es braucht“) + Stand-Datum/keine Rechtsberatung klein. Letztes Bild greift das erste auf (Schleife).
 9. **Wiedererkennung der Serie**: gleiche Lotsin, gleiche Farbwelt, kurzer gleicher Einstieg (max. 0,5 s, nicht vor dem Haken!), Folgen-Nummer klein oben.
 10. **Länge**: 35–60 s.

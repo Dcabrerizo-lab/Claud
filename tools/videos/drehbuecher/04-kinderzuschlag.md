@@ -3,14 +3,13 @@ titel: Kinderzuschlag
 datei: 04-kinderzuschlag
 serie: SoLo erklärt
 folge: 4
-stimme: lotsin
-tempo: 1.1
+stimme: erzaehler
+tempo: 1.0
 musik: ja
 musik_abstand_db: 25
 untertitel: auto
 untertitel_y: 1040
 hervorhebung: [SoLo]
-aussprache: {"Wohngeld": "Wohn-Geld"}
 ---
 
 # Folge 4 · Kinderzuschlag

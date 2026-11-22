@@ -3,8 +3,8 @@ titel: Pflegegeld
 datei: 03-pflegegeld
 serie: SoLo erklärt
 folge: 3
-stimme: lotsin
-tempo: 1.1
+stimme: erzaehler
+tempo: 1.0
 musik: ja
 musik_abstand_db: 25
 untertitel: auto
