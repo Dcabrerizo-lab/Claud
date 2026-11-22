@@ -27,7 +27,7 @@ fokus: [540, 900]
 sprecher: "Beim Kindergeld gibt es eine Frist, die Familien Geld kosten kann."
 hervorhebung: [Frist]
 titel: {text: "Kindergeld: Diese Frist kann Geld kosten", groesse: 100, start: 0}
-oben: {text: "Kindergeld – eine Frist, die viele nicht kennen.", y: 720}
+unten: {text: "Kindergeld – eine Frist, die viele nicht kennen.", y: 720, start: 0.6}
 bausteine:
   - {was: vater, mimik: sorge, x: 270, y: 1880, hoehe: 700}
   - {was: kalender, x: 640, y: 1380, hoehe: 200, auftritt: plopp, start: 0.25}
@@ -189,7 +189,7 @@ ruck_bei: 99
 sprecher: "Kindergeld: früh beantragen. Schick das jemandem, der gerade ein Baby bekommen hat."
 hervorhebung: [früh]
 titel: [{text: "Früh beantragen.", groesse: 100, start: 0.05, auftritt: plopp}, {text: "Rückwirkend höchstens 6 Monate.", y: 440, groesse: 84, start: 0.3, auftritt: plopp}]
-oben: {text: "Schick das jemandem, der es braucht.", y: 760}
+unten: {text: "Schick das jemandem, der es braucht.", y: 760, start: 0.6}
 hinweis: "Stand: 22.11.2026 · keine Rechtsberatung"
 bausteine:
   - {was: vater, pose: freuen, x: 880, y: 1880, hoehe: 640}

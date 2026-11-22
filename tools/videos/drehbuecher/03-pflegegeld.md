@@ -29,7 +29,7 @@ fokus: [540, 900]
 sprecher: "Du pflegst jemanden zu Hause, ganz allein? Dann geht es um Pflegegeld."
 hervorhebung: [Pflegegeld]
 titel: {text: "Du pflegst zu Hause – und keiner hilft?", groesse: 100, start: 0}
-oben: {text: "Pflegegeld: Geld, wenn jemand zu Hause gepflegt wird.", y: 700}
+unten: {text: "Pflegegeld: Geld, wenn jemand zu Hause gepflegt wird.", y: 700, start: 0.6}
 bausteine:
   - {was: rentnerin, mimik: freundlich, x: 840, y: 1880, hoehe: 560}
   - {was: pflegerin, mimik: sorge, x: 300, y: 1880, hoehe: 700}
@@ -202,7 +202,7 @@ ruck_bei: 99
 sprecher: "Du pflegst? Du musst nicht alles allein tragen. Schick das jemandem, der pflegt."
 hervorhebung: [nicht, allein]
 titel: {text: "Pflege zu Hause? Pflegegeld prüfen.", groesse: 104, start: 0.05, auftritt: plopp}
-oben: {text: "Schick das jemandem, der es braucht.", y: 700}
+unten: {text: "Schick das jemandem, der es braucht.", y: 700, start: 0.6}
 hinweis: "Stand: 22.11.2026 · keine Rechtsberatung"
 bausteine:
   - {was: lotsin, pose: halten, haelt: mappe, x: 975, y: 1880, hoehe: 700, ebene: 1}

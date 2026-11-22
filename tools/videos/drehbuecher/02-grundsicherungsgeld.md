@@ -30,7 +30,7 @@ fokus: [540, 900]
 sprecher: "Konto leer – obwohl du arbeitest? Dann geht es um Grundsicherungsgeld."
 hervorhebung: [obwohl, du, arbeitest]
 titel: {text: "Konto leer – obwohl du arbeitest?", groesse: 104, start: 0}
-oben: {text: "Grundsicherungsgeld: Hilfe, wenn das Geld nicht reicht.", y: 700}
+unten: {text: "Grundsicherungsgeld: Hilfe, wenn das Geld nicht reicht.", y: 700, start: 0.6}
 schilder:
   - {text: "0,00 €", x: 700, y: 1300, farbe: warm, groesse: 72, start: 0.3}
 bausteine:
@@ -197,7 +197,7 @@ ruck_bei: 99
 sprecher: "Lohn reicht nicht? Prüf es früh. Schick das jemandem, der es braucht."
 hervorhebung: [früh]
 titel: {text: "Lohn reicht nicht? Früh prüfen.", groesse: 104, start: 0.05, auftritt: plopp}
-oben: {text: "Schick das jemandem, der es braucht.", y: 700}
+unten: {text: "Schick das jemandem, der es braucht.", y: 700, start: 0.6}
 hinweis: "Stand: 22.11.2026 · keine Rechtsberatung"
 schilder: []
 bausteine:
