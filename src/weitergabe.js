@@ -525,7 +525,12 @@ var Weitergabe = (function () {
   function inboxAufraeumen() {
     var fs = nat && nat.fs;
     if (!nat || !nat.ios || !fs || !fs.readdir || !fs.deleteFile) return Promise.resolve();
-    return Promise.resolve().then(function () { return fs.readdir({ path: 'Inbox', directory: 'DOCUMENTS' }); }).then(function (r) {
+    // Den Ordner Inbox legt iOS erst beim ersten Öffnen einer Datei an. Fehlt er: still nichts tun, kein readdir darauf
+    // (OS-PLUG-FILE-0008 erschiene sonst als Skriptfehler in der Konsole). Dazu oberste Ebene von Documents lesen.
+    return Promise.resolve().then(function () { return fs.readdir({ path: '', directory: 'DOCUMENTS' }); }).then(function (r0) {
+      var da = ((r0 && r0.files) || []).some(function (f) { return typeof f === 'string' ? f === 'Inbox' : !!(f && f.name === 'Inbox' && (!f.type || f.type === 'directory')); });
+      return da ? fs.readdir({ path: 'Inbox', directory: 'DOCUMENTS' }) : { files: [] };
+    }).then(function (r) {
       var offen = Object.keys(laufend);
       return Promise.all(((r && r.files) || []).map(function (f) {
         var name = f && typeof f === 'object' ? f.name : f;
