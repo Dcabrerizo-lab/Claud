@@ -83,3 +83,41 @@ Feinschliff (für Grün nicht nötig):
 - Web-Build statt Store-App (gleiche Oberfläche, nachgeahmte Android-Plugins). Nicht auf echten Geräten, kein Dunkelmodus, keine Tablet-Breite.
 - Große Systemschrift über `html { font-size }` nachgestellt; der Android-Textzoom verhält sich ähnlich, aber nicht gleich. Auf einem echten Gerät mit 200 % gegenprüfen.
 - Fachliche Vorschläge (Nr. 2 Satz, Nr. 5 Zeiträume) vor Umsetzung von Fable prüfen lassen.
+
+## Kontrolle 22.11.2026
+
+Geprüft auf `origin/claude/test-update-naechstes` c8633115 (nach PR #179), gleiche Fälle A/B/C (dazu Einfache Sprache, Arabisch, große Schrift), 390×844, ein Headless-Chromium, Web-Build. Skriptfehler: 0. Rohdaten: `/home/claude/uxk-bilder/` (nicht im Repo).
+
+### Ampel
+
+| Bereich | Erste Prüfung | Nachprüfung | Kontrolle | Beleg |
+|---|---|---|---|---|
+| Ergebnisliste | 🟡 | 🟢 | 🟢 | unverändert gut; Nebenknopf heißt jetzt „Ergebnis drucken oder teilen“ |
+| Karte (aufgeklappt) | 🟡 | 🔴 | 🟢 | „Antrag vorbereiten“ öffnet die Mappe (echtes Tippen, A Kindergeld, B Wohngeld, B Landespflegegeld, C Kinderzuschlag); Leistung angehakt, bei Entweder-oder wird der passende Weg gewählt (B Wohngeld → Weg „Wohngeld“) |
+| Übergang Ergebnis → Mappe | 🟡 | 🟡 | 🟢 | Fall B: „Anträge stellen (2 + 1 offen)“ mit Zeile „Wohngeld oder Grundsicherung im Alter – Weg noch nicht gewählt“, Knopf „Weg wählen“ und Tipp; eindeutige Namen der zwei Ausdrucke |
+| Mappe-Aufbau | 🔴 | 🟢 | 🟢 | 1,7–1,8 Bildschirme beim Öffnen; Überschrift „Welchen Weg möchtest du?“ steht jetzt sauber im Kasten |
+| Empfänger und Suchlink | 🟢 | 🟡 | 🟢 | Hinweis 1 Satz (3 Zeilen statt 9), Knopf „Anschrift im Internet suchen“ einzeilig, 44 px, Petrol |
+| Amtliche Formular-Links | 🟡 | 🟢 | 🟢 | unverändert |
+| Unterlagen | 🔴 | 🟡 | 🟢 | Einkommen ein Punkt in „Für mehrere Anträge“ (mit Zeiträumen je Leistung), Ausweis dort ebenfalls; A 11/13, B 5/11, C 10/12 Punkte (Vorauswahl/alles), 0 Doppelungen |
+| Drucken / Teilen | 🟡 | 🟢 | 🟢 | ein Knopf in Schritt 4 |
+| Arabisch (RTL) | – | 🟢 | 🟢 | „PLZ und Ort“ jetzt links nach rechts („90402 Nürnberg“) |
+| Große Schrift | – | 🟡 | 🟢 | Systemschrift 180 % und 200 % (nachgestellt): Ergebnis und Mappe 390 px breit, nichts ragt heraus; lange Titel brechen im Notfall im Wort um |
+
+**Alle 10 Punkte grün.**
+
+### Zahlen (Fall A / B / C)
+
+| Messwert | Erste Prüfung | Nachprüfung | Kontrolle |
+|---|---|---|---|
+| Ergebnis (Bildschirme) | 2,4 / 2,9 / 2,2 | 3,0 / 3,5 / 2,9 | 2,9 / 3,4 / 2,7 |
+| Wörter Ergebnis | 156 / – / – | 217 / 232 / 212 | 209 / 233 / 204 |
+| Mappe beim Öffnen (Bildschirme) | 9,0 / 8,6 / 7,4 | 1,8 / 1,8 / 1,7 | 1,8 / 1,8 / 1,7 |
+| Mappe alles angehakt und offen | 13,7 / 17,7 / 12,0 | 6,8 / 6,3 / 6,4 | 6,7 / 6,6 / 6,2 |
+| Bedienelemente Mappe (Öffnen / alles) | 48/72 · 45/72 · 43/66 | 16/49 · 15/44 · 15/46 | 16/47 · 15/45 · 15/44 |
+| Unterlagen (Vorauswahl / alles) | 29 · 27 · 25 | 13/15 · 5/11 · 11/14 | 11/13 · 5/11 · 10/12 |
+| Exakte Doppelungen Unterlagen | 2 · 6 · 1 | 0 | 0 |
+| Zu kleine Tippflächen (< 44 px) | 0 | 0 | 0 |
+
+### Feinschliff (für Grün nicht nötig)
+- Karte „Antrag vorbereiten“ bei Leistungen mit amtlichem Formular (Kindergeld, Wohngeld): Die Mappe öffnet richtig, aber „Anträge stellen“ klappt nicht von selbst auf (bei Anschreiben-Leistungen schon). `src/app.js` `openMappe(mit)`: Der Wähler `[data-ant$="-" + mit]` findet die Formular-Zeilen nicht. Bitte auch diese Zeilen mit `data-ant` versehen oder den Wähler erweitern.
+- Einkommens-Punkt in den Unterlagen ist mit gut 30 Wörtern und Klammer in der Klammer lang. Vorschlag: „(z. B. Unterhalt)“ als eigenen Satz oder Zeiträume als Unterzeile.
