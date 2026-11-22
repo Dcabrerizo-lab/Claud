@@ -1757,9 +1757,9 @@ const Rules = (function () {
       // § 25 Abs. 4 BAföG: angerechnet wird nur der Teil über dem Freibetrag, davon 50 % minus 5 % je Kind mit Freibetrag (Abruf 21.11.2026).
       // „Eher nicht“ erst, wenn diese Anrechnung den höchsten Bedarf (bedarfMax) übersteigt, und zwar auch dann, wenn Geschwister in
       // förderfähiger Ausbildung sind (dann kein Freibetrag 770 € für sie, Einkommen geteilt nach § 11 Abs. 4); sonst „möglich“
-      const quote = R.bafoeg.anrechFrei - R.bafoeg.anrechFreiKind * Math.max(0, h.children - 1);
+      // (bafAnrEltern mit k = 0 ist genau die Anrechnung (e21.nein − fb) × Quote; das Minimum über k deckt sie mit ab)
       const kleinste = bafAnrElternSpanne(h, e21.nein).aMitteMin;
-      if (quote <= 0 || (e21.nein - fb) * quote <= bafoegNullGrenze(R.bafoeg.bedarfMax) || kleinste <= bafoegNullGrenze(R.bafoeg.bedarfMax)) {
+      if (kleinste <= bafoegNullGrenze(R.bafoeg.bedarfMax)) {
         return mk(id, 'vielleicht', 'vielleicht', [['bafoeg.kindRand', p]].concat(bafSchaetzKind(h)));
       }
       return mk(id, 'nein', 'einkoHoch', [['bafoeg.kindNein', p]]);
