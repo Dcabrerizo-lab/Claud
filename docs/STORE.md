@@ -1,7 +1,7 @@
 # Store-Angaben
 
 Texte und Antworten zum Kopieren in die Google Play Console und App Store Connect.
-Stand: Version **1.9.0**, VersionCode/Build **151** (21.11.2026).
+Stand: Version **1.10.0**, VersionCode/Build **152** (22.11.2026).
 Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderungen an der App beide Stellen prüfen.
 Jedes Textfeld steht in einem eigenen Kasten zum Kopieren. Die Zahl in Klammern darunter ist die Zeichenzahl (per Skript gezählt, Leerzeichen und Zeilenumbrüche mitgezählt).
 Store-Texte nur auf Deutsch (bisher keine englischen Einträge).
@@ -10,7 +10,7 @@ Store-Texte nur auf Deutsch (bisher keine englischen Einträge).
 
 | Feld | Wert |
 |---|---|
-| Version | 1.9.0 (VersionCode/Build 151) |
+| Version | 1.10.0 (VersionCode/Build 152) |
 | Kategorie | Play: *Finanzen* · iOS: *Finanzen* (Zweitkategorie *Dienstprogramme*) |
 | Altersfreigabe | Ab 0 / 4+ (keine kritischen Inhalte) |
 | Preis | 1,49 € einmalig (Play Console: „Mit Google Play monetarisieren“), keine In-App-Käufe, keine Werbung, kein Abo. Tester bekommen Gutscheincodes. |
@@ -102,7 +102,7 @@ Nur Deutsch (weitere Sprachen für die Neuigkeiten sind in dieser Datei nicht an
 ```
 Neu: Pflege jetzt in allen 13 Sprachen. Die Antragsmappe führt dich Schritt für Schritt wie eine Aufgabenliste. Gibt es zwei Wege (z. B. Wohngeld oder Grundsicherungsgeld), zeigt das Ergebnis beide. Geld und Schulden: Beratungsstelle in deiner Nähe suchen, Musterschreiben bei Mietschulden und drohender Stromsperre, Fristen klarer. SoLo-Dateien von der Beratung öffnen sich direkt. Sprachen laden schneller, auch offline. Besserer Datenschutz am iPhone. Viele Leistungen genauer gerechnet.
 ```
-(490 Zeichen; Version [Versionsname], Build [VersionCode] – legt David fest. Gilt nur, wenn die PRs #152–#173 im Build sind, sonst Sätze streichen: siehe docs/entwuerfe/release-naechstes.md. Text von 1.9.0 steht im Git-Verlauf.)
+(490 Zeichen; Version 1.10.0, Build 152; PRs #152–#173 sind enthalten. Text von 1.9.0 steht im Git-Verlauf.)
 
 ### Kategorie und Tags (Vorschlag)
 
@@ -172,7 +172,7 @@ Gleicher Text wie „Neuigkeiten in dieser Version“ bei Google Play:
 ```
 Neu: Pflege jetzt in allen 13 Sprachen. Die Antragsmappe führt dich Schritt für Schritt wie eine Aufgabenliste. Gibt es zwei Wege (z. B. Wohngeld oder Grundsicherungsgeld), zeigt das Ergebnis beide. Geld und Schulden: Beratungsstelle in deiner Nähe suchen, Musterschreiben bei Mietschulden und drohender Stromsperre, Fristen klarer. SoLo-Dateien von der Beratung öffnen sich direkt. Sprachen laden schneller, auch offline. Besserer Datenschutz am iPhone. Viele Leistungen genauer gerechnet.
 ```
-(490 Zeichen; Version [Versionsname], Build [VersionCode] – legt David fest. Gilt nur, wenn die PRs #152–#173 im Build sind, sonst Sätze streichen: siehe docs/entwuerfe/release-naechstes.md. Text von 1.9.0 steht im Git-Verlauf.)
+(490 Zeichen; Version 1.10.0, Build 152; PRs #152–#173 sind enthalten. Text von 1.9.0 steht im Git-Verlauf.)
 
 ### URLs
 
@@ -193,7 +193,7 @@ Neu: Pflege jetzt in allen 13 Sprachen. Die Antragsmappe führt dich Schritt fü
 
 ### Hinweise für die App-Prüfung (App Review Information → Notes)
 
-Die Testschritte passen zur Version [Versionsname] (Antragsmappe als Aufgabenliste mit „Drucken oder teilen“, SoLo-Datei direkt öffnen; Stand 21.11.2026).
+Die Testschritte passen zur Version 1.10.0 (Antragsmappe als Aufgabenliste mit „Drucken oder teilen“, SoLo-Datei direkt öffnen; Stand 21.11.2026).
 
 ```
 Die App läuft vollständig offline. Es gibt keine Anmeldung und kein Konto, ein Demo-Zugang ist nicht nötig. Die App überträgt keine Daten: keine Server, keine Werbung, kein Tracking. Alle Angaben bleiben auf dem Gerät.
