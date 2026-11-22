@@ -26,7 +26,7 @@ const fire = (el, type) => el.dispatchEvent(new w.Event(type, { bubbles: true })
 const setLang = (c) => { const s = $('lang'); s.value = c; fire(s, 'change'); };
 const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
 const NEU = ['nav.ordner', 'vg.liste.h', 'vg.plus', 'vg.plusWeiter', 'vg.anlegen', 'vg.neu.t', 'vg.bearbeiten', 'vg.fertig', 'vg.zuSicher', 'akt.antrag', 'ordner.ergebnis', 'ordner.mappe', 'ordner.mappe.n', 'ordner.ausziehen', 'ordner.ausziehen.n', 'ordner.pflege', 'ordner.pfaendung', 'set.sicher.h', 'set.sicher.t', 'set.an', 'set.aus', 'set.thema', 'set.thema.auto', 'set.thema.hell', 'set.thema.dunkel', 'set.loeschen.h', 'l.eins', 'l.alle', 'l.ja', 'set.fach.h', 'set.beratung.label', 'set.beratung.t', 'recht.label',
-  'akt.drucken', 'eb.h', 'eb.intro', 'eb.kuerzel', 'eb.titel', 'eb.datum', 'eb.kuerzelZeile', 'eb.col.leistung', 'eb.col.einstufung', 'eb.col.betrag', 'eb.col.stelle', 'eb.col.schritt', 'eb.hinweis'];
+  'akt.drucken', 'akt.ergDrucken', 'eb.h', 'eb.intro', 'eb.kuerzel', 'eb.titel', 'eb.datum', 'eb.kuerzelZeile', 'eb.col.leistung', 'eb.col.einstufung', 'eb.col.betrag', 'eb.col.stelle', 'eb.col.schritt', 'eb.hinweis'];
 
 // ---------- Hilfsfunktionen in fmt.js ----------
 check('ohnePara: Paragraf in Klammern weg, Satzzeichen bleibt', Fmt.ohnePara('Überprüfungsantrag (§ 44 SGB X); rückwirkend') === 'Überprüfungsantrag; rückwirkend' && Fmt.ohnePara('mitgenommen (§ 899 ZPO).') === 'mitgenommen.');
@@ -92,7 +92,7 @@ const passend = () => [...d.querySelectorAll('#cards article.card')].filter((a) 
 const gut = () => d.querySelector('#gutWissen') ? d.querySelector('#gutWissen').textContent : '';
 check('Laienansicht: keine Rechtsgrundlage in den Karten', d.querySelectorAll('#cards .recht').length === 0);
 check('Laienansicht: keine Paragrafen in Karten und „Gut zu wissen“ (z. B. § 44 SGB X)', !/§/.test(d.getElementById('cards').textContent) && /Überprüfungsantrag/.test(gut()), gut().slice(0, 200));
-check('Knopf „Drucken oder teilen“ (Ergebnisblatt) direkt unter dem Hauptknopf „Antrag vorbereiten“ (UX-Prüfung 21.11.2026, Nr. 8)', !!$('ebOpen') && $('ebOpen').textContent === I18N.de['akt.drucken'] && $('ebOpen').previousElementSibling === $('mappeMake'));
+check('Knopf „Drucken oder teilen“ (Ergebnisblatt) direkt unter dem Hauptknopf „Antrag vorbereiten“ (UX-Prüfung 21.11.2026, Nr. 8)', !!$('ebOpen') && $('ebOpen').textContent === I18N.de['akt.ergDrucken'] && I18N.de['akt.ergDrucken'] === 'Ergebnis drucken oder teilen' && $('ebOpen').previousElementSibling === $('mappeMake'));
 
 // ---------- Beratungsmodus an ----------
 $('beratungBtn').click();

@@ -16,7 +16,9 @@ const ok = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL', name, x
 
 const pruefen = () => {
   const W = window.innerWidth, out = [];
-  const sichtbar = (e) => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e); return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && !e.closest('[hidden], .sr-only, .visually-hidden, dialog:not([open])'); };
+  // Nur für Screenreader versteckt (.vh, Kopfzeile außerhalb der Startseite: clip auf 1 px): nicht sichtbar, zählt nicht
+  const versteckt = (e) => { for (let x = e; x && x !== document.body; x = x.parentElement) { const c = getComputedStyle(x); if ((c.clip && c.clip !== 'auto') || c.clipPath === 'inset(50%)') return true; } return false; };
+  const sichtbar = (e) => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e); return r.width > 0 && r.height > 0 && cs.visibility !== 'hidden' && !e.closest('[hidden], .sr-only, .visually-hidden, .vh, dialog:not([open])') && !versteckt(e); };
   const ov = document.documentElement.scrollWidth - W;
   if (ov > 1) {
     // Verursacher nennen, auch unsichtbare oder absolut positionierte Elemente
@@ -60,20 +62,25 @@ const pruefen = () => {
       }, [lang, HH, modus === 'gross']);
       const p = await ctx.newPage(); await p.addInitScript(SF_ALLES);
       const err = []; p.on('pageerror', (e) => err.push(e.message));
-      await p.goto(APP);
+      await p.goto(APP + '#leistungen'); // ausführliche Version direkt (ohne Adresszusatz öffnet die Startseite, die Karten wären verborgen)
       if (modus === 'system200') await p.addStyleTag({ content: 'html { font-size: 200% !important; } html.big { font-size: 200% !important; }' });
       await p.waitForTimeout(300);
-      const karten = await p.locator('#cards .card:not(.startcard)').count();
-      ok(`${modus} ${lang}: ausführliche Version mit Karten, ohne Skriptfehler`, karten > 20 && err.length === 0, karten + ' ' + err.join('; '));
+      const karten = await p.locator('#cards .card:not(.startcard)').count(), sichtbar = await p.isVisible('#cards .card:not(.startcard)');
+      ok(`${modus} ${lang}: ausführliche Version mit sichtbaren Karten, ohne Skriptfehler`, sichtbar && karten > 20 && err.length === 0, karten + ' sichtbar=' + sichtbar + ' ' + err.join('; '));
       const f1 = await p.evaluate(pruefen);
       ok(`${modus} ${lang}: ausführliche Version passt auf 320 px`, f1.length === 0, f1.join(' | '));
-      // Antragsmappe öffnen (falls vorhanden)
-      if (await p.locator('#mappeBtn').count()) {
-        await p.click('#mappeBtn').catch(() => {});
+      // Antragsmappe über den Hauptknopf „Antrag vorbereiten“ (#mappeMake) öffnen, alle Schritte aufgeklappt
+      const mk = await p.isVisible('#mappeMake');
+      ok(`${modus} ${lang}: Knopf „Antrag vorbereiten“ sichtbar`, mk);
+      if (mk) {
+        await p.evaluate(() => document.getElementById('mappeMake').click()); // Leiste unten kann den Knopf verdecken
+        await p.evaluate(() => document.querySelectorAll('#mappeAufgaben details').forEach((d) => { d.open = true; }));
         await p.waitForTimeout(200);
+        const offen = await p.isVisible('#mappe');
         const f2 = await p.evaluate(pruefen);
-        ok(`${modus} ${lang}: Antragsmappe passt auf 320 px`, f2.length === 0, f2.join(' | '));
-        await p.click('#mappeClose').catch(() => {});
+        ok(`${modus} ${lang}: Antragsmappe offen und passt auf 320 px`, offen && f2.length === 0, 'offen=' + offen + ' ' + f2.join(' | '));
+        await p.evaluate(() => document.getElementById('mappeClose').click());
+        await p.waitForTimeout(150);
       }
       // Einfache Version: erste Frage
       await p.evaluate(() => document.getElementById('einfachBtn').click()); // Leiste unten kann den Knopf je nach Scrollstand verdecken
@@ -82,6 +89,35 @@ const pruefen = () => {
       ok(`${modus} ${lang}: einfache Version passt auf 320 px`, f3.length === 0 && err.length === 0, f3.join(' | ') + err.join('; '));
       await ctx.close();
     }
+  }
+  // UX-Nachprüfung 22.11.2026, Nr. 6: Systemschrift 200 % auf 390 px mit den Fällen der Prüfung (A alleinerziehend, B Rentnerin, C Paar mit 3 Kindern):
+  // Ergebnis mit allen Karten aufgeklappt und Antragsmappe mit allen Schritten offen werden nicht breiter als der Bildschirm.
+  const FAELLE = {
+    A: { adults: 1, kids: 2, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: '1700', ek1Netto: '1250', miete: '850', plz: '91054', vermoegen: '0', bezug: {} },
+    B: { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'rente', ek1Brutto: '960', ek1Netto: '880', miete: '520', plz: '90542', vermoegen: '0', gebJahr: '1955', pflegegrad: '2', bezug: {} },
+    C: { adults: 2, kids: 3, kidsU6: 1, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: '2900', ek1Netto: '2150', ek2Art: 'ohne', miete: '1150', plz: '90402', vermoegen: '0', bezug: {} }
+  };
+  for (const [name, hh] of Object.entries(FAELLE)) {
+    if (!SHARD.nimm(++fall)) continue;
+    const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE', deviceScaleFactor: 1 });
+    await ctx.addInitScript((hh) => { try { localStorage.setItem('lotse-lang', 'de'); localStorage.setItem('lotse.ack', '1'); localStorage.setItem('lotse.state', JSON.stringify({ s: hh, p: {}, e: true })); } catch (e) {} }, hh);
+    const p = await ctx.newPage(); await p.addInitScript(SF_ALLES);
+    const err = []; p.on('pageerror', (e) => err.push(e.message));
+    await p.goto(APP + '#leistungen');
+    await p.addStyleTag({ content: 'html { font-size: 200% !important; }' });
+    await p.evaluate(() => document.querySelectorAll('#cards details').forEach((d) => { d.open = true; }));
+    await p.waitForTimeout(250);
+    const breit = () => ({ sw: document.documentElement.scrollWidth, wer: [...document.querySelectorAll('body *')].filter((e) => e.getBoundingClientRect().right > 391 && e.getBoundingClientRect().width > 0 && !e.closest('[hidden]')).slice(0, 3).map((e) => e.tagName + '.' + e.className + ' „' + (e.textContent || '').trim().slice(0, 30) + '“') });
+    const e1 = await p.evaluate(breit), sichtbar = await p.isVisible('#cards .card');
+    ok(`system200 390px Fall ${name}: Ergebnis (alle Karten offen) sichtbar und höchstens 390 px breit`, sichtbar && e1.sw <= 390 && err.length === 0, e1.sw + ' ' + e1.wer.join(' ; ') + err.join('; '));
+    if (await p.locator('#mappeMake').count()) {
+      await p.evaluate(() => document.getElementById('mappeMake').click());
+      await p.evaluate(() => document.querySelectorAll('#mappe details').forEach((d) => { d.open = true; }));
+      await p.waitForTimeout(250);
+      const e2 = await p.evaluate(breit);
+      ok(`system200 390px Fall ${name}: Antragsmappe (alles offen) höchstens 390 px breit`, e2.sw <= 390 && err.length === 0, e2.sw + ' ' + e2.wer.join(' ; ') + err.join('; '));
+    } else ok(`system200 390px Fall ${name}: Knopf „Antrag vorbereiten“ da`, false);
+    await ctx.close();
   }
   await b.close();
   console.log(fails ? `\n${fails} von ${n} FEHLGESCHLAGEN` : `Kleinbild-Test${SHARD.name} bestanden: ${n} Prüfungen (320 px, 13 Sprachen, normal, große Schrift, Systemschrift 200 %)`);

@@ -1111,7 +1111,7 @@
   "f.formsLink": "Otwórz urzędowy formularz",
   "f.empfTitel": "Odbiorca pisma (możesz go zmienić)",
   "f.empfHinweis": "Brakuje adresu albo podano tylko rodzaj urzędu? Wpisz tutaj nazwę i adres urzędu. Zmiana dotyczy pisma do skopiowania i pliku PDF.",
-  "f.empfSuche": "Wyszukaj w internecie właściwy urząd i jego adres",
+  "f.empfSuche": "Wyszukaj adres w internecie",
   "f.empfZurueck": "Przywróć propozycję aplikacji",
   "t.kiz.mitWg": "Dodatek na dziecko (Kinderzuschlag, do {max} na dziecko) pozwoli obyć się bez zasiłku podstawowego (Grundsicherungsgeld) tylko razem z dodatkiem mieszkaniowym (Wohngeld). Złóż wnioski o oba; Familienkasse sprawdzi je razem.",
   "heiz.label": "W tym koszty ogrzewania miesięcznie (opcjonalnie)",

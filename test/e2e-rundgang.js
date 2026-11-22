@@ -55,7 +55,6 @@ const ok = (name, c, x) => { n++; if (!c) { fails++; console.log('FAIL Rundgang:
   await zuLeistungen();
   if (await p.locator('#es-raus').first().isVisible()) await p.locator('#es-raus').first().click({ timeout: 2000 });
   await p.evaluate(() => document.getElementById('p1').click()).catch(() => {});
-  if (await p.isVisible('#beispielJa')) await p.click('#beispielJa', { timeout: 2000 });
   await bereich('Ausführliche Version mit Ergebnis', (z) => z.ansicht === 'leistungen' && !z.esModus && z.karten > 1);
 
   // Antragsmappe

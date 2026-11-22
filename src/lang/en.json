@@ -1111,7 +1111,7 @@
   "f.formsLink": "Open official form",
   "f.empfTitel": "Recipient of the letter (you can change it)",
   "f.empfHinweis": "Is the address missing, or does it only say the type of office? Enter the name and address of the office here. The change applies to the letter for copying and to the PDF.",
-  "f.empfSuche": "Search the internet for the responsible office and its address",
+  "f.empfSuche": "Search the internet for the address",
   "f.empfZurueck": "Restore the app's suggestion",
   "t.kiz.mitWg": "Child supplement (Kinderzuschlag, up to {max} per child) only gets you off basic income support (Grundsicherungsgeld) together with housing benefit (Wohngeld). Apply for both; the family benefits office (Familienkasse) checks them together.",
   "heiz.label": "Of which heating costs per month (optional)",

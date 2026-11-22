@@ -1111,7 +1111,7 @@
   "f.formsLink": "Deschide formularul oficial",
   "f.empfTitel": "Destinatarul scrisorii (îl poți modifica)",
   "f.empfHinweis": "Lipsește adresa sau apare doar tipul autorității? Scrie aici numele și adresa autorității. Modificarea se aplică scrisorii de copiat și fișierului PDF.",
-  "f.empfSuche": "Caută pe internet autoritatea competentă și adresa ei",
+  "f.empfSuche": "Caută adresa pe internet",
   "f.empfZurueck": "Restabilește propunerea aplicației",
   "t.kiz.mitWg": "Suplimentul pentru copii (Kinderzuschlag, până la {max} pe copil) te ajută să nu mai ai nevoie de ajutorul de bază (Grundsicherungsgeld) doar împreună cu ajutorul pentru locuință (Wohngeld). Depune cereri pentru ambele; Familienkasse le verifică împreună.",
   "heiz.label": "Din care costuri de încălzire pe lună (opțional)",

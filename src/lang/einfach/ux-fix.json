@@ -1,0 +1,15 @@
+{
+  "akt.ergDrucken": "=",
+  "f.weg.zeile": "=",
+  "f.weg.nochNicht": "Du hast den Weg noch nicht gewählt",
+  "f.weg.waehlen": "=",
+  "f.weg.tippGsa": "Tipp: Grundsicherung im Alter und Wohngeld bekommst du nicht beide zusammen. Lass beides prüfen. Frag, mit welchem Weg du mehr Geld bekommst.",
+  "f.weg.tippGg": "Tipp: Du bekommst nicht beide Wege zusammen. Die Ämter prüfen, welcher Weg für dich gilt. Frag dort nach. Dann wähl hier deinen Weg.",
+  "f.weg.tippGgKiz": "Tipp: Du bekommst nicht beide Wege zusammen. Frag zuerst bei der Familienkasse oder bei der Wohngeldstelle: Welcher Weg gilt für mich? Dann wähl hier deinen Weg.",
+  "f.auf.antraegeOffen": "=",
+  "f.empfKurz": "Schreib deinen Ort selbst in die Suche. Schreib die Anschrift dann oben in das Feld.",
+  "u.eink.basis": "=",
+  "u.eink.mit": "=",
+  "u.eink.wg": "für Wohngeld von allen Personen im Haushalt, meist von den letzten 12 Monaten",
+  "u.eink.kiz": "für Kinderzuschlag von den Eltern und zum Geld der Kinder (zum Beispiel Unterhalt), meist von den letzten 6 Monaten"
+}

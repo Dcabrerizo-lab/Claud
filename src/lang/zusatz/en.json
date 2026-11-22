@@ -124,5 +124,18 @@
   "bp.vgl.pg": "care level (Pflegegrad) {pg}",
   "bp.vgl.kein": "no care level (Pflegegrad)",
   "bp.vgl.klein": "Weighted points, as the Pflegekasse calculates them (§ 15 SGB XI). Plus means: your estimate gives more points there. Below you can see which questions exactly.",
-  "t.bafoeg.vermTeil": "Your assets are above the allowance of {verm}. An extra €2,300 is only allowed for a spouse or registered civil partner and for each of your own children. Only the part above the allowance counts: spread over 12 months, it reduces BAföG by about {monat} a month. The Amt für Ausbildungsförderung calculates the exact amount."
+  "t.bafoeg.vermTeil": "Your assets are above the allowance of {verm}. An extra €2,300 is only allowed for a spouse or registered civil partner and for each of your own children. Only the part above the allowance counts: spread over 12 months, it reduces BAföG by about {monat} a month. The Amt für Ausbildungsförderung calculates the exact amount.",
+  "akt.ergDrucken": "Print or share result",
+  "f.weg.zeile": "{a} or {b}",
+  "f.weg.nochNicht": "Route not chosen yet",
+  "f.weg.waehlen": "Choose route",
+  "f.weg.tippGsa": "Tip: You cannot get Grundsicherung im Alter and Wohngeld at the same time. Have both checked and ask which route gives you more.",
+  "f.weg.tippGg": "Tip: You cannot get both routes together. The offices check which route applies to you. Ask there, then choose your route here.",
+  "f.weg.tippGgKiz": "Tip: You cannot get both routes together. First ask the Familienkasse or the Wohngeldstelle which route applies to you. Then choose your route here.",
+  "f.auf.antraegeOffen": "Submit applications ({n} + {m} open)",
+  "f.empfKurz": "Add your town in the search yourself and enter the address above.",
+  "u.eink.basis": "Proof of income",
+  "u.eink.mit": "{basis} ({teile})",
+  "u.eink.wg": "for Wohngeld from everyone in the household, usually for the last 12 months",
+  "u.eink.kiz": "for Kinderzuschlag from the parents and on the children’s income (e.g. maintenance), usually for the last 6 months"
 }

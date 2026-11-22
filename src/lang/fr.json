@@ -1111,7 +1111,7 @@
   "f.formsLink": "Ouvrir le formulaire officiel",
   "f.empfTitel": "Destinataire de la lettre (tu peux le modifier)",
   "f.empfHinweis": "L'adresse manque, ou seul le type de service est indiqué ? Saisis ici le nom et l'adresse du service. La modification s'applique à la lettre à copier et au PDF.",
-  "f.empfSuche": "Chercher sur Internet le service compétent et son adresse",
+  "f.empfSuche": "Chercher l’adresse sur Internet",
   "f.empfZurueck": "Rétablir la proposition de l'appli",
   "t.kiz.mitWg": "Le supplément pour enfants (Kinderzuschlag, jusqu'à {max} par enfant) ne te permet de te passer du revenu de base (Grundsicherungsgeld) qu'en combinaison avec l'aide au logement (Wohngeld). Demande les deux ; la Familienkasse les examine ensemble.",
   "heiz.label": "Dont frais de chauffage par mois (facultatif)",
