@@ -287,7 +287,7 @@ function figur(name, o = {}) {
       return person({ haut: 'mittel', haar: 'bob', haarfarbe: 'schwarz', ohrringe: true, oben: P.blau, unten: P.navy, kragen: 'v', arme, mimik, wink,
         handyIn: ({ winken: 'l', zeigen: 'l', denken: 'l', handy: 'r', halten: 'r', stehen: 'l' })[pose], halt });
     case 'mutter':
-      return person({ haut: 'hell', haar: 'kopftuch', haarfarbe: P.gruen, oben: P.gruenhell, rock: true, rockFarbe: P.navy, unten: P.navy, armFarbe: P.gruenhell, arme, mimik, wink, halt, handyIn });
+      return person({ haut: 'hell', haar: 'zopf', haarfarbe: 'braun', oben: P.gruenhell, rock: true, rockFarbe: P.navy, unten: P.navy, armFarbe: P.gruenhell, arme, mimik, wink, halt, handyIn });
     case 'kind':
       return person({ kind: true, haut: 'hell', haar: 'zoepfe', haarfarbe: 'braun', oben: P.gold, unten: P.blau, arme, mimik, wink, halt, handyIn });
     case 'rentnerin':
