@@ -40,7 +40,7 @@ const M = [
   ['BAföG: Kinderbetreuungszuschlag fehlt (§ 14b)', 'R.bafoeg.bedarfMax + R.bafoeg.kindZuschlag * h.children;', 'R.bafoeg.bedarfMax;'],
   ['BAföG: Mindestbetrag 10 € nicht beachtet (§ 51 Abs. 4)', 'bedarf - R.bafoeg.minZahlung + 0.5;', 'bedarf;'],
   ['BAföG: Mindestbetrag ohne Rundung (§ 51 Abs. 3)', 'bedarf - R.bafoeg.minZahlung + 0.5;', 'bedarf - R.bafoeg.minZahlung;'],
-  ['BAföG: Elterneinkommen über dem Freibetrag voll statt zu 50 % angerechnet (Befund 10)', 'const quote = R.bafoeg.anrechFrei - R.bafoeg.anrechFreiKind', 'const quote = 1 - R.bafoeg.anrechFreiKind'],
+  ['BAföG: Elterneinkommen über dem Freibetrag voll statt zu 50 % angerechnet (Befund 10)', 'const q = Math.max(0, BAF.anrechFrei - BAF.anrechFreiKind * mitFb);', 'const q = Math.max(0, 1 - BAF.anrechFreiKind * mitFb);'],
   ['Blindengeld Bayern: Pflegegrad 4 und 5 mit dem eigenen Pflegegeld (Befund 12)', ': 0.33 * R.pflege.geld[3];', ': 0.33 * R.pflege.geld[h.pflegegrad];'],
   ['Grundsicherung im Alter: Grundrenten-Freibetrag aus der Netto-Rente (Befund 14)', 'gesB = Math.max(gesetzlich, b - zusB[i])', 'gesB = gesetzlich'],
   ['Hilfe zur Pflege: Grenze 1,5 statt 2 Regelsätze', 'hzp: { grund: 2, familie: 0.7 }', 'hzp: { grund: 1.5, familie: 0.7 }'],

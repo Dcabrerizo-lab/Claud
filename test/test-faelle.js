@@ -938,6 +938,18 @@ ck('[eu] EU-Bürger: Grundsicherung im Alter ausgeschlossen (§ 23 SGB XII) unte
   // (4.619,39 − 2.540) × 50 % = 1.039,70 € ≤ 1.078,50 € -> „möglich“ (mit Netto 4.800 €: 1.130 € -> „eher nicht“)
   ck('[rechenbefunde-b1] BAföG Kind: 7.000 € brutto / 4.800 € netto -> Anrechnung 1.039,70 € unter dem höchsten Bedarf „möglich“', B(7000, 4800) === 'vielleicht', B(7000, 4800)); }
 
+// Befund 10 – § 25 Abs. 4 BAföG: vom Elterneinkommen über dem Freibetrag wird nur die Hälfte angerechnet (ohne weitere Kinder mit Freibetrag:
+// 50 %). Quellen: § 25 Abs. 1 Nr. 1 und Abs. 4, § 21, §§ 13, 13a, § 51 Abs. 3 und 4 BAföG (https://www.gesetze-im-internet.de/baf_g/__25.html,
+// Abruf 22.11.2026; Werte ab WS 2026/27: Freibetrag 2.540 €, Grundbedarf 475 €, Wohnen 59 € / 380 €, KV/PV 102 + 35 €).
+// Paar, ein Kind in Ausbildung, nur Rente (kein Lohn: Einkommen nach § 21 für „eher nicht“ = das Netto; untere Schätzung 80 %).
+{ const BR = (b) => res({ adults: 2, kids: 1, art1: 'rente', art2: 'ohne', brutto: b, brutto2: 0, netto: b, ausbildung: 'kind', miete: 700, heute: 2026.9 }).m.bafoeg;
+  // 3.800 €: (3.800 − 2.540) × 50 % = 630 € ≤ 1.088 − 10 + 0,5 = 1.078,50 € -> „möglich“ (voll angerechnet: 1.260 € -> fälschlich „eher nicht“)
+  ck('[bafoeg-eltern] BAföG Kind: Rente 3.800 € -> Anrechnung 50 % = 630 € unter dem höchsten Bedarf „möglich“', BR(3800).level === 'vielleicht', BR(3800).level);
+  // 3.200 €: Einkommen 2.560 € (80 %) bis 3.200 €; Anrechnung (2.560 − 2.540) × 50 % = 10 € bis (3.200 − 2.540) × 50 % = 330 €.
+  // Spanne: 475 + 59 − 330 = 204 € (abgerundet 200 €) bis 475 + 380 + 137 − 10 = 982 € (aufgerundet 990 €); voll angerechnet: 534 − 660 < 0 -> „bis 980 €“
+  const t = BR(3200).tx;
+  ck('[bafoeg-eltern] BAföG Kind: Rente 3.200 € -> Spanne 200 bis 990 € (Anrechnung 50 % über dem Freibetrag)', BR(3200).level === 'vielleicht' && t[1][0] === 'schaetz.spanne' && t[1][1].a === '200 €' && t[1][1].b === '990 €' && t[2][1].a === '204 €' && t[2][1].c === '525 €', JSON.stringify(t)); }
+
 // E2 – Elterngeld-Netto mit den Pauschalen nach § 2f BEEG (9 + 10 + 2 % = 21 %, gesetze-im-internet.de/beeg/__2f.html, Abruf 21.11.2026).
 // Allein, erstes Kind, 2.000 € netto, Steuerklasse I, kinderlos: Brutto 2.904 €, echte Beiträge 21,75 % = 631,62 €, Pauschale 609,84 €
 // -> Elterngeld-Netto 2.021,78 €; minus 102,50 € (§ 2c) = 1.919,28 €; 65 % = 1.247,53 € -> 1.248 € (mit dem Netto: 1.233 €).
