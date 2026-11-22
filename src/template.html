@@ -1005,6 +1005,9 @@
   .card .desc, .es-karte h3 { overflow-wrap: anywhere; hyphens: auto; }
   /* Kartentitel ohne Trennstrich (UX-Prüfung 21.11.2026: „Grundsiche-rungsgeld“); die Plakette rückt bei Bedarf unter den Titel */
   .card header h3 { overflow-wrap: anywhere; hyphens: manual; -webkit-hyphens: manual; } /* anywhere: Notumbruch auch bei Systemschrift 200 % (UX-Nachprüfung 22.11.2026, Nr. 6) */
+  fieldset { min-width: 0; } .summary h2 { min-width: 0; overflow-wrap: anywhere; } /* Systemschrift 200 % auf 320 px: Fieldset nicht breiter als der Bildschirm (Standard min-width: min-content) */
+  .wege, .weg-gruppe { grid-template-columns: minmax(0, 1fr); } .weg-kopf > *, .weg-kopf .pill { max-width: 100%; overflow-wrap: anywhere; }
+  .wege > h3, .card header .pill { overflow-wrap: anywhere; } /* Systemschrift 200 % auf 320 px: „Unwahrscheinlich“, „L'un ou l'autre …“ */
   .together { border-inline-start-color: var(--accent); }
   .pill { border: 0; padding: 5px 12px; }
   .card .behoerde { border-radius: var(--r-ctl); border-inline-start-width: 4px; }
