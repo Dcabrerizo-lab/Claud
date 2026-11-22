@@ -1,7 +1,7 @@
 # Store-Angaben
 
 Texte und Antworten zum Kopieren in die Google Play Console und App Store Connect.
-Stand: Version **1.10.0**, VersionCode/Build **152** (22.11.2026).
+Stand: Version **1.10.0**, VersionCode/Build **153** (22.11.2026).
 Alles muss zur [Datenschutzerklärung](../datenschutz.html) passen. Bei Änderungen an der App beide Stellen prüfen.
 Jedes Textfeld steht in einem eigenen Kasten zum Kopieren. Die Zahl in Klammern darunter ist die Zeichenzahl (per Skript gezählt, Leerzeichen und Zeilenumbrüche mitgezählt).
 Store-Texte nur auf Deutsch (bisher keine englischen Einträge).
@@ -10,7 +10,7 @@ Store-Texte nur auf Deutsch (bisher keine englischen Einträge).
 
 | Feld | Wert |
 |---|---|
-| Version | 1.10.0 (VersionCode/Build 152) |
+| Version | 1.10.0 (VersionCode/Build 153) |
 | Kategorie | Play: *Finanzen* · iOS: *Finanzen* (Zweitkategorie *Dienstprogramme*) |
 | Altersfreigabe | Ab 0 / 4+ (keine kritischen Inhalte) |
 | Preis | 1,49 € einmalig (Play Console: „Mit Google Play monetarisieren“), keine In-App-Käufe, keine Werbung, kein Abo. Tester bekommen Gutscheincodes. |
@@ -102,7 +102,7 @@ Nur Deutsch (weitere Sprachen für die Neuigkeiten sind in dieser Datei nicht an
 ```
 Neu: Pflege jetzt in allen 13 Sprachen. Die Antragsmappe führt dich Schritt für Schritt wie eine Aufgabenliste. Gibt es zwei Wege (z. B. Wohngeld oder Grundsicherungsgeld), zeigt das Ergebnis beide. Geld und Schulden: Beratungsstelle in deiner Nähe suchen, Musterschreiben bei Mietschulden und drohender Stromsperre, Fristen klarer. SoLo-Dateien von der Beratung öffnen sich direkt. Sprachen laden schneller, auch offline. Besserer Datenschutz am iPhone. Viele Leistungen genauer gerechnet.
 ```
-(490 Zeichen; Version 1.10.0, Build 152; PRs #152–#173 sind enthalten. Text von 1.9.0 steht im Git-Verlauf.)
+(490 Zeichen; Version 1.10.0, Build 153; PRs #152–#173 sind enthalten. Text von 1.9.0 steht im Git-Verlauf.)
 
 ### Kategorie und Tags (Vorschlag)
 
@@ -172,7 +172,7 @@ Gleicher Text wie „Neuigkeiten in dieser Version“ bei Google Play:
 ```
 Neu: Pflege jetzt in allen 13 Sprachen. Die Antragsmappe führt dich Schritt für Schritt wie eine Aufgabenliste. Gibt es zwei Wege (z. B. Wohngeld oder Grundsicherungsgeld), zeigt das Ergebnis beide. Geld und Schulden: Beratungsstelle in deiner Nähe suchen, Musterschreiben bei Mietschulden und drohender Stromsperre, Fristen klarer. SoLo-Dateien von der Beratung öffnen sich direkt. Sprachen laden schneller, auch offline. Besserer Datenschutz am iPhone. Viele Leistungen genauer gerechnet.
 ```
-(490 Zeichen; Version 1.10.0, Build 152; PRs #152–#173 sind enthalten. Text von 1.9.0 steht im Git-Verlauf.)
+(490 Zeichen; Version 1.10.0, Build 153; PRs #152–#173 sind enthalten. Text von 1.9.0 steht im Git-Verlauf.)
 
 ### URLs
 
@@ -214,7 +214,7 @@ Die App ist eine Orientierungshilfe, keine Rechtsberatung und keine App einer Be
 
 Benötigt: Play mindestens 2 Handy-Screenshots (höchstens 8) und eine Werbegrafik (1024 × 500); iOS 6,9″ (1320 × 2868) und 6,5″ (1242 × 2688), optional iPad (höchstens 10 je Größe).
 
-Die Bilder sind zuletzt für Version 1.10.0 (Build 152) mit `node tools/store-bilder.js` erzeugt (22.11.2026; vorher `npm run build:app`; Ausgabe nach `store-bilder/`, nicht im Repo: `play/` 1080 × 1920 mit 8 Bildern, `ios-6.9/` 1320 × 2868 und `ios-6.5/` 1242 × 2688 mit je 9 Bildern, dazu Werbegrafik 1024 × 500, Symbol 512 × 512, Logo 1024 × 1024). Nur Musterdaten („Maria Muster“, Musterbescheid, Muster-Fristen). Sie liegen in den Paketen unter `Store-Bilder`.
+Die Bilder sind zuletzt für Version 1.10.0 (Build 153) mit `node tools/store-bilder.js` erzeugt (22.11.2026; vorher `npm run build:app`; Ausgabe nach `store-bilder/`, nicht im Repo: `play/` 1080 × 1920 mit 8 Bildern, `ios-6.9/` 1320 × 2868 und `ios-6.5/` 1242 × 2688 mit je 9 Bildern, dazu Werbegrafik 1024 × 500, Symbol 512 × 512, Logo 1024 × 1024). Nur Musterdaten („Maria Muster“, Musterbescheid, Muster-Fristen). Sie liegen in den Paketen unter `Store-Bilder`.
 
 Motive (Überschrift auf dem Bild in Klammern; Reihenfolge = Dateiname):
 
