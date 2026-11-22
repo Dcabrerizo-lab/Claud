@@ -135,7 +135,7 @@
   "f.auf.antraegeOffen": "تقديم الطلبات ({n} + {m} مفتوح)",
   "f.empfKurz": "أضف اسم مدينتك بنفسك في البحث واكتب العنوان في الأعلى.",
   "u.eink.basis": "إثباتات الدخل",
-  "u.eink.mit": "{basis} ({teile})",
+  "u.eink.mit": "{basis}: {teile}",
   "u.eink.wg": "لـ Wohngeld من جميع أفراد الأسرة، غالباً لآخر 12 شهراً",
   "u.eink.kiz": "لـ Kinderzuschlag من الوالدين وعن دخل الأطفال (مثل النفقة)، غالباً لآخر 6 أشهر"
 }

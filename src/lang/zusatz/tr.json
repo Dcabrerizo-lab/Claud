@@ -135,7 +135,7 @@
   "f.auf.antraegeOffen": "Başvuruları yap ({n} + {m} açık)",
   "f.empfKurz": "Yaşadığın yeri aramaya kendin ekle ve adresi yukarıya yaz.",
   "u.eink.basis": "Gelir belgeleri",
-  "u.eink.mit": "{basis} ({teile})",
+  "u.eink.mit": "{basis}: {teile}",
   "u.eink.wg": "Wohngeld için hanedeki herkesin, genelde son 12 ay",
   "u.eink.kiz": "Kinderzuschlag için ebeveynlerin ve çocukların geliri (ör. nafaka), genelde son 6 ay"
 }

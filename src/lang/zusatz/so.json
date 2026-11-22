@@ -135,7 +135,7 @@
   "f.auf.antraegeOffen": "Codsiyada gudbi ({n} + {m} furan)",
   "f.empfKurz": "Magaaladaada adigu ku dar raadinta oo cinwaanka kor ku qor.",
   "u.eink.basis": "Caddaynta dakhliga",
-  "u.eink.mit": "{basis} ({teile})",
+  "u.eink.mit": "{basis}: {teile}",
   "u.eink.wg": "Wohngeld: dhammaan xubnaha qoyska, inta badan 12-kii bilood ee u dambeeyay",
   "u.eink.kiz": "Kinderzuschlag: waalidiinta iyo dakhliga carruurta (tusaale ahaan masruufka), inta badan 6-dii bilood ee u dambeeyay"
 }

@@ -1663,11 +1663,16 @@
     if (p.eink) return t('u.eink.mit', { basis: tL(p.eink.basis), teile: p.eink.teile.map(function (k) { return t(k); }).join('; ') });
     return p.key ? tL(p.key) : p.text;
   }
+  // Am Bildschirm: Einkommen als Hauptzeile, die Zeiträume je Leistung als Unterzeilen (keine Klammer in der Klammer, UX-Rest 22.11.2026)
+  function punktHtml(p) {
+    if (!p.eink) return esc(punktText(p));
+    return esc(tL(p.eink.basis)) + p.eink.teile.map(function (k) { return '<span class="u-zeit">' + esc(t(k)) + '</span>'; }).join('');
+  }
   function unterlagenHtml(ids) {
     var u = unterlagenPlan(ids);
     var nameLang = function (r) { return r.name + (lang === 'de' ? '' : ' (' + t('n.' + r.id) + ')'); };
     var li = function (p) {
-      return '<li><label class="haken"><input type="checkbox" data-haken="' + esc(p.hk) + '" data-haken-alt="' + esc(JSON.stringify(p.alt)) + '"' + (p.ab ? ' checked' : '') + '><span' + (p.key || lang === 'de' ? '' : ' lang="de"') + '>' + esc(punktText(p)) + '</span></label></li>';
+      return '<li><label class="haken"><input type="checkbox" data-haken="' + esc(p.hk) + '" data-haken-alt="' + esc(JSON.stringify(p.alt)) + '"' + (p.ab ? ' checked' : '') + '><span' + (p.key || lang === 'de' ? '' : ' lang="de"') + '>' + punktHtml(p) + '</span></label></li>';
     };
     var h = '';
     if (u.gemeinsam.length) h += '<h4>' + esc(t(u.alle ? 'f.unt.alle' : 'f.unt.mehrere')) + '</h4><p class="small">' + esc(t('f.unt.kopie')) + '</p><ul class="haken-liste">' + u.gemeinsam.map(li).join('') + '</ul>';
@@ -1701,14 +1706,14 @@
     fp.forEach(function (f) {
       if (f.art !== 'link') { if (HINWEIS_FUER[f.id]) hinweise[HINWEIS_FUER[f.id]] = f; return; }
       var r = g(LINK_FUER[f.id]);
-      h += '<section class="ant-zeile ant-form" data-ant="f-' + esc(f.id) + '"><h4 lang="de" dir="ltr">' + esc(f.titel) + '</h4>' +
+      h += '<section class="ant-zeile ant-form" data-ant="f-' + esc(f.id) + '" data-leistung="' + esc(LINK_FUER[f.id] || f.id) + '"><h4 lang="de" dir="ltr">' + esc(f.titel) + '</h4>' +
         '<p class="form-link"><a class="btn" href="' + esc(f.url) + '" target="_blank" rel="noopener">' + esc(t('f.formsLink')) + '</a></p>' + satzP(formSatz(f)) + hilfe(f) + tipp(r) + '</section>';
     });
     briefe.forEach(function (r) {
       var bekannt = empfBekannt(r.id) || Object.prototype.hasOwnProperty.call(empfEdit, r.id);
       var an = empfZeilen(r.id).filter(function (z) { return z.indexOf('____') < 0; });
       var f = hinweise[r.id];
-      h += '<section class="ant-zeile ant-brief" data-ant="b-' + esc(r.id) + '"><h4>' + nameLang(r) + '</h4>' +
+      h += '<section class="ant-zeile ant-brief" data-ant="b-' + esc(r.id) + '" data-leistung="' + esc(r.id) + '"><h4>' + nameLang(r) + '</h4>' +
         (bekannt && an.length ? '<p class="small ant-an">' + esc(t('f.ant.an', { stelle: an[0] })) + '</p>' : '<p class="small ant-an fehlt">' + esc(t('f.ant.anFehlt')) + '</p>') +
         (f ? satzP(formSatz(f)) : '') +
         '<details class="ant-zeigen"><summary class="btn ghost">' + esc(t('f.ant.brief')) + '</summary>' + briefSeite(r.id) + '</details>' + (f ? hilfe(f) : '') + tipp(r) + '</section>';
@@ -1876,7 +1881,8 @@
     // Erst was jetzt zählt: der erste offene Schritt ist aufgeklappt, die anderen zu
     var erster = !absenderDa() ? 'aufAngaben' : !pickedIds().length ? '' : !antraegeErledigt() ? 'aufAntraegeD' : !haken['mappe|unterlagen'] ? 'aufUnterlagenD' : 'aufAbschickenD';
     ['aufAngaben', 'aufAntraegeD', 'aufUnterlagenD', 'aufAbschickenD'].forEach(function (id) { $(id).open = id === erster; });
-    if (mit) { var z = $('mappe').querySelector('[data-ant$="-' + mit + '"]'); if (z) $('aufAntraegeD').open = true; }
+    // Formular-Zeilen (data-ant="f-kg1", "f-wg" …) und Anschreiben tragen die Leistung in data-leistung
+    if (mit) { var z = $('mappe').querySelector('#aufAntraege [data-leistung="' + mit + '"]'); if (z) $('aufAntraegeD').open = true; }
     try { window.scrollTo(0, 0); } catch (e) {}
   }
   // Schnittstelle für die Ergebnisliste („Antrag vorbereiten“, data-antrag an der Karte → antragFuer): window.SoloMappe.oeffnenMit(id)

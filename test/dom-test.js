@@ -309,6 +309,8 @@ check('[drucken] Ein Knopf „Drucken oder teilen“ im Schritt „Abschicken“
   const ek = li.filter((x) => /Einkommen/i.test(x));
   const mitKiz = !!d.querySelector('[data-pick="kiz"]') || wegRadios().length > 0 && /Kinderzuschlag/.test(d.querySelector('.weg-wahl').textContent);
   check('[ux-einkommen] Ein Punkt zum Einkommen mit Zeitraum je Leistung (Wohngeld 12 Monate' + (mitKiz ? ', Kinderzuschlag 6 Monate' : '') + ')', ek.length === 1 && ek[0].includes(I18N.de['u.eink.wg']) && (!mitKiz || ek[0].includes(I18N.de['u.eink.kiz'])) && !li.includes(I18N.de['s.wohngeld.u2']) && !li.includes(I18N.de['s.kiz.u2']), li.join(' | '));
+  { const z = [...d.querySelectorAll('#aufUnterlagen .haken-liste li')].find((x) => x.querySelector('.u-zeit')); const tiefe = (s) => { let t = 0, m = 0; for (const c of s) { if (c === '(') m = Math.max(m, ++t); if (c === ')') t--; } return m; };
+    check('[ux-einkommen] Zeiträume als Unterzeilen, keine Klammer in der Klammer (Bildschirm, Druck, alle Sprachen)', !!z && z.querySelectorAll('.u-zeit').length === (mitKiz ? 2 : 1) && LANGS.every((l) => tiefe(I18N[l]['u.eink.mit'].replace('{teile}', I18N[l]['u.eink.wg'] + '; ' + I18N[l]['u.eink.kiz'])) <= 1) && !/\(/.test(I18N.de['u.eink.mit']), z && z.innerHTML); }
   // Prüfung PR #179: „Für mehrere Anträge“ nur, wenn mindestens zwei gewählte Anträge den Punkt nennen (Ausweis nicht pauschal dorthin)
   check('[ux-einkommen] Gemeinsame Liste: jeder Punkt wird von mindestens zwei Anträgen genannt (auch der Ausweis)', gemeinsam().length > 0 && gemeinsam().every((x) => x.von.length > 1), gemeinsam().map((x) => x.text + ' [' + x.von.join(',') + ']').join(' | '));
   check('[ux-einkommen] Gemeinsamer Text in allen 13 Sprachen mit denselben Zeiträumen', LANGS.every((l) => /12/.test(I18N[l]['u.eink.wg']) && /\b6\b|6-/.test(I18N[l]['u.eink.kiz']) && /\{basis\}/.test(I18N[l]['u.eink.mit']) && /\{teile\}/.test(I18N[l]['u.eink.mit'])));
@@ -335,6 +337,13 @@ check('[drucken] Ein Knopf „Drucken oder teilen“ im Schritt „Abschicken“
   const kz = d.querySelector('#cards [data-antrag="ggeld"]');
   if (kz) { kz.click(); check('[ux-karte] Karte Grundsicherungsgeld: Mappe mit Weg „Grundsicherungsgeld“ gewählt', d.getElementById('mappe').hidden === false && !!wegRadios().find((r) => r.value === 'b' && r.checked)); d.getElementById('mappeClose').click(); }
   const a3 = wegRadios().find((r) => r.value === 'a'); if (a3) { a3.checked = true; fire(a3, 'change'); }
+  // Formular-Leistung (Wohngeld, data-ant="f-wg"): „Anträge stellen“ klappt auf, auch wenn sonst ein anderer Schritt zuerst offen wäre (Name fehlt)
+  const nameAlt = d.getElementById('p-name').value; d.getElementById('p-name').value = ''; fire(d.getElementById('p-name'), 'input');
+  const wk = d.querySelector('#cards [data-antrag="wohngeld"]');
+  if (wk) { const det = wk.closest('details'); if (det) det.open = true; wk.click(); }
+  check('[ux-karte] Karte Wohngeld (amtliches Formular): Mappe offen, Formular-Zeile mit data-leistung, „Anträge stellen“ aufgeklappt', !!wk && d.getElementById('mappe').hidden === false && !!d.querySelector('#aufAntraege .ant-form[data-leistung="wohngeld"]') && d.getElementById('aufAntraegeD').open);
+  d.getElementById('mappeClose').click();
+  d.getElementById('p-name').value = nameAlt; fire(d.getElementById('p-name'), 'input');
   if (kb) { const k2 = d.querySelector('[data-pick="kindergeld"]'); k2.checked = false; fire(k2, 'change'); }
   check('[ux-karte] Keine Skriptfehler', errors.length === 0, errors.join('; '));
   d.getElementById('mappeMake').click();
