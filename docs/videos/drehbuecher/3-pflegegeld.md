@@ -106,8 +106,21 @@ Legende: **Hervorhebung** = Schlüsselwort farbig im Untertitel. Ton-Akzent: pop
 | Begutachtung durch den Medizinischen Dienst oder andere Gutachter | – | BMG [2] |
 | Beratungsbesuch halbjährlich Pflicht (Pflegegrad 2–5), sonst Kürzung | PRÜFLISTE Pflege-Korrekturen (§ 37 Abs. 3) | § 37 Abs. 3 Satz 1 und Abs. 6 SGB XI [1] |
 
-Nicht verwendet: „Geld ab Antragstellung“ (§ 33 Abs. 1 SGB XI), weil die Gesetzesseite am 22.11.2026 nicht abrufbar war.
+Nicht verwendet: „Geld ab Antragstellung“ (§ 33 Abs. 1 SGB XI, https://www.gesetze-im-internet.de/sgb_11/__33.html, abgerufen 22.11.2026: „Die Leistungen werden ab Antragstellung gewährt“, bei späterem Antrag vom Beginn des Antragsmonats an). Die Aussage stimmt, ist aber im Video nicht enthalten.
 
 ## Quellen
-1. § 37 SGB XI, https://www.gesetze-im-internet.de/sgb_11/__37.html (abgerufen 21.11.2026): Beträge 347/599/800/990 €; Abs. 3: „halbjährlich einmal eine Beratung in der eigenen Häuslichkeit abzurufen“; Abs. 6: „das Pflegegeld angemessen zu kürzen“.
+1. § 37 SGB XI, https://www.gesetze-im-internet.de/sgb_11/__37.html (abgerufen 22.11.2026): Beträge 347/599/800/990 €; Abs. 3: „halbjährlich einmal eine Beratung in der eigenen Häuslichkeit abzurufen“; Abs. 6: „das Pflegegeld angemessen zu kürzen“.
 2. Bundesministerium für Gesundheit, „Pflegebedürftig. Was nun? Die ersten Schritte zur schnellen Hilfe“, https://www.bundesgesundheitsministerium.de/fileadmin/Dateien/5_Publikationen/Pflege/Flyer_Poster_etc/BMG_Onepager_Pflegebeduerftig_Was_nun.pdf (abgerufen 22.11.2026): Antrag bei der Pflegekasse, auch telefonisch; Begutachtung durch den Medizinischen Dienst.
+
+## Prüfvermerk (22.11.2026)
+
+Unabhängige Faktenprüfung. Abrufe am 22.11.2026, soweit in den Quellen nicht anders angegeben (§ 62 EStG, § 6b BKGG, § 28 SGB II: Abruf 21.11.2026). Rechtsstand 22.11.2026.
+
+| Befund | Schwere | Korrektur | Quelle |
+|---|---|---|---|
+| Pflegegeld 347 / 599 / 800 / 990 € (Pflegegrad 2–5) | – | keine, stimmt | § 37 Abs. 1 SGB XI, https://www.gesetze-im-internet.de/sgb_11/__37.html |
+| Beratungsbesuch: Pflicht halbjährlich bei Pflegegrad 2 bis 5. Pflegegrad 4 und 5 dürfen zusätzlich vierteljährlich, müssen aber nicht (die frühere Vierteljahres-Pflicht gilt nicht mehr) | – | keine; Text „jedes halbe Jahr“ und „alle 6 Monate (Pflegegrad 2–5)“ stimmt | § 37 Abs. 3 SGB XI |
+| „Sonst wird gekürzt“ | – | keine, stimmt (Kasse „hat … angemessen zu kürzen“, im Wiederholungsfall zu entziehen) | § 37 Abs. 6 SGB XI |
+| Antrag bei der Pflegekasse, auch telefonisch, auch durch Bevollmächtigte; Begutachtung durch Medizinischen Dienst oder andere Gutachter | – | keine, stimmt | BMG „Pflegebedürftig. Was nun?“ |
+| Vermerk „§ 33 nicht abrufbar“ war überholt | niedrig | § 33 Abs. 1 SGB XI abgerufen, Hinweis berichtigt | https://www.gesetze-im-internet.de/sgb_11/__33.html |
+| Offen: Privat Versicherte wenden sich an ihre private Pflegeversicherung (Gutachter: Medicproof). Im Video nicht erwähnt | niedrig (offen) | keine; bei Bedarf als Bildunterschrift in Szene 6 ergänzen | BMG „Pflegebedürftig. Was nun?“ |

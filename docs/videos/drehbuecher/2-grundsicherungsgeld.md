@@ -46,15 +46,15 @@ Legende: **Hervorhebung** = Schlüsselwort farbig im Untertitel. Ton-Akzent: pop
 ## Szene 5 · Großer Bruch: der Betrag (19–24 s)
 - **Bild:** Hintergrund springt auf Gold. „563 €“ knallt ins Bild, darunter ein kleines Haus mit „+ Miete“.
 - **Großer Text im Bild:** 563 € + Miete und Heizung
-- **Sprecher:** „Allein sind das fünfhundertdreiundsechzig Euro im Monat. Plus angemessene Miete und Heizung.“
+- **Sprecher:** „Der Regelbedarf für Alleinstehende: fünfhundertdreiundsechzig Euro im Monat. Plus angemessene Miete und Heizung.“
 - **Sprechblase:** –
 - **Bildunterschrift:** Regelbedarf 2026, alleinstehend. Dein Lohn wird angerechnet.
 - **Hervorhebung:** 563 € · **Ton-Akzent:** pop (laut) · **Dauer:** 5 s
 
 ## Szene 6 · Wichtig: Lohn zählt mit (24–28 s)
 - **Bild:** Waage: links Lohn, rechts „Bedarf“. Ein kleiner Stapel Münzen füllt die Lücke.
-- **Sprecher:** „Dein Lohn zählt mit, ein Teil bleibt frei. Das Jobcenter füllt die Lücke.“
-- **Sprechblase (Lotsin):** Das Jobcenter füllt die Lücke.
+- **Sprecher:** „Dein Lohn zählt mit, ein Teil bleibt frei. Das Jobcenter kann die Lücke füllen.“
+- **Sprechblase (Lotsin):** Das Jobcenter kann die Lücke füllen.
 - **Bildunterschrift:** Ein Teil deines Lohns bleibt frei (Freibetrag).
 - **Hervorhebung:** Lücke · **Ton-Akzent:** wusch · **Dauer:** 4 s
 
@@ -114,7 +114,22 @@ Unterlagen „Mietvertrag, Lohnabrechnung“ sind als Beispiel genannt (für Woh
 ## Quellen
 1. § 19 SGB II, https://www.gesetze-im-internet.de/sgb_2/__19.html (abgerufen 22.11.2026): „Erwerbsfähige Leistungsberechtigte erhalten Grundsicherungsgeld.“
 2. § 7 SGB II, https://www.gesetze-im-internet.de/sgb_2/__7.html (abgerufen 21.11.2026).
-3. § 37 SGB II, https://www.gesetze-im-internet.de/sgb_2/__37.html (abgerufen 21.11.2026): „Leistungen nach diesem Buch werden nicht für Zeiten vor der Antragstellung erbracht. Der Antrag … wirkt auf den Ersten des Monats zurück.“
+3. § 37 SGB II, https://www.gesetze-im-internet.de/sgb_2/__37.html (abgerufen 22.11.2026): „Leistungen nach diesem Buch werden nicht für Zeiten vor der Antragstellung erbracht. Der Antrag … wirkt auf den Ersten des Monats zurück.“
 4. Bundesagentur für Arbeit, „Einkommen mit Grundsicherungsgeld ergänzen“, https://www.arbeitsagentur.de/grundsicherung/finanziell-absichern/einkommen-ergaenzen (abgerufen 22.11.2026).
 5. BMAS, „Leistungen und Bedarfe in der Grundsicherung für Arbeitsuchende“, https://www.bmas.de/DE/Arbeit/Grundsicherung-fuer-Arbeitsuchende/Leistungen-und-Bedarfe-in-der-Grundsicherung-fuer-Arbeitsuchende/leistungen-und-bedarfe-in-der-grundsicherung-fuer-arbeitsuchende-art.html (abgerufen 22.11.2026): Regelbedarf 563 € für Alleinstehende; BMAS, „Grundsicherung für Arbeitsuchende“, https://www.bmas.de/DE/Arbeit/Grundsicherung-Buergergeld/grundsicherung-buergergeld.html (abgerufen 22.11.2026): gilt seit 1. Juli 2026.
 6. BMAS, FAQ zur Fortschreibung der Regelbedarfe zum 1.1.2026, https://www.bmas.de/DE/Service/Gesetze-und-Gesetzesvorhaben/FAQ-Regelbedarfsstufen-Fortschreibungsverordnung-2025/faq-regelbedarfsstufen-fortschreibungsverordnung-2025-art.html (abgerufen 22.11.2026): „für die RBS 1 gelten also die 563 Euro auch für 2026.“
+
+## Prüfvermerk (22.11.2026)
+
+Unabhängige Faktenprüfung. Abrufe am 22.11.2026, soweit in den Quellen nicht anders angegeben (§ 62 EStG, § 6b BKGG, § 28 SGB II: Abruf 21.11.2026). Rechtsstand 22.11.2026.
+
+| Befund | Schwere | Korrektur | Quelle |
+|---|---|---|---|
+| Name „Grundsicherungsgeld“ (früher Bürgergeld) | – | keine, stimmt | § 19 Abs. 1 SGB II, https://www.gesetze-im-internet.de/sgb_2/__19.html |
+| Gilt seit 1.7.2026 | – | keine, stimmt | arbeitsagentur.de „Einkommen mit Grundsicherungsgeld ergänzen“ („Änderungen gelten ab dem 01.07.2026“); BMAS „Grundsicherung für Arbeitsuchende“ |
+| Regelbedarf 563 € alleinstehend 2026 | – | keine, stimmt | BMAS „Leistungen und Bedarfe in der Grundsicherung für Arbeitsuchende“; BMAS FAQ Regelbedarfe 2026 |
+| Szene 5: „Allein sind das 563 €“ klingt nach Auszahlbetrag; bei Lohn wird angerechnet | mittel | Sprecher: „Der Regelbedarf für Alleinstehende: …“ | § 19 Abs. 3 SGB II |
+| Szene 6: „Das Jobcenter füllt die Lücke“ ist eine Zusage | mittel | „kann die Lücke füllen“ (Sprecher und Sprechblase) | § 19 Abs. 3, § 7 Abs. 1 SGB II |
+| Ab dem Ersten des Antragsmonats, nichts für die Zeit davor | – | keine, stimmt; Abrufdatum aktualisiert | § 37 Abs. 2 SGB II, https://www.gesetze-im-internet.de/sgb_2/__37.html |
+| 15 Jahre bis Altersgrenze, erwerbsfähig, hilfebedürftig, Aufenthalt in Deutschland | – | keine, stimmt | § 7 Abs. 1 SGB II, https://www.gesetze-im-internet.de/sgb_2/__7.html |
+| Hinweis: Die BMAS-Übersichtsseite (Quelle 5, zweiter Link) nennt das Wort „Grundsicherungsgeld“ nicht, nur das Datum 1.7.2026; der Name ist durch § 19 SGB II und die BA belegt | niedrig | keine | wie oben |

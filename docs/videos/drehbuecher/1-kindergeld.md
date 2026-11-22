@@ -13,7 +13,7 @@ Legende: **Hervorhebung** = Schlüsselwort farbig (Gold/Grün) im Untertitel. To
 
 ## Szene 1 · Haken (0–4 s)
 - **Bild:** Papa mit Baby auf dem Arm, Kalenderblätter fliegen ihm um den Kopf. Er schaut erschrocken. Rotes Fragezeichen.
-- **Großer Text im Bild:** Kindergeld: Diese Frist kostet Geld
+- **Großer Text im Bild:** Kindergeld: Diese Frist kann Geld kosten
 - **Sprecher:** „Beim Kindergeld gibt es eine Frist, die Familien Geld kosten kann.“
 - **Sprechblase:** –
 - **Bildunterschrift:** Kindergeld – eine Frist, die viele nicht kennen.
@@ -61,7 +61,7 @@ Legende: **Hervorhebung** = Schlüsselwort farbig (Gold/Grün) im Untertitel. To
 - **Bild:** Lotsin hält eine Karte mit der Aufschrift „Steuer-ID“ hoch, Papa nickt.
 - **Sprecher:** „Halte deine Steuer-Identifikationsnummer bereit. Die Familienkasse braucht sie.“
 - **Sprechblase (Lotsin):** Deine Steuer-ID brauchst du für den Antrag.
-- **Bildunterschrift:** Steuer-ID = deine persönliche Nummer beim Finanzamt.
+- **Bildunterschrift:** Steuer-ID = deine 11-stellige Nummer für die Steuer.
 - **Hervorhebung:** Steuer-ID · **Ton-Akzent:** pop · **Dauer:** 4 s
 
 ## Szene 8 · Die Falle (29–34 s)
@@ -88,7 +88,7 @@ Legende: **Hervorhebung** = Schlüsselwort farbig (Gold/Grün) im Untertitel. To
 
 ## Szene 11 · Schluss und Schleife (44–52 s)
 - **Bild:** Wie Szene 1, aber ruhig: Papa mit Baby, der Kalender hängt ordentlich an der Wand, Häkchen beim aktuellen Monat.
-- **Großer Text im Bild:** Früh beantragen. 6 Monate rückwirkend.
+- **Großer Text im Bild:** Früh beantragen. Rückwirkend höchstens 6 Monate.
 - **Sprecher:** „Kindergeld: früh beantragen. Schick das jemandem, der gerade ein Baby bekommen hat.“
 - **Sprechblase:** –
 - **Bildunterschrift:** Schick das jemandem, der es braucht.
@@ -100,11 +100,11 @@ Legende: **Hervorhebung** = Schlüsselwort farbig (Gold/Grün) im Untertitel. To
 | Aussage im Video | Wert in SoLo | Quelle |
 |---|---|---|
 | 259 € je Kind und Monat | `R.kindergeld: 259` (src/rules.js), PRÜFLISTE „Kindergeld“ | § 66 Abs. 1 EStG [1]; arbeitsagentur.de [2] |
-| Kind unter 18, bis 25 in Ausbildung oder Studium | PRÜFLISTE `kg-betrag` | § 32 Abs. 4 Satz 1 Nr. 2 EStG (laut PRÜFLISTE, Abruf 21.11.2026); arbeitsagentur.de [2] |
+| Kind unter 18, bis 25 in Ausbildung oder Studium | PRÜFLISTE `kg-betrag` | § 32 Abs. 3 und Abs. 4 Satz 1 Nr. 2 EStG [4]; arbeitsagentur.de [2] (nennt nur „unter 18“) |
 | Ohne deutschen Pass: abhängig vom Aufenthaltstitel | PRÜFLISTE `kg-asyl` | § 62 Abs. 2 EStG [3] |
 | Steuer-ID nötig | – | § 62 Abs. 1 Satz 2 EStG [3] |
 | Antrag bei der Familienkasse, online möglich | – | arbeitsagentur.de [2] |
-| Rückwirkend höchstens 6 Monate | Text `kindergeld` in src/lang/de.json („höchstens sechs Monate rückwirkend“) | arbeitsagentur.de [2] (§ 70 Abs. 1 Satz 2 EStG; gesetze-im-internet.de war am 22.11.2026 nicht erreichbar) |
+| Rückwirkend höchstens 6 Monate | Text `kindergeld` in src/lang/de.json („höchstens sechs Monate rückwirkend“) | § 70 Abs. 1 Satz 2 EStG [5]; arbeitsagentur.de [2] |
 
 Nicht verwendet: Änderungen zum 1.1.2027 (Kindergeld bei Geburt ohne Antrag, Entwurf 267 €), weil noch nicht geltend.
 
@@ -112,3 +112,20 @@ Nicht verwendet: Änderungen zum 1.1.2027 (Kindergeld bei Geburt ohne Antrag, En
 1. § 66 EStG, https://www.gesetze-im-internet.de/estg/__66.html (abgerufen 22.11.2026): „Das Kindergeld beträgt monatlich für jedes Kind 259 Euro.“
 2. Bundesagentur für Arbeit, „Kindergeld: Anspruch, Höhe, Dauer“, https://www.arbeitsagentur.de/familie-und-kinder/infos-rund-um-kindergeld/kindergeld-anspruch-hoehe-dauer (abgerufen 22.11.2026): 259 € im Monat, Kind unter 18, rückwirkend 6 Monate, Online-Antrag.
 3. § 62 EStG, https://www.gesetze-im-internet.de/estg/__62.html (abgerufen 21.11.2026): Identifikationsnummer als Voraussetzung (Abs. 1 Satz 2), Aufenthaltstitel (Abs. 2).
+4. § 32 EStG, https://www.gesetze-im-internet.de/estg/__32.html (abgerufen 22.11.2026): Kind bis zur Vollendung des 18. Lebensjahres (Abs. 3); bis zur Vollendung des 25. Lebensjahres u. a. in Berufsausbildung (Abs. 4 Satz 1 Nr. 2).
+5. § 70 EStG, https://www.gesetze-im-internet.de/estg/__70.html (abgerufen 22.11.2026): Auszahlung „rückwirkend nur für die letzten sechs Monate vor Beginn des Monats, in dem der Antrag auf Kindergeld eingegangen ist“ (Abs. 1 Satz 2).
+
+## Prüfvermerk (22.11.2026)
+
+Unabhängige Faktenprüfung. Abrufe am 22.11.2026, soweit in den Quellen nicht anders angegeben (§ 62 EStG, § 6b BKGG, § 28 SGB II: Abruf 21.11.2026). Rechtsstand 22.11.2026.
+
+| Befund | Schwere | Korrektur | Quelle |
+|---|---|---|---|
+| 259 € je Kind und Monat (2026) | – | keine, stimmt | § 66 Abs. 1 EStG, https://www.gesetze-im-internet.de/estg/__66.html |
+| Rückwirkend höchstens 6 Monate (vor dem Antragsmonat) stimmt; Quelle war nur mittelbar belegt | niedrig | § 70 Abs. 1 Satz 2 EStG direkt abgerufen und als Quelle [5] ergänzt | https://www.gesetze-im-internet.de/estg/__70.html |
+| Haken „Diese Frist kostet Geld“ ist eine feste Aussage; Sprecher sagt richtig „kosten kann“ | niedrig | Großer Text: „kann Geld kosten“ | § 70 Abs. 1 Satz 2 EStG |
+| Schlusstext „6 Monate rückwirkend“ kann als Zusage gelesen werden | niedrig | „Rückwirkend höchstens 6 Monate.“ | § 70 Abs. 1 Satz 2 EStG |
+| „Steuer-ID = Nummer beim Finanzamt“ ungenau (vergeben vom Bundeszentralamt für Steuern, § 139b AO; nicht die Steuernummer des Finanzamts) | niedrig | „deine 11-stellige Nummer für die Steuer“ | § 62 Abs. 1 Satz 2 EStG, https://www.gesetze-im-internet.de/estg/__62.html; arbeitsagentur.de (Kindergeld: Anspruch, Höhe, Dauer) |
+| Altersgrenzen 18 / 25 stimmen; die BA-Seite nennt 25 nicht | niedrig | Quelle § 32 EStG [4] ergänzt | https://www.gesetze-im-internet.de/estg/__32.html |
+| Antrag bei der Familienkasse, online möglich | – | keine, stimmt | arbeitsagentur.de, Kindergeld: Anspruch, Höhe, Dauer |
+| Offen: Zum 1.1.2027 ändert sich laut PRÜFLISTE das Recht (antragsloses Kindergeld bei Geburt, BGBl. 2026 I Nr. 307; Betrag 2027). Das BGBl. wurde in dieser Prüfung nicht selbst abgerufen. Szene 6 („Antrag stellst du“) und der Betrag gelten nur bis 31.12.2026 sicher | mittel (offen) | keine Textänderung; Video vor Veröffentlichung nach dem 31.12.2026 neu prüfen | docs/PRUEFLISTE.md `recht-geltend` |

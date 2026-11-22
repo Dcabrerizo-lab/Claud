@@ -40,22 +40,22 @@ Legende: **Hervorhebung** = Schlüsselwort farbig im Untertitel. Ton-Akzent: pop
   - ✓ Kein Grundsicherungsgeld, keine Sozialhilfe
 - **Sprecher:** „Trifft das zu? Du zahlst Miete. Dein Einkommen ist knapp. Kein Grundsicherungsgeld, keine Sozialhilfe.“
 - **Sprechblase:** –
-- **Bildunterschrift:** Mit Grundsicherungsgeld gibt es kein Wohngeld.
+- **Bildunterschrift:** Mit Grundsicherungsgeld gibt es in der Regel kein Wohngeld.
 - **Hervorhebung:** knapp · **Ton-Akzent:** ding, ding, ding · **Dauer:** 6 s
 
 ## Szene 5 · Wie viel? (19–24 s)
 - **Bild:** Drei Kärtchen fliegen nacheinander herein: Personen-Symbol, Geldbeutel, Haus.
-- **Sprecher:** „Die Höhe hängt ab von: Personen, Einkommen, Miete.“
+- **Sprecher:** „Die Höhe hängt von drei Dingen ab: Personen, Einkommen, Miete.“
 - **Sprechblase (Lotsin):** Personen, Einkommen, Miete – daraus wird gerechnet.
 - **Bildunterschrift:** Einen festen Betrag gibt es nicht.
-- **Hervorhebung:** drei Dinge · **Ton-Akzent:** pop, pop, pop · **Dauer:** 5 s
+- **Hervorhebung:** drei Dingen · **Ton-Akzent:** pop, pop, pop · **Dauer:** 5 s
 
 ## Szene 6 · Großer Bruch: der Stichtag (24–29 s)
 - **Bild:** Hintergrund springt auf Gold. Eine riesige „1.“ knallt ins Bild, darunter „des Antragsmonats“. Das Paar zuckt zusammen.
 - **Großer Text im Bild:** Ab dem 1. des Antragsmonats
-- **Sprecher:** „Die Antwort: Wohngeld gibt es erst ab dem Monat, in dem dein Antrag ankommt.“
+- **Sprecher:** „Die Antwort: Wohngeld gibt es in der Regel erst ab dem Monat, in dem dein Antrag ankommt.“
 - **Sprechblase:** –
-- **Bildunterschrift:** Antrag am 31. statt am 1.: ein Monat mehr.
+- **Bildunterschrift:** Antrag noch am letzten Tag des Monats: der ganze Monat zählt.
 - **Hervorhebung:** ab dem Ersten · **Ton-Akzent:** pop (laut) · **Dauer:** 5 s
 
 ## Szene 7 · Wo beantragen? (29–34 s)
@@ -100,7 +100,7 @@ Legende: **Hervorhebung** = Schlüsselwort farbig im Untertitel. Ton-Akzent: pop
 | Aussage im Video | Wert in SoLo | Quelle |
 |---|---|---|
 | Zuschuss zur Miete (Mieter) bzw. Lastenzuschuss (Eigentümer) | Karte `wohngeld`, PRÜFLISTE `eigentum` | BMWSB „Wohngeld für Eigentümer“ / FAQ [3] |
-| Ausschluss bei Grundsicherungsgeld und Sozialhilfe | PRÜFLISTE `wg-ausschluss` | § 7 Abs. 1 WoGG [2]; BMWSB FAQ [3] |
+| Ausschluss bei Grundsicherungsgeld und Sozialhilfe | PRÜFLISTE `wg-ausschluss` | § 7 Abs. 1 WoGG [2] (Ausschluss, wenn Wohnkosten dort berücksichtigt sind; Ausnahmen in Satz 3) |
 | Höhe hängt ab von Haushaltsgröße, Einkommen, Miete | PRÜFLISTE `wg-formel` | BMWSB FAQ [3] |
 | Ab dem Ersten des Antragsmonats, nicht rückwirkend | PRÜFLISTE `recht-geltend` (§ 25 Abs. 2); Text „Wohngeld gibt es ab dem Monat, in dem der Antrag eingeht“ (src/lang/de.json) | § 25 Abs. 2 WoGG [1]; BMWSB FAQ [3] |
 | Bewilligung in der Regel 12 Monate | – | § 25 Abs. 1 WoGG [1]; BMWSB FAQ [3] |
@@ -110,6 +110,20 @@ Legende: **Hervorhebung** = Schlüsselwort farbig im Untertitel. Ton-Akzent: pop
 Mietvertrag und Lohnzettel sind als Beispiel genannt; die Wohngeldstelle sagt, was genau sie braucht.
 
 ## Quellen
-1. § 25 WoGG, https://www.gesetze-im-internet.de/wogg/__25.html (abgerufen 21.11.2026): „Das Wohngeld soll für zwölf Monate bewilligt werden.“ – „Der Bewilligungszeitraum beginnt am Ersten des Monats, in dem der Wohngeldantrag gestellt worden ist.“
-2. § 7 WoGG, https://www.gesetze-im-internet.de/wogg/__7.html (abgerufen 21.11.2026): ausgeschlossen u. a. Empfänger von Grundsicherungsgeld nach dem SGB II.
+1. § 25 WoGG, https://www.gesetze-im-internet.de/wogg/__25.html (abgerufen 22.11.2026): „Das Wohngeld soll für zwölf Monate bewilligt werden.“ – „Der Bewilligungszeitraum beginnt am Ersten des Monats, in dem der Wohngeldantrag gestellt worden ist.“
+2. § 7 WoGG, https://www.gesetze-im-internet.de/wogg/__7.html (abgerufen 22.11.2026): ausgeschlossen u. a. Empfänger von Grundsicherungsgeld nach dem SGB II, wenn bei der Berechnung Kosten der Unterkunft berücksichtigt sind; Ausnahmen in Abs. 1 Satz 3 (nur Darlehen; Wohngeld vermeidet die Hilfebedürftigkeit).
 3. BMWSB, „Fragen und Antworten zum Wohngeld-Plus“, https://www.bmwsb.bund.de/SharedDocs/faqs/DE/wohnen/wohngeld/wohngeld-faq-liste.html (abgerufen 22.11.2026): Höhe nach Haushaltsmitgliedern, Gesamteinkommen und Miete/Belastung; Antrag bei der örtlich zuständigen Wohngeldbehörde, teils online; Wohngeld „in der Regel erst vom Beginn des Monats an“, in dem der Antrag eingegangen ist; Bewilligung in der Regel zwölf Monate.
+
+## Prüfvermerk (22.11.2026)
+
+Unabhängige Faktenprüfung. Abrufe am 22.11.2026, soweit in den Quellen nicht anders angegeben (§ 62 EStG, § 6b BKGG, § 28 SGB II: Abruf 21.11.2026). Rechtsstand 22.11.2026.
+
+| Befund | Schwere | Korrektur | Quelle |
+|---|---|---|---|
+| Ab dem Ersten des Antragsmonats | – | stimmt als Regel; Ausnahme § 25 Abs. 3 WoGG (nach abgelehnter anderer Leistung), daher Sprecher „in der Regel“ | § 25 Abs. 2 und 3 WoGG, https://www.gesetze-im-internet.de/wogg/__25.html; BMWSB FAQ Wohngeld |
+| „Mit Grundsicherungsgeld gibt es kein Wohngeld“ zu absolut: Ausschluss nur, wenn dort Wohnkosten berücksichtigt sind; Ausnahmen in § 7 Abs. 1 Satz 3 | mittel | Bildunterschrift: „in der Regel kein Wohngeld“ | § 7 Abs. 1 WoGG, https://www.gesetze-im-internet.de/wogg/__7.html |
+| Bildunterschrift „Antrag am 31. statt am 1.: ein Monat mehr“ missverständlich (liest sich, als wäre der 31. später) | mittel (Verständlichkeit) | „Antrag noch am letzten Tag des Monats: der ganze Monat zählt.“ | § 25 Abs. 2 WoGG |
+| Bewilligung in der Regel 12 Monate („soll“) | – | keine, stimmt | § 25 Abs. 1 WoGG |
+| Höhe nach Haushaltsmitgliedern, Einkommen, Miete; Antrag bei der Wohngeldbehörde, teils online; Lastenzuschuss für Eigentümer; auch mit Rente möglich | – | keine, stimmt | BMWSB FAQ Wohngeld |
+| Hervorhebung „drei Dinge“ kam im Sprechertext nicht vor | niedrig | Sprecher: „hängt von drei Dingen ab“ | – |
+| Hinweis: Die BMWSB-FAQ nennt beim Ausschluss noch „Arbeitslosengeld II“; maßgeblich ist der Gesetzestext mit „Grundsicherungsgeld“ | niedrig | Quelle in der Tabelle auf § 7 WoGG beschränkt | § 7 Abs. 1 Satz 1 Nr. 1 WoGG |

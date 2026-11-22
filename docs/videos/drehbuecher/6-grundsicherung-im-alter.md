@@ -45,17 +45,17 @@ Legende: **Hervorhebung** = Schlüsselwort farbig im Untertitel. Ton-Akzent: pop
 
 ## Szene 5 · Großer Bruch: die Kinder (19–24 s)
 - **Bild:** Hintergrund springt auf Gold. „100.000 €“ knallt riesig ins Bild, darunter „im Jahr“. Der Sohn am Telefon atmet auf.
-- **Großer Text im Bild:** Kinder erst ab 100.000 € im Jahr
-- **Sprecher:** „Deine Kinder zählen erst ab hunderttausend Euro Einkommen im Jahr.“
+- **Großer Text im Bild:** Kinder erst über 100.000 € im Jahr
+- **Sprecher:** „Deine Kinder müssen erst zahlen, wenn sie über hunderttausend Euro im Jahr verdienen.“
 - **Sprechblase (Sohn):** So viel verdiene ich lange nicht.
-- **Bildunterschrift:** Darunter wird das Einkommen der Kinder nicht herangezogen.
+- **Bildunterschrift:** Bis 100.000 € Einkommen im Jahr muss ein Kind nichts zahlen.
 - **Hervorhebung:** 100.000 € · **Ton-Akzent:** pop (laut) · **Dauer:** 5 s
 
 ## Szene 6 · Wie viel ungefähr? (24–29 s)
 - **Bild:** Ein Einkaufskorb mit „563 €“, daneben ein Haus mit „+ Miete und Heizung“.
-- **Sprecher:** „Allein gilt ein Regelsatz von fünfhundertdreiundsechzig Euro, plus Miete und Heizung. Die Rente wird abgezogen.“
+- **Sprecher:** „Allein gilt ein Regelsatz von fünfhundertdreiundsechzig Euro, plus angemessene Miete und Heizung. Die Rente wird angerechnet.“
 - **Sprechblase:** –
-- **Bildunterschrift:** Regelsatz 2026: 563 €, plus Wohnkosten, minus Einkommen.
+- **Bildunterschrift:** Regelsatz 2026: 563 €, plus angemessene Wohnkosten, minus Einkommen.
 - **Hervorhebung:** 563 € · **Ton-Akzent:** pop · **Dauer:** 5 s
 
 ## Szene 7 · Erspartes (29–33 s)
@@ -102,7 +102,7 @@ Legende: **Hervorhebung** = Schlüsselwort farbig im Untertitel. Ton-Akzent: pop
 |---|---|---|
 | Rentenalter (Altersgrenze) oder ab 18 dauerhaft voll erwerbsgemindert | PRÜFLISTE `gsa-voraus` | § 41 Abs. 2, 3 SGB XII [1]; DRV [3] |
 | Wohnen in Deutschland | – | DRV [3] |
-| Kinder erst über 100.000 € im Jahr | PRÜFLISTE `gsa-eltern` (§ 94 Abs. 1a SGB XII) | DRV [3] |
+| Kinder erst über 100.000 € im Jahr | PRÜFLISTE `gsa-eltern` (§ 94 Abs. 1a SGB XII) | § 94 Abs. 1a SGB XII [5]; DRV [3] |
 | Regelsatz 563 € alleinstehend (Regelbedarfsstufe 1, 2026) plus Wohnkosten | `R.regelbedarf.alleinstehend: 563` (RBSFV 2026, Anlage zu § 28 SGB XII) | BMAS FAQ Regelbedarfe 2026 (gilt für SGB II und SGB XII) [4] |
 | Schonvermögen 10.000 € allein, 20.000 € als Paar | PRÜFLISTE `gsa-verm` (10.000 € je Erwachsenem) | DRV [3] |
 | Antrag beim Sozialamt, Rentenversicherung leitet weiter | – | DRV [3] |
@@ -115,3 +115,18 @@ Rentenbescheid und Kontoauszüge sind als Beispiel genannt; das Sozialamt sagt, 
 2. § 44 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__44.html (abgerufen 22.11.2026): „Ein Antrag … wirkt auf den Ersten des Kalendermonats zurück, in dem er gestellt wird …“; keine Leistungen für Zeiten davor.
 3. Deutsche Rentenversicherung, „Grundsicherung“, https://www.deutsche-rentenversicherung.de/DRV/DE/Rente/In-der-Rente/Grundsicherung (abgerufen 22.11.2026): Einkommen von Kindern erst, wenn es „höher liegt als 100.000 Euro im Jahr“; „Schonvermögen von 10.000 Euro bei Alleinstehenden“, 20.000 € bei Paaren; Antrag „direkt bei Ihrem örtlichen Sozialamt“.
 4. BMAS, FAQ zur Fortschreibung der Regelbedarfe zum 1.1.2026, https://www.bmas.de/DE/Service/Gesetze-und-Gesetzesvorhaben/FAQ-Regelbedarfsstufen-Fortschreibungsverordnung-2025/faq-regelbedarfsstufen-fortschreibungsverordnung-2025-art.html (abgerufen 22.11.2026): Regelbedarfsstufe 1 2026 = 563 €, gilt für SGB II und SGB XII.
+5. § 94 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__94.html (abgerufen 22.11.2026): Unterhaltsansprüche gegenüber Kindern und Eltern nicht zu berücksichtigen, „es sei denn, deren jährliches Gesamteinkommen im Sinne des § 16 des Vierten Buches beträgt jeweils mehr als 100 000 Euro“ (Abs. 1a Satz 1).
+
+## Prüfvermerk (22.11.2026)
+
+Unabhängige Faktenprüfung. Abrufe am 22.11.2026, soweit in den Quellen nicht anders angegeben (§ 62 EStG, § 6b BKGG, § 28 SGB II: Abruf 21.11.2026). Rechtsstand 22.11.2026.
+
+| Befund | Schwere | Korrektur | Quelle |
+|---|---|---|---|
+| 100.000-€-Grenze: Gesetz sagt „mehr als 100 000 Euro“ je Kind; Video sagte „ab 100.000“ | mittel | Großer Text „über 100.000 €“, Sprecher und Bildunterschrift angepasst; Quelle [5] ergänzt | § 94 Abs. 1a SGB XII, https://www.gesetze-im-internet.de/sgb_12/__94.html |
+| Schonvermögen 10.000 € allein, 20.000 € als Paar | – | keine, stimmt laut DRV. Die Verordnung zu § 90 Abs. 2 Nr. 9 SGB XII war am 22.11.2026 auf gesetze-im-internet.de nicht abrufbar (Serverfehler, zwei Versuche) | Deutsche Rentenversicherung „Grundsicherung“ |
+| Regelsatz 563 € (Regelbedarfsstufe 1, 2026) | – | keine, stimmt | BMAS FAQ Regelbedarfe 2026 |
+| „plus Miete und Heizung“ ohne „angemessen“; „Rente wird abgezogen“ (es gibt Freibeträge, z. B. bei Grundrentenzeiten) | niedrig | „plus angemessene Miete und Heizung. Die Rente wird angerechnet.“ | Deutsche Rentenversicherung „Grundsicherung“ |
+| Ab dem Ersten des Antragsmonats, nichts für die Zeit davor | – | keine, stimmt | § 44 Abs. 2 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__44.html; DRV |
+| Antrag beim Sozialamt; Rentenversicherung nimmt Anträge an und leitet weiter | – | keine, stimmt | Deutsche Rentenversicherung „Grundsicherung“ |
+| Offen: „Voll erwerbsgemindert = kaum oder gar nicht arbeiten“ ist vereinfacht (rechtlich: auf Dauer weniger als 3 Stunden täglich, § 43 Abs. 2 SGB VI; in dieser Prüfung nicht abgerufen) | niedrig (offen) | keine | § 41 Abs. 3 SGB XII verweist auf § 43 Abs. 2 SGB VI |
