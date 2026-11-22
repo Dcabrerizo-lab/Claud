@@ -4,6 +4,10 @@ Versionsname (sichtbar im Store) und Versionsnummer (für Google/Apple, muss ste
 
 ## Nächste Version (in Arbeit)
 
+(noch keine Einträge)
+
+## Version 1.10.0 (VersionCode/Build 152, 22.11.2026)
+
 | Bereich | Was ist neu |
 |---|---|
 | **SoLo-Datei direkt öffnen** (Android und iPhone) | Eine SoLo-Datei (.solo) aus Messenger, Mail oder Dateien-App öffnet sich direkt mit SoLo („Öffnen mit“ bzw. „Teilen“ → SoLo). SoLo zeigt „Mein Ordner“ → „Von der Beratung bekommen“ mit der PIN-Abfrage, danach wie bisher Vorschau und Speichern als neuer Vorgang. Gleiche strenge Prüfung wie „Datei öffnen“; eine falsche Datei ergibt nur einen Hinweis. Keine neue Berechtigung, kein Netz. iPhone: SoLo liest eine Kopie und löscht sie gleich danach. Android: Weil .solo kein eigener Dateityp ist, kann SoLo auch bei anderen Dateien (z. B. „application/octet-stream“) in der Auswahl stehen. |
