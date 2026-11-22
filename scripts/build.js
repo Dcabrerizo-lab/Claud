@@ -1,5 +1,5 @@
 // Baut die Web-Version: dist/i18n.js und dist/sozialleistungslotse.html
-// aus src/template.html, src/rules.js, src/fmt.js, src/plz.js, src/vorgaenge.js, src/app.js und src/lang/*.json.
+// aus src/template.html, src/sprachladen.js, src/rules.js, src/fmt.js, src/plz.js, src/vorgaenge.js, src/app.js und src/lang/*.json.
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -32,7 +32,7 @@ function einfachSource(de) {
   return out;
 }
 
-function i18nSource() {
+function sprachObjekte() {
   const all = {};
   LANGS.forEach((l) => { all[l] = JSON.parse(read(path.join('lang', l + '.json'))); });
   // Haushaltsplan (src/haushalt.js): eigene Sprachdateien src/lang/haushalt/<Sprache>.json, Schlüssel „hb.*“ (getrennt, damit andere Arbeiten nicht kollidieren)
@@ -49,11 +49,37 @@ function i18nSource() {
   LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'schritte', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
   // „Für Klient zusammenstellen“ (src/klient.js): eigene Sprachdateien src/lang/klient/<Sprache>.json, Schlüssel „kb.*“
   LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'klient', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
+  // Pflege (Übersicht, Erklärseite, Pflegegrad-Einschätzung): src/lang/pflege/<Sprache>.json, Schlüssel „pfl.*“
+  LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'pflege', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
   // Suche auf der Startseite (src/suche.js): Texte src/lang/suche/<Sprache>.json, Schlüssel „su.*“
   LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'suche', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
   // Sicherheitsnetz für Übersetzungen (src/denetz.js): Texte src/lang/denetz/<Sprache>.json, Schlüssel „dn.*“
   LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'denetz', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
+  return all;
+}
+// Alle 13 Sprachen vollständig (dist/i18n.js für die Tests)
+function i18nSource() {
+  const all = sprachObjekte();
   return 'const I18N = ' + JSON.stringify(all) + ';\nconst I18N_EINFACH = ' + JSON.stringify(einfachSource(all.de)) + ';\nif (typeof module !== "undefined") module.exports = I18N;\n';
+}
+
+// Sprachen nur bei Bedarf (src/sprachladen.js, Entscheidung David 21.11.2026): im Startskript nur Deutsch vollständig, von den
+// anderen Sprachen nur meta.* (Name, Schreibrichtung). Die übrigen Texte je Sprache:
+//  - Web: JSON-Datenblöcke in derselben HTML-Datei (werden nicht ausgeführt, erst beim Wechsel geparst; „<“ maskiert, damit kein </script> entsteht)
+//  - App (opts.native): Dateien lang/<Sprache>.js (schreibt scripts/build-app.js ins App-Paket)
+function i18nGeteilt(native) {
+  const all = sprachObjekte(), start = {}, sprachen = {};
+  LANGS.forEach((l) => {
+    if (l === 'de') { start.de = all.de; return; }
+    start[l] = Object.fromEntries(Object.entries(all[l]).filter(([k]) => k.startsWith('meta.')));
+    sprachen[l] = all[l];
+  });
+  const js = 'const I18N = ' + JSON.stringify(start) + ';\nconst I18N_EINFACH = ' + JSON.stringify(einfachSource(all.de)) + ';\n' +
+    'const SPRACH_QUELLE = ' + JSON.stringify(native ? 'datei' : 'eingebettet') + ';\n' + read('sprachladen.js') + 'if (typeof module !== "undefined") module.exports = I18N;\n';
+  const maske = (o) => JSON.stringify(o).replace(/</g, '\\u003c');
+  const bloecke = native ? '' : Object.keys(sprachen).map((l) => '<script type="application/json" id="solo-sprache-' + l + '">' + maske(sprachen[l]) + '</script>\n').join('');
+  const dateien = native ? Object.fromEntries(Object.keys(sprachen).map((l) => [l + '.js', 'SprachLaden.dazu(' + JSON.stringify(l) + ', ' + maske(sprachen[l]) + ');\n'])) : {};
+  return { js, bloecke, dateien };
 }
 
 // Optional: PLZ-Daten (content/plz-data.json). Fehlen sie, bleibt das PLZ-Feld ausgeblendet.
@@ -149,7 +175,8 @@ function denetzJs() {
 // opts.native: Store-App (Android/iOS) statt Web
 function render(opts = {}) {
   const pp = pruefpaket();
-  const parts = { rules: read('rules.js'), i18n: i18nSource(), fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), vorgaenge: read('vorgaenge.js'), haushalt: read('haushalt.js'), ausziehen: read('ausziehen.js'), fristen: read('fristen.js'), schulden: read('schulden.js'), geld: read('geld.js'), schritte: read('schritte.js'), klient: read('klient.js'), suche: sucheJs(), denetz: denetzJs(), navigation: read('navigation.js'), app: read('app.js') };
+  const sprachTeile = i18nGeteilt(!!opts.native);
+  const parts = { rules: read('rules.js'), i18n: sprachTeile.js, fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), vorgaenge: read('vorgaenge.js'), haushalt: read('haushalt.js'), ausziehen: read('ausziehen.js'), fristen: read('fristen.js'), schulden: read('schulden.js'), geld: read('geld.js'), schritte: read('schritte.js'), klient: read('klient.js'), suche: sucheJs(), denetz: denetzJs(), navigation: read('navigation.js'), app: read('app.js') };
   if (opts.native) {
     if (!parts.app.includes('/*NATIVE*/ false')) throw new Error('Marker /*NATIVE*/ fehlt in src/app.js');
     parts.app = parts.app.replace('/*NATIVE*/ false', 'true');
@@ -160,7 +187,9 @@ function render(opts = {}) {
   parts.weitergabe = read('krypto.js') + parts.weitergabe;
   const vorlage = require(path.join(SRC, 'navigation.js')).vorlage(read('template.html')); // gemeinsamer Zurück-Knopf: Marken <!--ZURUECK ...-->
   if (/<!--ZURUECK/.test(vorlage)) throw new Error('Marke <!--ZURUECK--> mit falscher Schreibweise in src/template.html');
+  if (!vorlage.includes('<script>\n/*I18N*/\n')) throw new Error('Marke <script> /*I18N*/ fehlt in src/template.html');
   const html = vorlage
+    .replace('<script>\n/*I18N*/\n', () => sprachTeile.bloecke + '<script>\n/*I18N*/\n') // Datenblöcke vor den Skripten: beim Start schon im DOM
     .replace('/*RULES*/\n', () => parts.rules)
     .replace('/*I18N*/\n', () => parts.i18n)
     .replace('/*FMT*/\n', () => parts.fmt)
@@ -188,8 +217,20 @@ function render(opts = {}) {
     .replace('/*APP*/\n', () => parts.app.replace("'/*VERSION*/'", () => JSON.stringify(require(path.join(ROOT, 'package.json')).version)));
   const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|VORGAENGE|HAUSHALT|AUSZIEHEN|FRISTEN|SCHULDEN|GELD|NAVIGATION|SCHRITTE|KLIENT|SUCHE|DENETZ|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEFPAKET-->/);
   if (left) throw new Error('Platzhalter nicht ersetzt: ' + left[0]);
-  return { html, i18n: parts.i18n };
+  return { html, i18n: i18nSource(), sprachDateien: sprachTeile.dateien };
 }
+
+// Sicherheitsrichtlinie der Web-Version (Sicherheitsprüfung 21.11.2026, S9). Erlaubt genau das, was die Seite braucht:
+//  - Skripte: die eigenen (in der Datei, daher 'unsafe-inline'; die Web-Version ist eine einzelne HTML-Datei), Texterkennung von cdnjs
+//    (Tesseract) und jsDelivr (Worker, Kern, Sprachdaten), pdf.js von cdnjs. Nachgeladenes Tesseract und pdf.js tragen eine Prüfsumme (SRI, src/app.js).
+//  - 'wasm-unsafe-eval': nur WebAssembly für den Kern der Texterkennung, kein eval für JavaScript (auch nicht für pdf.js: CVE-2024-4367).
+//  - blob: bei den Skripten: Der mit Prüfsumme geladene pdf.js-Worker startet aus einer blob-Adresse und lädt daraus sein Programm; kann der
+//    Browser keinen Worker starten, lädt pdf.js denselben Code im Fenster. Neben 'unsafe-inline' öffnet blob: nichts Zusätzliches.
+//  - Worker: blob-Adressen (Tesseract startet seinen Worker so, pdf.js den geprüften Worker), sonst nichts von außen.
+//  - Keine Plugins, keine fremde Basisadresse, kein Absenden von Formularen.
+const WEB_CSP = "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; " +
+  "style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' data: blob: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
+  "worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'";
 
 function build() {
   const { html, i18n } = render();
@@ -197,10 +238,11 @@ function build() {
   fs.writeFileSync(path.join(DIST, 'i18n.js'), i18n);
   // Eigenständige Datei (zum Öffnen im Browser, für die Webseite): mit Zeichensatz und Viewport. Ohne <meta charset> zeigt
   // Safari (WebKit) die Umlaute falsch; ohne Viewport ist die Seite auf dem Handy winzig. Die App setzt ihren Kopf selbst (build-app.js).
-  const doc = '<!doctype html>\n<html lang="de">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n<meta name="theme-color" content="#fffaf3" media="(prefers-color-scheme: light)">\n<meta name="theme-color" content="#1b1815" media="(prefers-color-scheme: dark)">\n<link rel="icon" href="data:,">\n</head>\n<body>\n' + html + '\n</body>\n</html>\n';
+  const doc = '<!doctype html>\n<html lang="de">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n<meta http-equiv="Content-Security-Policy" content="' + WEB_CSP + '">\n<meta name="theme-color" content="#fffaf3" media="(prefers-color-scheme: light)">\n<meta name="theme-color" content="#1b1815" media="(prefers-color-scheme: dark)">\n<link rel="icon" href="data:,">\n</head>\n<body>\n' + html + '\n</body>\n</html>\n';
   fs.writeFileSync(path.join(DIST, 'sozialleistungslotse.html'), doc);
-  console.log('Web-Build: dist/sozialleistungslotse.html', (html.length / 1024).toFixed(1), 'KB');
+  const startTeil = html.replace(/<script type="application\/json" id="solo-sprache-[^"]+">[^<]*<\/script>\n/g, '');
+  console.log('Web-Build: dist/sozialleistungslotse.html', (Buffer.byteLength(doc) / 1024).toFixed(1), 'KB, davon beim Start geparst', (Buffer.byteLength(startTeil) / 1024).toFixed(1), 'KB (übrige Sprachen erst beim Wechsel)');
 }
 
-module.exports = { render, i18nSource, LANGS, ROOT };
+module.exports = { render, i18nSource, i18nGeteilt, LANGS, ROOT, WEB_CSP };
 if (require.main === module) build();

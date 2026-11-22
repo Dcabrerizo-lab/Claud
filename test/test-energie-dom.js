@@ -25,7 +25,8 @@ const tx = (e) => e.textContent.replace(/[  ]/g, ' ');
 const zumPlan = () => { klick($('goGeld')); klick(d.querySelector('#spInhalt .gs-planen')); klick(d.querySelector('#spInhalt .gs-p-hh')); }; // „Mein Geld planen“ → Karte Haushaltsplan
 const sp = (sel) => d.querySelector('#spInhalt ' + sel);
 const zuSeite = (thema) => { klick($('goGeld')); klick(sp('.gs-planen')); klick(sp('.gs-t-' + thema)); }; // „Mein Geld planen“ → Seite „Strom“ bzw. „Heizen“
-const zumRechner = (wz, art, thema) => { zuSeite(thema || 'strom'); klick(sp('.gs-e-' + wz)); klick(sp('.gs-e-' + wz + '-' + art)); };
+const zumCheck = () => { klick($('goGeld')); klick(sp('.gs-planen')); klick(sp('.gs-p-energie')); }; // „Mein Geld planen“ → „Energie-Check“ (UX-Audit C Nr. 11)
+const zumRechner = (wz, art) => { zumCheck(); klick(sp('.gs-e-' + wz)); if (art !== 'strom') klick(sp('.gs-e-' + wz + '-' + art)); };
 const zurueck = () => klick(d.querySelector('#v-sparen [data-nav-zurueck]'));
 const gespeichert = () => JSON.parse(mem['lotse.haushalt'] || '{}');
 const iso = (tageZurueck) => { const x = new Date(); x.setDate(x.getDate() - tageZurueck); return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0'); };
@@ -37,17 +38,13 @@ setTimeout(() => {
     zumPlan(); klick($('hb-kat-energie'));
     check('Haushaltsplan: kein Abschlag-Knopf, keine Energie-Box', !$('hb-en-knopf') && !$('hbEnergie'));
     // Seite „Strom“: zwei Kacheln (Abschlag prüfen, Tarife vergleichen) vor den Spartipps
-    zuSeite('strom');
-    check('Seite Strom: Kacheln „Abschlag prüfen“ und „Tarife vergleichen“ vor den Tipps', !!sp('.gs-e-abschlag') && !!sp('.gs-e-tarif') && /Abschlag prüfen/.test(sp('.gs-e-abschlag').textContent) && /Tarife vergleichen/.test(sp('.gs-e-tarif').textContent) &&
-      !!(sp('.gs-e-tarif').compareDocumentPosition(sp('.sp-tipps')) & w.Node.DOCUMENT_POSITION_FOLLOWING) && !$('hbEnergie'));
-    zuSeite('heizen');
-    check('Seite Heizen: dieselben Kacheln', !!sp('.gs-e-abschlag') && !!sp('.gs-e-tarif'));
-    zuSeite('essen');
-    check('Seite Essen: keine Energie-Kacheln', !sp('.gs-e-abschlag') && !sp('.gs-e-tarif'));
-    // Abschlag prüfen: erst Strom oder Gas (Kacheln), dann nur die Prüfung
-    zuSeite('strom'); klick(sp('.gs-e-abschlag'));
-    check('Abschlag: Kacheln Strom und Gas', !!sp('.gs-e-abschlag-strom') && !!sp('.gs-e-abschlag-gas') && sp('.gs-e-abschlag-strom').classList.contains('uk-karte') && !$('hbEnergie'));
-    klick(sp('.gs-e-abschlag-strom'));
+    // UX-Audit C Nr. 11: Werkzeuge nur einmal (Kachel „Energie-Check“ unter „Mein Geld planen“), nicht mehr auf den Seiten Strom/Heizen
+    ['strom', 'heizen', 'essen'].forEach((th) => { zuSeite(th); check('[ux-c] Seite ' + th + ': keine Energie-Werkzeuge (nur im Energie-Check)', !sp('.gs-e-abschlag') && !sp('.gs-e-tarif') && !!sp('.sp-tipps')); });
+    zumCheck();
+    check('[ux-c] Energie-Check: Kacheln „Abschlag prüfen“ und „Tarife vergleichen“', !!sp('.gs-e-abschlag') && !!sp('.gs-e-tarif') && /Abschlag prüfen/.test(sp('.gs-e-abschlag').textContent) && /Tarife vergleichen/.test(sp('.gs-e-tarif').textContent) && !$('hbEnergie'));
+    // Abschlag prüfen: Rechner sofort (Strom), Umschalter Strom/Gas oben statt Zwischenseite
+    klick(sp('.gs-e-abschlag'));
+    check('[ux-c] Abschlag: Umschalter Strom/Gas im Rechner, Strom gewählt', !!sp('.gs-e-abschlag-strom') && !!sp('.gs-e-abschlag-gas') && sp('.gs-e-abschlag-strom').getAttribute('aria-pressed') === 'true' && sp('.gs-e-abschlag-gas').getAttribute('aria-pressed') === 'false' && !!$('hbEnergie'));
     check('Strom: Rechner offen, Ergebnis vor den Eingaben (aria-live)', !!$('hbEnergie') && !!($('hbEnErgebnis').compareDocumentPosition($('hb-en-a')) & w.Node.DOCUMENT_POSITION_FOLLOWING) && $('hbEnErgebnis').getAttribute('aria-live') === 'polite');
     check('Keine Zusätze: keine Heizart-Auswahl, keine Reiter, kein Warmwasser, keine Personen, keine aufklappbaren Extras', !$('hb-en-heiz') && !$('hb-en-tab-gas') && !$('hb-en-ww') && !$('hb-en-personen') && !d.querySelector('#hbEnergie details') && !d.querySelector('.hb-en-nz, .hb-en-dv, .hb-en-sperre, .hb-en-tipps'));
     check('Keine Spartipps unter dem Rechner', !sp('.sp-tipps'));
@@ -70,16 +67,14 @@ setTimeout(() => {
     setze('hb-en-a', '100');
     check('Guthaben als Info (nicht grün)', d.querySelector('.hb-en-erg').classList.contains('gut'));
     setze('hb-en-a', '65');
-    // Zurück: eine Ebene hoch zu den Kacheln Strom/Gas, dann zu den Werkzeugen
-    zurueck();
-    check('Zurück: Kacheln Strom/Gas', !!sp('.gs-e-abschlag-strom') && !$('hbEnergie'));
+    // Umschalter Gas: eigene Felder; Zurück führt eine Ebene hoch zu den Werkzeugen
     klick(sp('.gs-e-abschlag-gas'));
-    check('Gas: eigene Felder (Rechnung, m³)', !!$('hbEnergie') && $('hb-en-weg').value === 'rechnung' && !!$('hb-en-m3') && !$('hb-en-heizt'));
-    zurueck(); zurueck();
-    check('Zurück zweimal: Seite Strom mit Werkzeug-Kacheln', !!sp('.gs-e-abschlag') && !!sp('.sp-tipps'));
-    // Strom-/Gassperre droht: Knopf „Abschlag prüfen“ führt zu den Kacheln Strom/Gas
+    check('Gas: eigene Felder (Rechnung, m³)', !!$('hbEnergie') && $('hb-en-weg').value === 'rechnung' && !!$('hb-en-m3') && !$('hb-en-heizt') && sp('.gs-e-abschlag-gas').getAttribute('aria-pressed') === 'true' && d.activeElement === sp('.gs-e-abschlag-gas'));
+    zurueck();
+    check('[ux-c] Zurück aus dem Rechner: Werkzeuge des Energie-Checks', !!sp('.gs-e-abschlag') && !!sp('.gs-e-tarif') && !$('hbEnergie'));
+    // Strom-/Gassperre droht: Knopf „Abschlag prüfen“ öffnet den Rechner (Strom)
     klick($('goGeld')); klick(sp('.gs-dringend')); klick(sp('.gs-d-strom')); klick(sp('.gs-abschlag'));
-    check('Sperre droht → Abschlag prüfen: Kacheln Strom/Gas', !!sp('.gs-e-abschlag-strom') && !!sp('.gs-e-abschlag-gas'));
+    check('Sperre droht → Abschlag prüfen: Rechner mit Umschalter Strom/Gas', !!$('hbEnergie') && !!sp('.gs-e-abschlag-strom') && !!sp('.gs-e-abschlag-gas'));
     // Tarife vergleichen
     zumRechner('tarif', 'strom');
     check('Tarif: Rechner offen, Hinweise, Link zur Verbraucherzentrale', !!$('hbTarif') && d.querySelectorAll('#spInhalt .tv-tipps details.tipp').length === 5 && /verbraucherzentrale\.de/.test($('tv-vz').href) && /fehlt noch/.test(tx($('hbTvErgebnis'))));
@@ -98,7 +93,7 @@ setTimeout(() => {
     setze('hb-tv-eigen-ap', '0');
     check('Tarif: Arbeitspreis 0 → Fehlermeldung unter dem Feld', !!$('hb-tv-eigen-ap-f'));
     zurueck();
-    check('Tarif: Zurück zu den Kacheln Strom/Gas', !!sp('.gs-e-tarif-strom') && !!sp('.gs-e-tarif-gas'));
+    check('Tarif: Zurück zu den Werkzeugen', !!sp('.gs-e-tarif') && !$('hbTarif'));
     // Vorgangswechsel: Abschlag-Daten bleiben
     w.Haushalt.neuLaden();
   } catch (e) { fehler++; console.log('FAIL Ausnahme: ' + e.stack); }

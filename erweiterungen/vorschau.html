@@ -58,6 +58,12 @@
   .pp-erk-hinweis { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: 0 0 14px; padding: 2px 0 2px 12px; border-inline-start: 4px solid var(--mark-line, var(--warn)); }
   .pp-erk-hinweis p { margin: 0; flex: 1 1 16em; }
   .pp-erk-hinweis[hidden] { display: none; }
+  .pp-erk-fehlt { flex: 1 1 100%; } .pp-erk-fehlt p { margin: 0 0 4px; }
+  .pp-erk-fehlt .linkbtn { background: none; border: 0; padding: 10px 0; min-height: 44px; color: var(--accent); font: inherit; text-decoration: underline; cursor: pointer; }
+  .pp-erk-unten[hidden] { display: none; }
+  .frist-vorbei ol { margin: 4px 0 8px; padding-inline-start: 1.4em; } .frist-vorbei p { margin: 4px 0; }
+  .pp-zugang[hidden] { display: none; }
+  .pf-bereich.pf-b-pruefen { border-color: var(--mark-line, var(--warn)); }
   .begriffe { margin: 8px 0 0; } .begriffe dt { font-weight: 600; margin-top: 6px; } .begriffe dd { margin: 0 0 4px; }
   .abw { display: grid; gap: 4px; }
   .abw p { margin: 0; }
@@ -67,6 +73,9 @@
   textarea[hidden] ~ .rb-schreiben { display: none; }
   details.mehr { margin: 4px 0; }
   details > summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+  details.pf-bereich { border: 1px solid var(--line, #ccc); border-radius: 12px; padding: 0 12px; margin: 0 0 10px; }
+  details.pf-bereich > summary { font-weight: 700; min-height: 44px; display: flex; flex-wrap: wrap; align-items: center; gap: 0 6px; cursor: pointer; }
+  details.pf-bereich > fieldset { border: 0; padding: 0 0 8px; margin: 0; }
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   @media (max-width: 640px) { .row { grid-template-columns: 1fr; } .freq { grid-template-columns: minmax(0, 1fr) repeat(3, 64px); } .ergebnis { position: static; } }
   .tablewrap th, .tablewrap td { overflow-wrap: normal; word-break: normal; hyphens: manual; }
@@ -112,7 +121,7 @@
       <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>SoLo rechnet die Punkte des Gutachtens nach § 15 SGB XI nach und zeigt, wo es knapp ist. Scannen geht am schnellsten: Von Hand sind es rund 60 Bewertungen.</p></details>
       <label for="pf-text">Text aus dem Gutachten (aus einem PDF kopiert oder vom Foto erkannt)</label>
       <textarea id="pf-text" placeholder="z. B. 1.1 Positionswechsel im Bett  überwiegend selbständig …"></textarea>
-      <div class="btns"><button type="button" class="btn primary" id="pf-lesen">Text lesen</button><button type="button" class="btn" id="pf-beispiel">Beispiel laden</button><button type="button" class="btn" id="pf-leeren">Alles leeren</button></div>
+      <div class="btns"><button type="button" class="btn primary" id="pf-lesen">Text lesen</button><button type="button" class="btn" id="pf-beispiel">Beispiel laden</button></div>
       <p class="msg small" id="pf-msg" role="status"></p>
     </div>
     <form id="pf-form" onsubmit="return false">
@@ -136,6 +145,7 @@
     </form>
     <div class="card ergebnis" id="pf-erg" aria-live="polite"></div>
     <p class="small muted rb-satz rb-erg" data-t="rb.satz">Erste Einschätzung, keine Rechtsberatung. Es entscheidet das Amt, im Streit das Gericht.</p>
+    <div class="btns pf-leeren-zeile"><button type="button" class="btn" id="pf-leeren">Alles leeren</button></div><!-- nicht mehr ganz oben (UX-Audit D #3) -->
     <div class="card" id="pf-erkl"></div>
     <div class="card" id="pf-wid">
       <h2>Widerspruch oder Höherstufung</h2>
@@ -157,6 +167,7 @@
         <div><label for="pf-vnr">Versichertennummer</label><input type="text" id="pf-vnr"></div>
         <div><label for="pf-datum" id="pf-datum-label">Datum des Bescheids</label><input type="date" id="pf-datum"></div>
       </div>
+      <div id="pf-vorbei"></div>
       <div class="btns"><button type="button" class="btn primary" id="pf-wid-mach">Schreiben erstellen</button></div>
       <p class="small" id="pf-frist" role="status"></p>
       <label for="pf-wid-text" class="vh">Text des Schreibens</label>
@@ -375,6 +386,7 @@
     <div class="card">
       <h2 data-t="bp.kz.h">Bescheid Kinderzuschlag prüfen</h2>
       <p data-t="bp.scan.p">Scanne den Bescheid. SoLo rechnet nach und zeigt Abweichungen.</p>
+      <p class="small muted" data-t="bp.kz.kg">Kindergeld prüft SoLo hier nicht. Dort heißt der Weg Einspruch, nicht Widerspruch.</p>
       <details class="mehr"><summary data-t="bp.was">Was prüft SoLo genau?</summary><p>Trage die Durchschnittsbeträge der letzten sechs Monate vor dem Antrag ein. Mit diesem Zeitraum rechnet auch die Familienkasse. SoLo rechnet mit denselben Regeln wie die App nach.</p></details>
       <div class="btns"><button type="button" class="btn" id="kz-beispiel">Beispiel laden</button></div>
     </div>

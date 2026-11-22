@@ -383,13 +383,7 @@
    "web": "https://www.nordwestmecklenburg.de/",
    "typ": "kreis",
    "wiki": "Landkreis Nordwestmecklenburg",
-   "anschrift": [
-    "Rostocker Straße 76",
-    "23970 Wismar"
-   ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Nordwestmecklenburg",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelleArt": "ohne-beleg"
   },
   "13075": {
    "name": "Vorpommern-Greifswald",
@@ -695,13 +689,7 @@
    "web": "https://www.lkjl.de/",
    "typ": "kreis",
    "wiki": "Landkreis Jerichower Land",
-   "anschrift": [
-    "Bahnhofstraße 9",
-    "39288 Burg"
-   ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Jerichower_Land",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelleArt": "ohne-beleg"
   },
   "15087": {
    "name": "Mansfeld-Südharz",
@@ -773,13 +761,7 @@
    "web": "https://www.erfurt.de/",
    "typ": "stadt",
    "wiki": "Erfurt",
-   "anschrift": [
-    "Fischmarkt 1",
-    "99084 Erfurt"
-   ],
-   "quelle": "https://de.wikipedia.org/wiki/Erfurt",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelleArt": "ohne-beleg"
   },
   "16052": {
    "name": "Stadt Gera",
@@ -968,13 +950,7 @@
    "web": "https://weimarerland.de/",
    "typ": "kreis",
    "wiki": "Landkreis Weimarer Land",
-   "anschrift": [
-    "Bahnhofstraße 28",
-    "99510 Apolda"
-   ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Weimarer_Land",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelleArt": "ohne-beleg"
   },
   "16072": {
    "name": "Landkreis Sonneberg",
@@ -994,13 +970,7 @@
    "web": "https://www.kreis-slf.de/",
    "typ": "kreis",
    "wiki": "Landkreis Saalfeld-Rudolstadt",
-   "anschrift": [
-    "Schloßstraße 24",
-    "07318 Saalfeld/Saale"
-   ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Saalfeld-Rudolstadt",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelleArt": "ohne-beleg"
   },
   "16074": {
    "name": "Saale-Holzland-Kreis",
@@ -1553,13 +1523,7 @@
    "web": "https://www.ulm.de/",
    "typ": "stadt",
    "wiki": "Ulm",
-   "anschrift": [
-    "Marktplatz 1",
-    "89073 Ulm"
-   ],
-   "quelle": "https://de.wikipedia.org/wiki/Ulm",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelleArt": "ohne-beleg"
   },
   "08425": {
    "name": "Alb-Donau-Kreis",
@@ -1631,13 +1595,7 @@
    "web": "https://www.bremen.de/",
    "typ": "stadt",
    "wiki": "Bremen",
-   "anschrift": [
-    "Am Markt 21",
-    "28195 Bremen"
-   ],
-   "quelle": "https://de.wikipedia.org/wiki/Bremen",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelleArt": "ohne-beleg"
   },
   "04012": {
    "name": "Stadt Bremerhaven",
@@ -1670,13 +1628,7 @@
    "web": "https://frankfurt.de",
    "typ": "stadt",
    "wiki": "Frankfurt am Main",
-   "anschrift": [
-    "Römerberg 23",
-    "60311 Frankfurt am Main"
-   ],
-   "quelle": "https://de.wikipedia.org/wiki/Frankfurt_am_Main",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelleArt": "ohne-beleg"
   },
   "06413": {
    "name": "Stadt Offenbach am Main",
@@ -1917,13 +1869,7 @@
    "web": "https://www.landkreis-fulda.de/",
    "typ": "kreis",
    "wiki": "Landkreis Fulda",
-   "anschrift": [
-    "Wörthstraße 15",
-    "36037 Fulda"
-   ],
-   "quelle": "https://de.wikipedia.org/wiki/Landkreis_Fulda",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelleArt": "ohne-beleg"
   },
   "06632": {
    "name": "Landkreis Hersfeld-Rotenburg",
@@ -2670,13 +2616,7 @@
    "web": "https://www.remscheid.de/",
    "typ": "stadt",
    "wiki": "Remscheid",
-   "anschrift": [
-    "Theodor-Heuss-Platz 1",
-    "42853 Remscheid"
-   ],
-   "quelle": "https://de.wikipedia.org/wiki/Remscheid",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelleArt": "ohne-beleg"
   },
   "05122": {
    "name": "Stadt Solingen",
@@ -2687,22 +2627,16 @@
     "Walter-Scheel-Platz 1",
     "42651 Solingen"
    ],
-   "quelle": "https://de.wikipedia.org/wiki/Solingen",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelle": "https://solingen.de/inhalt/stadt-solingen-impressum",
+   "quelleArt": "impressum",
+   "stand": "21.11.2026"
   },
   "05124": {
    "name": "Stadt Wuppertal",
    "web": "https://www.wuppertal.de/",
    "typ": "stadt",
    "wiki": "Wuppertal",
-   "anschrift": [
-    "Johannes-Rau-Platz 1",
-    "42275 Wuppertal"
-   ],
-   "quelle": "https://de.wikipedia.org/wiki/Wuppertal",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelleArt": "ohne-beleg"
   },
   "05154": {
    "name": "Kreis Kleve",
@@ -3514,13 +3448,7 @@
    "web": "https://ludwigshafen.de",
    "typ": "stadt",
    "wiki": "Ludwigshafen am Rhein",
-   "anschrift": [
-    "Bismarckstraße 25",
-    "67059 Ludwigshafen am Rhein"
-   ],
-   "quelle": "https://de.wikipedia.org/wiki/Ludwigshafen_am_Rhein",
-   "quelleArt": "wikipedia",
-   "stand": "11.11.2026"
+   "quelleArt": "ohne-beleg"
   },
   "07315": {
    "name": "Stadt Mainz",

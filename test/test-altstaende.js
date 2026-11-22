@@ -78,6 +78,45 @@ FAELLE.forEach((f) => {
   });
 }
 
+// Antragsmappe alter Stände (vor der Aufgabenliste, 21.11.2026): Absender aus lotse.state, Haken je Leistung (id|Schlüssel) und die Schritte
+// „Anschreiben“/„Formular“ laden weiter; der Absender ist zentral und erscheint auch im Widerspruch und im Musterschreiben (Geld und Schulden)
+{
+  const alt = seite({ 'lotse.state': JSON.stringify({ s: { adults: 1, kids: 1, ek1Art: 'lohn', ek1Brutto: 1500, ek1Netto: 1100, miete: 600, mietstufe: '3', vermoegen: 0, unterhaltFehlt: true, plz: '91054', bezug: {} }, p: { name: 'Erika Alt', strasse: 'Altweg 2', ort: '91054 Erlangen', geb: '1980-03-04', tel: '' }, e: true }),
+    'lotse.haken': JSON.stringify({ 'uvg|s.uvg.u1': true, 'mappe|brief': true, 'mappe|formular': true, 'mappe|abschicken': true }), 'lotse.ack': '1' });
+  const d = alt.d, klick = (el) => el.dispatchEvent(new alt.w.MouseEvent('click', { bubbles: true }));
+  d.querySelectorAll('[data-pick]').forEach((cb) => { cb.checked = cb.getAttribute('data-pick') === 'uvg'; cb.dispatchEvent(new alt.w.Event('change', { bubbles: true })); });
+  d.querySelectorAll('#pick input[data-weg][value="offen"]').forEach((r) => { r.checked = true; r.dispatchEvent(new alt.w.Event('change', { bubbles: true })); });
+  d.getElementById('mappeMake').click();
+  const geburt = d.querySelector('#aufUnterlagen input[data-haken="u|geburt"]');
+  ck('[altstaende-mappe] Alter Haken „uvg|s.uvg.u1“ (Geburtsurkunde) zählt in der neuen Liste als abgehakt', !!geburt && geburt.checked, geburt && geburt.outerHTML.slice(0, 120));
+  ck('[altstaende-mappe] Alte Schritte „Anschreiben“ und „Formular“ erledigt: Schritt „Anträge stellen“ erledigt; „Abschicken“ erledigt', d.querySelector('#aufAntraege input[data-haken="mappe|antraege"]').checked && /^✓/.test(d.getElementById('statAntraege').textContent) && /^✓/.test(d.getElementById('statAbschicken').textContent));
+  ck('[altstaende-mappe] Absender aus dem alten Stand: Status „eingetragen“, im Brief', /^✓/.test(d.getElementById('statAngaben').textContent) && /Erika Alt\nAltweg 2\n91054 Erlangen/.test(d.getElementById('mappeBody').textContent));
+  geburt.checked = false; geburt.dispatchEvent(new alt.w.Event('change', { bubbles: true }));
+  ck('[altstaende-mappe] Abwählen entfernt auch den alten Schlüssel', !d.querySelector('#aufUnterlagen input[data-haken="u|geburt"]').checked && !/uvg\|s\.uvg\.u1/.test(alt.w.localStorage.getItem('lotse.haken') || ''));
+  d.getElementById('mappeClose').click();
+  // Widerspruch Jobcenter (Brief prüfen): Absender eingesetzt
+  klick(d.querySelector('#appnav [data-ansicht="start"]')); klick(d.getElementById('goBriefe')); klick(d.getElementById('brief-jc'));
+  ck('[absender] Widerspruch an das Jobcenter: gespeicherter Absender eingesetzt', d.getElementById('bs-name').value === 'Erika Alt' && d.getElementById('bs-anschrift').value === 'Altweg 2' && d.getElementById('bs-ort').value === '91054 Erlangen', d.getElementById('bs-name').value);
+  d.getElementById('bs-name').value = 'Erika Neu'; d.getElementById('bs-name').dispatchEvent(new alt.w.Event('input', { bubbles: true }));
+  ck('[absender] Änderung im Widerspruch gilt für alle Briefe (Mappe)', d.getElementById('p-name').value === 'Erika Neu');
+  // Musterschreiben „Ratenzahlung anbieten“ (Geld und Schulden): Absender statt Lücke, änderbar im Kasten
+  klick(d.querySelector('#appnav [data-ansicht="start"]')); klick(d.getElementById('goGeld')); klick(d.querySelector('#spInhalt .gs-inkasso')); klick(d.querySelector('#spInhalt .gs-i-rate'));
+  const ms = d.getElementById('ms-text');
+  ck('[absender] Musterschreiben an die Inkassofirma: Name und Anschrift oben, Ort beim Datum', !!ms && /^Erika Neu\nAltweg 2\n91054 Erlangen\n/.test(ms.value) && /\nErlangen, /.test(ms.value) && !/\[Dein Name/.test(ms.value), ms && ms.value.slice(0, 120));
+  const kasten = d.querySelector('.abs-kasten');
+  ck('[absender] Kompakter Absender-Kasten beim Musterschreiben', !!kasten && /Erika Neu, Altweg 2, 91054 Erlangen/.test(kasten.textContent));
+  const f = kasten.querySelector('input[data-abs="name"]'); f.value = 'Erika Drei'; f.dispatchEvent(new alt.w.Event('input', { bubbles: true }));
+  ck('[absender] Änderung im Kasten schreibt das Schreiben neu und gilt überall', /^Erika Drei\n/.test(d.getElementById('ms-text').value) && d.getElementById('p-name').value === 'Erika Drei' && d.getElementById('bs-name').value === 'Erika Drei');
+  ck('[altstaende-mappe] Keine Skriptfehler', alt.errors.length === 0, alt.errors.join(' | '));
+}
+// Ohne Absender: Lücken zum Ausfüllen von Hand
+{
+  const o = seite({ 'lotse.ack': '1' });
+  const klick = (el) => el.dispatchEvent(new o.w.MouseEvent('click', { bubbles: true }));
+  klick(o.d.getElementById('goGeld')); klick(o.d.querySelector('#spInhalt .gs-inkasso')); klick(o.d.querySelector('#spInhalt .gs-i-rate'));
+  ck('[absender] Ohne Angaben: Lücke „[Dein Name, deine Anschrift]“ und „[Ort]“', /^\[Dein Name, deine Anschrift\]/.test(o.d.getElementById('ms-text').value) && /\[Ort\], /.test(o.d.getElementById('ms-text').value));
+}
+
 // Einfache Version: älterer Speicherstand (ohne die später ergänzten Fragen zu Werkstattjahren und PLZ) öffnet direkt die einfache Version
 const esAlt = { schritt: 99, geb: '1985', wohnen: 'allein', mieteJa: '', miete: '450', arbeit: 'werkstatt', lohn: '280', essen: 'ja', em: '', renteJa: 'nein', rente: '', ausweis: 'ja', gdb: '100', mz: { G: true }, kind: 'ja', pflege: 'nein', schon: {}, erspart: 'wenig' };
 const e = seite({ 'lotse.einfach': JSON.stringify({ es: esAlt, an: true }), 'lotse.ack': '1' });

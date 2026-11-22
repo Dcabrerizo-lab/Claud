@@ -11,6 +11,10 @@ const DIR = path.join(__dirname, '..', 'src', 'lang');
 const SPRACHEN = fs.readdirSync(DIR).filter((f) => f.endsWith('.json') && f !== 'de.json').map((f) => f.replace('.json', ''));
 const AUSNAHMEN = require('./sprachen-zahlen-ausnahmen.json');
 const lies = (f) => JSON.parse(fs.readFileSync(f, 'utf8'));
+// Gewollt fehlende Übersetzungen: die App zeigt dort Deutsch (lang="de" dir="ltr") mit Hinweis „nur auf Deutsch“.
+// Pflege in Somali und Paschtu: Entscheidung David 21.11.2026 – erst nach Prüfung durch Muttersprachler;
+// die Entwürfe liegen in docs/entwuerfe/sprachen/pflege-wartet/ und kommen nicht in die App.
+const FALLBACK_DE = { pflege: ['so', 'ps'] };
 let fehler = 0, geprueft = 0;
 const fail = (t) => { fehler++; console.log('FAIL ' + t); };
 
@@ -43,7 +47,11 @@ for (const o of ordner) {
   const deO = lies(path.join(DIR, o, 'de.json'));
   for (const lang of SPRACHEN) {
     const f = path.join(DIR, o, lang + '.json');
-    if (!fs.existsSync(f)) { fail(`src/lang/${o}/${lang}.json fehlt`); continue; }
+    if (!fs.existsSync(f)) {
+      if ((FALLBACK_DE[o] || []).includes(lang)) { console.log(`src/lang/${o}/${lang}.json fehlt gewollt: Fallback Deutsch`); continue; }
+      fail(`src/lang/${o}/${lang}.json fehlt`); continue;
+    }
+    if ((FALLBACK_DE[o] || []).includes(lang)) fail(`src/lang/${o}/${lang}.json ist da, steht aber in FALLBACK_DE (Fallback Deutsch) – Liste anpassen`);
     pruefe(o, deO, lang, lies(f));
   }
 }

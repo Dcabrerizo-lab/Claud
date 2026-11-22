@@ -49,6 +49,12 @@ const dateiWaehlen = (w, input, text) => { Object.defineProperty(input, 'files',
   $('beratungBtn').click();
   $('kbOpen').click();
   check('Weitergabe-Bereich im Blatt sichtbar, PIN standardmäßig an (6 Ziffern)', !$('kwBox').hidden && $('kwPinAn').checked && /^\d{3} \d{3}$/.test($('kwPin').textContent));
+  const passt0 = await w.Klient.qrPruefen();
+  check('[rot-d] QR-Vorprüfung: Hinweis „zu viel“ schon vor dem Tippen genau dann, wenn es nicht passt', $('kwQrHinweis').hidden === !!passt0 && $('kwQrBtn').hasAttribute('aria-disabled') === !passt0);
+  const auf = d.querySelector('#kbHilfenAuf');
+  check('[rot-d] Klient-Seite: zwei Schritte, Gruppen zugeklappt mit Zähler, Vorschau zugeklappt', d.querySelectorAll('#klientBlatt .kb-schritt').length === 2 && auf && !auf.open && /\(\d+ von \d+\)$/.test(auf.querySelector('summary').textContent) && $('kbSeite').classList.contains('kb-zu') && $('kbVorschau').getAttribute('aria-expanded') === 'false');
+  $('kbVorschau').click();
+  check('[rot-d] Vorschau zeigen klappt das Blatt auf', !$('kbSeite').classList.contains('kb-zu') && $('kbVorschau').getAttribute('aria-expanded') === 'true');
   check('Auswahl a/b: „Nur ausgewählte Teile“ voreingestellt', $('kwModus-blatt').checked && !$('kwModus-vorgang').checked && !!$('kbHilfen'));
   // (b) nur gewählte Teile → QR
   [...d.querySelectorAll('#kbHilfen input[data-kb]')].slice(1).forEach((c) => { c.checked = false; fire(w, c, 'change'); });
@@ -105,7 +111,8 @@ const dateiWaehlen = (w, input, text) => { Object.defineProperty(input, 'files',
   dateiWaehlen(w2, $2('kwDateiEin'), dateiA);
   check('Datei mit PIN: PIN-Abfrage', await bis(() => $2('kwImpPin')));
   $2('kwImpPin').value = pinA === '000000' ? '111111' : '000000'; $2('kwImpPinOk').click();
-  check('Falsche PIN: Meldung, Abfrage bleibt', await bis(() => $2('kwImpMsg').textContent === DE['kw.imp.pinFalsch']) && !!$2('kwImpPin'));
+  check('Falsche PIN: Meldung, Abfrage bleibt', await bis(() => $2('kwImpPinFehler') && !$2('kwImpPinFehler').hidden) && !!$2('kwImpPin') && $2('kwImpMsg').textContent === '');
+  check('[rot-d] Falsche PIN: Meldung rot am Feld, Feld nicht geleert, „PIN zeigen“ schaltet um', !$2('kwImpPinFehler').hidden && $2('kwImpPinFehler').textContent === DE['kw.imp.pinFalsch'] && $2('kwImpPin').getAttribute('aria-invalid') === 'true' && $2('kwImpPin').value !== '' && ($2('kwImpPinZeigen').click(), $2('kwImpPin').type === 'text'));
   $2('kwImpPin').value = pinA; $2('kwImpPinOk').click();
   check('Richtige PIN: Vorschau „Das bekommst du“ mit Haken', await bis(() => $2('kwImpTeile')) && $2('kwImpBox').textContent.includes(DE['kw.imp.vorschau']) && [...d2.querySelectorAll('#kwImpTeile input')].every((c) => c.checked));
   const vorher = JSON.parse(store['lotse.vorgaenge'] || '{"klar":{"liste":[1]}}').klar.liste.length;
@@ -140,6 +147,75 @@ const dateiWaehlen = (w, input, text) => { Object.defineProperty(input, 'files',
   $2('kwImpSpeichern').click(); await bis(() => $2('kwImpOk')); $2('kwImpOeffnen').click();
   d2.querySelector('#appnav [data-ansicht="ordner"]').click(); await bis(() => $2('or-beratung')); $2('or-beratung').click();
   check('XSS: Blatt nur als Text, kein Bild, kein Skript ausgeführt', !d2.querySelector('#kbSeite img, #kbSeite script, #kbSeite b') && !w2.boese && $2('kbSeite').textContent.includes('<img'));
+
+  // ---------- SoLo-Datei direkt mit der App öffnen (Dateizuordnung Android/iOS, src/weitergabe.js nativInit) ----------
+  // Nachgestellt: App-Plugin (appUrlOpen, getLaunchUrl) und Filesystem-Plugin. Es muss derselbe Weg wie „Datei öffnen“ laufen (PIN-Abfrage).
+  {
+    const NW = w2.Weitergabe;
+    const merk2 = { m: {}, getItem(k) { return this.m[k] || null; }, setItem(k, v) { this.m[k] = String(v); } }; // wie sessionStorage
+    check('Öffnen-Adressen: Android nur content://, iOS nur file:///….solo',
+      NW.nativErlaubt('content://com.whatsapp.provider.media/item/1', false) && !NW.nativErlaubt('file:///sdcard/x.solo', false) && !NW.nativErlaubt('https://x.de/a.solo', false) &&
+      NW.nativErlaubt('file:///var/mobile/Containers/Data/Application/X/Documents/Inbox/SoLo-Vorgang.solo', true) && !NW.nativErlaubt('file:///etc/passwd', true) &&
+      !NW.nativErlaubt('content://a/b.solo', true) && !NW.nativErlaubt('content://a/b\nc', false) && !NW.nativErlaubt(null, false) && !NW.nativErlaubt('javascript:alert(1)//.solo', true));
+    const dateien = { 'content://p/a': dateiA, 'content://p/kaputt': '<html><script>window.boese=2</script>', 'content://p/gross': 'x' };
+    const log = { gelesen: [], geloescht: [] };
+    const fsFake = {
+      stat: async ({ path }) => { if (path === 'content://p/gross') return { size: W.MAX_DATEI + 1 }; if (!(path in dateien)) throw new Error('fehlt'); return { size: dateien[path].length }; },
+      readFile: async ({ path, encoding, length }) => { log.gelesen.push(path + '|' + encoding); log.laenge = length; if (!(path in dateien)) throw new Error('fehlt'); return { data: dateien[path] }; },
+      deleteFile: async ({ path }) => { log.geloescht.push(path); }
+    };
+    const hoerer = {};
+    const appFake = { addListener: (n, fn) => { hoerer[n] = fn; return Promise.resolve({ remove() {} }); }, getLaunchUrl: async () => ({ url: 'content://p/a' }) };
+    d2.querySelector('#appnav [data-ansicht="start"]').click();
+    await NW.nativInit({ app: appFake, fs: fsFake, ios: false, merker: merk2, zeigen: () => d2.querySelector('#appnav [data-ansicht="ordner"]').click() });
+    check('Android: Start mit .solo-Datei → „Mein Ordner“, PIN-Abfrage der Datei', await bis(() => $2('kwImpPin')) && $2('app').getAttribute('data-ansicht') === 'ordner' && $2('kwImport').open && log.gelesen[0] === 'content://p/a|utf8');
+    // Unabhängige Prüfung 21.11.2026: Die Größe meldet die fremde App (kann fehlen oder falsch sein) → beim Lesen selbst begrenzen
+    check('Android: Lesen auf MAX_DATEI + 1 Byte begrenzt', log.laenge === W.MAX_DATEI + 1);
+    check('iOS: gelöscht wird nur die Kopie im Eingangsordner, nie eine Datei an anderem Ort',
+      NW.nativKopie('file:///var/mobile/Containers/Data/Application/X/Documents/Inbox/SoLo-Vorgang.solo') && NW.nativKopie('file:///private/var/mobile/Containers/Data/Application/X/tmp/com.Sozialleistungslotse-Inbox/a%20b.solo') &&
+      !NW.nativKopie('file:///var/mobile/Containers/Data/Application/X/Documents/a.solo') && !NW.nativKopie('file:///private/var/mobile/Library/Mobile%20Documents/com~apple~CloudDocs/a.solo') &&
+      !NW.nativKopie('file:///var/X/Documents/Inbox/../a.solo') && !NW.nativKopie('file:///var/X/Documents/Inbox/%2e%2e/a.solo') && !NW.nativKopie('file:///var/X/Documents/Inbox/u/a.solo') && !NW.nativKopie('file:///var/X/Documents/Inbox/a.pdf') && !NW.nativKopie('file:///%E0%A4%A/Documents/Inbox/a.solo'));
+    hoerer.appUrlOpen({ url: 'content://p/a' });
+    await new Promise((r) => setTimeout(r, 100));
+    check('Android: dieselbe Datei beim Start doppelt gemeldet → nur einmal gelesen', log.gelesen.length === 1 && !!$2('kwImpPin'));
+    check('Android: nach dem Neuladen meldet getLaunchUrl die alte Datei → nicht noch einmal', (await NW.nativOeffnen('content://p/a', true)) === false && log.gelesen.length === 1);
+    $2('kwImpPin').value = pinA; $2('kwImpPinOk').click();
+    check('Android: richtige PIN → Vorschau (vorhandener Weg)', await bis(() => $2('kwImpTeile')));
+    $2('kwImpAbbr').click();
+    hoerer.appUrlOpen({ url: 'content://p/kaputt' });
+    check('Android: falsche Datei → Hinweis, keine Vorschau, nichts ausgeführt', await bis(() => $2('kwImpMsg').textContent === DE['kw.imp.f.format']) && $2('kwImpBox').hidden && !w2.boese);
+    hoerer.appUrlOpen({ url: 'content://p/gross' });
+    check('Android: zu große Datei → Hinweis, gar nicht gelesen', await bis(() => $2('kwImpMsg').textContent === DE['kw.imp.f.zuGross']) && !log.gelesen.some((x) => x.startsWith('content://p/gross')));
+    hoerer.appUrlOpen({ url: 'content://p/fehlt' });
+    check('Android: Datei nicht lesbar (Leserecht weg) → Hinweis', await bis(() => $2('kwImpMsg').textContent === DE['kw.imp.f.format']));
+    const n0 = log.gelesen.length;
+    hoerer.appUrlOpen({ url: 'https://example.org/a.solo' }); hoerer.appUrlOpen({ url: 'file:///sdcard/a.solo' });
+    await new Promise((r) => setTimeout(r, 100));
+    check('Android: andere Adressen werden nicht gelesen, auf Android wird nichts gelöscht', log.gelesen.length === n0 && log.geloescht.length === 0);
+    check('Kein Dateiname im Sitzungsspeicher (nur Fingerabdruck)', /^\[\["[0-9a-f]+",\d+\]/.test(merk2.getItem('solo.geoeffnet')) && !merk2.getItem('solo.geoeffnet').includes('content'));
+  }
+  {
+    // iOS: Kopie in Documents/Inbox lesen, danach löschen; Reste in Inbox aufräumen (nur .solo)
+    const C = app({}), w3 = C.w, d3 = C.d, $3 = (id) => d3.getElementById(id);
+    const url = 'file:///var/mobile/Containers/Data/Application/X/Documents/Inbox/SoLo-Unterlagen.solo';
+    const log = { gelesen: [], geloescht: [] };
+    const fsFake = {
+      stat: async () => ({ size: dateiOhne.length }),
+      readFile: async ({ path }) => { log.gelesen.push(path); if (log.geloescht.includes(path)) throw new Error('gelöscht'); return { data: dateiOhne }; },
+      deleteFile: async ({ path, directory }) => { log.geloescht.push(directory ? directory + ':' + path : path); },
+      readdir: async () => ({ files: [{ name: 'alt.solo', type: 'file' }, { name: 'brief.pdf', type: 'file' }] })
+    };
+    const appFake = { addListener: () => Promise.resolve({ remove() {} }), getLaunchUrl: async () => ({ url }) };
+    await w3.Weitergabe.nativInit({ app: appFake, fs: fsFake, ios: true, merker: { m: {}, getItem(k) { return this.m[k] || null; }, setItem(k, v) { this.m[k] = String(v); } }, zeigen: () => d3.querySelector('#appnav [data-ansicht="ordner"]').click() });
+    check('iOS: .solo-Datei ohne PIN → gleich die Vorschau', await bis(() => $3('kwImpTeile')) && log.gelesen[0] === url);
+    check('iOS: Kopie nach dem Lesen gelöscht, alter Rest in Inbox gelöscht, andere Dateien bleiben', log.geloescht.includes(url) && log.geloescht.includes('DOCUMENTS:Inbox/alt.solo') && !log.geloescht.some((x) => x.includes('brief.pdf')));
+    // Datei an anderem Ort (kein Eingangsordner): lesen ja, löschen nie; ohne Längenangabe (iOS liest die eigene Kopie)
+    const fremd = 'file:///private/var/mobile/Library/Mobile%20Documents/com~apple~CloudDocs/SoLo-Original.solo';
+    let opt = null; const lesen0 = fsFake.readFile; fsFake.readFile = async (o) => { opt = o; return lesen0(o); };
+    await w3.Weitergabe.nativOeffnen(fremd);
+    check('iOS: Datei außerhalb des Eingangsordners wird gelesen, aber nicht gelöscht', log.gelesen.includes(fremd) && !log.geloescht.includes(fremd) && opt && !('length' in opt));
+    check('Keine Skriptfehler (iOS-Öffnen)', C.errors.length === 0, C.errors.join(' | '));
+  }
   check('Keine Skriptfehler (Klient)', B.errors.length === 0, B.errors.join(' | '));
   console.log(fails ? fails + ' Fehler' : '[weitergabe-dom] alle Prüfungen bestanden');
   process.exit(fails ? 1 : 0);

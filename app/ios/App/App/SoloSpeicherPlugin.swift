@@ -2,13 +2,19 @@ import Foundation
 import Capacitor
 import UIKit
 
-private enum SpeicherFehler: Error { case ort, pruefen }
+private enum SpeicherFehler: Error { case ort, pruefen, gesperrt }
 
 /// Speicher für die Angaben auf iOS, ohne iCloud- und Finder-Sicherung.
 /// Capacitor Preferences speichert in UserDefaults (Library/Preferences); die gehen mit in jede Sicherung.
 /// Dieses Plugin legt die Werte stattdessen in Library/Application Support/SoLo/angaben.json ab:
 /// Ordner und Datei mit isExcludedFromBackup (nicht in iCloud-/Finder-Sicherung, Apple: URLResourceValues.isExcludedFromBackup)
-/// und Datenschutzklasse „bis zum ersten Entsperren“ (wie bisher).
+/// und Datenschutzklasse .complete (FileProtectionType.complete, seit 21.11.2026; vorher „bis zum ersten Entsperren“):
+/// Die Datei ist nur lesbar und schreibbar, solange das Gerät entsperrt ist (etwa 10 Sekunden nach dem Sperren nicht mehr).
+/// Die App schreibt nur im Vordergrund: beim Wechsel in den Hintergrund speichert src/app.js sofort (flush), also vor dem Sperren.
+/// Während das Gerät gesperrt ist, lehnt das Plugin Schreiben ab (JavaScript meldet dann „Speichern nicht möglich“) und liest aus dem
+/// Arbeitsspeicher; ist die Datei noch nicht gelesen, wird wie bisher nichts gelesen und nichts geschrieben, bis sie lesbar ist.
+/// Umstellung vorhandener Dateien: beim nächsten Lesen nach dem Entsperren bekommt die Datei die neue Schutzklasse (setAttributes),
+/// spätestens beim nächsten Schreiben (atomares Schreiben legt sie mit .completeFileProtection neu an).
 /// JavaScript: dieselben Aufrufe wie Preferences (get, set, remove, keys, clear); src/app.js nimmt es statt Preferences, wenn vorhanden.
 /// Übernahme: Beim ersten Start werden alle Werte aus Preferences (UserDefaults, Schlüssel „CapacitorStorage.<key>“) in die Datei
 /// geschrieben, wieder gelesen und verglichen; erst danach aus UserDefaults gelöscht. Klappt das Anlegen oder Schreiben nicht und gibt es
@@ -35,9 +41,32 @@ public class SoloSpeicherPlugin: CAPPlugin, CAPBridgedPlugin {
     private var bereit = false // true: Datei gelesen oder neu angelegt
     private var ohneMerkmal = false // true: Ordner ließ sich nicht von der Sicherung ausnehmen
     private var datei: URL?
+    private var gesperrt = false // true: Gerät gesperrt, Dateien mit Schutzklasse .complete gerade nicht lesbar oder schreibbar
 
     override public func load() {
-        warteschlange.sync { self.vorbereiten() }
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(geschuetztWeg), name: UIApplication.protectedDataWillBecomeUnavailableNotification, object: nil)
+        nc.addObserver(self, selector: #selector(geschuetztDa), name: UIApplication.protectedDataDidBecomeAvailableNotification, object: nil)
+        nc.addObserver(self, selector: #selector(wiederAktiv), name: UIApplication.didBecomeActiveNotification, object: nil)
+        let frei: Bool = Thread.isMainThread ? UIApplication.shared.isProtectedDataAvailable : true
+        warteschlange.sync {
+            self.gesperrt = !frei
+            self.vorbereiten()
+        }
+    }
+
+    @objc private func geschuetztWeg() { warteschlange.async { self.gesperrt = true } }
+    @objc private func geschuetztDa() { warteschlange.async { self.gesperrt = false } }
+    /// App wieder im Vordergrund: Stand neu abfragen (Unabhängige Prüfung 21.11.2026). Wird das Gerät entsperrt, während die App angehalten ist,
+    /// kommt die Meldung „wieder verfügbar“ nicht sicher an; ohne diese Abfrage bliebe gesperrt = true und jedes Speichern würde abgelehnt.
+    @objc private func wiederAktiv() {
+        let frei: Bool = Thread.isMainThread ? UIApplication.shared.isProtectedDataAvailable : true
+        warteschlange.async { self.gesperrt = !frei }
+    }
+
+    /// Schutzklasse .complete nachträglich setzen (Dateien aus der Zeit vor dem 21.11.2026)
+    private static func schutzSetzen(_ url: URL) {
+        try? FileManager.default.setAttributes([.protectionKey: FileProtectionType.complete], ofItemAtPath: url.path)
     }
 
     private static func ausSicherung(_ url: URL) throws {
@@ -55,6 +84,8 @@ public class SoloSpeicherPlugin: CAPPlugin, CAPBridgedPlugin {
     ///              Lesen und Schreiben werden abgelehnt, bis sie lesbar ist. So überschreibt ein leerer Start nie vorhandene Angaben.
     private func vorbereiten() {
         if bereit || ausweich { return }
+        // Gerät gesperrt: nichts entscheiden (sonst würde ein erstes Anlegen scheitern und dauerhaft auf UserDefaults ausgewichen)
+        if gesperrt { return }
         let fm = FileManager.default
         guard let basis = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else { ausweich = true; return }
         let ordner = basis.appendingPathComponent("SoLo", isDirectory: true)
@@ -83,11 +114,13 @@ public class SoloSpeicherPlugin: CAPPlugin, CAPBridgedPlugin {
             do { data = try Data(contentsOf: url) } catch { return } // gerade nicht lesbar: später erneut, bis dahin nichts schreiben
             if let d = (try? JSONSerialization.jsonObject(with: data, options: [])) as? [String: String] {
                 geladen = d
+                SoloSpeicherPlugin.schutzSetzen(url) // Umstellung auf .complete ohne auf das nächste Schreiben zu warten
             } else {
                 // Inhalt beschädigt: Datei nicht überschreiben, sondern daneben aufheben (gleicher Ordner, ohne Sicherung) und leer beginnen
                 let defekt = url.deletingLastPathComponent().appendingPathComponent("angaben-defekt.json", isDirectory: false)
                 try? fm.removeItem(at: defekt)
                 do { try fm.moveItem(at: url, to: defekt) } catch { return }
+                SoloSpeicherPlugin.schutzSetzen(defekt)
                 gab = false
             }
         }
@@ -126,8 +159,9 @@ public class SoloSpeicherPlugin: CAPPlugin, CAPBridgedPlugin {
 
     private func schreiben() throws {
         guard let url = datei else { throw SpeicherFehler.ort }
+        if gesperrt { throw SpeicherFehler.gesperrt } // Schreiben bei gesperrtem Gerät klappt mit .complete nicht: sauber ablehnen
         let data = try JSONSerialization.data(withJSONObject: werte, options: [])
-        try data.write(to: url, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+        try data.write(to: url, options: [.atomic, .completeFileProtection])
         try SoloSpeicherPlugin.ausSicherung(url) // atomares Schreiben legt eine neue Datei an: Merkmal neu setzen
     }
 

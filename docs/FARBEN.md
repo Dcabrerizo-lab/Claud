@@ -48,7 +48,7 @@ Die Absender-Kacheln sind seit 20.11.2026 weiße Unterkacheln mit Ziegel-Symbol 
 | Keine Angabe, Info | `--na` / `--na-bg` |
 | Tipp, persönlicher Hinweis, Beratungsmodus (ruhiges Schiefer-Blau, kein Rot) | `--hint` / `--hint-bg`, Randbalken `--hint-rand` |
 | Vom Brief erkanntes Feld | `--mark-bg`, `--mark-line`, `--mark-ink` |
-| Antragsmappe (Papier bleibt weiß) | `--papier`, `--papier-ink`, `--papier-ink2`, `--papier-link` |
+| Antragsmappe (Papier bleibt weiß) | `--papier`, `--papier-ink`, `--papier-ink2`, `--papier-link`, `--papier-accent` (= `--accent` hell, #0f6b5c) |
 | Fokusrahmen (Tiefblau #16224f, dunkel Weiß; nur für den Fokus) | `--focus` |
 | Feldrand, Kante, Dialog-Hintergrund | `--field`, `--kante`, `--overlay` |
 

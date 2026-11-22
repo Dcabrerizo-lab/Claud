@@ -161,5 +161,121 @@ for (let fall = 0; fall < 600; fall++) {
 }
 ok('Eigenschaftstest hat Kombinationen geprüft', kombis > 300 && geprueft > 50, { kombis, geprueft });
 
+// 7. Vergleich alt gegen neu: die beschleunigte Grenzfall-Suche (hebel) liefert exakt dasselbe wie die bisherige Fassung.
+//    Referenz = die alte Umsetzung (Stand vor der Beschleunigung), hier unverändert abgeschrieben; Eingaben zufällig, auch Säuglinge, Kinder, Modul 5.
+const REF = (() => {
+  const { KRITERIEN: K, SKALA, ANLAGE2, bereich } = P;
+  const r2 = (x) => Math.round(x * 100) / 100;
+  function stufenFuer(m, g, mehr) {
+    if (mehr <= 0) return { schritte: 0, wege: [] };
+    const st = g.stufen || {};
+    const opts = [];
+    for (const k of K) {
+      if (k.m !== m) continue;
+      if (k.ink && !(g.inkontinenz && g.inkontinenz[k.ink])) continue;
+      if (k.s === 'sonde') continue;
+      const sk = SKALA[k.s];
+      const jetzt = Math.max(0, Math.round(+st[k.id] || 0));
+      const wahl = [];
+      for (let z = jetzt + 1; z < sk.punkte.length; z++) wahl.push({ k, nach: z, schritte: z - jetzt, plus: (sk.punkte[z] - sk.punkte[jetzt]) * (k.faktor || 1) });
+      if (wahl.length) opts.push(wahl);
+    }
+    let dp = new Array(mehr + 1).fill(null); dp[0] = { s: 0, w: [] };
+    for (const wahl of opts) {
+      const neu = dp.slice();
+      for (let p = 0; p <= mehr; p++) {
+        if (!dp[p]) continue;
+        for (const o of wahl) {
+          const q = Math.min(mehr, p + o.plus), s = dp[p].s + o.schritte;
+          if (!neu[q] || s < neu[q].s) neu[q] = { s, w: dp[p].w.concat([{ id: o.k.id, nach: o.nach, schritte: o.schritte, plus: o.plus }]) };
+        }
+      }
+      dp = neu;
+    }
+    return dp[mehr] ? { schritte: dp[mehr].s, wege: dp[mehr].w } : null;
+  }
+  return function hebel(g, res) {
+    if (res.fehltBisNaechster == null) return { moeglich: false, optionen: [] };
+    const proModul = {};
+    for (const m of [1, 2, 3, 4, 6]) {
+      const mo = res.module[m];
+      const liste = [{ gewinn: 0, schritte: 0, wege: [], bereich: mo.bereich }];
+      for (let b = mo.bereich + 1; b <= 4; b++) {
+        const noetig = ANLAGE2[m].bis[b - 1] + 1 - mo.summe;
+        const f = stufenFuer(m, g, noetig);
+        if (!f) break;
+        liste.push({ gewinn: ANLAGE2[m].gew[b] - mo.gewichtet, schritte: f.schritte, wege: f.wege, bereich: b });
+      }
+      proModul[m] = liste;
+    }
+    const t = res.module[5].teile;
+    const m5opts = [{ gewinn: 0, schritte: 0, wege: [], bereich: res.module[5].bereich }];
+    const naechst = { a: t.a < 3 ? t.a + 1 : null, b: t.b < 3 ? t.b + 1 : null, c: t.c < 3 ? t.c + 1 : t.c === 3 ? 6 : null, d: t.d < 3 ? t.d + 1 : null };
+    const teilWege = [];
+    for (const key of ['a', 'b', 'c', 'd']) if (naechst[key] != null) teilWege.push({ teil: key, plus: naechst[key] - t[key] });
+    for (let mask = 1; mask < 1 << teilWege.length; mask++) {
+      let plus = 0, schritte = 0; const w = [];
+      teilWege.forEach((tw, i) => { if (mask & (1 << i)) { plus += tw.plus; schritte++; w.push({ id: 'M5' + tw.teil, plus: tw.plus }); } });
+      const summe = res.module[5].summe + plus, b = bereich(5, summe);
+      const gewinn = ANLAGE2[5].gew[b] - res.module[5].gewichtet;
+      if (gewinn > 0) m5opts.push({ gewinn, schritte, wege: w, bereich: b });
+    }
+    proModul[5] = m5opts;
+    const ziel = res.fehltBisNaechster;
+    const best = [];
+    const ms = [1, 2, 3, 4, 5, 6];
+    const rek = (i, wahl) => {
+      if (i === ms.length) {
+        const w2 = res.module[2].gewichtet + wahl[2].gewinn, w3 = res.module[3].gewichtet + wahl[3].gewinn;
+        const gewinn = wahl[1].gewinn + (Math.max(w2, w3) - res.m23) + wahl[4].gewinn + wahl[5].gewinn + wahl[6].gewinn;
+        const schritte = ms.reduce((s, m) => s + wahl[m].schritte, 0);
+        if (schritte > 0 && gewinn >= ziel - 1e-9) best.push({ schritte, gewinn: r2(gewinn), wege: ms.flatMap((m) => wahl[m].wege.map((x) => Object.assign({ modul: m }, x))) });
+        return;
+      }
+      for (const o of proModul[ms[i]]) { wahl[ms[i]] = o; rek(i + 1, wahl); }
+    };
+    rek(0, {});
+    best.sort((x, y) => x.schritte - y.schritte || y.gewinn - x.gewinn);
+    const out = [];
+    const teile = (x) => new Set(x.wege.map((w) => w.id + '>' + (w.nach != null ? w.nach : w.plus)));
+    for (const b of best) {
+      if (out.length >= 5) break;
+      const tb = teile(b);
+      if (out.some((o) => [...teile(o)].every((x) => tb.has(x)))) continue;
+      out.push(b);
+    }
+    return { moeglich: out.length > 0, minSchritte: out.length ? out[0].schritte : null, optionen: out };
+  };
+})();
+{
+  let rv = 4242; const z = () => (rv = (rv * 1103515245 + 12345) % 2147483648) / 2147483648;
+  let verglichen = 0, mitOptionen = 0, tAlt = 0, tNeu = 0;
+  for (let fall = 0; fall < 300; fall++) {
+    const dichte = [0.1, 0.4, 0.7, 1][fall % 4], hoch = fall % 3 === 0 ? 2 : 4; // auch fast leere und niedrige Gutachten (viele Möglichkeiten)
+    const stufen = {};
+    for (const k of P.KRITERIEN) if (z() < dichte) stufen[k.id] = Math.floor(z() * Math.min(hoch, P.SKALA[k.s].punkte.length));
+    const teile = { a: Math.floor(z() * 4), b: Math.floor(z() * 4), c: [0, 1, 2, 3, 6][Math.floor(z() * 5)], d: Math.floor(z() * 4) };
+    const mm = {}; for (const t of 'abcd') M5SET[t](teile[t], mm);
+    if (z() < 0.2) mm['5.K'] = { woche: Math.floor(z() * 3) };
+    const g = { stufen, m5: mm, inkontinenz: { harn: z() < 0.5, stuhl: z() < 0.3 } };
+    const art = fall % 10;
+    if (art === 1) g.alterMonate = Math.floor(z() * 18); // Säugling
+    else if (art === 2) g.alterJahre = 1 + Math.floor(z() * 16); // Kind
+    else if (art === 3) g.alterJahre = 40 + Math.floor(z() * 50);
+    if (art === 1 && z() < 0.5) g.k4K = true;
+    if (fall === 7) g.bedarfskonstellation = true;
+    let a = process.hrtime.bigint();
+    const r = P.rechne(g);
+    tNeu += Number(process.hrtime.bigint() - a);
+    a = process.hrtime.bigint();
+    const alt = REF(g, r);
+    tAlt += Number(process.hrtime.bigint() - a);
+    verglichen++; if (alt.optionen.length) mitOptionen++;
+    ok(`Vergleich alt/neu Fall ${fall}`, JSON.stringify(r.hebel) === JSON.stringify(alt), { neu: r.hebel, alt });
+  }
+  ok('Vergleich alt/neu: genug Fälle mit Vorschlägen', verglichen === 300 && mitOptionen > 150, { verglichen, mitOptionen });
+  console.log(`Grenzfall-Suche alt gegen neu: ${verglichen} Fälle gleich (${mitOptionen} mit Vorschlägen); Zeit alt ${(tAlt / 1e6).toFixed(0)} ms, neu (ganze Rechnung) ${(tNeu / 1e6).toFixed(0)} ms`);
+}
+
 console.log(f ? `\n${f} von ${n} Prüfungen fehlgeschlagen` : `Pflegegutachten-Check: alle ${n} Prüfungen bestanden (${kombis} Grenzfall-Kombinationen nachgerechnet, ${geprueft} auf Minimalität geprüft)`);
 process.exit(f ? 1 : 0);

@@ -25,8 +25,8 @@ const check = (n, c, x) => { if (!c) { fails++; console.log('FAIL', n, x || '');
 const fire = (el, type) => el.dispatchEvent(new w.Event(type, { bubbles: true }));
 const setLang = (c) => { const s = $('lang'); s.value = c; fire(s, 'change'); };
 const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
-const NEU = ['nav.ordner', 'vg.liste.h', 'vg.plus', 'vg.plusWeiter', 'vg.anlegen', 'vg.neu.t', 'vg.bearbeiten', 'vg.fertig', 'vg.zuSicher', 'karte.mappe', 'ordner.ergebnis', 'ordner.mappe', 'ordner.mappe.n', 'ordner.ausziehen', 'ordner.ausziehen.n', 'ordner.pflege', 'ordner.pfaendung', 'set.sicher.h', 'set.sicher.t', 'set.an', 'set.aus', 'set.thema', 'set.thema.auto', 'set.thema.hell', 'set.thema.dunkel', 'set.loeschen.h', 'l.eins', 'l.alle', 'l.ja', 'set.fach.h', 'set.beratung.label', 'set.beratung.t', 'recht.label', 'haken.hint', ,
-  'eb.btn', 'eb.h', 'eb.intro', 'eb.kuerzel', 'eb.titel', 'eb.datum', 'eb.kuerzelZeile', 'eb.col.leistung', 'eb.col.einstufung', 'eb.col.betrag', 'eb.col.stelle', 'eb.col.schritt', 'eb.hinweis'];
+const NEU = ['nav.ordner', 'vg.liste.h', 'vg.plus', 'vg.plusWeiter', 'vg.anlegen', 'vg.neu.t', 'vg.bearbeiten', 'vg.fertig', 'vg.zuSicher', 'akt.antrag', 'ordner.ergebnis', 'ordner.mappe', 'ordner.mappe.n', 'ordner.ausziehen', 'ordner.ausziehen.n', 'ordner.pflege', 'ordner.pfaendung', 'set.sicher.h', 'set.sicher.t', 'set.an', 'set.aus', 'set.thema', 'set.thema.auto', 'set.thema.hell', 'set.thema.dunkel', 'set.loeschen.h', 'l.eins', 'l.alle', 'l.ja', 'set.fach.h', 'set.beratung.label', 'set.beratung.t', 'recht.label',
+  'akt.drucken', 'akt.ergDrucken', 'eb.h', 'eb.intro', 'eb.kuerzel', 'eb.titel', 'eb.datum', 'eb.kuerzelZeile', 'eb.col.leistung', 'eb.col.einstufung', 'eb.col.betrag', 'eb.col.stelle', 'eb.col.schritt', 'eb.hinweis'];
 
 // ---------- Hilfsfunktionen in fmt.js ----------
 check('ohnePara: Paragraf in Klammern weg, Satzzeichen bleibt', Fmt.ohnePara('Überprüfungsantrag (§ 44 SGB X); rückwirkend') === 'Überprüfungsantrag; rückwirkend' && Fmt.ohnePara('mitgenommen (§ 899 ZPO).') === 'mitgenommen.');
@@ -71,15 +71,20 @@ $('es-anzeige').querySelector('.us-zurueck').click();
 check('„← Zurück“ führt zur Liste, Fokus auf der Zeile', !$('einstListe').hidden && $('es-anzeige').hidden && d.activeElement === zeilenE[0]);
 zeilenE[1].click();
 check('Sicherheit und Daten: zwei Löschen-Zeilen (nur dieser Vorgang, alles auf dem Gerät)', /löschen/.test($('clear2').querySelector('b').textContent) && $('vgAlle').querySelector('b').textContent === I18N.de['l.alle'] && $('loeschListe').children.length === 2);
+$('vgAlle').click();
+check('Löschen-Rückfrage wiederholt den Text der Zeile nicht', !!$('loeschFrage') && !$('loeschFrage').textContent.includes($('vgAlle').querySelector('.zeile-st').textContent));
+$('loeschNein').click();
+check('„So rechnet der Check“: je Leistung ein Aufklapper statt einer langen Tabelle', d.querySelectorAll('#es-about .regel-liste details').length > 10 && !d.querySelector('#es-about .rules table'));
+check('„Mehr dazu“ sagt, worum es geht (PIN)', /PIN/.test(d.querySelector('#setSicher .set-mehr summary').textContent));
 d.querySelector('#appnav [data-ansicht="einst"]').click();
 check('Leiste „Einstellungen“ führt aus der Unterseite zur Liste', !$('einstListe').hidden && $('es-sicher').hidden);
 zeilenE[2].click();
 check('Beratungsmodus: Schalter standardmäßig aus', $('beratungBtn').getAttribute('aria-checked') === 'false' && $('beratungBtn').getAttribute('role') === 'switch' && $('beratungBtn').querySelector('.schalter-t').textContent === 'Beratungsmodus' && $('beratungT').textContent === I18N.de['set.beratung.t']);
 d.querySelector('#appnav [data-ansicht="start"]').click(); $('goLeistungen').click();
 check('Startkachel Leistungen: Leiste markiert Start', navAkt() === 'start' && !$('v-leistungen').hidden);
-check('[hilfen-aufraeumen] Kurzer Check als Wahl oben im Leistungs-Check (Wahl-Karte oder Leiste über „Deine Angaben“), nicht am Formularende', $('einfachBtn') && $('einfachBtn').closest('#schritte') && $('einfachBtn').textContent.trim() === I18N.de['einfach.btn'] && !$('cols').contains($('einfachBtn')));
+check('[hilfen-aufraeumen] Kurzer Check als Wahl oben im Leistungs-Check (Wahl-Karte oder Leiste über „Deine Angaben“), nicht am Formularende', $('einfachBtn') && $('einfachBtn').closest('#schritte') && $('einfachBtn').textContent.trim().startsWith(I18N.de['einfach.btn']) && !$('cols').contains($('einfachBtn')));
 check('Schlüssel einfach.vor in keiner Sprache mehr', LANGS.every((l) => !I18N[l] || !('einfach.vor' in I18N[l])));
-check('Vor dem ersten Ergebnis kein Knopf „Ergebnis mitgeben“', $('ebOpen').hidden === true);
+check('Vor dem ersten Ergebnis kein Knopf „Drucken oder teilen“', !$('ebOpen'));
 
 // ---------- Laienansicht ----------
 $('p1').click();
@@ -87,7 +92,7 @@ const passend = () => [...d.querySelectorAll('#cards article.card')].filter((a) 
 const gut = () => d.querySelector('#gutWissen') ? d.querySelector('#gutWissen').textContent : '';
 check('Laienansicht: keine Rechtsgrundlage in den Karten', d.querySelectorAll('#cards .recht').length === 0);
 check('Laienansicht: keine Paragrafen in Karten und „Gut zu wissen“ (z. B. § 44 SGB X)', !/§/.test(d.getElementById('cards').textContent) && /Überprüfungsantrag/.test(gut()), gut().slice(0, 200));
-check('Knopf „Ergebnis mitgeben / drucken“ direkt unter dem Ergebniszähler', !$('ebOpen').hidden && $('ebOpen').textContent === I18N.de['eb.btn'] && $('ebOpen').closest('.summary') === $('count').closest('.summary'));
+check('Knopf „Drucken oder teilen“ (Ergebnisblatt) direkt unter dem Hauptknopf „Antrag vorbereiten“ (UX-Prüfung 21.11.2026, Nr. 8)', !!$('ebOpen') && $('ebOpen').textContent === I18N.de['akt.ergDrucken'] && I18N.de['akt.ergDrucken'] === 'Ergebnis drucken oder teilen' && $('ebOpen').previousElementSibling === $('mappeMake'));
 
 // ---------- Beratungsmodus an ----------
 $('beratungBtn').click();
@@ -103,7 +108,7 @@ const seite = () => $('ebSeite');
 const zeilen = () => [...seite().querySelectorAll('tbody tr')];
 check('Ergebnisblatt öffnet sich und ersetzt die Seite', !$('ergBlatt').hidden && $('app').classList.contains('pm'));
 check('Ergebnisblatt: Spalten Leistung – Einstufung – ungefährer Betrag – Stelle – nächster Schritt', [...seite().querySelectorAll('thead th')].map((x) => x.textContent).join('|') === 'Leistung|Einstufung|Ungefährer Betrag|Stelle|Nächster Schritt');
-check('Ergebnisblatt: eine Zeile je passender Leistung, gleiche Einstufung wie die Karte', zeilen().length === passend().length && zeilen().every((tr, i) => tr.querySelector('.pill').textContent === passend()[i].querySelector('.pill').textContent), zeilen().length + ' vs ' + passend().length);
+check('Ergebnisblatt: eine Zeile je passender Leistung, gleiche Einstufung wie die Karte', zeilen().length === passend().length && zeilen().every((tr) => tr.querySelector('.pill').textContent === passend().find((a) => tr.querySelector('th').textContent.indexOf(a.querySelector('h3').textContent) === 0).querySelector('.pill').textContent), zeilen().length + ' vs ' + passend().length);
 const kgZeile = zeilen().find((tr) => /Kindergeld/.test(tr.querySelector('th').textContent));
 check('Ergebnisblatt: Betrag mit denselben Wörtern wie auf der Karte', !!kgZeile && d.querySelector('#c-kindergeld .kern').textContent.indexOf(kgZeile.children[2].textContent) >= 0, kgZeile && kgZeile.children[2].textContent);
 check('Ergebnisblatt: nächster Schritt = „Wo beantragen?“ der Karte', !!kgZeile && kgZeile.children[4].textContent === I18N.de['s.kindergeld.wo']);
@@ -126,30 +131,32 @@ check('Beratungsmodus wieder aus: Paragrafen weg', !/§/.test(d.getElementById('
 
 // ---------- Unterlagen-Checkliste (ersetzt die Listen in Karte und Mappe) ----------
 const wgHaken = () => [...d.querySelectorAll('#c-wohngeld input[data-haken]')];
-check('[karte-mappe] Karte: keine Unterlagen und nächsten Schritte, nur der Hinweis auf die Antragsmappe', wgHaken().length === 0 && !d.querySelector('#c-wohngeld .haken-liste') && d.querySelector('#c-wohngeld .karte-mappe').textContent === I18N.de['karte.mappe']);
+check('[karte-mappe] Karte: keine Unterlagen und nächsten Schritte, dafür der Knopf „Antrag vorbereiten“ (Antragsmappe)', wgHaken().length === 0 && !d.querySelector('#c-wohngeld .haken-liste') && d.querySelector('#c-wohngeld [data-antrag="wohngeld"]').textContent === I18N.de['akt.antrag']);
+// Wohngeld (als Haken oder als Weg „Wohngeld und Kinderzuschlag“) und Unterhaltsvorschuss wählen
 [...d.querySelectorAll('[data-pick]')].forEach((cb) => { cb.checked = ['wohngeld', 'uvg'].includes(cb.getAttribute('data-pick')); fire(cb, 'change'); });
+{ const ra = d.querySelector('#pick input[data-weg][value="a"]'); if (ra) { ra.checked = true; fire(ra, 'change'); } }
 $('p-geb').value = '1.2.1985'; fire($('p-geb'), 'input'); fire($('p-geb'), 'change');
 check('Geburtsdatum wird beim Verlassen des Feldes einheitlich formatiert', $('p-geb').value === '01.02.1985');
 $('mappeMake').click();
-const mh = () => [...d.querySelectorAll('#m-unterlagen input[data-haken="wohngeld|s.wohngeld.u1"]')];
-check('[karte-mappe] Mappe: Checkliste mit Haken, Stelle und Tipp je Leistung', mh().length === 1 && !mh()[0].checked && d.querySelectorAll('#m-unterlagen .haken-liste').length === 2 && $('m-unterlagen').textContent.includes(I18N.de['s.wohngeld.wo']) && $('m-unterlagen').textContent.includes(I18N.de['steps.note']));
+// Unterlagen: eine Liste ohne Doppelungen; Haken je Sache (u|…), alte Haken (id|Schlüssel) zählen weiter
+const mh = () => [...d.querySelectorAll('#aufUnterlagen input[data-haken^="u|"]')];
+check('[karte-mappe] Mappe: Unterlagen zum Abhaken, Hinweis „genaue Liste nennt die Stelle“', mh().length >= 3 && mh().every((c) => !c.checked) && $('aufUnterlagen').textContent.includes(I18N.de['steps.note']));
 mh()[0].checked = true; fire(mh()[0], 'change');
-check('Haken in der Mappe wird auf dem Gerät gespeichert', JSON.parse(store['lotse.haken'] || '{}')['wohngeld|s.wohngeld.u1'] === true);
+check('Haken in der Mappe wird auf dem Gerät gespeichert', JSON.parse(store['lotse.haken'] || '{}')[mh()[0].getAttribute('data-haken')] === true);
+check('Druck/PDF: Unterlagenliste mit Stelle und Tipp je Leistung', $('m-unterlagen').textContent.includes(I18N.de['s.uvg.wo']) && $('m-unterlagen').textContent.includes(I18N.de['s.uvg.tip']));
 
-// ---------- Antragsmappe: Übersicht, Drucken am Ende, Geburtsdatum ----------
-// Mappe (Vorgabe David 20.11.2026): kein Inhaltsverzeichnis, ein Hauptknopf, Formulare direkt nach den Briefen
-check('Mappe: kein Inhaltsverzeichnis mehr (die Aufgabenliste ist das Verzeichnis)', !d.querySelector('#mappeBody .mappe-inhalt') && !!d.querySelector('#mappeBody .aufgaben'));
-check('Mappe: oben ein Hauptknopf, Kopieren und Teilen unter „Weitere Möglichkeiten“', !$('mappePrint').closest('details') && $('mappeCopy').closest('details.mappe-mehr') && $('mappeShare').closest('details.mappe-mehr') && $('mappeDruck').closest('details.mappe-mehr'));
-{ const teile = [...d.querySelectorAll('#mappeBody > .page')].map((p) => p.id); const f = teile.indexOf('m-formulare');
-  check('Mappe: amtliche Formulare direkt nach den Briefen', f < 0 || teile.slice(0, f).every((x) => /^m-brief-/.test(x)), teile.join(', ')); }
-gedruckt = 0; $('mappePrint2').click();
-check('Mappe: „Drucken“ auch am Ende', !!$('mappePrint2') && $('mappePrint2').textContent === I18N.de['f.print'] && gedruckt === 1 && $('mappePrint2').closest('#mappe') && $('mappePrint2').closest('.no-print'));
+// ---------- Antragsmappe: Aufgabenliste, ein Ausgabe-Knopf, Geburtsdatum ----------
+check('Mappe: kein Inhaltsverzeichnis (die Aufgabenliste ist das Verzeichnis)', !d.querySelector('#mappe .mappe-inhalt') && !!d.querySelector('#mappe .aufgaben') && !d.querySelector('[data-sprung]'));
+check('Mappe: ein Hauptknopf „Drucken oder teilen“ im letzten Schritt; Kopieren und Teilen unter „Weitere Möglichkeiten“', !$('mappePrint').closest('details.mappe-mehr') && !!$('mappePrint').closest('#auf-abschicken') && $('mappeCopy').closest('details.mappe-mehr') && $('mappeShare').closest('details.mappe-mehr') && $('mappeDruck').closest('details.mappe-mehr') && !$('mappePrint2'));
+gedruckt = 0; $('mappePrint').click();
+check('Mappe: „Drucken oder teilen“ druckt (Web)', gedruckt === 1);
 check('Angabenblatt: Geburtsdatum TT.MM.JJJJ', /Geburtsdatum: 01\.02\.1985/.test($('m-angaben').textContent));
 {
   // Altes Format im Speicher (z. B. „1985-02-01“): im Angabenblatt trotzdem einheitlich
   $('p-geb').value = '1985-02-01'; fire($('p-geb'), 'input'); setLang('de');
   check('Angabenblatt: Geburtsdatum aus ISO-Schreibweise wird TT.MM.JJJJ', /Geburtsdatum: 01\.02\.1985/.test($('m-angaben').textContent));
 }
+const nGew = d.querySelectorAll('#aufAntraege .ant-zeile').length;
 $('mappeClose').click();
 // ---------- Mein Ordner ----------
 d.querySelector('#appnav [data-ansicht="ordner"]').click();
@@ -159,8 +166,10 @@ d.querySelector('#appnav [data-ansicht="ordner"]').click();
 const orZ = () => [...d.querySelectorAll('#ordnerKarten .zeile')].map((b) => b.id);
 check('Mein Ordner: Leiste markiert Mein Ordner, kein Kopftext', navAkt() === 'ordner' && !$('v-ordner').hidden && w.getComputedStyle(d.querySelector('header.top')).position === 'absolute');
 check('[navigation] Mein Ordner: Vorgänge oben, ohne Kopfzeile „Geöffnet“ und ohne „Wechseln“', !$('ordnerKopf') && $('setHaushalte').compareDocumentPosition($('ordnerKarten')) === 4);
-check('Mein Ordner: letztes Ergebnis mit Zähler und Antragsmappe mit Auswahl', orZ()[0] === 'or-ergebnis' && /wahrscheinlich|möglich/.test($('or-ergebnis').textContent) && /Ausgewählt: 2/.test(($('or-mappe') || {}).textContent || ''), orZ().join());
-check('Mein Ordner: keine Fristen, kein leerer Bereich (Pflege, Pfändung ohne Angaben)', !$('or-fristen') && !/Frist/.test($('ordnerHaupt').textContent) && !$('or-pflege') && !$('or-pfaendung'));
+check('Mein Ordner: letztes Ergebnis mit Zähler und Antragsmappe mit Auswahl', orZ()[0] === 'or-ergebnis' && /wahrscheinlich|möglich/.test($('or-ergebnis').textContent) && new RegExp('Ausgewählt: ' + nGew).test(($('or-mappe') || {}).textContent || ''), orZ().join());
+check('Mein Ordner: keine Fristen-Karte, kein leerer Bereich (Pflege, Pfändung ohne Angaben)', !$('or-fristen') && !/Frist/.test($('ordnerKarten').textContent) && !$('or-pflege') && !$('or-pfaendung'));
+check('Mein Ordner: „Frist eintragen“ immer erreichbar (ohne Platzhalter-Karte), öffnet die eigene Frist', !!$('orFristNeu') && $('orFristNeu').textContent === I18N.de['or.fristNeu'] && (($('orFristNeu').click(), !$('ordnerFristen').hidden && !!d.querySelector('#friListe .fri-eigen[open]'))));
+d.querySelector('#appnav [data-ansicht="ordner"]').click();
 $('or-ergebnis').click();
 check('Sprung zum Ergebnis: Leistungen offen, Leiste markiert Mein Ordner (Herkunft)', !$('v-leistungen').hidden && navAkt() === 'ordner');
 d.querySelector('#appnav [data-ansicht="ordner"]').click();

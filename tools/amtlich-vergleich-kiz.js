@@ -7,7 +7,15 @@
 //   node tools/amtlich-vergleich-kiz.js faelle <N>                 zeigt die Fälle (fester Startwert, immer gleich)
 //   node tools/amtlich-vergleich-kiz.js abfragen <N> <Ausgabe.json> fragt den KiZ-Lotsen ab (nur auf GitHub, braucht Internet)
 //   node tools/amtlich-vergleich-kiz.js auswerten <Ergebnis.json>   rechnet dieselben Fälle mit SoLo und listet Abweichungen
+//   node tools/amtlich-vergleich-kiz.js gegenprobe <Nr,Nr,…> <Ausgabe.json>  nur feste Fälle, je Fall mit Unterhalt, ohne Unterhalt und
+//                                                                   mit hohem Unterhalt (1.000 € je Kind): prüft, ob der Lotse Einkommen der Kinder einrechnet
 // Höflich: mindestens 2,5 s Pause zwischen den Abfragen, höchstens 400 Abfragen je Lauf.
+// Zeit: eine Abfrage dauert etwa 24 s (Lauf 1: 300 Abfragen in 120 min, Job-Zeitlimit im Workflow 120 min, ca. 8 min für Einrichtung).
+// Der Lauf hört nach ZEIT_MIN Minuten (Standard 105, also etwa 260 Abfragen) von selbst auf und speichert, damit Auswertung und Artefakt
+// immer noch laufen. Gegenproben kommen direkt nach ihrer Familie, nicht erst am Ende: auch ein gekürzter Lauf hat vollständige Paare.
+// Feste Fallliste ohne Änderung am Workflow: Steht in tools/amtliche-rechner/kiz-vergleich-auftrag.txt eine Zeile „gegenprobe: 60,145,…“,
+// fragt ein push-Lauf (Änderung der Auftragsdatei) nur diese Familien ab (je mit, ohne und mit 1.000 € Unterhalt je Kind, höchstens 13 Familien).
+// Ein Lauf von Hand (workflow_dispatch) beachtet die Zeile nicht.
 'use strict';
 /* global document */
 const fs = require('fs');
@@ -41,8 +49,13 @@ function faelle(N) {
     out.push({ alter, partner, brutto, netto, pBrutto, pNetto, uh, kalt, neben, heiz, miete: kalt + neben + heiz, vermoegen: z10(rnd() * 8000) });
   }
   // Gegenprobe: dieselbe Familie mit und ohne Unterhalt (prüft, ob der Lotse Einkommen der Kinder berücksichtigt)
-  const paare = out.map((f, i) => [f, i]).filter(([f]) => f.uh > 0).slice(0, 40).map(([f, i]) => Object.assign({}, f, { uh: 0, gegenprobeZu: i }));
-  return out.concat(paare);
+  // Die Gegenprobe folgt direkt auf ihre Familie, damit auch ein abgebrochener Lauf vollständige Paare hat.
+  const liste = []; let paare = 0;
+  for (const f of out) {
+    liste.push(f);
+    if (f.uh > 0 && paare < 40) { paare++; liste.push(Object.assign({}, f, { uh: 0, gegenprobeZu: liste.length - 1 })); }
+  }
+  return liste;
 }
 
 // ---------- SoLo-Seite ----------
@@ -53,7 +66,9 @@ function solo(f) {
     unterhalt: f.uh * nk, miete: f.miete, heizkosten: f.heiz, mietstufe: '3', vermoegen: f.vermoegen, gebJahr: 1988, bezug: { kindergeld: true }, heute: HEUTE };
   if (!f.partner && f.uh > 0) inp.unterhaltFehlt = false;
   const k = R.evaluate(inp).results.find((r) => r.id === 'kiz');
-  const sch = k.tx.find((t) => t[0] === 'schaetz.eins');
+  // Schätzung als Betrag oder (Alter der Kinder nur grob bekannt) als Spanne: { eur } bzw. { eur: unten, bis: oben }
+  const t = k.tx.find((x) => x[0] === 'schaetz.eins' || x[0] === 'schaetz.spanne');
+  const sch = t ? [t[0], { a: t[0] === 'schaetz.eins' ? t[1].a : { eur: t[1].a.eur, bis: t[1].b.eur } }] : null;
   const eltern = [{ brutto: f.brutto, netto: f.netto }]; if (f.partner) eltern.push(f.pBrutto ? { brutto: f.pBrutto, netto: f.pNetto } : {});
   const b = K.rechne({ eltern, kinder: f.alter.map((a) => ({ alter: a, unterhalt: f.uh })), wohnkosten: f.miete }, R);
   return { level: k.level, hl: k.hl, schaetzung: sch ? sch[1].a : null, bescheidKiz: b.kiz, bedarfEltern: b.bedarf, einkEltern: b.einkEltern };
@@ -93,57 +108,105 @@ const einstufen = (t) => {
 };
 const grund = (t) => (/Mindesteinkommen/.test(t) ? 'Mindesteinkommen' : /Hilfebedürftigkeit|nicht vermieden/.test(t) ? 'Hilfebedürftigkeit bleibt' : /zu hoch|übersteigt|Höchsteinkommen/.test(t) ? 'Einkommen zu hoch' : /Aussicht/.test(t) ? '' : 'anderer');
 
-async function abfragen(N, OUT) {
+// Feste Fallliste für die Gegenprobe: je Fall mit dem Unterhalt aus dem Zufallslauf, ohne Unterhalt und mit 1.000 € je Kind.
+// Nummer = Nummer der Familie (ohne eingeschobene Gegenproben), wie in Lauf 1 (kiz-lotse.json vom 21.11.2026, Feld i).
+const GP_HOCH = 1000;
+function gegenprobeFaelle(nummern) {
+  const basis = faelle(Math.max(...nummern) + 1).filter((f) => f.gegenprobeZu === undefined);
+  const out = [];
+  for (const n of nummern) {
+    const f = basis[n];
+    out.push(Object.assign({}, f, { fall: n, variante: 'mit' }), Object.assign({}, f, { uh: 0, fall: n, variante: 'ohne' }), Object.assign({}, f, { uh: GP_HOCH, fall: n, variante: 'hoch' }));
+  }
+  return out;
+}
+
+async function abfragen(N, OUT, liste) {
   const { chromium } = require('playwright');
-  const alle = faelle(N).slice(0, MAX_ABFRAGEN);
+  const alle = (liste || faelle(N)).slice(0, MAX_ABFRAGEN);
   const start = async () => { const b = await chromium.launch(process.env.HTTPS_PROXY ? { proxy: { server: process.env.HTTPS_PROXY } } : {}); return { b, p: await b.newPage({ viewport: { width: 1280, height: 1000 } }) }; };
   let { b, p } = await start(); const out = [];
-  for (let i = 0; i < alle.length; i++) {
+  const ende = Date.now() + (Number(process.env.ZEIT_MIN) || 105) * 60000; // Zeitbudget: rechtzeitig aufhören, damit das Artefakt hochgeladen wird
+  for (let i = 0; i < alle.length && Date.now() < ende; i++) {
     const f = alle[i], prot = i < 2 ? [] : null; let text = null;
     for (let v = 0; v < 2 && text === null; v++) {
       try { text = await lotse(p, f, prot); } catch (e) { text = null; try { await b.close(); } catch (x) { /* egal */ } ({ b, p } = await start()); await new Promise((r) => setTimeout(r, 5000)); }
     }
     out.push(Object.assign({ i, f, text: text && text.slice(0, 400), amtlich: text ? einstufen(text) : null }, prot ? { protokoll: prot } : {}));
-    if (out.length % 10 === 0) { fs.writeFileSync(OUT, JSON.stringify(out, null, 1)); console.log(out.length + ' Abfragen'); }
+    fs.writeFileSync(OUT, JSON.stringify(out, null, 1)); if (out.length % 10 === 0) console.log(out.length + ' Abfragen');
     await new Promise((r) => setTimeout(r, PAUSE_MS));
   }
   await b.close(); fs.writeFileSync(OUT, JSON.stringify(out, null, 1));
   console.log('fertig: ' + out.length + ' Abfragen, ohne Ergebnis: ' + out.filter((x) => x.amtlich === null).length);
 }
 
+// Auswertung der festen Gegenprobe: je Fall Lotse und SoLo mit / ohne / hohem Unterhalt
+function auswertenGegenprobe(d) {
+  const faelleGp = [...new Set(d.map((x) => x.f.fall))].map((n) => {
+    const v = (name) => d.find((x) => x.f.fall === n && x.f.variante === name);
+    const z = {};
+    for (const name of ['mit', 'ohne', 'hoch']) { const x = v(name); if (x) { const s = solo(x.f); z[name] = { lotse: x.amtlich, text: (x.text || '').slice(0, 160), solo: s.level, soloKiz: s.bescheidKiz }; } }
+    return { fall: n, f: (v('mit') || v('ohne')).f, z };
+  });
+  const reagiert = faelleGp.filter((g) => g.z.mit && g.z.ohne && g.z.mit.lotse && g.z.ohne.lotse && g.z.mit.lotse !== g.z.ohne.lotse).length;
+  const reagiertHoch = faelleGp.filter((g) => g.z.hoch && g.z.ohne && g.z.hoch.lotse && g.z.ohne.lotse && g.z.hoch.lotse !== g.z.ohne.lotse).length;
+  console.log('Gegenprobe Unterhalt (feste Fälle): ' + faelleGp.length + ' Fälle | Lotse ändert Ergebnis mit/ohne: ' + reagiert + ', hoch/ohne: ' + reagiertHoch);
+  faelleGp.forEach((g) => console.log('  Fall ' + g.fall + ' ' + ['mit', 'ohne', 'hoch'].map((k) => k + ': Lotse ' + (g.z[k] ? g.z[k].lotse : '-') + ' / SoLo ' + (g.z[k] ? g.z[k].solo + ' ' + g.z[k].soloKiz : '-')).join(' | ')));
+  return { modus: 'gegenprobe', n: faelleGp.length, reagiert, reagiertHoch, faelle: faelleGp };
+}
+
 function auswerten(IN) {
   const d = JSON.parse(fs.readFileSync(IN, 'utf8'));
+  if (d.length && d[0].f && d[0].f.variante) return auswertenGegenprobe(d);
   const haupt = d.filter((x) => x.f.gegenprobeZu === undefined), gp = d.filter((x) => x.f.gegenprobeZu !== undefined);
-  const z = { gleich: 0, moeglich: 0, widerspruch: 0, offen: 0, lotseJa: 0, lotseNein: 0 }; const wider = [], moeglich = [], grundAnders = [], intern = [];
+  const z = { gleich: 0, moeglich: 0, widerspruch: 0, kindEink: 0, offen: 0, lotseJa: 0, lotseNein: 0 }; const wider = [], moeglich = [], grundAnders = [], intern = [], kindEink = [];
   const soloGrund = { minEink: 'Mindesteinkommen', einkoNiedrig: 'Hilfebedürftigkeit bleibt', einkoHoch: 'Einkommen zu hoch' };
   for (const x of haupt) {
     const s = solo(x.f);
     // Interne Gegenprobe: Hauptrechner (Schätzung auf 10 €) gegen Bescheid-Check (auf den Cent) – beide SoLo
-    if (s.schaetzung && Math.abs(s.schaetzung.eur - Math.max(10, Math.round(s.bescheidKiz / 10) * 10)) > 10) intern.push({ i: x.i, f: x.f, s });
+    const bk = Math.max(10, Math.round(s.bescheidKiz / 10) * 10);
+    if (s.schaetzung && (bk < s.schaetzung.eur - 10 || bk > (s.schaetzung.bis || s.schaetzung.eur) + 10)) intern.push({ i: x.i, f: x.f, s });
     if (x.amtlich === null) { z.offen++; continue; }
     x.amtlich === 'ja' ? z.lotseJa++ : z.lotseNein++;
     if (s.level === 'vielleicht') { z.moeglich++; moeglich.push({ i: x.i, f: x.f, s, amtlich: x.amtlich, grund: grund(x.text || '') }); continue; }
     if ((s.level === 'ja') === (x.amtlich === 'ja')) {
       z.gleich++;
       if (x.amtlich === 'nein' && soloGrund[s.hl] && soloGrund[s.hl] !== grund(x.text || '')) grundAnders.push({ i: x.i, f: x.f, s, lotseGrund: grund(x.text || '') });
+    } else if (x.amtlich === 'ja' && x.f.uh > 0 && solo(Object.assign({}, x.f, { uh: 0 })).level !== 'nein') {
+      // Erklärt: Der KiZ-Lotse rechnet Einkommen der Kinder nicht ein (Gegenproben 14.11. und 21.11.2026); die Familienkasse rechnet
+      // es nach § 6a Abs. 3 BKGG und DA-KiZ C.2.2.1 Abs. 5 zu 45 % an. Ohne Unterhalt stimmt SoLo mit dem Lotsen überein.
+      z.kindEink++; kindEink.push({ i: x.i, f: x.f, s });
     } else { z.widerspruch++; wider.push({ i: x.i, f: x.f, s, amtlich: x.amtlich, text: x.text }); }
   }
   // Gegenprobe Unterhalt
-  const gpErg = gp.map((x) => { const o = d.find((y) => y.i === x.f.gegenprobeZu); return { mit: o && o.amtlich, ohne: x.amtlich, soloMit: solo(o.f).level, soloOhne: solo(x.f).level, f: o.f }; });
+  const gpErg = gp.map((x) => { const o = d.find((y) => y.i === x.f.gegenprobeZu); if (!o) return null; return { mit: o && o.amtlich, ohne: x.amtlich, soloMit: solo(o.f).level, soloOhne: solo(x.f).level, f: o.f }; }).filter(Boolean);
   const lotseReagiert = gpErg.filter((g) => g.mit && g.ohne && g.mit !== g.ohne).length;
-  const res = { n: haupt.length, z, wider, moeglich, grundAnders, intern, gegenprobe: { n: gpErg.length, lotseReagiert, soloReagiert: gpErg.filter((g) => g.soloMit !== g.soloOhne).length, faelle: gpErg } };
+  const res = { n: haupt.length, z, wider, kindEink, moeglich, grundAnders, intern, gegenprobe: { n: gpErg.length, lotseReagiert, soloReagiert: gpErg.filter((g) => g.soloMit !== g.soloOhne).length, faelle: gpErg } };
   console.log('KiZ-Lotse vs. SoLo: ' + res.n + ' Familien | Lotse ja ' + z.lotseJa + ', nein ' + z.lotseNein + ', ohne Ergebnis ' + z.offen);
-  console.log('  gleich ' + z.gleich + ', SoLo „möglich“ ' + z.moeglich + ', WIDERSPRUCH ' + z.widerspruch + ', Grund anders ' + grundAnders.length + ', intern (Hauptrechner vs. Bescheid-Check > 10 €) ' + intern.length);
+  console.log('  gleich ' + z.gleich + ', SoLo „möglich“ ' + z.moeglich + ', WIDERSPRUCH ' + z.widerspruch + ', erklärt durch Einkommen der Kinder ' + z.kindEink + ', Grund anders ' + grundAnders.length + ', intern (Hauptrechner vs. Bescheid-Check > 10 €) ' + intern.length);
   console.log('  Gegenprobe Unterhalt: ' + gpErg.length + ' Paare, Lotse ändert Ergebnis in ' + lotseReagiert + ', SoLo in ' + res.gegenprobe.soloReagiert);
   wider.forEach((w) => console.log('  WIDERSPRUCH ' + JSON.stringify({ i: w.i, f: w.f, solo: w.s, lotse: w.amtlich, text: (w.text || '').slice(0, 140) })));
   return res;
 }
 
-module.exports = { faelle, solo, einstufen, grund, auswerten };
+// Fallliste aus der Auftragsdatei (Zeile „gegenprobe: Nr,Nr,…“), sonst leer
+function auftragListe() {
+  let t = '';
+  try { t = fs.readFileSync(require('path').join(__dirname, 'amtliche-rechner', 'kiz-vergleich-auftrag.txt'), 'utf8'); } catch (e) { return []; }
+  const m = t.match(/^gegenprobe:\s*([0-9,\s]+)$/m);
+  return m ? m[1].split(',').map((x) => Number(x.trim())).filter((x) => Number.isInteger(x) && x >= 0).slice(0, Math.floor(40 / 3)) : [];
+}
+
+module.exports = { faelle, solo, einstufen, grund, auswerten, gegenprobeFaelle };
 if (require.main === module) {
   const [cmd, a, b] = process.argv.slice(2);
   if (cmd === 'faelle') faelle(Number(a) || 10).forEach((f, i) => console.log(i, JSON.stringify(f), JSON.stringify(solo(f))));
+  else if (cmd === 'abfragen' && process.env.GITHUB_EVENT_NAME === 'push' && auftragListe().length) abfragen(0, b || 'kiz-vergleich.json', gegenprobeFaelle(auftragListe())).catch((e) => { console.error(e); process.exit(1); });
   else if (cmd === 'abfragen') abfragen(Math.min(Number(a) || 50, MAX_ABFRAGEN), b || 'kiz-vergleich.json').catch((e) => { console.error(e); process.exit(1); });
-  else if (cmd === 'auswerten') { const r = auswerten(a); if (b) fs.writeFileSync(b, JSON.stringify(r, null, 1)); }
-  else console.log('Aufruf: faelle <N> | abfragen <N> <Ausgabe.json> | auswerten <Ergebnis.json> [Auswertung.json]');
+  else if (cmd === 'gegenprobe') {
+    const nr = String(a || '').split(',').map(Number).filter((x) => Number.isInteger(x) && x >= 0);
+    if (!nr.length) { console.error('gegenprobe: Fallnummern fehlen'); process.exit(1); }
+    abfragen(0, b || 'kiz-gegenprobe.json', gegenprobeFaelle(nr)).catch((e) => { console.error(e); process.exit(1); });
+  } else if (cmd === 'auswerten') { const r = auswerten(a); if (b) fs.writeFileSync(b, JSON.stringify(r, null, 1)); }
+  else console.log('Aufruf: faelle <N> | abfragen <N> <Ausgabe.json> | gegenprobe <Nr,Nr,…> <Ausgabe.json> | auswerten <Ergebnis.json> [Auswertung.json]');
 }

@@ -48,7 +48,7 @@ function haushalt() {
     uzBetrag: rnd() < 0.15 ? geld(900, 10) : '', uzAn: pick(['', 'k1', 'k2', 'ex', 'exk']), uzTitel: rnd() < 0.5,
     arbeitSit: pick(['', '', '', 'arbeitslos', 'krank']), algZeit: rnd() < 0.7, algMonate: pick(['', '12', '24', '36']),
     krankWochen: pick(['', 'unter6', 'laeuft', 'ende']), lohnVorher: pick(['', 1500, 2800, 4500, 7000]),
-    baby: pick(['', '', '', 'bald', 'da']), egVor: pick(['', 0, 900, 2000]), aufenthalt: rnd() < 0.05 ? 'asyl' : rnd() < 0.08 ? 'eu' : '',
+    baby: pick(['', '', '', 'bald', 'da']), egVor: pick(['', 0, 900, 2000]), egKinder: pick(['', '', '2', '3']), egNach: pick(['', '', 600, 2500]), aufenthalt: rnd() < 0.05 ? 'asyl' : rnd() < 0.08 ? 'eu' : '',
     ausbildung: pick(['', '', '', 'ich', 'kind', 'kindBetrieb']), pflegegrad: pick(['', '', '', 'antrag', '1', '2', '3', '5']),
     bhPerson: pick(['', '', '', 'ich', 'minder', 'erwVor25', 'erwNach25']), gdb: pick(['', '', '50', '80', '100', 'antrag']),
     blind: pick(['', '', '', '', 'blind', 'hoch']), emStd: pick(['', '', '', 'unter3', '3bis6', 'unklar']),
@@ -95,7 +95,7 @@ for (let i = 0; i < N; i++) {
     const dl = I18N[lang];
     const fall = { lang, e: JSON.stringify(e).slice(0, 400) };
     // Reihenfolge und Vollständigkeit: erst alles Zutreffende, dann die „nein“ im aufklappbaren Bereich (unpassende Leistungen für besondere Lagen zuletzt); Landesleistungen außerhalb des Landes gar nicht
-    const erwartet = w.__solo.reihe(out.results);
+    const erwartet = w.__solo.reihe(out.results, out.wege || null);
     const ist = [...d.querySelectorAll('#cards article.card')].map((a) => a.getAttribute('data-id'));
     if (ist.join() !== erwartet.join()) melde('Karten fehlen oder Reihenfolge falsch', { ...fall, ist: ist.join(), erwartet: erwartet.join() });
     // Unabhängig von der App-Funktion: jede Leistung genau einmal, alle passenden vor allen unpassenden
@@ -119,6 +119,8 @@ for (let i = 0; i < N; i++) {
         if (r.hl !== 'ja' && r.hl !== 'vielleicht') teile.push(h2);
         const b = r.tx.find((x) => BK[x[0]]);
         if (b) teile.push(text(lang, BK[b[0]], b[1]));
+        // Kindergeld: fester Betrag für alle Kinder (259 € je Kind) in der Kopfzeile (UX-Prüfung 21.11.2026)
+        else if (r.id === 'kindergeld' && r.level === 'ja' && r.tx[0][0] === 'kindergeld.ja' && (e.kids || 0) + (e.young || 0) > 0) teile.push(text(lang, 'karte.betrag.fest', { a: { eur: r.tx[0][1].kg.eur * ((e.kids || 0) + (e.young || 0)) } }));
         const zl = Rules.zustLand(r.id, e.bundesland);
         if (zl) teile.push(zl); else if (Object.prototype.hasOwnProperty.call(I18N.de, 'zu.' + r.id)) teile.push(text(lang, 'zu.' + r.id));
         if (teile.length) h2 = teile.join(' · ');
@@ -128,9 +130,11 @@ for (let i = 0; i < N; i++) {
       const teile = r.tx.map((x) => text(lang, 't.' + x[0], x[1]));
       const fehltKey = r.tx.filter((x, j) => teile[j] == null).map((x) => 't.' + x[0]);
       if (fehltKey.length) { melde('Text fehlt in der Sprachdatei', { ...fall, id: r.id, keys: fehltKey.join() }); continue; }
-      const txt = a.querySelector('.body .txt');
-      const body = txt && { textContent: [...txt.querySelectorAll('.kern, .punkte > li')].map((x) => x.textContent).join(' ') };
-      if (!body || norm(body.textContent) !== norm(teile.join(' '))) melde('Kartentext passt nicht zur Rechnung', { ...fall, id: r.id, ist: body && body.textContent.slice(0, 300), soll: teile.join(' ').slice(0, 300) });
+      // Aufgeklappte Karte: Kernsatz sichtbar, alle weiteren Sätze unter „Mehr dazu“ (UX-Prüfung 21.11.2026)
+      const txt = a.querySelector('.body');
+      const body = txt && { textContent: [...txt.querySelectorAll('.txt .kern, .karte-details .punkte > li')].map((x) => x.textContent).join(' ') };
+      const soll = teile;
+      if (!body || norm(body.textContent) !== norm(soll.join(' '))) melde('Kartentext passt nicht zur Rechnung', { ...fall, id: r.id, ist: body && body.textContent.slice(0, 300), soll: soll.join(' ').slice(0, 300) });
       // Jeder Betrag, für den der Text einen Platzhalter hat, steht so auf der Karte; Platzhalter des deutschen Textes gibt es auch in der Übersetzung
       r.tx.forEach((x) => {
         const roh = (l) => { const t2 = (I18N[l] || {})['t.' + x[0]]; return t2 == null ? I18N.de['t.' + x[0]] : t2; };
@@ -164,13 +168,12 @@ for (let i = 0; i < N; i++) {
     if (zahl !== sollZahl) melde('Zählung oben passt nicht', { ...fall, ist: zahl, soll: sollZahl });
     // Hinweise „Das solltest du beachten“ = Rechnung
     const tog = [...d.querySelectorAll('#together li')].map((li) => norm(li.textContent));
-    // „Grundsicherungsgeld oder Wohngeld/Kinderzuschlag“ steht als eigene Kachel „Zwei Wege“, nicht in der Liste
-    const wege = out.zusammen.some((z) => z[0] === 'z.ggVsWg');
-    if (wege !== !!d.getElementById('zweiWege')) melde('Kachel „Zwei Wege“ passt nicht zur Rechnung', { ...fall, soll: wege });
-    const eo = out.zusammen.some((z) => z[0] === 'z.gsaWg');
-    if (eo !== !!d.getElementById('entwederOder')) melde('Kasten „Entweder oder“ passt nicht zur Rechnung', { ...fall, soll: eo });
-    const KARTE = { 'z.wgKiz': ['wohngeld', 'kiz'], 'z.gsaWg': ['gsa', 'wohngeld'], 'z.kgZuerst': ['kiz', 'kindergeld'], 'z.ggBezug': ['wohngeld', 'kiz', 'but'] }, ALLE = ['z.stichtag', 'z.verfahren', 'z.grenzen'];
-    const sollTog = out.zusammen.filter((z) => z[0] !== 'z.ggVsWg' && !KARTE[z[0]] && !ALLE.includes(z[0])).map((z) => norm(text(lang, z[0], z[1]) || '?' + z[0]));
+    // Zwei Wege (Grundsicherungsgeld oder Wohngeld/Kinderzuschlag; Grundsicherung im Alter oder Wohngeld) stehen als Rahmen #wege über den Karten
+    if (!!out.wege !== !!d.getElementById('wege')) melde('Rahmen „Entweder oder“ passt nicht zur Rechnung', { ...fall, soll: !!out.wege });
+    if (out.wege && out.wege.a.concat(out.wege.b).some((id) => !d.querySelector('#wege #c-' + id))) melde('Karte eines Wegs steht nicht im Rahmen', { ...fall, wege: out.wege });
+    const wegZ = out.wege ? (out.wege.rente ? 'z.gsaWg' : 'z.ggVsWg') : '';
+    const KARTE = { 'z.wgKiz': ['wohngeld', 'kiz'], 'z.kgZuerst': ['kiz', 'kindergeld'], 'z.ggBezug': ['wohngeld', 'kiz', 'but'] }, ALLE = ['z.stichtag', 'z.verfahren', 'z.grenzen'];
+    const sollTog = out.zusammen.filter((z) => z[0] !== wegZ && !KARTE[z[0]] && !ALLE.includes(z[0])).map((z) => norm(text(lang, z[0], z[1]) || '?' + z[0]));
     // Hinweise zu einer Leistung stehen in deren Karte, Hinweise für alle Anträge in „Gut zu wissen“
     for (const z of out.zusammen) for (const id of (KARTE[z[0]] || [])) { const a = d.getElementById('c-' + id); if (a && !norm(a.textContent).includes(norm(text(lang, z[0], z[1])))) melde('Hinweis fehlt in der Karte', { ...fall, id, hinweis: z[0] }); }
     const gut = [...d.querySelectorAll('#gutWissen li')].map((li) => norm(li.textContent)), sollGut = out.zusammen.filter((z) => ALLE.includes(z[0])).map((z) => norm(text(lang, z[0], z[1])));

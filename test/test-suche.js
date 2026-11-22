@@ -35,6 +35,8 @@ check('toleranz je Wortlänge', Suche.toleranz(3) === 0 && Suche.toleranz(5) ===
   ['Musterschreiben', 'g-schreiben'], ['Privatinsolvenz', 'g-ablauf'], ['Kaution', 'a-vorher'], ['Antragsmappe', 'mappe'], ['Jobcenter', 'b-jc']].forEach(([q, id]) => {
   check('Deutsch: „' + q + '“ → ' + id, unter('de', q, id, 2), Suche.suche(idx.de, q).slice(0, 3));
 });
+// UX-Audit D #10: Pflegegeld findet die Pflege-Übersicht, Gutachten die Gutachten-Prüfung, QR/SoLo-Datei den Import
+[['Pflegegeld', 'p-hilfe'], ['Verhinderungspflege', 'p-hilfe'], ['Gutachten', 'p-gutachten'], ['QR-Code', 'o-import'], ['SoLo-Datei', 'o-import']].forEach(([q, id]) => check('[rot-d] Deutsch: „' + q + '“ → ' + id, unter('de', q, id, 3), Suche.suche(idx.de, q).slice(0, 3)));
 // 21.11.2026: Widerspruch -> Briefe (Bescheid prüfen, Widerspruch schreiben), Rückforderung -> Brief vom Jobcenter; „Brille“ ohne passendes Ziel (kein Eintrag)
 [['Widerspruch', 'brief'], ['Einspruch', 'brief'], ['Rückforderung', 'b-jc'], ['Überzahlung', 'b-jc']].forEach(([q, id]) => check('Deutsch: „' + q + '“ → ' + id, unter('de', q, id, 3), Suche.suche(idx.de, q).slice(0, 3)));
 [['en', 'objection', 'brief'], ['tr', 'itiraz', 'brief'], ['ru', 'переплата', 'b-jc'], ['uk', 'заперечення', 'brief'], ['ar', 'اعتراض', 'brief'], ['pl', 'Rückforderung', 'b-jc']].forEach(([l, q, id]) => check(l + ': „' + q + '“ → ' + id, unter(l, q, id, 3), Suche.suche(idx[l], q).slice(0, 3)));
@@ -115,7 +117,7 @@ async function zurueck(d) { const v = d.getElementById('v-' + d.defaultView.__so
   check('DOM: Suchbereich role=search, Trefferzahl aria-live', d.getElementById('suSuche').getAttribute('role') === 'search' && status.getAttribute('aria-live') === 'polite');
   tippe(w, d, 'Mietzuschuss');
   let zeilen = [...box.querySelectorAll('button.su-zeile')];
-  check('DOM: Treffer als Zeilen mit Symbol und Bereich', zeilen.length >= 1 && zeilen.length <= 6 && zeilen[0].querySelector('.zeile-sym svg') && zeilen[0].querySelector('.zeile-st').textContent === 'Hilfen-Check', zeilen.map((z) => z.textContent));
+  check('DOM: Treffer als Zeilen mit Symbol und Bereich', zeilen.length >= 1 && zeilen.length <= 6 && zeilen[0].querySelector('.zeile-sym svg') && zeilen[0].querySelector('.zeile-st').textContent === 'Leistungs-Check', zeilen.map((z) => z.textContent));
   check('DOM: erster Treffer Wohngeld', zeilen[0].querySelector('b').textContent === 'Wohngeld' && zeilen[0].getAttribute('data-ziel') === 'l-wohngeld');
   check('DOM: Trefferzahl im Status', /Treffer$/.test(status.textContent), status.textContent);
   // Tastatur
@@ -135,12 +137,13 @@ async function zurueck(d) { const v = d.getElementById('v-' + d.defaultView.__so
   // Leeren und Escape
   d.getElementById('suLeeren').click();
   check('DOM: Leeren-Knopf leert Feld und Treffer', feld.value === '' && box.hidden && d.getElementById('suLeeren').hidden);
+  check('DOM: leeres Feld zeigt häufige Begriffe; Tippen sucht danach', (() => { const v = d.getElementById('suVorschlag'), b = v && v.querySelector('button.chip'); if (!b || v.hidden) return false; b.click(); const ok = feld.value === b.textContent && !box.hidden && !!box.querySelector('button[data-ziel]') && v.hidden; d.getElementById('suLeeren').click(); return ok; })());
 
   // Navigation zu Zielen und zurück
   const ziele = [['gelber Brief', 'g-mahn', 'sparen'], ['Konto gesperrt', 'g-konto', 'sparen'], ['Musterschreiben', 'g-schreiben', 'sparen'], ['Tarife vergleichen', 'g-tarif', 'sparen'],
     ['Haushaltsplan', 'g-haushalt', 'haushalt'], ['Nebenkostenabrechnung', 'b-vm', 'briefe'], ['Jobcenter', 'b-jc', 'briefe'], ['Pflegestufe', 'p-schaetzen', 'pflege'],
     ['Welche Unterstützung', 'p-hilfe', 'pflegestart'], ['Kaution', 'a-vorher', 'ausziehen'], ['PIN', 'e-sicher', 'einst'], ['Fristen', 'o-fristen', 'ordner'],
-    ['Lohnpfändung', 'g-lohn', 'pfaendung'], ['Schuldenliste', 'g-liste', 'schulden'], ['Klassenfahrt', 'l-but', 'leistungen'], ['Antragsmappe', 'mappe', 'leistungen']];
+    ['Lohnpfändung', 'g-lohn', 'pfaendung'], ['Schuldenliste', 'g-liste', 'schulden'], ['Klassenfahrt', 'l-but', 'leistungen'], ['Antragsmappe', 'mappe', 'leistungen'], ['Pflegegutachten prüfen', 'p-gutachten', 'briefe']];
   for (const [q, id, ansicht] of ziele) {
     tippe(w, d, q);
     const z = box.querySelector('button[data-ziel="' + id + '"]');
@@ -200,6 +203,10 @@ async function zurueck(d) { const v = d.getElementById('v-' + d.defaultView.__so
   await zurueck(d);
   check('Lupe: danach Zurück → Start', w.__solo.nav().ansicht === 'start');
   d.getElementById('suZu').click(); await warte(30);
+  // Import „Von der Beratung bekommen“ (Mein Ordner, Hauptseite): Treffer öffnet Mein Ordner mit aufgeklapptem Import
+  lupe.click(); await warte(30); tippe(w, d, 'SoLo-Datei');
+  const zi = fen.querySelector('button[data-ziel="o-import"]'); if (zi) { zi.click(); await warte(100); }
+  check('[rot-d] DOM: „SoLo-Datei“ öffnet Mein Ordner mit aufgeklapptem Import', !!zi && w.__solo.nav().ansicht === 'ordner' && d.getElementById('kwImport').open, w.__solo.nav());
   check('DOM: Suchbegriffe werden nicht gespeichert', !Object.values(mem).some((v) => /Lohnpf|Antragsmappe|xqzjvvk/.test(v)), Object.keys(mem));
   check('DOM: keine Fehler', errors.length === 0, errors);
 

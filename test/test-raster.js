@@ -3,7 +3,10 @@
 // unwahrscheinlich, schon vorhanden) und die Zahlen (Bedarf, geschätzte Beträge).
 // Aufruf: node test/test-raster.js [Anzahl Zufallshaushalte, Standard 60000]
 'use strict';
-const Rules = require('../src/rules.js');
+// ohneWege: Eigenschaften je Leistung; die zwei Wege (Grundsicherungsgeld oder Wohngeld und Kinderzuschlag) koppeln Leistungen absichtlich
+// und haben eigene Tests in test/test.js
+const Rules0 = require('../src/rules.js');
+const Rules = Object.assign({}, Rules0, { evaluate: (e) => Rules0.evaluate(Object.assign({ ohneWege: true }, e)) });
 const Ref = require('./referenz.js');
 
 const N = Number(process.argv[2]) || 60000;
@@ -122,7 +125,8 @@ function pruefe(e) {
   const k = { ...k0, level: Ref.kappe(e, 'kiz', lev(k0, Ref.kinderzuschlag)) };
   if (r.kiz.level !== k.level) melde('Kinderzuschlag: Einstufung', e, { app: r.kiz.level, ref: k.level, kiz: k.kiz });
   else if (k0.kiz != null && (k0.level === 'ja' || (k0.level === 'vielleicht' && r.kiz.hl !== 'einkoNiedrig'))) {
-    const s = zahlAus(r.kiz, 'schaetz.eins', 'a');
+    // Alter nur grob bekannt: Spanne, ihr unterer Wert ist die Rechnung mit dem sicheren Mehrbedarf
+    const s = zahlAus(r.kiz, 'schaetz.eins', 'a') ?? zahlAus(r.kiz, 'schaetz.spanne', 'a');
     if (s !== Math.max(10, Math.round(k.kiz / 10) * 10)) melde('Kinderzuschlag: geschätzter Betrag', e, { app: s, ref: k.kiz });
   }
   // Grundsicherung im Alter und bei Erwerbsminderung
@@ -243,8 +247,23 @@ for (let vor = 0; vor <= 3000; vor += 1) {
   schwelle++; n++;
   const e = { adults: 1, kids: 0, young: 0, baby: 'da', egVor: vor, bezug: {} };
   const t = Rules.evaluate(e).results.find((x) => x.id === 'elterngeld').tx.find((x) => x[0] === 'eg.ja');
-  const ref = Ref.elterngeld(vor);
+  const ref = Ref.elterngeld(vor, 0, { haushalt: Ref.egHaushalt(e) });
   if (!t || t[1].basis.eur !== Math.round(ref.basis) || t[1].plus.eur !== Math.round(ref.plus) || t[1].monate !== ref.monate) melde('Elterngeld: Betrag', e, { app: t && t[1], ref });
+}
+// Elterngeld mit Teilzeit und Mehrlingen (§ 2 Abs. 3, § 2a, § 4a BEEG): Netto vorher und nachher im Raster, Zwillinge/Drillinge, mit und ohne Geschwisterbonus
+for (let vor = 0; vor <= 6000; vor += 37) {
+  for (const nach of [0, 50, 300, 700, 1200, 2000, 2860, 3500]) {
+    for (const kinder of [1, 2, 3]) {
+      for (const gs of [0, 2]) {
+        schwelle++; n++;
+        const e = { adults: 1, kids: gs, kidsU6: gs, young: 0, baby: 'bald', egVor: vor, egNach: nach || '', egKinder: String(kinder), bezug: {} };
+        const t = Rules.evaluate(e).results.find((x) => x.id === 'elterngeld').tx.find((x) => x[0] === 'eg.ja');
+        const ref = Ref.elterngeld(vor, gs, { nachher: nach, mehrlinge: kinder, haushalt: Ref.egHaushalt(e) });
+        const nah = (a, b) => Math.abs(a - b) <= 0.5 + 1e-9; // auf den Euro wie angezeigt; genau x,50 € darf je nach Gleitkomma auf- oder abrunden
+        if (!t || !nah(t[1].basis.eur, ref.basis) || !nah(t[1].plus.eur, ref.plus)) melde('Elterngeld Teilzeit/Mehrlinge: Betrag', e, { app: t && t[1], ref });
+      }
+    }
+  }
 }
 // Hilfe zur Pflege und Blindenhilfe: Einkommensgrenze § 85 SGB XII, Schonvermögen; Asylbewerber: Ausschlüsse
 for (let i = 0; i < 20000; i++) {
@@ -273,7 +292,7 @@ for (let i = 0; i < 20000; i++) {
     if (!ok) melde('Asyl: ' + id + ' höchstens möglich, sonst wie ohne Asyl', e, { app: x.level, ohneAsyl: r[id].level });
   });
   // [asyl-bezug] Wohngeld bei Asyl ohne Bezug: Hinweis vorn, wenn nicht ausgeschlossen. Mit Einkommensart „Asylbewerberleistungen“:
-  // Wohngeld nein (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG), Rundfunk ja (§ 4 Abs. 1 Nr. 4 RBStV), Karte Asylbewerberleistungen „bekommst du schon“,
+  // Wohngeld nein (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG), Rundfunk ja (§ 4 Abs. 1 Nr. 4 RBeitrStV), Karte Asylbewerberleistungen „bekommst du schon“,
   // Bildung und Teilhabe mit Kindern ja (§ 3 Abs. 4 AsylbLG)
   { const w = a.find((y) => y.id === 'wohngeld'); if ((w.level === 'ja' || w.level === 'vielleicht') && w.tx[0][0] !== 'wohngeld.asyl') melde('Asyl: Wohngeld-Hinweis', e, { app: w.tx[0] }); }
   if (!Array.isArray(e.einkommen)) {
@@ -282,6 +301,21 @@ for (let i = 0; i < 20000; i++) {
   }
   // Unterhaltsvorschuss bei Asyl/Duldung: höchstens „möglich“ (deutsches Kind oder Beschäftigungsduldung, § 1 Abs. 2a UVG)
   { const ua = a.find((y) => y.id === 'uvg').level, ur = Ref.unterhaltsvorschuss({ ...e, aufenthalt: 'asyl' }).level; if (ua !== ur || ua === 'ja') melde('Asyl: Unterhaltsvorschuss', e, { app: ua, ref: ur }); }
+}
+
+// Neue unabhängige Referenz für WBS, Pfändung und P-Konto (docs/rechenplan/): REFERENZ_FAELLE Zufallsfälle (Standard 300), Seed REFERENZ_SEED
+// (Standard 20261121, steht bei jeder Abweichung dabei). Die früheren Befunde WBS1, WBS2, WBS4 sind behoben (keine erwarteten Abweichungen mehr).
+{
+  const v = Ref.vergleich(Rules);
+  v.fehler.forEach((f) => melde('Referenz ' + f.art + ' (Seed ' + f.seed + ', Fall ' + f.fall + ')', f.e || { netto: f.netto, pers: f.pers }, { app: f.app, ref: f.ref }));
+  // Befunde WBS1/WBS2/WBS4 behoben: App und Referenz an festen Fällen (Bayern, allein): 3.400 € Lohn -> „möglich“ (Werbungskosten);
+  // 3.500 € Lohn „eher nicht“, mit 200 € tituliertem Unterhalt oder GdB 50 „möglich“ (Art. 5 Abs. 2 und 3 BayWoFG)
+  const b1 = { adults: 1, kids: 0, young: 0, art1: 'lohn', brutto: 3400, netto: 2400, bundesland: 'BY', bezug: {}, gebJahr: 1985, miete: 700, vermoegen: 0 };
+  [[b1, 'vielleicht'], [{ ...b1, brutto: 3500 }, 'nein'], [{ ...b1, brutto: 3500, uzBetrag: 200, uzTitel: true, uzAn: 'k1' }, 'vielleicht'], [{ ...b1, brutto: 3500, gdb: '50' }, 'vielleicht']].forEach(([f, soll]) => {
+    const app = Rules.evaluate(f).results.find((x) => x.id === 'wbs').level;
+    if (Ref.wbs(f).level !== soll || app !== soll) melde('Referenz WBS: fester Fall (WBS1/WBS2/WBS4)', f, { app, ref: Ref.wbs(f).level, soll });
+  });
+  console.log('Referenz WBS/Pfändung/P-Konto: ' + v.anzahl + ' Fälle, Seed ' + v.seed + ', erwartete Abweichungen ' + JSON.stringify(v.erwartet));
 }
 
 const arten = Object.keys(fehler);

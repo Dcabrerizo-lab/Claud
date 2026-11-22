@@ -2,6 +2,7 @@ const { JSDOM } = require('jsdom');
 const fs = require('fs');
 const I18N = require('../dist/i18n.js');
 const KARTEN = require('./karten.js');
+const FmtN = require('../src/fmt.js');
 const html = fs.readFileSync(__dirname + '/../dist/sozialleistungslotse.html', 'utf8');
 const errors = [];
 const store = {};
@@ -48,17 +49,19 @@ check('Zusammenfassung zeigt Anzahl', /\d+ wahrscheinlich/.test(d.getElementById
 check('Unwahrscheinliche Leistungen sind eingeklappt gruppiert', d.querySelector('.neinbox') !== null && d.querySelector('.neinbox').open === false);
 check('Hinweis auf Beispielwerte sichtbar', d.getElementById('sampleNotice').hidden === false);
 check('Übersetzungs-Hinweis bei Deutsch versteckt', d.getElementById('transNotice').hidden === true);
-check('Treffer: Hinweis auf Unterlagen und nächste Schritte in der Antragsmappe', /Antragsmappe/.test((card('Wohngeld').querySelector('.karte-mappe') || {}).textContent || ''));
+check('Treffer: aufgeklappte Karte mit Knopf „Antrag vorbereiten“ (öffnet die Antragsmappe mit dieser Leistung)', ((card('Wohngeld').querySelector('[data-antrag="wohngeld"]') || {}).textContent || '') === I18N.de['akt.antrag']);
 check('Zusammenspiel-Hinweis Wohngeld und Kinderzuschlag steht in beiden Karten', /kombinieren/.test(d.getElementById('c-wohngeld').textContent) && /kombinieren/.test(d.getElementById('c-kiz').textContent));
 check('Neue Karten vorhanden', ['Grundsicherungsgeld', 'Unterhaltsvorschuss', 'BAföG', 'Pflegegeld und Entlastungsbetrag', 'Kindergeld'].every((n) => names().includes(n)));
 check('Unterhaltsvorschuss im Beispiel 1 wahrscheinlich', level('Unterhaltsvorschuss') === 'ja');
 
 // Beispiel 2
 beispiel('p2');
-check('Beispiel 2: Grundsicherung im Alter wahrscheinlich', level('Grundsicherung im Alter und bei voller Erwerbsminderung') === 'ja', pills() + '');
+// Seit 21.11.2026: zwei Wege (Grundsicherung im Alter oder Wohngeld). Bei Rente echte Wahl: beide Karten bleiben „wahrscheinlich“ mit Betrag
+// (§ 2 Abs. 1 SGB XII nimmt den Anspruch nicht: BSG 23.03.2021, B 8 SO 2/20 R)
+check('Beispiel 2: Grundsicherung im Alter und Wohngeld beide „wahrscheinlich“ (zwei Wege, echte Wahl), Satz „welcher Weg dir mehr bringt“', level('Grundsicherung im Alter und bei voller Erwerbsminderung') === 'ja' && level('Wohngeld') === 'ja' && !!d.getElementById('wege') && /welcher Weg dir mehr bringt/.test(d.querySelector('#wege .wege-lage').textContent) && !/geht (es |Wohngeld )?vor/.test(d.getElementById('wege').textContent), pills() + '');
 check('Beispiel 2 füllt Formular und Auswahlfelder', d.getElementById('ek1Art').value === 'rente' && d.getElementById('ek1Brutto').value === '880' && d.getElementById('gebJahr').value === '1955' && d.getElementById('mietstufe').value === '3');
-check('Beispiel 2: Kasten „Entweder oder“ mit Links zu beiden Karten', !!d.getElementById('entwederOder') && !!d.querySelector('#entwederOder a[href="#c-gsa"]') && !!d.querySelector('#entwederOder a[href="#c-wohngeld"]') && !d.getElementById('zweiWege'));
-check('Beispiel 2: Entweder-oder-Hinweis in den Karten Grundsicherung im Alter und Wohngeld', /nicht gleichzeitig/.test(d.getElementById('c-gsa').textContent) && /nicht gleichzeitig/.test(d.getElementById('c-wohngeld').textContent));
+check('[wege] Beispiel 2: Rahmen „Entweder oder“ mit den Karten Grundsicherung im Alter und Wohngeld, „oder“ dazwischen', !!d.querySelector('#wege #c-gsa') && !!d.querySelector('#wege #c-wohngeld') && !!d.querySelector('#wege .weg-oder'));
+check('[wege] Beispiel 2: Satz zur Lage sichtbar (nicht zugeklappt), Namen beschreibend statt „Weg 1/2“', d.querySelector('#wege .wege-lage').textContent.length > 20 && !d.querySelector('#wege .wege-lage').closest('details') && !/Weg [12]/.test(d.getElementById('wege').textContent));
 check('Ohne Kinder sind Kinder-Fragen ausgeblendet', [...d.querySelectorAll('.cond-kids')].every((e) => e.hidden === true));
 
 // Eingabe ändern
@@ -123,6 +126,17 @@ check('Zwei Erwachsene werden übernommen', cards().length === KARTEN.length);
 beispiel('p1');
 const vis = (id) => !d.getElementById(id).hidden;
 check('Lohn: Brutto- und Netto-Feld sichtbar', vis('ek1BruttoF') && vis('ek1NettoF') && d.getElementById('ek1NettoLab').textContent === I18N.de['ek.netto']);
+{ // UX-Audit C Nr. 15: „Netto ausrechnen“ direkt unter dem Brutto, Ergebnis als Schätzung in vollen Euro, Übernahme nur per Knopf
+  const nf = d.getElementById('ek1NhF'), nv = d.getElementById('ek1Netto').value, bv = d.getElementById('ek1Brutto').value;
+  check('[ux-c] Netto-Helfer steht direkt unter dem Brutto-Feld', nf.previousElementSibling === d.getElementById('ek1BruttoF') && nf.nextElementSibling === d.getElementById('ek1NettoF'));
+  setNum('ek1Brutto', 3000); d.getElementById('ek1NhBtn').click();
+  d.querySelector('#ek1Nh .wahl-liste button').click(); [...d.querySelectorAll('#ek1Nh .wahl-raster button')][1].click();
+  const z = d.querySelector('#ek1Nh .pf-zahl');
+  check('[ux-c] Netto-Helfer: „ungefähr … (geschätzt)“, volle Euro, Netto-Feld erst nach „Übernehmen“', !!z && /^ungefähr [\d.]+ € im Monat \(geschätzt\)$/.test(z.textContent.replace(/\s/g, ' ')) && d.getElementById('ek1Netto').value === nv, z && z.textContent);
+  [...d.querySelectorAll('#ek1Nh .btns button')].find((b) => b.textContent === I18N.de['nh.uebernehmen']).click();
+  check('[ux-c] Netto-Helfer: Übernahme als ganze Euro', /^\d+$/.test(d.getElementById('ek1Netto').value), d.getElementById('ek1Netto').value);
+  setNum('ek1Brutto', bv); setNum('ek1Netto', nv);
+}
 setSel('ek1Art', 'alg');
 check('Arbeitslosengeld I: kein Brutto-Feld, Betrag laut Bescheid mit Hinweis auf Tagesbetrag', !vis('ek1BruttoF') && vis('ek1NettoF') && d.getElementById('ek1NettoLab').textContent === I18N.de['ek.betrag'] && /Agentur für Arbeit/.test(d.getElementById('ek1NettoHint').textContent));
 setSel('ek1Art', 'kg');
@@ -170,80 +184,183 @@ LANGS.forEach((l) => {
 check('Sprachwahl wird gemerkt', store['lotse-lang'] === 'so');
 setLang('de');
 
-// ---------- Ausfüllhilfe ----------
+// ---------- Antragsmappe (Aufgabenliste, UX-Prüfung 21.11.2026) ----------
 beispiel('p1');
 const pickBoxes = () => [...d.querySelectorAll('[data-pick]')];
 const okCount = cards().filter((c) => /pill (ja|vielleicht)/.test(c.querySelector('.pill').className)).length;
-check('Auswahl für die Ausfüllhilfe nennt alle passenden Leistungen', pickBoxes().length === okCount && okCount >= 4, pickBoxes().length + ' vs ' + okCount);
-// Entweder oder (Grundsicherungsgeld oder Wohngeld/Kinderzuschlag, § 7 Abs. 1 WoGG): keine dieser Leistungen vorab angehakt, Zeile f.pickWege
-const WEGE = ['ggeld', 'wohngeld', 'kiz', 'gsa'], wegeZeile = d.getElementById('pickWege');
-check('Haken sind nur bei wahrscheinlichen Leistungen vorgesetzt (außer bei „entweder oder“)', pickBoxes().every((cb) => cb.checked === (level(cb.closest('label').textContent.trim()) === 'ja' && !(wegeZeile && WEGE.includes(cb.getAttribute('data-pick'))))) && pickBoxes().some((cb) => cb.checked));
+const wegRadios = () => [...d.querySelectorAll('#pick input[type=radio][data-weg]')];
+check('Auswahl für die Mappe nennt die passenden Leistungen (Haken, Weg-Leistungen als Optionsfeld)', pickBoxes().length >= 3 && pickBoxes().length <= okCount, pickBoxes().length + ' vs ' + okCount);
 {
+  // Entweder oder (§ 7 Abs. 1 WoGG, § 6a BKGG, § 12a SGB II): Optionsfelder statt leerer Haken; „Ich weiß es noch nicht“ als dritte Wahl
   const ids = pickBoxes().map((cb) => cb.getAttribute('data-pick')), an = (id) => { const c = d.querySelector('[data-pick="' + id + '"]'); return !!c && c.checked; };
-  const zweiWege = !!d.getElementById('zweiWege') || /Zwei Wege/.test(d.getElementById('ergebnis').textContent);
-  check('[zwei-wege] Beispiel 1 zeigt „Zwei Wege“ und bietet Grundsicherungsgeld und Wohngeld an', zweiWege && ids.includes('ggeld') && ids.includes('wohngeld'), ids.join());
-  check('[zwei-wege] Grundsicherungsgeld, Wohngeld und Kinderzuschlag nicht vorab angehakt, Zeile „nur entweder oder“ sichtbar', !an('ggeld') && !an('wohngeld') && !an('kiz') && !!wegeZeile && wegeZeile.textContent === I18N.de['f.pickWege'], ids.map((i) => i + ':' + an(i)).join());
+  const radios = wegRadios(), werte = radios.map((r) => r.value).join();
+  check('[weg] Beispiel 1: Wahl des Wegs mit drei Optionsfeldern (a, b, Ich weiß es noch nicht), genau eins gewählt', radios.length === 3 && werte === 'a,b,offen' && radios.filter((r) => r.checked).length === 1, werte);
+  check('[weg] Beschreibende Namen statt „Weg A/B“', !/Weg [AB12]\b/.test(d.getElementById('pick').textContent) && d.getElementById('pick').textContent.indexOf(I18N.de['f.weg.offen']) >= 0);
+  check('[weg] Satz „Beträge nicht zusammenzählen“ steht bei der Wahl', d.querySelector('.weg-wahl').textContent.indexOf(I18N.de['weg.nichtZaehlen']) >= 0);
+  check('[weg] Weg-Leistungen haben keine eigenen Haken', !ids.includes('ggeld') && !ids.includes('wohngeld') && !ids.includes('kiz'), ids.join());
+  check('[vorauswahl] Geld-Leistungen mit Betrag vorab angehakt (Kindergeld, Unterhaltsvorschuss), WBS/Rundfunk nicht', an('kindergeld') && an('uvg') && !an('wbs') && !an('rundfunk'), ids.map((i) => i + ':' + an(i)).join());
+  check('[vorauswahl] WBS und Rundfunk zugeklappt unter „Weitere Hilfen“', !!d.querySelector('#pick .pick-spaeter [data-pick="wbs"]'));
+  check('[vorauswahl] Kein Satz „siehe Tipp oben“ mehr', !/Tipp oben/.test(d.getElementById('pick').textContent) && !('f.pickWege' in I18N.de));
+  // Weg „Ich weiß es noch nicht“: nichts aus der Gruppe, Notfall-Satz
+  const offen = radios.find((r) => r.value === 'offen'); offen.checked = true; fire(offen, 'change');
+  check('[weg] „Ich weiß es noch nicht“: Satz zur Lage und Notfall-Satz', d.getElementById('pick').textContent.indexOf(I18N.de['weg.dringend']) >= 0);
+  const a = wegRadios().find((r) => r.value === 'a'); a.checked = true; fire(a, 'change');
 }
 check('Mappe ist anfangs geschlossen', d.getElementById('mappe').hidden === true);
 // nichts gewählt
+wegRadios().filter((r) => r.value === 'offen').forEach((r) => { r.checked = true; fire(r, 'change'); });
 pickBoxes().forEach((cb) => { cb.checked = false; fire(cb, 'change'); });
 d.getElementById('mappeMake').click();
-check('[hilfen-aufraeumen] Grüner Knopf „Briefe für die Anträge machen“ direkt unter den passenden Karten, kein Kasten „Ausfüllhilfe“ im Ergebnis', (() => { const k = d.getElementById('mappeKnopf'), letzte = cards().filter((c) => /pill (ja|vielleicht)/.test(c.querySelector('.pill').className)).pop(); return k && !k.hidden && k.previousElementSibling === letzte && d.getElementById('mappeMake').textContent === I18N.de['es.briefe'] && !d.getElementById('ergebnis').contains(d.getElementById('p-name')); })());
-check('[hilfen-aufraeumen] Ohne Auswahl: Mappe öffnet mit Auswahl, Name und Anschrift oben und einem Hinweis, keine leeren Briefe', d.getElementById('mappe').hidden === false && d.getElementById('mappe').contains(d.getElementById('p-name')) && d.getElementById('pickMsg').textContent === I18N.de['f.pick0'] && !d.querySelector('#mappeBody .page'));
-// Wohngeld und Unterhaltsvorschuss wählen
-pickBoxes().filter((cb) => ['wohngeld', 'uvg'].includes(cb.getAttribute('data-pick'))).forEach((cb) => { cb.checked = true; fire(cb, 'change'); });
+check('[hilfen-aufraeumen] Grüner Knopf „Antrag vorbereiten“ direkt unter den passenden Karten, kein Kasten „Ausfüllhilfe“ im Ergebnis', (() => { const k = d.getElementById('mappeKnopf'), letzte = cards().filter((c) => /pill (ja|vielleicht)/.test(c.querySelector('.pill').className)).pop(); return k && !k.hidden && (k.previousElementSibling === letzte || k.previousElementSibling.contains(letzte)) && d.getElementById('mappeMake').textContent === I18N.de['akt.antrag'] && !d.getElementById('ergebnis').contains(d.getElementById('p-name')); })());
+check('Ohne Auswahl: Mappe öffnet mit Auswahl und Hinweis, keine leeren Briefe, Schritte 2–4 ausgeblendet', d.getElementById('mappe').hidden === false && d.getElementById('pickMsg').textContent === I18N.de['f.pick0'] && !d.querySelector('#mappeBody .page') && d.getElementById('auf-antraege').hidden && d.getElementById('auf-unterlagen').hidden);
+check('[aufgaben] Erster Punkt der Aufgabenliste: „Deine Angaben für die Briefe“ mit Status „fehlt noch“, aufgeklappt', d.querySelector('#mappeAufgaben > li').id === 'auf-angaben' && d.getElementById('statAngaben').textContent === I18N.de['f.st.fehlt'] && d.getElementById('aufAngaben').open);
+check('[absender] Kompakt: Name, Straße, PLZ und Ort sichtbar; Geburtsdatum und Telefon unter „mehr“', !d.getElementById('p-name').closest('details.mehr') && !!d.getElementById('p-geb').closest('details.mehr') && !!d.getElementById('p-tel').closest('details.mehr'));
+// Wohngeld (Weg a) und Unterhaltsvorschuss wählen
+{ const a = wegRadios().find((r) => r.value === 'a'); a.checked = true; fire(a, 'change'); }
+pickBoxes().filter((cb) => ['uvg'].includes(cb.getAttribute('data-pick'))).forEach((cb) => { cb.checked = true; fire(cb, 'change'); });
+pickBoxes().filter((cb) => ['kindergeld', 'but'].includes(cb.getAttribute('data-pick'))).forEach((cb) => { cb.checked = false; fire(cb, 'change'); });
 const set = (id, v) => { d.getElementById(id).value = v; fire(d.getElementById(id), 'input'); };
 set('p-name', 'Maria Beispiel'); set('p-geb', '01.02.1985'); set('p-strasse', 'Hauptstraße 1'); set('p-ort', '91056 Erlangen'); set('p-tel', '0123 456');
 d.getElementById('mappeMake').click();
 check('Mappe öffnet sich und ersetzt die Seite', d.getElementById('mappe').hidden === false && d.getElementById('app').classList.contains('pm'));
+check('[aufgaben] Status: Angaben eingetragen, Anträge offen; erster offener Schritt (Anträge) aufgeklappt, Rest zu', /eingetragen/.test(d.getElementById('statAngaben').textContent) && d.getElementById('statAntraege').textContent === I18N.de['f.st.offen'] && d.getElementById('aufAntraegeD').open && !d.getElementById('aufAngaben').open && !d.getElementById('aufUnterlagenD').open);
+check('[aufgaben] Kein Inhaltsverzeichnis mit Sprungknöpfen', !d.querySelector('#mappe [data-sprung]') && !d.getElementById('mappePrint2'));
+const zeilen = [...d.querySelectorAll('#aufAntraege .ant-zeile')];
+check('[antraege] Formulare vor den Briefen: Wohngeld (Formular), Kinderzuschlag (Formular), dann Unterhaltsvorschuss (Anschreiben)', zeilen.length >= 2 && zeilen[0].classList.contains('ant-form') && zeilen[zeilen.length - 1].getAttribute('data-ant') === 'b-uvg', zeilen.map((z) => z.getAttribute('data-ant')).join());
+check('[antraege] Je Leistung genau eine Aktion (Formular-Link oder „Anschreiben ansehen“)', zeilen.every((z) => [...z.querySelectorAll('a.btn, summary.btn')].filter((x) => !x.closest('.page')).length === 1), zeilen.map((z) => z.getAttribute('data-ant') + ':' + [...z.querySelectorAll('a.btn, summary.btn')].map((x) => x.textContent).join('+')).join(' | '));
+const wgZeile = d.querySelector('[data-ant="f-wg"]');
+check('[antraege] Wohngeld: Link auf die amtliche Seite, Satz unter dem Knopf, Ausfüllhilfe zum Aufklappen', !!wgZeile && !!wgZeile.querySelector('a[href*="stmb.bayern.de"]') && wgZeile.textContent.indexOf(I18N.de['fw.wg.by']) >= 0 && !!wgZeile.querySelector('details.mehr'));
+const uvgZeile = d.querySelector('[data-ant="b-uvg"]');
+check('[antraege] Anschreiben-Zeile nennt den Empfänger, Brief zugeklappt', !!uvgZeile && /^An: Stadt Erlangen/.test(uvgZeile.querySelector('.ant-an').textContent) && !uvgZeile.querySelector('details.ant-zeigen').open);
 const pages = [...d.querySelectorAll('#mappeBody .page')];
-check('Entweder Formular oder formlos: Wohngeld hat in Bayern einen Formular-Link, also nur ein Brief (Unterhaltsvorschuss), Angabenblatt, Unterlagenliste, Formulare', pages.length === 4, pages.length);
-const formSeite = d.querySelector('#mappeBody .forms');
-check('Amtliche Formulare: Wohngeld als Link auf die amtliche Seite, kein Knopf zum Ausfüllen', !!formSeite && /Antrag auf Wohngeld \(Mietzuschuss\)/.test(formSeite.textContent) && !!formSeite.querySelector('a[href*="stmb.bayern.de"]') && formSeite.textContent.indexOf(I18N.de['f.formsWeb']) >= 0 && !d.getElementById('formsShare'), formSeite && formSeite.textContent.slice(0, 200));
-check('Formular-Link und formloser Brief schließen sich aus: beim Link (Wohngeld Bayern) kein Satz „formloser Antrag in dieser Mappe“', !!formSeite && formSeite.textContent.indexOf(I18N.de['f.formsBrief']) < 0);
-check('Amtliche Formulare: keine eigene Unterlagenliste (eine Liste je Hilfe steht bei den Unterlagen)', !!formSeite && formSeite.textContent.indexOf('Kontoauszüge der letzten 3 Monate') < 0);
+check('Druck: ein Brief (Unterhaltsvorschuss), Angabenblatt, Unterlagen- und Formularliste; alles nur im Druck', pages.length === 3 && pages.every((p) => p.classList.contains('nur-druck')), pages.length);
 const txt = pages.map((p) => p.textContent).join('\n');
-// Anschrift „91056 Erlangen“ liefert den Wohnort (kein PLZ-Feld ausgefüllt): Empfänger ist die Stadt Erlangen
 check('Brief: Absender, Empfänger (aus der PLZ der Anschrift) und Betreff', /Maria Beispiel/.test(txt) && /Hauptstraße 1/.test(txt) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(txt) && /Betreff: Antrag auf Unterhaltsvorschuss/.test(txt));
 check('Kein formloser Brief für Wohngeld, weil es den Formular-Link gibt', !/Betreff: Antrag auf Wohngeld/.test(txt));
-check('Brief: bittet um Eingangsbestätigung und Formulare', /bestätigen Sie mir den Eingang/.test(txt) && /Antragsformulare/.test(txt));
+check('Brief: bittet um Eingangsbestätigung und Formulare (förmlich)', /bestätigen Sie mir den Eingang/.test(txt) && /Antragsformulare/.test(txt) && /Sehr geehrte Damen und Herren/.test(txt));
 check('Brief auf Deutsch und links nach rechts gesetzt', pages[0].getAttribute('lang') === 'de' && pages[0].getAttribute('dir') === 'ltr');
 check('Angabenblatt enthält Haushalt, Miete, Einkommen', /Angabenblatt/.test(txt) && /Warmmiete im Monat: 950 €/.test(txt) && /Einkommen: Lohn oder Gehalt, brutto 2\.200 €, netto 1\.750 € im Monat/.test(txt) && /Kinder unter 18 Jahren: 2/.test(txt) && /Geburtsdatum: 01\.02\.1985/.test(txt));
-check('Angabenblatt nennt Selbstauskunft-Hinweis', /Selbstauskunft/.test(txt));
+check('Druck: Formularliste mit Adresse der amtlichen Seite', /Antrag auf Wohngeld \(Mietzuschuss\): https:\/\/www\.stmb\.bayern\.de/.test(txt));
+check('Druck: „Keine Rechtsberatung“', txt.indexOf(I18N.de['rb.satz']) >= 0);
 check('Leere Felder werden zu Strichen statt "undefined"', !/undefined|null/.test(txt));
 check('Kopiertext enthält Briefe und Angabenblatt', /Betreff: Antrag auf Unterhaltsvorschuss/.test(d.getElementById('mappeText').value) && /Angabenblatt/.test(d.getElementById('mappeText').value));
+// Unterlagen: eine Liste ohne Doppelungen
+{
+  const li = [...d.querySelectorAll('#aufUnterlagen .haken-liste li')].map((x) => x.textContent.trim());
+  check('[unterlagen] Keine Doppelungen', new Set(li).size === li.length, li.join(' | '));
+  check('[unterlagen] „Für alle/mehrere Anträge“ zuerst, dann „Zusätzlich für …“', /^(Für alle Anträge|Für mehrere Anträge)$/.test(d.querySelector('#aufUnterlagen h4').textContent) && [...d.querySelectorAll('#aufUnterlagen h4')].slice(1).every((h) => /^Zusätzlich für /.test(h.textContent)), [...d.querySelectorAll('#aufUnterlagen h4')].map((h) => h.textContent).join(' | '));
+  const cb = d.querySelector('#aufUnterlagen input[data-haken^="u|"]'); cb.checked = true; fire(cb, 'change');
+  check('[unterlagen] Haken zählt im Status („1 von n“) und wird gespeichert', /^1 von \d+$/.test(d.getElementById('statUnterlagen').textContent) && JSON.parse(store['lotse.haken'] || '{}')[cb.getAttribute('data-haken')] === true, d.getElementById('statUnterlagen').textContent);
+  cb.checked = false; fire(cb, 'change');
+}
+check('[drucken] Ein Knopf „Drucken oder teilen“ im Schritt „Abschicken“, nicht oben', d.getElementById('mappePrint').textContent === I18N.de['akt.drucken'] && !!d.getElementById('mappePrint').closest('#auf-abschicken') && d.querySelectorAll('#mappe button.btn:not(.ghost)').length === 1);
+// Weg wechseln: andere Anträge, andere Unterlagen
+{
+  const b = wegRadios().find((r) => r.value === 'b'); b.checked = true; fire(b, 'change');
+  check('[weg] Grundsicherungsgeld gewählt: Formular des Jobcenters statt Wohngeld', !!d.querySelector('[data-ant="f-ggeld"]') && !d.querySelector('[data-ant="f-wg"]'));
+  const a = wegRadios().find((r) => r.value === 'a'); a.checked = true; fire(a, 'change');
+}
 // ---------- Empfänger bearbeitbar und Suchlink ----------
 {
-  const feld = d.querySelector('#mappeBody textarea[data-empf="uvg"]');
-  check('[empf] Vor einer Änderung kein Knopf „Wiederherstellen“ sichtbar', d.querySelector('#mappeBody [data-empf-resetbox="uvg"]').hidden === true);
+  const feld = d.querySelector('#mappe textarea[data-empf="uvg"]');
+  check('[empf] Vor einer Änderung kein Knopf „Wiederherstellen“ sichtbar', d.querySelector('#mappe [data-empf-resetbox="uvg"]').hidden === true);
   const brief = () => d.getElementById('brief-uvg').textContent;
   const kopie = () => d.getElementById('mappeText').value;
   check('[empf] Empfängerfeld je Brief, vorbefüllt mit dem Vorschlag der App (Stadt Erlangen, Jugendamt, Anschrift)', !!feld && /^Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle\n.+\n910\d\d Erlangen$/.test(feld.value), feld && feld.value);
-  check('[empf] Feld steht im Anschreiben an der Stelle der Anschrift, wird nicht gedruckt (gedruckt wird der fertige Brief)', !!feld && feld.closest('.page') === d.getElementById('m-brief-uvg') && feld.closest('.empf-edit').classList.contains('no-print') && d.getElementById('brief-uvg').classList.contains('nur-druck'));
+  check('[empf] Feld steht im Anschreiben an der Stelle der Anschrift, wird nicht gedruckt (gedruckt wird der fertige Brief)', !!feld && feld.closest('.page') === d.getElementById('m-brief-uvg') && !!feld.closest('.no-print') && !!d.getElementById('brief-uvg').closest('.nur-druck'));
   check('[empf] Anschrift bekannt: steht schon da, Feld erst nach „ändern“', !d.querySelector('[data-empf-zeigen="uvg"]').hidden && d.querySelector('[data-empf-feld="uvg"]').hidden && /Stadt Erlangen/.test(d.querySelector('[data-empf-zeigen="uvg"]').textContent));
   d.querySelector('[data-empf-aendern="uvg"]').click();
   check('[empf] „ändern“ öffnet das Feld an derselben Stelle', !d.querySelector('[data-empf-feld="uvg"]').hidden && d.querySelector('[data-empf-zeigen="uvg"]').hidden);
-  check('[empf] Nur ein Feld, weil nur ein Brief (Wohngeld hat Formular-Link)', d.querySelectorAll('#mappeBody textarea[data-empf]').length === 1);
+  check('[empf] Nur ein Feld, weil nur ein Brief (Wohngeld hat Formular-Link)', d.querySelectorAll('#mappe textarea[data-empf]').length === 1);
   feld.value = 'Landratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt'; fire(feld, 'input');
-  check('[empf] Änderung erscheint sofort im Brief', /\n\nLandratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt\n\nDatum:/.test(brief()) && !/Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(brief()), brief().slice(0, 300));
+  check('[empf] Änderung erscheint sofort im Brief und in der Zeile „An:“', /\n\nLandratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt\n\nDatum:/.test(brief()) && !/Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(brief()) && /Landratsamt Musterkreis/.test(d.querySelector('[data-ant="b-uvg"] .ant-an').textContent), brief().slice(0, 300));
   check('[empf] Änderung erscheint im Kopiertext (auch Grundlage für PDF)', /Landratsamt Musterkreis\nJugendamt\nMusterweg 5\n12345 Musterstadt/.test(kopie()) && /Angabenblatt/.test(kopie()));
-  check('[empf] Fokus und Feld bleiben beim Tippen erhalten (Mappe wird nicht neu aufgebaut)', d.querySelector('#mappeBody textarea[data-empf="uvg"]') === feld);
+  check('[empf] Fokus und Feld bleiben beim Tippen erhalten (Mappe wird nicht neu aufgebaut)', d.querySelector('#mappe textarea[data-empf="uvg"]') === feld);
   check('[empf] Absender, Betreff und Text bleiben unverändert', /Maria Beispiel/.test(brief()) && /Betreff: Antrag auf Unterhaltsvorschuss/.test(brief()) && /bestätigen Sie mir den Eingang/.test(brief()));
   feld.value = '  \n \n'; fire(feld, 'input');
   check('[empf] Leeres Feld: Linie zum Ausfüllen statt leerem Empfänger', /\n\n____________________\n\nDatum:/.test(brief()), brief().slice(0, 200));
   feld.value = '<img src=x onerror="window.__xss=1">\nTest'; fire(feld, 'input');
-  check('[empf] Eingabe wird nie als HTML ausgeführt', !w.__xss && !d.querySelector('#brief-uvg img') && /<img src=x/.test(brief()));
-  const reset = d.querySelector('#mappeBody [data-empf-reset="uvg"]');
+  check('[empf] Eingabe wird nie als HTML ausgeführt', !w.__xss && !d.querySelector('#brief-uvg img') && !d.querySelector('.ant-an img') && /<img src=x/.test(brief()));
+  const reset = d.querySelector('#mappe [data-empf-reset="uvg"]');
   check('[empf] Knopf „Vorschlag wiederherstellen“ erscheint nach einer Änderung', !!reset && reset.textContent === I18N.de['f.empfZurueck'] && !reset.closest('[data-empf-resetbox]').hidden);
   if (reset) reset.click();
-  const feld2 = d.querySelector('#mappeBody textarea[data-empf="uvg"]');
-  check('[empf] Wiederherstellen: Vorschlag wieder im Feld, im Brief und im Kopiertext, Knopf weg', !!feld2 && /^Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(feld2.value) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(brief()) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(kopie()) && d.querySelector('#mappeBody [data-empf-resetbox="uvg"]').hidden === true);
-  const link = d.querySelector('#mappeBody .empf-edit a');
+  const feld2 = d.querySelector('#mappe textarea[data-empf="uvg"]');
+  check('[empf] Wiederherstellen: Vorschlag wieder im Feld, im Brief und im Kopiertext, Knopf weg', !!feld2 && /^Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(feld2.value) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(brief()) && /Stadt Erlangen\nJugendamt, Unterhaltsvorschussstelle/.test(kopie()) && d.querySelector('#mappe [data-empf-resetbox="uvg"]').hidden === true);
+  const link = d.querySelector('#mappe .empf-edit a');
   const q = link ? decodeURIComponent(link.getAttribute('href').split('?q=')[1] || '') : '';
-  check('[empf] Suchlink: DuckDuckGo, kurzer Suchbegriff und Ortsname ohne Postleitzahl, öffnet extern', !!link && /^https:\/\/duckduckgo\.com\/\?q=/.test(link.getAttribute('href')) && q === 'Unterhaltsvorschussstelle Jugendamt Erlangen' && link.getAttribute('target') === '_blank' && /noopener/.test(link.getAttribute('rel')) && link.textContent === I18N.de['f.empfSuche'], q);
-  check('[empf] Titel und Platzhalter in der gewählten Sprache; bei bekannter Anschrift kein Hinweis „Fehlt die Anschrift“', d.querySelector('#mappeBody .empf-edit label').textContent === I18N.de['f.empfTitel'] && d.querySelector('#mappeBody textarea[data-empf]').getAttribute('placeholder') === I18N.de['f.empfPlatz'] && !d.querySelector('#mappeBody .empf-edit p.small'));
+  // Datenschutz (Sicherheitsprüfung 21.11.2026, S13): kein Ort und keine PLZ in der Adresse, nur der feste Suchbegriff; Hinweis, den Ort selbst dazuzuschreiben
+  check('[empf] Suchlink: DuckDuckGo, nur kurzer Suchbegriff ohne Ort und PLZ, öffnet extern', !!link && /^https:\/\/duckduckgo\.com\/\?q=/.test(link.getAttribute('href')) && q === 'Unterhaltsvorschussstelle Jugendamt' && !/Erlangen|\d{5}/.test(link.getAttribute('href')) && link.getAttribute('target') === '_blank' && /noopener/.test(link.getAttribute('rel')) && link.textContent === I18N.de['f.empfSuche'], q);
+  const ortHinweis = d.querySelector('#mappe .empf-edit .empf-such-ort');
+  check('[empf] Suchlink: Hinweis „Ort selbst dazuschreiben“ beim Link, in allen 13 Sprachen und Einfacher Sprache', !!ortHinweis && ortHinweis.textContent === I18N.de['f.empfKurz'] && ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'].every((l) => typeof I18N[l]['f.empfKurz'] === 'string' && I18N[l]['f.empfKurz'].length > 20) && typeof require('../src/lang/einfach/ux-fix.json')['f.empfKurz'] === 'string');
+  // UX-Nachprüfung 22.11.2026, Nr. 4: ein kurzer Satz statt zwei Absätzen, Knopf kurz („Anschrift im Internet suchen“)
+  check('[empf] Unter dem Suchlink nur ein kurzer Satz, Knopf „Anschrift im Internet suchen“', d.querySelectorAll('#mappe .empf-edit .empf-such ~ p').length === 1 && I18N.de['f.empfSuche'] === 'Anschrift im Internet suchen' && I18N.de['f.empfKurz'].length < 90);
+  check('[empf] Keine Suchadresse in der ganzen Mappe enthält Ort oder PLZ', [...d.querySelectorAll('#mappe a[href*="duckduckgo"]')].every((a) => !/Erlangen|91052|\d{5}/.test(decodeURIComponent(a.getAttribute('href')))));
+  check('[empf] Titel und Platzhalter in der gewählten Sprache; bei bekannter Anschrift kein Hinweis „Fehlt die Anschrift“', d.querySelector('#mappe .empf-edit label').textContent === I18N.de['f.empfTitel'] && d.querySelector('#mappe textarea[data-empf]').getAttribute('placeholder') === I18N.de['f.empfPlatz'] && !d.querySelector('#mappe .empf-edit p.small'));
   check('[empf] Neue Texte in allen 13 Sprachen vorhanden', ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'].every((l) => ['f.empfTitel', 'f.empfHinweis', 'f.empfSuche', 'f.empfZurueck'].every((k) => I18N[l] && typeof I18N[l][k] === 'string' && I18N[l][k].length > 5)));
   check('[empf] Keine Skriptfehler', errors.length === 0, errors.join('; '));
+}
+// ---------- UX-Nachprüfung 22.11.2026 (docs/entwuerfe/ux-nachpruefung.md) ----------
+{
+  // Nr. 5: Einkommen von Wohngeld und Kinderzuschlag in einem Punkt, Zeiträume je Leistung; gemeinsame Liste nur für Punkte, die mindestens zwei Anträge nennen
+  const a = wegRadios().find((r) => r.value === 'a'); a.checked = true; fire(a, 'change');
+  // Gemeinsame Liste: Überschrift, Satz zur Kopie, dann die Liste. Je Punkt die Leistungen, die ihn nennen (Einträge „<Leistung>|<Schlüssel>“ in data-haken-alt)
+  const gemeinsam = () => { const h = d.querySelector('#aufUnterlagen h4'); const ul = h && h.nextElementSibling && h.nextElementSibling.matches('p.small') ? h.nextElementSibling.nextElementSibling : null; return ul ? [...ul.querySelectorAll('li')].map((x) => ({ text: x.textContent.trim(), von: [...new Set(JSON.parse(x.querySelector('input').getAttribute('data-haken-alt')).map((k) => k.split('|')[0]).filter((k) => k !== 'u'))] })) : []; };
+  const li = [...d.querySelectorAll('#aufUnterlagen .haken-liste li')].map((x) => x.textContent.trim());
+  const ek = li.filter((x) => /Einkommen/i.test(x));
+  const mitKiz = !!d.querySelector('[data-pick="kiz"]') || wegRadios().length > 0 && /Kinderzuschlag/.test(d.querySelector('.weg-wahl').textContent);
+  check('[ux-einkommen] Ein Punkt zum Einkommen mit Zeitraum je Leistung (Wohngeld 12 Monate' + (mitKiz ? ', Kinderzuschlag 6 Monate' : '') + ')', ek.length === 1 && ek[0].includes(I18N.de['u.eink.wg']) && (!mitKiz || ek[0].includes(I18N.de['u.eink.kiz'])) && !li.includes(I18N.de['s.wohngeld.u2']) && !li.includes(I18N.de['s.kiz.u2']), li.join(' | '));
+  { const z = [...d.querySelectorAll('#aufUnterlagen .haken-liste li')].find((x) => x.querySelector('.u-zeit')); const tiefe = (s) => { let t = 0, m = 0; for (const c of s) { if (c === '(') m = Math.max(m, ++t); if (c === ')') t--; } return m; };
+    check('[ux-einkommen] Zeiträume als Unterzeilen, keine Klammer in der Klammer (Bildschirm, Druck, alle Sprachen)', !!z && z.querySelectorAll('.u-zeit').length === (mitKiz ? 2 : 1) && LANGS.every((l) => tiefe(I18N[l]['u.eink.mit'].replace('{teile}', I18N[l]['u.eink.wg'] + '; ' + I18N[l]['u.eink.kiz'])) <= 1) && !/\(/.test(I18N.de['u.eink.mit']), z && z.innerHTML); }
+  // Prüfung PR #179: „Für mehrere Anträge“ nur, wenn mindestens zwei gewählte Anträge den Punkt nennen (Ausweis nicht pauschal dorthin)
+  check('[ux-einkommen] Gemeinsame Liste: jeder Punkt wird von mindestens zwei Anträgen genannt (auch der Ausweis)', gemeinsam().length > 0 && gemeinsam().every((x) => x.von.length > 1), gemeinsam().map((x) => x.text + ' [' + x.von.join(',') + ']').join(' | '));
+  check('[ux-einkommen] Gemeinsamer Text in allen 13 Sprachen mit denselben Zeiträumen', LANGS.every((l) => /12/.test(I18N[l]['u.eink.wg']) && /\b6\b|6-/.test(I18N[l]['u.eink.kiz']) && /\{basis\}/.test(I18N[l]['u.eink.mit']) && /\{teile\}/.test(I18N[l]['u.eink.mit'])));
+  // Nr. 2: „Ich weiß es noch nicht“ → Zeile „Weg noch nicht gewählt“, Knopf „Weg wählen“, Tipp; Zähler im Titel
+  const o = wegRadios().find((r) => r.value === 'offen'); o.checked = true; fire(o, 'change');
+  const zeile = d.querySelector('#aufAntraege .ant-weg-offen');
+  check('[ux-weg-offen] Weg offen: Zeile „Weg noch nicht gewählt“ zuerst in „Anträge stellen“, mit Knopf und Tipp', !!zeile && zeile === d.querySelector('#aufAntraege .ant-zeile') && zeile.textContent.includes(I18N.de['f.weg.nochNicht']) && zeile.querySelector('[data-weg-waehlen]').textContent === I18N.de['f.weg.waehlen'] && zeile.textContent.includes(I18N.de[mitKiz ? 'f.weg.tippGgKiz' : 'f.weg.tippGg']));
+  check('[ux-weg-offen] Mit Kinderzuschlag im Weg nennt der Tipp nur Familienkasse und Wohngeldstelle, nie „dort“ (schlösse das Jobcenter ein)', /Familienkasse/.test(I18N.de['f.weg.tippGgKiz']) && /Wohngeldstelle/.test(I18N.de['f.weg.tippGgKiz']) && !/dort/.test(I18N.de['f.weg.tippGgKiz']) && LANGS.every((l) => /Familienkasse/.test(I18N[l]['f.weg.tippGgKiz']) && /Wohngeldstelle/.test(I18N[l]['f.weg.tippGgKiz'])));
+  check('[ux-weg-offen] Titel zählt den offenen Weg mit', /\+ 1 offen\)$/.test(d.getElementById('titelAntraege').textContent), d.getElementById('titelAntraege').textContent);
+  check('[ux-weg-offen] Tipp empfiehlt keinen Antrag beim Jobcenter oder Sozialamt', !/Stell (den|einen|zuerst)|beantrag|Jobcenter|Sozialamt/i.test(I18N.de['f.weg.tippGg'] + I18N.de['f.weg.tippGgKiz'] + I18N.de['f.weg.tippGsa']));
+  zeile.querySelector('[data-weg-waehlen]').click();
+  check('[ux-weg-offen] „Weg wählen“ setzt den Fokus auf die Weg-Wahl', d.activeElement && d.activeElement.getAttribute('data-weg') === zeile.getAttribute('data-ant-weg'));
+  const a2 = wegRadios().find((r) => r.value === 'a'); a2.checked = true; fire(a2, 'change');
+  check('[ux-weg-offen] Weg gewählt: Zeile weg, Titel ohne „offen“', !d.querySelector('#aufAntraege .ant-weg-offen') && !/offen/.test(d.getElementById('titelAntraege').textContent));
+  check('[ux-weg-offen] Neue Texte in allen 13 Sprachen (Du bzw. höflich in fa/fa-AF/ps)', LANGS.every((l) => ['f.weg.nochNicht', 'f.weg.waehlen', 'f.weg.tippGg', 'f.weg.tippGgKiz', 'f.weg.tippGsa', 'f.weg.zeile', 'f.auf.antraegeOffen', 'akt.ergDrucken', 'f.empfKurz'].every((k) => typeof I18N[l][k] === 'string' && I18N[l][k].length > 2)) && /\{n\}/.test(I18N.ar['f.auf.antraegeOffen']) && /\{m\}/.test(I18N.ps['f.auf.antraegeOffen']));
+  // Nr. 1: Knopf „Antrag vorbereiten“ in einer Ergebniskarte öffnet die Mappe mit dieser Leistung
+  d.getElementById('mappeClose').click();
+  check('[ux-karte] Mappe geschlossen', d.getElementById('mappe').hidden === true);
+  const kb = d.querySelector('[data-pick="kindergeld"]'); if (kb) { kb.checked = false; fire(kb, 'change'); }
+  const knopf = d.querySelector('#cards [data-antrag="kindergeld"]');
+  if (knopf) { const det = knopf.closest('details'); if (det) det.open = true; knopf.click(); }
+  check('[ux-karte] Karte Kindergeld: „Antrag vorbereiten“ öffnet die Mappe, Kindergeld angehakt, „Anträge stellen“ offen', !!knopf && d.getElementById('mappe').hidden === false && d.querySelector('[data-pick="kindergeld"]').checked && d.getElementById('aufAntraegeD').open && !!d.querySelector('#aufAntraege [data-ant$="-kg1"], #aufAntraege [data-ant$="-kindergeld"]'));
+  d.getElementById('mappeClose').click();
+  const kz = d.querySelector('#cards [data-antrag="ggeld"]');
+  if (kz) { kz.click(); check('[ux-karte] Karte Grundsicherungsgeld: Mappe mit Weg „Grundsicherungsgeld“ gewählt', d.getElementById('mappe').hidden === false && !!wegRadios().find((r) => r.value === 'b' && r.checked)); d.getElementById('mappeClose').click(); }
+  const a3 = wegRadios().find((r) => r.value === 'a'); if (a3) { a3.checked = true; fire(a3, 'change'); }
+  // Formular-Leistung (Wohngeld, data-ant="f-wg"): „Anträge stellen“ klappt auf, auch wenn sonst ein anderer Schritt zuerst offen wäre (Name fehlt)
+  const nameAlt = d.getElementById('p-name').value; d.getElementById('p-name').value = ''; fire(d.getElementById('p-name'), 'input');
+  const wk = d.querySelector('#cards [data-antrag="wohngeld"]');
+  if (wk) { const det = wk.closest('details'); if (det) det.open = true; wk.click(); }
+  check('[ux-karte] Karte Wohngeld (amtliches Formular): Mappe offen, Formular-Zeile mit data-leistung, „Anträge stellen“ aufgeklappt', !!wk && d.getElementById('mappe').hidden === false && !!d.querySelector('#aufAntraege .ant-form[data-leistung="wohngeld"]') && d.getElementById('aufAntraegeD').open);
+  d.getElementById('mappeClose').click();
+  d.getElementById('p-name').value = nameAlt; fire(d.getElementById('p-name'), 'input');
+  if (kb) { const k2 = d.querySelector('[data-pick="kindergeld"]'); k2.checked = false; fire(k2, 'change'); }
+  check('[ux-karte] Keine Skriptfehler', errors.length === 0, errors.join('; '));
+  d.getElementById('mappeMake').click();
+}
+// ---------- Absender: einmal eintragen, überall nutzen ----------
+{
+  // Brief prüfen: Felder der Widerspruchs-/Antwortschreiben bekommen die Angaben; Änderung dort gilt für alle
+  const bsName = d.getElementById('bs-name');
+  if (bsName) {
+    d.getElementById('mappeClose').click();
+    const k = d.getElementById('brief-jc'); if (k) k.click();
+    check('[absender] Widerspruch Jobcenter: Name und Anschrift eingesetzt', bsName.value === 'Maria Beispiel' && d.getElementById('bs-anschrift').value === 'Hauptstraße 1' && d.getElementById('bs-ort').value === '91056 Erlangen', bsName.value);
+    bsName.value = 'Maria Neu'; fire(bsName, 'input');
+    check('[absender] Änderung im Widerspruch gilt für alle (Mappe, andere Briefe)', d.getElementById('p-name').value === 'Maria Neu' && (!d.getElementById('kz-name') || d.getElementById('kz-name').value === 'Maria Neu'));
+    bsName.value = 'Maria Beispiel'; fire(bsName, 'input');
+    d.getElementById('mappeMake').click();
+  }
 }
 check('Web-Version: Anbieter im Impressum David Cabrerizo', d.getElementById('anbieterName').textContent === 'David Cabrerizo');
 check('Druck: feste Briefränder (DIN 5008) per @page, unabhängig vom Browser', /@page\s*\{[^}]*size:\s*A4[^}]*margin:\s*20mm 20mm 20mm 25mm/.test(d.documentElement.innerHTML));
@@ -254,15 +371,16 @@ check('Druck: feste Briefränder (DIN 5008) per @page, unabhängig vom Browser',
   check('Rückmeldung: keine persönlichen Angaben (Name, Anschrift, Geburtsdatum, Einkommen, Miete) in der E-Mail', !/Maria|Beispiel|Hauptstraße|Erlangen|1985|2\.?200|1\.?750|950/.test(href), href);
 }
 d.getElementById('mappeCopy').click();
-setTimeout(() => {
+setTimeout(async () => {
   check('Kopieren meldet Ergebnis oder zeigt Ersatzfeld', d.getElementById('copyMsg').textContent.length > 0 || d.getElementById('mappeText').hidden === false);
   // Sprache in der Mappe
   setLang('en');
-  const docs = d.getElementById('m-unterlagen');
-  check('Mappe wird bei Sprachwechsel neu aufgebaut: Unterlagenliste englisch', /Documents for this benefit/.test(docs.textContent) && /Rental contract or confirmation of rent/.test(docs.textContent), docs.textContent.slice(0, 80));
+  const docs = d.getElementById('aufUnterlagen');
+  check('Mappe wird bei Sprachwechsel neu aufgebaut: Unterlagenliste englisch', /^(For all applications|For several applications)/.test(docs.textContent) && /Birth certificate|Rental|tenancy/i.test(docs.textContent), docs.textContent.slice(0, 120));
+  check('Formular-Satz in der App-Sprache (nicht mehr deutsch)', d.querySelector('[data-ant="f-wg"]').textContent.indexOf(I18N.en['fw.wg.by']) >= 0);
   check('Brief bleibt bei Sprachwechsel Deutsch', /Betreff: Antrag auf Unterhaltsvorschuss/.test(d.querySelector('#mappeBody .page').textContent));
   setLang('ar');
-  check('Arabisch: Mappe-Leiste rechts nach links, Brief bleibt links nach rechts', d.getElementById('app').getAttribute('dir') === 'rtl' && d.querySelector('#mappeBody .page').getAttribute('dir') === 'ltr');
+  check('Arabisch: Mappe rechts nach links, Brief bleibt links nach rechts', d.getElementById('app').getAttribute('dir') === 'rtl' && d.querySelector('#mappeBody .page').getAttribute('dir') === 'ltr' && d.getElementById('m-brief-uvg').getAttribute('dir') === 'ltr');
   setLang('de');
   d.getElementById('mappeClose').click();
   check('Mappe lässt sich schließen', d.getElementById('mappe').hidden === true && !d.getElementById('app').classList.contains('pm'));
@@ -272,14 +390,60 @@ setTimeout(() => {
   check('Titel ist ein Name', title === 'SoLo – Sozialleistungslotse');
   check('Dunkelmodus doppelt definiert', (html.match(/color-scheme: dark/g) || []).length >= 2);
   check('Kein horizontales Scrollen erzwungen', !/min-width:\s*\d{4,}px/.test(html));
-  check('Große Schrift: Kartentitel brechen lange Wörter um (kein seitliches Scrollen)', /\.card header > div \{ min-width: 0;/.test(html) && /\.card header h3, \.card \.desc, \.es-karte h3 \{ overflow-wrap: anywhere; hyphens: auto; \}/.test(html));
+  check('Große Schrift: Kartentitel brechen lange Wörter um (kein seitliches Scrollen)', /\.card header > div \{ min-width: 0;/.test(html) && /\.card header h3 \{ overflow-wrap: anywhere; hyphens: manual;/.test(html) && /\.auf-titel \{[^}]*overflow-wrap: anywhere/.test(html) && /\.ant-zeile h4 \{[^}]*overflow-wrap: anywhere/.test(html));
   check('Logische statt physische Abstände im Formular (RTL-fähig)', !/\.money input\s*\{[^}]*padding-right/.test(html) && /inset-inline-end/.test(html));
   check('Jedes Formularfeld hat eine Beschriftung', ['miete', 'mietstufe', 'ek1Art', 'ek1Brutto', 'ek1Netto', 'ek2Art', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'vermoegen', 'gebJahr', 'kindEink', 'ausbildung', 'pflegegrad', 'p-name', 'p-geb', 'p-strasse', 'p-ort', 'p-tel'].every((id) => d.querySelector('label[for="' + id + '"]')));
   // Grenze 6 MB (Entscheidung David 20.11.2026; davor 5 MB; bis 1.4: 2,5 MB; 19.11.2026: 3 MB für 13 Sprachen; 20.11.2026: 4 MB für Vorgänge speichern, Beratungsmodus, Pflege-Unterstützung, Schulden-Tipps, Haushaltsplan; 20.11.2026 nachmittags: 5 MB für Fristen, Schuldenliste, Energie, Mietgrenze, Kostensenkung, Paar-Einkommen – Entscheidung des Nutzers): eine einzige Datei, die offline läuft; der größte Teil sind PLZ-Daten (ganz Deutschland mit Mietenstufen), Behörden (Bayern), 13 Sprachen,
   // seit 1.4 auch „Brief prüfen“ und die Pflegegrad-Einschätzung (zusammen gut 200 KB)
   check('Web-Datei ist ein vollständiges Dokument mit UTF-8 und Viewport (Safari, Handy)', /^<!doctype html>/i.test(html) && /<meta charset="utf-8">/i.test(html.slice(0, 300)) && /name="viewport"/.test(html.slice(0, 400)));
-  // 21.11.2026: in Bytes gemessen (Buffer.byteLength, UTF-8) statt in Zeichen; Grenze vorläufig 7 MB – Entscheidung David steht noch aus
-  check('Dateigröße unter 7 MB (Bytes, vorläufig)', Buffer.byteLength(html, 'utf8') < 7 * 1024 * 1024, (Buffer.byteLength(html, 'utf8') / 1024).toFixed(0) + ' KB');
+  // 21.11.2026: in Bytes gemessen (Buffer.byteLength, UTF-8) statt in Zeichen.
+  // Grenze ganze Datei 8 MB (Entscheidung David 21.11.2026; davor vorläufig 7 MB), weil Pflege-Übersicht, Erklärseite und Einschätzung jetzt
+  // in den Sprachen eingebettet sind (src/lang/pflege); Startgrenze 3 MB bleibt.
+  // 21.11.2026 (Sprachen nur bei Bedarf, Entscheidung David „A“): Die Web-Datei enthält weiter alle 13 Sprachen (offline, eine Datei),
+  // aber die 12 Fremdsprachen als JSON-Datenblöcke, die erst beim Wechsel geparst werden. Ehrliche Grenzen: ganze Datei < 8 MB,
+  // beim Start geparster Teil (ohne Datenblöcke) < 3 MB (gemessen 2,8 MB; davon PLZ-Daten, Behörden, Deutsch, Programm).
+  check('Dateigröße unter 8 MB (Bytes, alle Sprachen offline in der Datei)', Buffer.byteLength(html, 'utf8') < 8 * 1024 * 1024, (Buffer.byteLength(html, 'utf8') / 1024).toFixed(0) + ' KB');
+  const sprachBloecke = html.match(/<script type="application\/json" id="solo-sprache-[^"]+">[^<]*<\/script>\n/g) || [];
+  const startTeil = sprachBloecke.reduce((a, b) => a.replace(b, ''), html);
+  check('[sprachladen] Beim Start geparster Teil unter 3 MB (Fremdsprachen erst beim Wechsel)', Buffer.byteLength(startTeil, 'utf8') < 3 * 1024 * 1024, (Buffer.byteLength(startTeil, 'utf8') / 1024).toFixed(0) + ' KB');
+  check('[sprachladen] 12 Fremdsprachen als Datenblöcke, Deutsch nicht', sprachBloecke.length === 12 && !/id="solo-sprache-de"/.test(html));
+  check('[sprachladen] Datenblöcke ohne „<“ im Inhalt (kein vorzeitiges </script>)', sprachBloecke.every((b) => b.replace(/^<script[^>]*>/, '').replace(/<\/script>\n$/, '').indexOf('<') < 0));
+  check('[sprachladen] Startskript: nur Deutsch vollständig, andere Sprachen nur Name und Schreibrichtung', Object.keys(I18N).filter((l) => l !== 'de').every((l) => w.eval('I18N')[l] === undefined || Object.keys(w.eval('I18N')[l]).every((k) => k.startsWith('meta.')) || w.eval('SprachLaden').da(l)) && Object.keys(w.eval('I18N').de).length === Object.keys(I18N.de).length);
+  // Sprachwechsel ohne Netz: JSDOM lädt hier nichts nach (keine Ressourcen) – die Texte kommen nur aus der Datei selbst
+  ['ar', 'uk', 'so'].forEach((l) => {
+    setLang(l);
+    const I = w.eval('I18N')[l];
+    check('[sprachladen] Offline-Wechsel nach ' + l + ': sofort übersetzt, alle Texte da', d.getElementById('app').getAttribute('lang') === l && JSON.stringify(I) === JSON.stringify(I18N[l]) && d.querySelector('[data-t="nav.ordner"]') && d.querySelector('[data-t="nav.ordner"]').textContent === I18N[l]['nav.ordner'] && !d.getElementById('sprachFehler'));
+  });
+  // Unabhängige Sicherheitsprüfung 21.11.2026: nur Kürzel aus der festen Liste; nichts von „außen“ (Pfad, Objekt-Eigenschaften) gilt als Sprache
+  check('[sprachladen] Nur erlaubte Sprachkürzel: kein Pfad, keine Objekt-Eigenschaft', ['constructor', 'toString', '__proto__', 'hasOwnProperty', '../de', 'de/../ar', 'ar.js', 'AR', '', null, 5].every((x) => w.eval('SprachLaden').da(x) === false) &&
+    w.eval('SprachLaden').dazu('constructor', { 'meta.name': 'x' }) === false && w.eval('SprachLaden').dazu('../x', { 'meta.name': 'x' }) === false && typeof w.eval('I18N').constructor === 'function');
+  check('[sprachladen] Arabisch: rechts nach links nach dem Nachladen', (setLang('ar'), d.getElementById('app').getAttribute('dir') === 'rtl'));
+  // Fehlerfall: Datenblock fehlt (z. B. beschädigte Datei) → Deutsch und kurzer Hinweis. Eigene kleine Seite: gespeicherte Sprache
+  // Französisch, Block für Französisch aus der Datei entfernt; Start und späterer Wechsel zeigen Deutsch mit Hinweis
+  {
+    const ohneFr = html.replace(/<script type="application\/json" id="solo-sprache-fr">[^<]*<\/script>\n/, '');
+    const st = { 'lotse-lang': 'fr' }, fehlerF = [];
+    const domF = new JSDOM('<!doctype html><html><head><meta charset="utf-8"></head><body>' + ohneFr + '</body></html>', {
+      runScripts: 'dangerously', pretendToBeVisual: true,
+      beforeParse(x) {
+        x.addEventListener('error', (e) => fehlerF.push(String(e.error || e.message)));
+        x.HTMLElement.prototype.scrollIntoView = function () {}; x.scrollTo = function () {};
+        Object.defineProperty(x, 'localStorage', { value: { getItem: (k) => (k in st ? st[k] : null), setItem: (k, v) => { st[k] = String(v); } }, configurable: true });
+      }
+    });
+    await new Promise((r) => setTimeout(r, 50));
+    const dF = domF.window.document, hF = () => dF.getElementById('sprachFehler');
+    check('[sprachladen] Sprache lädt nicht (beim Start): Deutsch und Hinweis', ohneFr.length < html.length && dF.getElementById('app').getAttribute('lang') === 'de' && dF.getElementById('lang').value === 'de' && !!hF() && /Deutsch/.test(hF().textContent) && dF.querySelector('[data-t="nav.ordner"]').textContent === I18N.de['nav.ordner'] && fehlerF.length === 0, (hF() && hF().textContent) + ' ' + fehlerF.join('|'));
+    const sF = dF.getElementById('lang'); sF.value = 'uk'; sF.dispatchEvent(new domF.window.Event('change', { bubbles: true }));
+    check('[sprachladen] Andere Sprache geht danach, Hinweis weg', dF.getElementById('app').getAttribute('lang') === 'uk' && !hF());
+    sF.value = 'fr'; sF.dispatchEvent(new domF.window.Event('change', { bubbles: true }));
+    // Rückmeldung kommt über setTimeout; vorher geplante Zeichen-Timer (Bündel) können länger als 30 ms brauchen: bis 2 s warten
+    for (let i = 0; i < 40 && !hF(); i++) await new Promise((r) => setTimeout(r, 50));
+    check('[sprachladen] Sprache lädt nicht (beim Wechsel): Deutsch und Hinweis', dF.getElementById('app').getAttribute('lang') === 'de' && !!hF());
+    domF.window.close();
+  }
+  setLang('de');
   // ----- Antrag scannen -----
   setLang('de');
   beispiel('p1');
@@ -299,7 +463,7 @@ setTimeout(() => {
   check('Scan: IBAN wird nie vorausgefüllt, steht in der Liste zum Selbst-Eintragen (zum Abhaken)', !rowOf('IBAN').querySelector('bdi') && !!rowOf('IBAN').querySelector('input[type=checkbox]') && /selbst/.test(d.getElementById('sc-out').textContent));
   check('Scan: Antragswort "Antrag auf Wohngeld" ist kein Feld', !rowOf('Antrag auf Wohngeld'));
   setLang('tr');
-  check('Scan: Erklärung folgt der Sprache (Türkisch), Wert bleibt deutsch', /adınız/.test(rowOf('Name, Vorname').textContent) && rowOf('Name, Vorname').querySelector('bdi').textContent === 'Maria Muster');
+  check('Scan: Erklärung folgt der Sprache (Türkisch, Du-Form), Wert bleibt deutsch', /adın/.test(rowOf('Name, Vorname').textContent) && rowOf('Name, Vorname').querySelector('bdi').textContent === 'Maria Muster');
   setLang('ar');
   check('Scan: Arabisch rendert, Formularzeile bleibt ltr/de', rowOf('Name, Vorname').querySelector('.sc-lab').getAttribute('dir') === 'ltr');
   setLang('de');
@@ -428,16 +592,18 @@ setTimeout(() => {
     check('[geld] Kacheln in der Form der Startseite (Symbol, Titel, Text)', kacheln().every((b) => b.querySelector('.sk-sym svg') && b.querySelector('.sk-txt b') && b.querySelector('.sk-txt span')));
     check('[geld] weiße Unterkacheln (uk-karte im uk-raster, Design #68)', kacheln().length === 6 && kacheln().every((b) => b.classList.contains('uk-karte') && !b.classList.contains('sk')));
     check('[geld] keine Zeile für Fachkräfte im Privatmodus', !box.querySelector('.ber-nur'));
+    check('[ux-c] Startebene „Geld und Schulden“: großer Bereichstitel, kein Aufgaben-Titel', !d.getElementById('v-sparen').classList.contains('gs-unter') && !box.querySelector('.gs-titel'));
     // 1 Es ist dringend: Krisen-Check zuerst, dann Fälle
     kacheln()[0].click();
     const faelle = kacheln().map((b) => b.className.match(/gs-d-([a-z]+)/)[1]);
     check('[geld] Es ist dringend: Krisen-Check als erste Karte, dann Konto, Strom/Gas, Mahnbescheid, Wohnung, Geldstrafe', faelle.join() === 'check,konto,strom,mahn,miete,geld', faelle.join());
     kacheln()[3].click();
-    check('[geld] Mahnbescheid: Frist und erster Schritt oben, Einzelheiten zugeklappt', box.querySelector('.gs-frist p').textContent === I18N.de['gs.d.mahn.frist'] && box.querySelector('.gs-schritt p').textContent === I18N.de['gs.d.mahn.schritt'] && !box.querySelector('details[data-fall="mahn"]').open);
+    check('[geld] Mahnbescheid: Frist offen (kurz fett, Einzelheiten ohne Paragrafen), erster Schritt oben, Einzelheiten zugeklappt', box.querySelector('.gs-frist .gs-frist-kurz b').textContent === I18N.de['gs.d.mahn.frist.kurz'] && box.querySelector('.gs-frist .gs-frist-lang').textContent === FmtN.ohnePara(I18N.de['gs.d.mahn.frist']) && !box.querySelector('.gs-frist details') && box.querySelector('.gs-schritt p').textContent === I18N.de['gs.d.mahn.schritt'] && !box.querySelector('details[data-fall="mahn"]').open);
     const fall = (f) => box.querySelector('[data-fall="' + f + '"] p').textContent;
     check('[schulden-korr] Vollstreckungsbescheid: darf sofort gepfändet werden, Einspruch 2 Wochen (Notfrist), stoppt nicht von selbst; Widerspruch bis zum Vollstreckungsbescheid', /solange das Gericht noch keinen Vollstreckungsbescheid erlassen hat \(§ 694 ZPO\)/.test(fall('mahn')) && /darf sofort gepfändet werden \(§ 700 ZPO\)\. Dagegen hilft nur noch ein Einspruch\. Er muss innerhalb von 2 Wochen/.test(fall('mahn')) && /Notfrist, §§ 700, 339 ZPO/.test(fall('mahn')) && /nicht von selbst.*§ 719 ZPO/.test(fall('mahn')));
-    check('[geld] Mahnbescheid nennt die 2-Wochen-Frist mit Quelle', /2 Wochen.*§ 692 ZPO/.test(box.querySelector('.gs-frist p').textContent));
-    check('[geld] Mahnbescheid: Knopf „In die Schulden-Liste eintragen“', !!box.querySelector('.gs-in-liste'));
+    check('[ux-c] Seitentitel = Aufgabe: „Mahnbescheid“ als Überschrift, „Geld und Schulden“ als kleine Zeile', d.getElementById('v-sparen').classList.contains('gs-unter') && box.querySelector('.gs-titel').getAttribute('role') === 'heading' && box.querySelector('.gs-titel').textContent === I18N.de['gs.d.mahn']);
+    check('[geld] Mahnbescheid nennt die 2-Wochen-Frist mit Quelle (Paragraf in „Quellen“, UX-Audit C Nr. 18)', /2 Wochen/.test(box.querySelector('.gs-frist-lang').textContent) && !/§/.test(box.querySelector('.gs-frist').textContent) && /Gesetze auf dieser Seite: § 692 ZPO; §§ 700, 339 ZPO/.test(box.querySelector('.quellen').textContent));
+    check('[geld] Mahnbescheid: Knopf „In die Schulden-Liste eintragen“ als Hauptknopf (UX-Audit C)', !!box.querySelector('.gs-in-liste') && !box.querySelector('.gs-in-liste').classList.contains('ghost'));
     // Aufräumen 21.11.2026: alle Fälle gleich aufgebaut – Frist, „Das tust du jetzt“, Knöpfe (Beratungsstelle zuletzt), Quellen
     const aufbau = () => [...box.children].map((e) => (e.className.match(/pf-frage|gs-frist|gs-schritt|gs-tipps|gs-freibetrag|gs-knoepfe|quellen/) || ['?'])[0]).join();
     check('[aufraeumen] Mahnbescheid: Reihenfolge Titel, Frist, Schritte, Knöpfe, Quellen; Beratungsstelle als letzter Knopf', aufbau() === 'pf-frage,gs-frist,gs-schritt,gs-knoepfe,quellen' && box.querySelector('.gs-knoepfe').lastChild.classList.contains('gs-zur-hilfe') && box.querySelectorAll('.gs-schritt li').length === 2 && box.querySelector('.gs-schritt h3').textContent === I18N.de['pf.jetzt.h'], aufbau());
@@ -448,22 +614,31 @@ setTimeout(() => {
     zur();
     check('[geld] „← Zurück“ aus einem Fall führt zur Auswahl „Es ist dringend“', kacheln().length === 6 && !!box.querySelector('.gs-d-check'));
     kacheln()[2].click();
-    { const sx = [...box.querySelectorAll('details.tipp > p')].map((e) => e.textContent).join(' ');
+    { const sx = [...box.querySelectorAll('details.tipp > p, .gs-frist-lang')].map((e) => e.textContent).join(' '); // Frist offen (UX-Audit C Nr. 6)
       check('[schulden-korr] Strom/Gas: 2 Abschläge und 100 €, 4 Wochen Androhung, 8 Werktage, zinsfreie Raten (§§ 41f, 41g EnWG)', /2 Monatsabschlägen und mindestens 100 € .*§ 41f EnWG/.test(fall('strom')) && /4 Wochen vorher angedroht und 8 Werktage/.test(sx) && /zinsfrei anbieten \(§ 41g EnWG\)/.test(sx) && /Strom und Gas/.test(fall('strom')) && !/StromGVV/.test(sx));
       check('[aufraeumen] Strom/Gas: 3 Schritte (Raten, Härte, Darlehen), Tipp „Sperre erst ab …“ darunter, ohne Wiederholung von sp.schulden.strom', [...box.querySelectorAll('.gs-schritt details')].map((x) => x.getAttribute('data-tipp')).join() === 'gs.d.strom.schritt,gs.d.strom.haerte,gs.d.strom.darlehen' && box.querySelector('.gs-tipps [data-tipp="gs.d.strom.grenze"]') && !box.querySelector('[data-tipp="sp.schulden.strom"]') && /Darlehen/.test(sx)); }
     check('[geld] Strom/Gas: Knopf „Abschlag prüfen“', !!box.querySelector('.gs-abschlag'));
+    box.querySelector('.gs-brief').click();
+    { const tx = d.getElementById('ms-text').value; check('[ux-c] Strom/Gas: Muster mit beiden Fällen (Grundversorgung § 41g EnWG / anderer Tarif ohne Anspruch)', /Abwendungsvereinbarung mit zinsfreien Raten \(§ 41g EnWG\)/.test(tx) && /Anderer Tarif: Ich bitte um eine Ratenzahlung\./.test(tx) && box.querySelector('.gs-brief-lead').textContent === I18N.de['gs.d.strom.brief.lead']); }
+    zur();
     zur(); kacheln()[4].click();
-    check('[schulden-korr] Mietschulden: ordentliche Kündigung kann trotz Schonfrist bestehen bleiben', /ordentlich \(mit Frist\) gekündigt.*trotz Zahlung bestehen bleiben/.test(fall('miete')) && /§ 569 BGB/.test(box.querySelector('.gs-frist p').textContent));
+    check('[schulden-korr] Mietschulden: ordentliche Kündigung kann trotz Schonfrist bestehen bleiben', /ordentlich \(mit Frist\) gekündigt.*trotz Zahlung bestehen bleiben/.test(fall('miete')) && /§ 569 BGB/.test(box.querySelector('.quellen').textContent));
+    check('[ux-c] Mietschulden: Frist-Kurztext verleitet nicht zum Abwarten, alle offenen Mieten (Rechtsprüfung 21.11.2026)', box.querySelector('.gs-frist-kurz').textContent === 'Sofort handeln. Warte nicht auf die Klage.' && /Alle offenen Mieten.*2 Monate/.test(box.querySelector('.gs-frist-lang').textContent));
+    box.querySelector('.gs-brief').click();
+    check('[ux-c] Mietschulden: Hauptknopf öffnet Muster „Antrag auf Übernahme der Mietschulden“ (Wortlaut Rechtsprüfung, Empfänger nur als Art der Stelle)', box.querySelector('.pf-frage').textContent === I18N.de['gs.d.miete.brief'] && /ich beantrage die Übernahme meiner Mietschulden, um die Wohnung zu sichern \(Jobcenter: § 22 Abs\. 8 SGB II · Sozialamt: § 36 SGB XII\)\. Mir droht der Verlust der Wohnung\./.test(d.getElementById('ms-text').value) && /\[Name der Firma oder Stelle\]/.test(d.getElementById('ms-text').value) && !d.getElementById('ms-von') && /Darlehen/.test(box.querySelector('.gs-brief-lead').textContent));
+    zur(); check('[ux-c] Zurück aus dem Muster: wieder die Seite Mietschulden', box.querySelector('.pf-frage').textContent === I18N.de['gs.d.miete'] && !!box.querySelector('.gs-frist'));
     zur(); kacheln()[5].click();
-    check('[geld] Geldstrafe: Frist mit § 43 StGB (1 Tag für 2 Tagessätze), Schritt mit § 459a StPO und Art. 293 EGStGB', /1 Tag Haft für 2 Tagessätze \(§ 43 StGB\)/.test(box.querySelector('.gs-frist p').textContent) && /§ 459a StPO/.test(box.querySelector('.gs-schritt p').textContent) && /Art\. 293 EGStGB/.test(box.querySelector('.gs-schritt p').textContent));
+    check('[geld] Geldstrafe: Frist mit § 43 StGB (1 Tag für 2 Tagessätze), Schritt mit § 459a StPO und Art. 293 EGStGB', /1 Tag Haft für 2 Tagessätze/.test(box.querySelector('.gs-frist-lang').textContent) && /§ 43 StGB/.test(box.querySelector('.quellen').textContent) && /§ 459a StPO/.test(box.querySelector('.gs-schritt p').textContent) && /Art\. 293 EGStGB/.test(box.querySelector('.gs-schritt p').textContent));
     zur();
     // Krisen-Check: eine Frage je Bildschirm, Ergebnis höchstens 3 „zuerst“, immer „Beratungsstelle finden“ am Ende
     kacheln()[0].click();
     check('[krisencheck] Frage 1 von 7 mit Ja/Nein und „Weiß nicht – weiter“', /1 von 7/.test(box.querySelector('.kc-nr').textContent) && d.getElementById('kc-q').textContent === I18N.de['kc.q1'] && !!d.getElementById('kc-ja') && !!d.getElementById('kc-nein') && !!d.getElementById('kc-weiter'));
     ['kc-ja', 'kc-nein', 'kc-ja', 'kc-ja', 'kc-ja', 'kc-weiter', 'kc-nein'].forEach((id) => d.getElementById(id).click());
-    const zuerst = [...box.querySelectorAll('ol.kc-liste .uk-karte')].map((b) => b.className.match(/kc-z-([a-z]+)/)[1]);
-    const danach = [...box.querySelectorAll('ul.kc-liste:not(.kc-ende) .uk-karte')].map((b) => b.className.match(/kc-z-([a-z]+)/)[1]);
+    const zuerst = [...box.querySelectorAll('ol.kc-liste:not(.kc-weiter) .uk-karte')].map((b) => b.className.match(/kc-z-([a-z]+)/)[1]);
+    const danach = [...box.querySelectorAll('ol.kc-weiter li:not(.kc-ende) .uk-karte')].map((b) => b.className.match(/kc-z-([a-z]+)/)[1]);
     check('[krisencheck] Ergebnis: Mahnbescheid, Miete, Strom zuerst; Konto danach; am Ende Beratungsstelle finden', zuerst.join() === 'mahn,miete,strom' && danach.join() === 'konto' && !!box.querySelector('.kc-ende .kc-z-finden'), zuerst.join() + '|' + danach.join());
+    check('[ux-c] Krisen-Check-Ergebnis: eine Überschrift, Beratung als 5. Schritt', !box.textContent.includes(I18N.de['kc.h']) && box.querySelectorAll('.pf-frage').length === 1 && box.querySelector('ol.kc-weiter').lastChild.querySelector('.kc-z-finden') && box.querySelector('ol.kc-weiter').start === 4);
+    check('[ux-c] Krisen-Check-Ergebnis: je Karte Frist oder Grund', box.querySelector('.kc-z-mahn').textContent.includes(I18N.de['gs.d.mahn.frist.kurz']) && box.querySelector('.kc-z-miete').textContent.includes(I18N.de['gs.d.miete.frist.kurz']) && box.querySelector('.kc-z-konto').textContent.includes(I18N.de['gs.d.konto.frist.kurz']));
     box.querySelector('.kc-z-miete').click();
     check('[krisencheck] Ergebniskarte springt in den Fall', box.querySelector('.pf-frage').textContent === I18N.de['gs.d.miete']);
     zur(); zur();
@@ -476,7 +651,9 @@ setTimeout(() => {
     check('[inkasso] Prüfliste: 6 Haken nach § 13a RDG, ohne Fundstelle im Privatmodus, 3 Warnungen', ipH.length === 6 && !box.querySelector('.ber-nur') && box.querySelectorAll('.ip-warn').length === 3);
     check('[inkasso] Prüfliste: Hinweis „Erste Einschätzung, keine Rechtsberatung“ immer sichtbar (Prüfung 20.11.2026)', !!box.querySelector('.ip-hinweis') && /keine Rechtsberatung/.test(box.querySelector('.ip-hinweis').textContent));
     check('[inkasso] Prüfliste: Tipps zusammen, Hinweis „keine Rechtsberatung“ erst nach dem letzten Tipp (Aufräumen 21.11.2026)', box.querySelector('.ip-hinweis').previousElementSibling.getAttribute('data-fall') === 'inkasso' && box.querySelector('.ip-hinweis').nextElementSibling.classList.contains('quellen'));
-    check('[inkasso] ohne Haken: alles fehlt, Knopf zum Schreiben „Forderungsaufstellung“', box.querySelectorAll('#ip-erg li').length === 6 && !!d.getElementById('ip-zum-schreiben'));
+    check('[ux-c] Prüfliste ohne Haken: keine zweite Liste derselben 6 Punkte', box.querySelectorAll('#ip-erg li').length === 0 && d.getElementById('ip-erg').textContent === '' && box.textContent.split(I18N.de['ip.1']).length === 2);
+    ipH[0].checked = true; ipH[0].dispatchEvent(new w.Event('change', { bubbles: true }));
+    check('[ux-c] Prüfliste mit 1 Haken: „Nicht angehakt: 5 von 6“, Knopf zur Forderungsaufstellung, keine Liste', /^Nicht angehakt: 5 von 6 Punkten\./.test(d.getElementById('ip-erg').textContent) && !!d.getElementById('ip-zum-schreiben') && box.querySelectorAll('#ip-erg li').length === 0);
     ipH.forEach((c) => { c.checked = true; c.dispatchEvent(new w.Event('change', { bubbles: true })); });
     check('[inkasso] alle Haken: kein Urteil über die Forderung', d.getElementById('ip-erg').textContent === I18N.de['ip.erg.alle'] && !d.getElementById('ip-zum-schreiben'));
     zur(); box.querySelector('.gs-i-gelb').click();
@@ -514,10 +691,13 @@ setTimeout(() => {
     kacheln()[5].click();
     check('[aufr-geld] Unterkarten: finden, Bis zum Termin, Mappe, Ablauf (keine eigene Kachel „unseriöse Anbieter“)', kacheln().map((b) => b.className.match(/gs-h-([a-z]+)/)[1]).join() === 'finden,termin,mappe,ablauf');
     kacheln()[0].click();
-    check('[beratung-kachel] Beratungsstelle finden: ein Text (sl.hilfe.*) und Warnung vor unseriösen Anbietern', box.querySelector('.gs-beratung p').textContent === I18N.de['sl.hilfe.1'] && box.querySelectorAll('.gs-beratung p').length === 5 && !!box.querySelector('details[data-fall="unserioes"]'));
+    check('[beratung-kachel] Beratungsstelle finden: ein Text (sl.hilfe.*) und Warnung vor unseriösen Anbietern', box.querySelector('.gs-beratung p').textContent === I18N.de['sl.hilfe.4'] && ['sl.hilfe.1', 'sl.hilfe.2', 'sl.hilfe.3', 'sl.hilfe.4', 'sl.hilfe.5'].every((k) => box.textContent.includes(I18N.de[k])) && !!box.querySelector('details[data-fall="unserioes"]'));
+    { const su = d.getElementById('sb-suche'), offen = [...box.querySelectorAll('.gs-beratung > p')].map((x) => x.textContent);
+      check('[ux-c] Beratungsstelle finden: Link zur Stellensuche (extern), nur 2 kurze Absätze offen, Suche und Jobcenter/Sozialamt zugeklappt', !!su && su.href === 'https://www.meine-schulden.de/hilfe-finden/stellensuche' && su.target === '_blank' && su.textContent.includes(I18N.de['sb.finden.link']) && su.closest('.gs-beratung') && offen.join('|') === I18N.de['sl.hilfe.4'] + '|' + I18N.de['sl.hilfe.5'] && box.querySelectorAll('details.gs-finden-mehr').length === 2 && [...box.querySelectorAll('details.gs-finden-mehr')].every((x) => !x.open) && box.querySelector('details.gs-finden-mehr').textContent.includes(I18N.de['sl.hilfe.1'])); }
     check('[schulden] Quellenzeile nennt Verbraucherzentralen, BAG-SB, Caritas/Diakonie und AG SBV', /Verbraucherzentralen.*BAG-SB.*Caritas.*Diakonie.*AG SBV/.test(box.textContent));
     zur(); kacheln()[1].click();
     check('[beratung-kachel] Bis zum Termin: 6 Haken, Sprünge zu Geduld-Brief, P-Konto, Liste, Haushaltsplan', box.querySelectorAll('.sb-haken input').length === 6 && box.querySelectorAll('.sb-zeile button').length === 4);
+    check('[ux-c] Bis zum Termin: Knopftexte nennen das Ziel (kein „Öffnen“)', [...box.querySelectorAll('.sb-zeile button')].map((b) => b.textContent).join('|') === [I18N.de['ms.geduld'], I18N.de['sp.schulden.pf'], I18N.de['sl.h'], I18N.de['hb.kachel']].join('|'));
     d.getElementById('sb-w-3').click();
     check('[beratung-kachel] Haken wird je Vorgang gespeichert (lotse.beratung-haken)', /"3":true/.test(store['lotse.beratung-haken'] || ''), store['lotse.beratung-haken']);
     zur(); kacheln()[2].click();
@@ -550,9 +730,10 @@ setTimeout(() => {
     const jetztK = [...d.querySelectorAll('#pfInhalt .pf-jetzt li p')].map((x) => x.textContent);
     check('[schulden-korr] Konto: Umwandeln innerhalb eines Monats schützt auch gesperrtes Guthaben (§ 899 Abs. 1 ZPO)', jetztK[0] === I18N.de['pf.tipp.umwandeln'] && /innerhalb eines Monats.*schon gesperrte Guthaben geschützt \(§ 899 Abs\. 1 ZPO\)/.test(jetztK[0]), jetztK[0]);
     const erg = d.querySelector('#pfInhalt .pf-zahl'), tk = d.querySelector('#pfInhalt .pf-zur-hilfe');
-    check('[geld] Nach dem Rechnen: Knopf „Schuldnerberatung“ unter dem Ergebnis', !!erg && !!tk && tk.textContent === I18N.de['sb.h'] && (erg.compareDocumentPosition(tk) & w.Node.DOCUMENT_POSITION_FOLLOWING));
+    check('[geld] Nach dem Rechnen: Knopf „Schuldnerberatung“ unter dem Ergebnis', !!erg && !!tk && tk.textContent === I18N.de['sb.finden'] && !d.querySelector('#pfInhalt .pf-tab') && (erg.compareDocumentPosition(tk) & w.Node.DOCUMENT_POSITION_FOLLOWING));
     tk.click();
-    check('[geld] Knopf öffnet „Schuldnerberatung“', d.getElementById('app').getAttribute('data-ansicht') === 'sparen' && !!box.querySelector('.gs-h-termin'));
+    check('[geld] Knopf öffnet „Beratungsstelle finden“ (ein Name je Ziel, UX-Audit C)', d.getElementById('app').getAttribute('data-ansicht') === 'sparen' && !!d.getElementById('sb-suche'));
+    zur(); check('[ux-c] Zurück aus „Beratungsstelle finden“: Kacheln der Schuldnerberatung', !!box.querySelector('.gs-h-termin'));
     zur();
     check('[geld] Zurück aus „Schuldnerberatung“: 6 Kacheln (kein Kreis zum Rechner)', sicht() === 'sparen' && kacheln().length === 6);
     zur();
@@ -572,7 +753,7 @@ setTimeout(() => {
   {
     const sfBox = d.getElementById('schritte');
     check('[schritte] Abschnitt „Schritt für Schritt“ vorhanden, Modul geladen', !!sfBox && !!w.Schritte && w.Schritte.FRAGEN.length > 40);
-    check('[schritte] Jede Formular-Angabe hat eine Frage oder gehört zu einer Mehrfachfrage', ['adults', 'kids', 'kidsU6', 'kids14', 'young', 'gebJahr', 'baby', 'egVor', 'aufenthalt', 'euArbeit', 'euJahre', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'bhWeitere', 'emStd', 'em5', 'ernaehrung', 'schwanger', 'arbeitSit', 'algZeit', 'algMonate', 'krankWochen', 'lohnVorher', 'ausbildung', 'wohnart', 'miete', 'heizkosten', 'warmwasser', 'hhAndere', 'plz', 'bundesland', 'mietstufe', 'ek1Art', 'ek1Brutto', 'ek1Netto', 'ek1bArt', 'ek1bBetrag', 'ek2Art', 'ek2Brutto', 'ek2Netto', 'ek2bArt', 'ek2bBetrag', 'zusatzRente', 'grundrente33', 'wfbmEssen', 'unterhalt', 'waisen', 'kindEink', 'uzBetrag', 'uzAn', 'uzTitel', 'vermoegen', 'autoWert', 'autoBraucht', 'uvgWechsel', 'uvgPartner']
+    check('[schritte] Jede Formular-Angabe hat eine Frage oder gehört zu einer Mehrfachfrage', ['adults', 'kids', 'kidsU6', 'kids14', 'young', 'gebJahr', 'baby', 'egVor', 'egKinder', 'egNach', 'aufenthalt', 'euArbeit', 'euJahre', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'bhWeitere', 'emStd', 'em5', 'ernaehrung', 'schwanger', 'arbeitSit', 'algZeit', 'algMonate', 'krankWochen', 'lohnVorher', 'ausbildung', 'wohnart', 'miete', 'heizkosten', 'warmwasser', 'hhAndere', 'plz', 'bundesland', 'mietstufe', 'ek1Art', 'ek1Brutto', 'ek1Netto', 'ek1bArt', 'ek1bBetrag', 'ek2Art', 'ek2Brutto', 'ek2Netto', 'ek2bArt', 'ek2bBetrag', 'zusatzRente', 'grundrente33', 'wfbmEssen', 'unterhalt', 'waisen', 'kindEink', 'uzBetrag', 'uzAn', 'uzTitel', 'vermoegen', 'autoWert', 'autoBraucht', 'uvgWechsel', 'uvgPartner']
       .every((k) => w.Schritte.FRAGEN.some((f) => f.id === k)) && ['kinder12', 'kindKrank', 'unterhaltFehlt', 'mzG', 'mzGl', 'bhSelbst', 'wfbm', 'teilhabe', 'babBetrieb', 'babWohnt'].every((k) => w.Schritte.FRAGEN.some((f) => (f.felder || []).some((x) => x[0] === k))));
   }
   check('Keine Skriptfehler im gesamten Test', errors.length === 0, errors.join('; '));

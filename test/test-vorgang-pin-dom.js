@@ -30,6 +30,9 @@ const knopf = (root, text) => [...root.querySelectorAll('button')].find((b) => b
 const zeileVon = (name) => { const z = d.querySelector('#setHaushalte [data-vg-name="' + name + '"]'); return z && z.closest('li'); };
 const bearbeiten = () => { const b = d.getElementById('vgBearb'); if (b && b.getAttribute('aria-pressed') !== 'true') b.click(); };
 const speicherText = () => Object.values(mem).join('\n');
+// Kurze Werte wie „640“ nur als eigenes Wort suchen: Base64-Geheimtext und Zeitstempel enthalten die drei Zeichen zufällig,
+// Klartext im JSON stünde zwischen Trennzeichen ("miete":640,) – so bleibt die Prüfung scharf, ohne falschen Alarm (wie test-fristen-dom.js)
+const klarImSpeicher = (wert) => new RegExp('(?<![A-Za-z0-9+/=])' + wert + '(?![A-Za-z0-9+/=])').test(speicherText());
 
 (async () => {
   ck('[vorgang-pin-dom] lädt ohne Skriptfehler', errors.length === 0, errors.join(' | '));
@@ -52,9 +55,13 @@ const speicherText = () => Object.values(mem).join('\n');
   ck('[vorgang-pin-dom] Formular: PIN, PIN noch einmal, freiwilliger Kurzname, 4 kurze Sätze', !!f && f.querySelectorAll('input[type=password][inputmode=numeric]').length === 2 && !!d.getElementById('vgGKurz') && f.querySelectorAll('.vg-gerkl li').length === 4 && [...f.querySelectorAll('.vg-gerkl li')].every((li) => li.textContent.split(/\s+/).length <= 12));
   ck('[vorgang-pin-dom] Erklärung ohne falsche Zusage: Sichtschutz, kein Schutz gegen Fachleute', /Sichtschutz, kein Schutz gegen Fachleute/.test(f.textContent));
   ck('[vorgang-pin-dom] Erklärung nennt Verlust bei vergessener PIN', /PIN vergessen\? Dann ist der Vorgang verloren\./.test(f.textContent));
-  ck('[vorgang-pin-dom] PIN-Feld beim Sperren: Hinweis „empfohlen: 6“', f.querySelector('label[for=vgGPin]').textContent === 'PIN für diesen Vorgang (4 bis 8 Ziffern, empfohlen: 6)');
+  ck('[vorgang-pin-dom] PIN-Feld beim Sperren: Hinweis „6 bis 8 Ziffern“', f.querySelector('label[for=vgGPin]').textContent === 'PIN für diesen Vorgang (6 bis 8 Ziffern)');
   d.getElementById('vgGPin').value = '12'; submit(f);
-  ck('[vorgang-pin-dom] zu kurze PIN: Hinweis', /4 bis 8 Ziffern/.test(f.querySelector('.msg').textContent));
+  ck('[vorgang-pin-dom] zu kurze PIN: Hinweis', /6 bis 8 Ziffern/.test(f.querySelector('.msg').textContent));
+  d.getElementById('vgGPin').value = '4821'; d.getElementById('vgGPin2').value = '4821'; submit(f);
+  ck('[vorgang-pin-dom] neue PIN mit 4 Ziffern: abgelehnt', /6 bis 8 Ziffern/.test(f.querySelector('.msg').textContent));
+  d.getElementById('vgGPin').value = '123456'; d.getElementById('vgGPin2').value = '123456'; submit(f);
+  ck('[vorgang-pin-dom] leicht zu ratende PIN: abgelehnt mit Meldung', /leicht zu erraten/.test(f.querySelector('.msg').textContent) && !d.querySelector('#setHaushalte .vg-gesperrt'));
   d.getElementById('vgGPin').value = '482910'; d.getElementById('vgGPin2').value = '482911'; submit(f);
   ck('[vorgang-pin-dom] verschiedene PINs: Hinweis', /verschieden/.test(f.querySelector('.msg').textContent));
   d.getElementById('vgGPin2').value = '482910'; d.getElementById('vgGKurz').value = '<img src=x onerror="window.__xss=1">';
@@ -65,12 +72,12 @@ const speicherText = () => Object.values(mem).join('\n');
   ck('[vorgang-pin-dom] gesperrt: Liste zeigt neutralen Titel und Schloss', !!g && g.querySelector('b').textContent === 'Gesperrter Vorgang' && !!g.querySelector('.vg-schloss svg') && !d.getElementById('setHaushalte').textContent.includes('Familie Geheim'));
   ck('[vorgang-pin-dom] Kurzname nur als Text, kein HTML', g.textContent.includes('<img') && !g.querySelector('img') && w.__xss === 0);
   ck('[vorgang-pin-dom] gesperrt: ein anderer Vorgang ist geöffnet, Angaben weg vom Bildschirm', d.getElementById('miete').value === '' && d.getElementById('p-name').value === '');
-  ck('[vorgang-pin-dom] gesperrt: Name und Angaben nicht im Gerätespeicher, PIN auch nicht', !speicherText().includes('Erika Geheim') && !speicherText().includes('Familie Geheim') && !speicherText().includes('482910') && !speicherText().includes('640'));
+  ck('[vorgang-pin-dom] gesperrt: Name und Angaben nicht im Gerätespeicher, PIN auch nicht', !speicherText().includes('Erika Geheim') && !speicherText().includes('Familie Geheim') && !speicherText().includes('482910') && !klarImSpeicher('640'));
 
   // Öffnen: falsche PIN, dann richtige
   g.querySelector('button.vg-zeile').click();
   const fo = d.getElementById('vgGForm');
-  ck('[vorgang-pin-dom] PIN-Feld beim Öffnen ohne Empfehlung', fo && fo.querySelector('label[for=vgGPin]').textContent === 'PIN für diesen Vorgang (4 bis 8 Ziffern)');
+  ck('[vorgang-pin-dom] PIN-Feld beim Öffnen ohne Längenangabe (ältere PINs mit 4 Ziffern öffnen weiter)', fo && fo.querySelector('label[for=vgGPin]').textContent === 'PIN für diesen Vorgang');
   ck('[vorgang-pin-dom] Tipp auf gesperrten Vorgang: nur PIN-Feld', !!fo && fo.querySelectorAll('input').length === 1 && !d.getElementById('vgGPin2'));
   d.getElementById('vgGPin').value = '000000'; submit(fo);
   await bis(() => /stimmt nicht/.test(fo.querySelector('.msg').textContent));
@@ -103,7 +110,7 @@ const speicherText = () => Object.values(mem).join('\n');
   // Erneut sperren und ohne PIN löschen
   bearbeiten();
   knopf(zeileVon('Familie Geheim'), 'Mit PIN sperren').click();
-  d.getElementById('vgGPin').value = '1234'; d.getElementById('vgGPin2').value = '1234'; submit(d.getElementById('vgGForm'));
+  d.getElementById('vgGPin').value = '482917'; d.getElementById('vgGPin2').value = '482917'; submit(d.getElementById('vgGForm'));
   await bis(() => !!d.querySelector('#setHaushalte .vg-gesperrt'));
   bearbeiten();
   knopf(d.querySelector('#setHaushalte .vg-gesperrt'), 'Löschen').click();

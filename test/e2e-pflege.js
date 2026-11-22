@@ -121,7 +121,10 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Höherstufung ist gewählt', await p.isChecked('#pf-art-h'));
   ok('Antworten übernommen (1.1 überwiegend unselbständig, Alter 84)', (await p.inputValue('#pf-1\\.1')) === '2' && (await p.inputValue('#pf-alter')) === '84');
   ok('Vergleich: gleiche Werte, keine Abweichung', /keiner Frage/.test(await p.textContent('#pf-vergleich')));
+  // Bereiche stehen als zugeklappte Aufgabenliste (UX-Audit B/D): Stand je Bereich sichtbar
+  ok('Pflege: Bereiche zugeklappt mit Stand', await p.evaluate(() => document.querySelectorAll('#pf-module details.pf-bereich:not([open])').length === 6 && /von \d+ eingetragen/.test(document.querySelector('#pf-bereich-1 .pf-zahl').textContent)));
   // Gutachten bewertet niedriger: 1.1 und 1.2 „selbständig“ → zwei Abweichungen, Übernahme in den Widerspruch
+  await p.evaluate(() => document.querySelectorAll('#pf-module details.pf-bereich').forEach((x) => { x.open = true; })); // Bereiche sind zugeklappt
   await p.selectOption('#pf-1\\.1', '0'); await p.selectOption('#pf-1\\.2', '0'); await warte(() => /Bei 2 Fragen/.test(document.getElementById('pf-vergleich').textContent) && document.querySelectorAll('#pf-wid-liste .pw[data-auto="1"]').length === 2);
   ok('Vergleich zeigt zwei Abweichungen', /Bei 2 Fragen/.test(await p.textContent('#pf-vergleich')), await p.textContent('#pf-vergleich'));
   ok('Abweichungen stehen von selbst als Karten mit Beschreibungsfeld da', (await p.locator('#pf-wid-liste .pw[data-auto="1"]').count()) === 2 && (await p.locator('#pf-wid-liste .pw[data-id="1.1"] textarea').count()) === 1);
@@ -148,8 +151,14 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   const s2 = await p.inputValue('#pf-wid-text');
   ok('Schreiben enthält Bereich 5 und Inkontinenz mit Beschreibung', /5\.1 Medikamente richten und geben: .*1-mal am Tag, .*3-mal am Tag\. Dreimal täglich Tabletten richten\./.test(s2) && /Harninkontinenz/.test(s2), s2.slice(0, 900));
   // Säugling: Frage 4.K
-  await p.evaluate(() => { localStorage.removeItem('lotse.pflegecheck'); location.hash = '#leistungen'; }); await p.reload(); await sichtbar('#paStart');
-  await p.click('#paStart'); await p.fill('#pa-jahre', '1');
+  // Neu laden auf der Leistungsseite. Nicht „location.hash = …“ und gleich reload(): Der Hash-Wechsel aus „Brief prüfen“ ist eine Ebene
+  // höher, die Navigation geht dafür asynchron im Verlauf zurück (history.go, src/navigation.js). Lädt der Test währenddessen neu,
+  // steht die Seite je nach Zeitpunkt noch auf #briefe und #paStart ist unsichtbar (CI: Klick-Timeout an #paStart, beim Neustart grün).
+  // Deshalb: Speicher leeren, Seite verlassen und frisch mit #leistungen öffnen, dann auf den sichtbaren Knopf warten.
+  await p.evaluate(() => localStorage.removeItem('lotse.pflegecheck'));
+  await p.goto('about:blank'); await p.goto(APP + '#leistungen');
+  await p.waitForSelector('#paStart', { state: 'visible', timeout: 15000 });
+  await p.click('#paStart'); await p.waitForSelector('#pa-jahre', { state: 'visible', timeout: 15000 }); await p.fill('#pa-jahre', '1');
   ok('Unter 2 Jahren: Monate werden gefragt', await p.isVisible('#pa-monate'));
   await p.fill('#pa-monate', '10'); await p.click('text=Weiter ➜');
   await tippe('Nein'); await tippe('Nein'); await tippe('Nein'); await tippe('Ja');
@@ -157,7 +166,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Kind: Erklärungen erwähnen den Vergleich mit gesunden Kindern', true);
   // Fremde Sprache: Hinweis „nur auf Deutsch“
   await p.click('text=Später weitermachen'); await p.evaluate((x) => { const s = document.getElementById('lang'); s.value = x; s.dispatchEvent(new Event('change', { bubbles: true })); }, 'tr'); await p.click('#paStart');
-  ok('Türkisch: Hinweis, dass die Einschätzung auf Deutsch ist', await p.isVisible('#paNurDe'));
+  ok('Türkisch: Einschätzung übersetzt, kein Hinweis „nur Deutsch“', !(await p.isVisible('#paNurDe')) && !/Wie alt|Wahrscheinlich|Bereich \d/.test(await p.textContent('#pflegeAssist')), await p.textContent('#pflegeAssist'));
   ok('Keine Skriptfehler', fehler.length === 0, fehler);
   await b.close();
   console.log(f ? `\n${f} von ${n} Prüfungen fehlgeschlagen` : `Pflegegrad-Einschätzung in der App: ${n} Prüfungen bestanden (Ablauf, Rechnung, Übernahme, Höherstufung, Säugling, Sprache)`);

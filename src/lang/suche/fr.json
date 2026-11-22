@@ -3,9 +3,11 @@
   "su.leeren": "Effacer la recherche",
   "su.n": "{n} résultats",
   "su.n1": "1 résultat",
+  "su.haeufig": "Souvent recherché",
   "su.nichts": "Rien trouvé. Essaie un autre mot.",
-  "su.b.leistungen": "Vérifier les aides",
+  "su.b.leistungen": "Contrôle des prestations",
   "su.b.briefe": "Lettres",
   "su.b.mappe": "Demande",
-  "su.suchen": "Rechercher"
+  "su.suchen": "Rechercher",
+  "su.p.gutachten": "Vérifier une expertise de dépendance"
 }

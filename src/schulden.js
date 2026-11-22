@@ -219,15 +219,26 @@ var Schulden = (function () {
   var SCHLUESSEL = 'lotse.schulden';
   var speicher = {
     laden: function (cb) { try { cb(localStorage.getItem(SCHLUESSEL)); } catch (e) { cb(null); } },
-    schreiben: function (txt, cb) { try { localStorage.setItem(SCHLUESSEL, txt); cb(null); } catch (e) { cb(e); } }
+    schreiben: function (txt, cb) { try { localStorage.setItem(SCHLUESSEL, txt); cb(null); } catch (e) { cb(e); } },
+    // Kaputter Stand (nicht lesbar): Rohtext unter lotse.schulden.defekt sichern, bevor leer gestartet wird
+    defekt: function (txt) { try { localStorage.setItem(SCHLUESSEL + '.defekt', txt); } catch (e) {} }
   };
-  function speicherOrt(s) { if (s && s.laden) speicher.laden = s.laden; if (s && s.schreiben) speicher.schreiben = s.schreiben; }
+  function speicherOrt(s) { if (s && s.laden) speicher.laden = s.laden; if (s && s.schreiben) speicher.schreiben = s.schreiben; if (s && s.defekt) speicher.defekt = s.defekt; }
+  // Gespeicherten Text lesen. Nicht lesbar (kein JSON-Objekt): alten Rohstand sichern (speicher.defekt), Hinweis zeigen, leer starten.
+  // So wird ein kaputter Stand nie still überschrieben.
+  function lesen(v) {
+    var d = null, kaputt = false;
+    if (v) { try { d = JSON.parse(v); } catch (e) { kaputt = true; } if (!kaputt && (!d || typeof d !== 'object')) kaputt = true; }
+    if (kaputt) { try { speicher.defekt(String(v)); } catch (e) {} }
+    var m = ctx ? $('slSpeicherMsg') : null; if (m) { if (kaputt) m.textContent = t('sl.defekt'); else if (m.textContent === t('sl.defekt')) m.textContent = ''; }
+    return kaputt ? leer() : normiere(d);
+  }
   function sichern() {
     var m = $('slSpeicherMsg');
     speicher.schreiben(JSON.stringify(daten), function (err) { if (m) m.textContent = err ? t('sl.speicherFehler') : ''; });
   }
   function laden(fertig) {
-    speicher.laden(function (v) { try { daten = normiere(v ? JSON.parse(v) : null); } catch (e) { daten = leer(); } if (fertig) fertig(); });
+    speicher.laden(function (v) { daten = lesen(v); if (fertig) fertig(); });
   }
 
   // ----- Liste -----
@@ -601,7 +612,7 @@ var Schulden = (function () {
     a.appendChild(el('p', 'eb-kopf', kopfZeile()));
     var spalten = ['nr', 'glaeubiger', 'art'].concat(blattOpt.az ? ['az'] : [], ['anfang', 'jetzt', 'rate', 'faellig', 'stand'], blattOpt.notiz ? ['notiz'] : []);
     var tab = el('table', 'eb-tab'), th = el('thead'), tr = el('tr');
-    spalten.forEach(function (k) { var c = el('th', '', de('sl.col.' + k)); c.scope = 'col'; tr.appendChild(c); });
+    spalten.forEach(function (k) { var c = el('th', ['nr', 'az', 'anfang', 'jetzt', 'rate', 'faellig'].indexOf(k) >= 0 ? 'eb-zahl' : '', de('sl.col.' + k)); c.scope = 'col'; tr.appendChild(c); });
     th.appendChild(tr); tab.appendChild(th);
     var tb = el('tbody');
     blattZeilen().forEach(function (e, i) {
@@ -611,8 +622,13 @@ var Schulden = (function () {
         if (k === 'glaeubiger') {
           c.scope = 'row'; c.appendChild(el('span', '', e.g));
           if (blattOpt.adr && e.adr) e.adr.split('\n').forEach(function (zl) { c.appendChild(el('br')); c.appendChild(el('span', 'small', zl)); });
-        } else c.textContent = k === 'nr' ? String(i + 1) : k === 'art' ? artName(e.art, de) : k === 'az' ? e.az : k === 'anfang' ? (e.anfang === null ? '' : eurDe(e.anfang)) :
+        } else {
+          // Beschriftung je Feld für die Karten-Ansicht auf schmalen Bildschirmen (UX-Audit C Nr. 9: Beträge waren ohne Bezeichnung)
+          if (k === 'nr') c.className = 'eb-nr'; else c.setAttribute('data-l', de('sl.col.' + k));
+          if (['anfang', 'jetzt', 'rate', 'faellig'].indexOf(k) >= 0) c.className = 'eb-zahl';
+          c.textContent = k === 'nr' ? String(i + 1) : k === 'art' ? artName(e.art, de) : k === 'az' ? e.az : k === 'anfang' ? (e.anfang === null ? '' : eurDe(e.anfang)) :
           k === 'jetzt' ? z.jetzt : k === 'rate' ? (e.rate > 0 ? eurDe(e.rate) : '') : k === 'faellig' ? datum(e.faellig, true) : k === 'stand' ? z.stand : e.n;
+        }
         r.appendChild(c);
       });
       tb.appendChild(r);

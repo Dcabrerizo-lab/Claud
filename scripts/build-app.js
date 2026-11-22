@@ -24,7 +24,8 @@ function replaceOnce(s, from, to, what) {
 
 need(MODS, 'zuerst: cd app && npm install');
 
-let html = render({ native: true }).html;
+const gebaut = render({ native: true });
+let html = gebaut.html;
 
 // Scan: In der App gibt es nur die Kamera mit Texterkennung auf dem Gerät
 const NATIVE_SCAN = [
@@ -84,7 +85,13 @@ fs.copyFileSync(need(path.join(NOTO, '700Bold', 'NotoSans_700Bold.ttf')), path.j
 fs.rmSync(path.join(WWW, 'formulare'), { recursive: true, force: true });
 
 // PDF lesen (Mozilla pdf.js 3.11.174, Apache-2.0): Text aus digitalen PDFs, Seitenbilder aus eingescannten PDFs für die Texterkennung.
-// Liegt lokal in der App (offline); im Browser wird dieselbe Version bei Bedarf von cdnjs geladen.
+// Liegt lokal in der App (offline); im Browser wird dieselbe Version bei Bedarf von cdnjs geladen (mit Prüfsumme, src/app.js).
+// Bewusst 3.11.174 und nicht 4+/6: neuere Fassungen laufen nicht auf iOS 15 bis 17.3 (Begründung und Quellen in src/app.js, ladePdfjs).
+// Die Lücke CVE-2024-4367 ist über isEvalSupported: false geschlossen (Abhilfe laut Mozilla) und zusätzlich durch die CSP ohne eval.
+const PDFJS_VER = '3.11.174';
+const pdfjsPkg = JSON.parse(fs.readFileSync(need(path.join(MODS, 'pdfjs-dist', 'package.json'), 'cd app && npm install'), 'utf8'));
+if (pdfjsPkg.version !== PDFJS_VER) throw new Error('App-Build: pdfjs-dist ' + pdfjsPkg.version + ' statt ' + PDFJS_VER + ' (cd app && npm install)');
+fs.rmSync(path.join(WWW, 'pdfjs'), { recursive: true, force: true }); // Reste anderer Fassungen (z. B. wasm/) nicht mit ausliefern
 fs.mkdirSync(path.join(WWW, 'pdfjs'), { recursive: true });
 for (const f of ['pdf.min.js', 'pdf.worker.min.js']) fs.copyFileSync(need(path.join(MODS, 'pdfjs-dist', 'build', f), 'cd app && npm install'), path.join(WWW, 'pdfjs', f));
 fs.copyFileSync(need(path.join(MODS, 'pdfjs-dist', 'LICENSE')), path.join(WWW, 'pdfjs', 'LICENSE'));
@@ -96,9 +103,33 @@ require(need(path.join(MODS, 'esbuild'))).buildSync({
   outfile: path.join(WWW, 'pdf.js'), legalComments: 'eof', logLevel: 'warning'
 });
 
-// Sicherheitsrichtlinie: nur eigene Dateien; fetch nur für die PDF-Schriften (gleicher Ursprung)
-const CSP = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; " +
-  "img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'";
+// Skripte als eigene Dateien (js/s1.js …) statt im HTML: dann braucht die CSP kein 'unsafe-inline' für Skripte, und eingeschleuster
+// Code in der Seite (etwa durch einen Fehler beim Maskieren) würde nicht ausgeführt (Sicherheitsprüfung 21.11.2026, S8).
+// Jeder Block bleibt eine eigene Datei in derselben Reihenfolge (gleiches Verhalten wie die Inline-Skripte: nacheinander, synchron).
+// Inline-Ereignisattribute wären ebenfalls blockiert: onsubmit="return false" wird zu data-kein-senden (src/app.js verhindert das Absenden).
+fs.mkdirSync(path.join(WWW, 'js'), { recursive: true });
+let skriptNr = 0;
+html = html.replace(/<script>([\s\S]*?)<\/script>/g, (m, code) => {
+  const name = 'js/s' + (++skriptNr) + '.js';
+  fs.writeFileSync(path.join(WWW, name), code);
+  return '<script src="' + name + '"></script>';
+});
+if (!skriptNr) throw new Error('App-Build: keine Skripte gefunden');
+html = html.replace(/ onsubmit="return false"/g, ' data-kein-senden');
+const rest = html.match(/<script(?![^>]*\ssrc=)[^>]*>|\son[a-z]+\s*=\s*["']/i);
+if (rest) throw new Error('App-Build: Inline-Skript oder Ereignisattribut übrig (CSP ohne unsafe-inline): ' + rest[0]);
+
+// Sprachen nur bei Bedarf (src/sprachladen.js): jede Sprache außer Deutsch als eigene Datei lang/<Sprache>.js im App-Paket.
+// Geladen wird lokal aus dem Paket (script-src 'self'), auch im Flugmodus; beim Start nur Deutsch und die gewählte Sprache.
+fs.mkdirSync(path.join(WWW, 'lang'), { recursive: true });
+const sprachDateien = Object.entries(gebaut.sprachDateien);
+if (sprachDateien.length < 12) throw new Error('App-Build: Sprachdateien fehlen (' + sprachDateien.length + ')');
+sprachDateien.forEach(([f, code]) => fs.writeFileSync(path.join(WWW, 'lang', f), code));
+
+// Sicherheitsrichtlinie: nur eigene Dateien, keine Inline-Skripte; fetch nur für die PDF-Schriften (gleicher Ursprung).
+// style-src behält 'unsafe-inline' (style-Attribute und <style> in der Vorlage; Stile führen keinen Code aus).
+const CSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; " +
+  "img-src 'self' data: blob:; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'";
 const safeArea = 'body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}\n';
 html = replaceOnce(html, '<style>', '<style>\n' + faces + safeArea, 'erstes <style>');
 const head = '<!doctype html>\n<html lang="de"><head><meta charset="utf-8">' +
@@ -109,4 +140,7 @@ const head = '<!doctype html>\n<html lang="de"><head><meta charset="utf-8">' +
 fs.writeFileSync(path.join(WWW, 'index.html'), head + html + '\n</body></html>\n');
 
 const kb = (f) => (fs.statSync(path.join(WWW, f)).size / 1024).toFixed(0);
-console.log('App-Build: app/www/index.html', kb('index.html'), 'KB, pdf.js', kb('pdf.js'), 'KB, Schriften lokal');
+const startKb = (fs.statSync(path.join(WWW, 'index.html')).size + fs.readdirSync(path.join(WWW, 'js')).reduce((a, f) => a + fs.statSync(path.join(WWW, 'js', f)).size, 0)) / 1024;
+const langKb = sprachDateien.reduce((a, [, c]) => a + Buffer.byteLength(c), 0) / 1024;
+console.log('App-Build: beim Start geladen (index.html + js/)', startKb.toFixed(0), 'KB; Sprachdateien lang/ zusammen', langKb.toFixed(0), 'KB (je Sprache nur bei Bedarf)');
+console.log('App-Build: app/www/index.html', kb('index.html'), 'KB,', skriptNr, 'Skriptdateien, pdf.js', kb('pdf.js'), 'KB, pdf.js-Leser', kb('pdfjs/pdf.min.js'), '+', kb('pdfjs/pdf.worker.min.js'), 'KB, Schriften lokal');

@@ -94,7 +94,7 @@ const offenName = (s) => { const z = s.d.querySelector('#setHaushalte .vg-offen 
   ck('[vorgaenge] im Leistungs-Check nur der Textknopf „Angaben löschen“ oben (mit Rückfrage)', !d.getElementById('clearBtn') && !!d.getElementById('clearLink'));
   [...d.querySelectorAll('[data-pick]')].slice(0, 1).forEach((cb) => { cb.checked = true; cb.dispatchEvent(new s.w.Event('change', { bubbles: true })); });
   d.getElementById('mappeMake').click(); // Haken gibt es nur in der Antragsmappe
-  const hk = d.querySelector('#m-unterlagen input[data-haken]'); hk.checked = true; hk.dispatchEvent(new s.w.Event('change', { bubbles: true }));
+  const hk = d.querySelector('#aufUnterlagen input[data-haken]'); hk.checked = true; hk.dispatchEvent(new s.w.Event('change', { bubbles: true }));
   ck('[vorgaenge] Haken der Checkliste gehören zum Vorgang', !!mem['lotse.haken'] && !!mem['lotse.pfaendung']);
   d.getElementById('mappeClose').click();
   d.querySelector('#appnav [data-ansicht="einst"]').click(); d.querySelector('#einstListe .zeile[data-seite="sicher"]').click();
@@ -150,25 +150,26 @@ const offenName = (s) => { const z = s.d.querySelector('#setHaushalte .vg-offen 
   }
   d.getElementById('vgPin1').value = '12'; d.getElementById('vgPin2').value = '12';
   submit(s, d.getElementById('vgPinForm'));
-  ck('[vorgaenge] zu kurze PIN abgelehnt', /4 bis 12 Ziffern/.test(d.getElementById('vgPinForm').textContent));
-  d.getElementById('vgPin1').value = '2580'; d.getElementById('vgPin2').value = '2581';
+  ck('[vorgaenge] zu kurze PIN abgelehnt', /6 bis 12 Ziffern/.test(d.getElementById('vgPinForm').textContent));
+  d.getElementById('vgPin1').value = '258013'; d.getElementById('vgPin2').value = '258014';
   submit(s, d.getElementById('vgPinForm'));
   ck('[vorgaenge] verschiedene PINs abgelehnt', /verschieden/.test(d.getElementById('vgPinForm').textContent));
-  d.getElementById('vgPin2').value = '2580';
+  d.getElementById('vgPin2').value = '258013';
   submit(s, d.getElementById('vgPinForm'));
   for (let i = 0; i < 100 && mem['lotse.state']; i++) await warte(50);
   // Geheimtext (Base64) und Zeitstempel (zuletzt, bis) nicht durchsuchen: Zufallsfolgen wie „640“ wären sonst falscher Alarm
+  // Zusätzlich „640“ nur als eigenes Wort (Base64-sicher, wie test-fristen-dom.js): falls weiterer Geheimtext im Speicher steht
   const neutral = (vg) => Object.assign({}, vg, { pin: { geheim: !!(vg.pin || {}).ct }, zuletzt: vg.zuletzt ? 1 : 0, bis: vg.bis ? 1 : 0 });
   ck('[vorgaenge] Testhilfe: Zeitstempel mit „640“ neutralisiert', !/640/.test(JSON.stringify(neutral({ zuletzt: 1764064000000, bis: 1766406400000, pin: { ct: 'x640' } }))));
   const roh = JSON.stringify(Object.assign({}, mem, { 'lotse.vorgaenge': JSON.stringify(neutral(JSON.parse(mem['lotse.vorgaenge'] || '{}'))) }));
-  ck('[vorgaenge] mit PIN: nichts Lesbares im Speicher, PIN nicht gespeichert', !/Erika|Muster|Familie|640|miete/.test(roh) && !roh.includes('2580') && !mem['lotse.state'] && !mem['lotse.haushalt'] && !mem['lotse.haken'] && !mem['lotse.ausziehen'], roh.slice(0, 300));
+  ck('[vorgaenge] mit PIN: nichts Lesbares im Speicher, PIN nicht gespeichert', !/Erika|Muster|Familie|(?<![A-Za-z0-9+/=])640(?![A-Za-z0-9+/=])|miete/.test(roh) && !roh.includes('258013') && !mem['lotse.state'] && !mem['lotse.haushalt'] && !mem['lotse.haken'] && !mem['lotse.ausziehen'], roh.slice(0, 300));
   { const V = require('../src/vorgaenge.js'); ck('[vorgaenge] Korrektur 6: Haken, Haushalt und Ausziehen gehören zum Vorgang (DATEN), Beratungsmodus nicht', ['lotse.haken', 'lotse.haushalt', 'lotse.ausziehen'].every((k) => V.DATEN.includes(k)) && !V.DATEN.includes('lotse.beratung')); }
   ck('[vorgaenge] PIN-Sperre als „an“ angezeigt', /PIN-Sperre ist an/.test(d.getElementById('setSicher').textContent));
-  ck('[vorgaenge] PIN: 6 Ziffern empfohlen, Selbstsperre ehrlich im Text', /empfohlen: 6/.test(require('../dist/i18n.js').de['vg.pin.label']) && /2 Minuten im Hintergrund/.test(d.getElementById('setSicher').textContent));
+  ck('[vorgaenge] PIN: mindestens 6 Ziffern, Selbstsperre ehrlich im Text', /6 bis 12 Ziffern/.test(require('../dist/i18n.js').de['vg.pin.label']) && /2 Minuten im Hintergrund/.test(d.getElementById('setSicher').textContent));
   // PIN ändern und ausschalten fragen die bisherige PIN ab
   knopf(s, d.getElementById('setSicher'), 'PIN ändern').click();
   ck('[vorgaenge] PIN ändern: Feld „Bisherige PIN“', !!d.getElementById('vgPin0'));
-  d.getElementById('vgPin0').value = '1111'; d.getElementById('vgPin1').value = '123456'; d.getElementById('vgPin2').value = '123456';
+  d.getElementById('vgPin0').value = '1111'; d.getElementById('vgPin1').value = '135792'; d.getElementById('vgPin2').value = '135792';
   submit(s, d.getElementById('vgPinForm'));
   for (let i = 0; i < 200 && !/bisherige PIN stimmt nicht/.test(d.getElementById('vgPinForm').textContent); i++) await warte(50);
   ck('[vorgaenge] PIN ändern: falsche bisherige PIN abgelehnt', /bisherige PIN stimmt nicht/.test(d.getElementById('vgPinForm').textContent));
@@ -196,7 +197,7 @@ const offenName = (s) => { const z = s.d.querySelector('#setHaushalte .vg-offen 
   submit(s2, s2.d.getElementById('vgPinEin').form);
   for (let i = 0; i < 100 && !/stimmt nicht/.test(s2.d.getElementById('vgSperreMsg').textContent); i++) await warte(50);
   ck('[vorgaenge] falsche PIN: Meldung, bleibt gesperrt', /stimmt nicht/.test(s2.d.getElementById('vgSperreMsg').textContent) && !sp.hidden);
-  s2.d.getElementById('vgPinEin').value = '2580';
+  s2.d.getElementById('vgPinEin').value = '258013';
   submit(s2, s2.d.getElementById('vgPinEin').form);
   for (let i = 0; i < 100 && !sp.hidden; i++) await warte(50);
   ck('[vorgaenge] richtige PIN: entsperrt, Angaben des Vorgangs geladen', sp.hidden && s2.d.getElementById('miete').value === '640' && s2.d.getElementById('p-name').value === 'Erika Muster');
@@ -218,7 +219,7 @@ const offenName = (s) => { const z = s.d.querySelector('#setHaushalte .vg-offen 
     s2.d.getElementById('vgPin0').value = '1111'; submit(s2, s2.d.getElementById('vgPinForm'));
     for (let i = 0; i < 200 && !/bisherige PIN stimmt nicht/.test(s2.d.getElementById('vgPinForm').textContent); i++) await warte(50);
     ck('[vorgaenge] PIN aus mit falscher PIN: Meldung, bleibt an, weiter verschlüsselt', /bisherige PIN stimmt nicht/.test(s2.d.getElementById('vgPinForm').textContent) && sw().getAttribute('aria-checked') === 'true' && /"ct"/.test(mem['lotse.vorgaenge']) && !mem['lotse.state']);
-    s2.d.getElementById('vgPin0').value = '2580'; submit(s2, s2.d.getElementById('vgPinForm'));
+    s2.d.getElementById('vgPin0').value = '258013'; submit(s2, s2.d.getElementById('vgPinForm'));
     for (let i = 0; i < 200 && s2.d.getElementById('vgPinForm'); i++) await warte(50);
     await warte(50);
     ck('[vorgaenge] PIN aus mit richtiger PIN: Schalter aus, Angaben wieder unverschlüsselt, keine PIN gespeichert', sw().getAttribute('aria-checked') === 'false' && /PIN-Sperre ist aus/.test(s2.d.body.textContent) && !/"pin"/.test(mem['lotse.vorgaenge']) && /640/.test(mem['lotse.state'] || ''), [sw().getAttribute('aria-checked'), s2.d.getElementById('setSicher').textContent.slice(0, 300), (mem['lotse.state'] || '').slice(0, 80)]);

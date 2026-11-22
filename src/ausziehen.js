@@ -130,8 +130,8 @@ var Ausziehen = (function () {
 
   // Alle Textschlüssel (Tests: jede Sprache hat sie, keine Rohschlüssel)
   function schluessel() {
-    var k = ['az.h', 'az.kachel', 'az.kachel.t', 'az.lead', 'az.quelle', 'az.mehrDazu', 'az.weitere', 'az.erledigt', 'az.notiz', 'az.notiz.t',
-      'az.moeglich', 'az.speicherFehler', 'az.knopf.plan', 'az.knopf.check', 'az.knopf.briefe', 'az.knopf.pfaendung', 'az.knopf.vers', 'az.hilfen.check', 'az.vers.tipp', 'az.stand'];
+    var k = ['az.h', 'az.kachel', 'az.kachel.t', 'az.quelle', 'az.mehrDazu', 'az.weitere', 'az.erledigt', 'az.notiz', 'az.notiz.t',
+      'az.moeglich', 'az.speicherFehler', 'az.defekt', 'az.knopf.plan', 'az.knopf.check', 'az.knopf.briefe', 'az.knopf.pfaendung', 'az.knopf.vers', 'az.hilfen.check', 'az.vers.tipp', 'az.stand'];
     BEREICHE.forEach(function (b) {
       k.push('az.' + b.id + '.h', 'az.' + b.id + '.t');
       if (b.stufen) b.stufen.forEach(function (s) { k.push('az.stufe.' + s.id); });
@@ -155,9 +155,24 @@ var Ausziehen = (function () {
       var p = ctx && ctx.plug && ctx.plug('Preferences');
       if (p) { p.set({ key: SCHLUESSEL, value: text }).then(function () { cb(null); }, function (e) { cb(e || new Error('speichern')); }); return; }
       try { localStorage.setItem(SCHLUESSEL, text); cb(null); } catch (e) { cb(e); }
+    },
+    // Kaputter Stand (nicht lesbar): Rohtext unter <SCHLUESSEL>.defekt sichern, bevor leer gestartet wird
+    defekt: function (text) {
+      var p = ctx && ctx.plug && ctx.plug('Preferences');
+      if (p) { p.set({ key: SCHLUESSEL + '.defekt', value: text }).catch(function () {}); return; }
+      try { localStorage.setItem(SCHLUESSEL + '.defekt', text); } catch (e) {}
     }
   };
-  function speicherOrt(s) { if (s && s.laden) speicher.laden = s.laden; if (s && s.schreiben) speicher.schreiben = s.schreiben; }
+  function speicherOrt(s) { if (s && s.laden) speicher.laden = s.laden; if (s && s.schreiben) speicher.schreiben = s.schreiben; if (s && s.defekt) speicher.defekt = s.defekt; }
+  // Gespeicherten Text lesen. Nicht lesbar (kein JSON-Objekt): alten Rohstand sichern (speicher.defekt), Hinweis zeigen, leer starten.
+  // So wird ein kaputter Stand nie still überschrieben.
+  function lesen(v) {
+    var d = null, kaputt = false;
+    if (v) { try { d = JSON.parse(v); } catch (e) { kaputt = true; } if (!kaputt && (!d || typeof d !== 'object')) kaputt = true; }
+    if (kaputt) { try { speicher.defekt(String(v)); } catch (e) {} }
+    var m = ctx ? $('azSpeicherMsg') : null; if (m) { if (kaputt) m.textContent = t('az.defekt'); else if (m.textContent === t('az.defekt')) m.textContent = ''; }
+    return kaputt ? leer() : normiere(d);
+  }
   var LISTEN_IDS = {};
   BEREICHE.forEach(function (b) { if (b.liste) b.punkte.forEach(function (p) { LISTEN_IDS[p.id] = b.id; }); });
   function normiere(d) {
@@ -179,6 +194,11 @@ var Ausziehen = (function () {
 
   // ---------- Oberfläche ----------
   function t(k, p) { return ctx.t(k, p); }
+  // Laienansicht (Beratungsmodus aus): Paragrafen in Klammern ausblenden wie im Rest der App (Fmt.ohnePara, tL in src/app.js); Quellen bleiben vollständig
+  var beratungFn = null; // von src/app.js über Ausziehen.beratungAbfrage(fn)
+  function laie() { return !(beratungFn && beratungFn()) && typeof Fmt !== 'undefined' && !!Fmt.ohnePara; }
+  function ohneP(s) { return laie() ? Fmt.ohnePara(s) : s; }
+  function tL(k, p) { return ohneP(t(k, p)); }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }).replace(/§ /g, '§\u00a0'); } // „§ 22“ nicht umbrechen
   function sym(id) { return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + SYM[id] + '</svg>'; }
   function hatPlan() { return !!$('v-haushalt'); }
@@ -193,7 +213,7 @@ var Ausziehen = (function () {
     '.az-liste{list-style:none;margin:0;padding:0;display:grid;gap:10px}' +
     '.az-punkt{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:12px 14px;display:grid;gap:6px}' +
     '.az-check{display:flex;gap:12px;align-items:flex-start;min-height:44px;cursor:pointer;font-weight:700}' +
-    '.az-check input{flex:none;width:26px;height:26px;margin:2px 0 0;accent-color:var(--accent)}' +
+    '.az-check input{flex:none;width:32px;height:32px;margin:0;accent-color:var(--accent)}' +
     '.az-punkt.ok .az-check span{text-decoration:line-through;text-decoration-thickness:1px;opacity:.75}' +
     '.az-titel{font-weight:700;margin:0}.az-kurz{margin:0}.az-punkt>.az-q{margin:0}.az-punkt>.btns{margin:0}' +
     '.az-punkt details>summary,.az-weitere>summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:600;color:var(--accent)}' +
@@ -230,14 +250,15 @@ var Ausziehen = (function () {
   function punktHtml(p, liste) {
     var ok = liste && daten.ab[p.id];
     var h = '<li class="az-punkt' + (ok ? ' ok' : '') + '" id="az-p-' + p.id + '">';
-    if (liste) h += '<label class="az-check"><input type="checkbox" data-az-ab="' + p.id + '"' + (ok ? ' checked' : '') + '><span>' + esc(t('az.p.' + p.id)) + '</span></label>';
-    else h += '<p class="az-titel">' + esc(t('az.p.' + p.id)) + '</p>';
+    if (liste) h += '<label class="az-check"><input type="checkbox" data-az-ab="' + p.id + '"' + (ok ? ' checked' : '') + '><span>' + esc(tL('az.p.' + p.id)) + '</span></label>';
+    else h += '<p class="az-titel">' + esc(tL('az.p.' + p.id)) + '</p>';
     if (p.moeglich) h += '<span class="az-chip">' + esc(t('az.moeglich')) + '</span>';
-    var roh = t('az.p.' + p.id + '.t', p.id === 'kv' && ctx.famversGrenze ? { grenze: ctx.famversGrenze() } : null).split('\n');
+    var roh = tL('az.p.' + p.id + '.t', p.id === 'kv' && ctx.famversGrenze ? { grenze: ctx.famversGrenze() } : null).split('\n');
     var det = roh.map(function (s) { return '<p>' + esc(s) + '</p>'; }).join('');
     if (!liste) {
       // Info-Punkte: der erste Satzblock gleich sichtbar, der Rest zum Aufklappen
       var deRoh = typeof I18N !== 'undefined' && I18N.de && I18N.de['az.p.' + p.id + '.t'];
+      if (deRoh) deRoh = ohneP(deRoh); // gleiche Ansicht wie roh, sonst trennt „Abs. 3“ den ersten Satz anders
       var teile = (roh.length === 1 && deRoh && deRoh.indexOf('\n') < 0 ? ersterSatz(roh[0], deRoh) : roh).map(function (x) { return '<p>' + esc(x) + '</p>'; });
       h += teile[0].replace('<p>', '<p class="az-kurz">');
       var rest = teile.slice(1).join('') + (p.knopf ? '<div class="btns">' + knopfHtml(p.knopf) + '</div>' : '');
@@ -250,27 +271,27 @@ var Ausziehen = (function () {
   }
 
   function renderEinstieg(box, fokus) {
-    var h = '<p class="az-lead">' + esc(t('az.lead')) + '</p><div class="az-raster">';
+    var h = '<div class="az-raster">'; // ohne Einleitungssatz: die Kacheln erklären sich (Infotexte-Bericht)
     HAUPT.forEach(function (id) {
       var f = fortschritt(daten, id);
-      h += '<button type="button" class="sk az-k az-k-' + id + '" data-az-geh="' + id + '" id="az-geh-' + id + '"><span class="sk-sym" aria-hidden="true">' + sym(id) + '</span><span class="sk-txt"><b>' + esc(t('az.' + id + '.h')) + '</b><span>' +
-        esc(t('az.' + id + '.t')) + '</span>' + (f ? '<span class="az-fort">' + esc(t('az.erledigt', { n: f.n, von: f.von })) + '</span>' : '') + '</span></button>';
+      h += '<button type="button" class="sk az-k az-k-' + id + '" data-az-geh="' + id + '" id="az-geh-' + id + '"><span class="sk-sym" aria-hidden="true">' + sym(id) + '</span><span class="sk-txt"><b>' + esc(tL('az.' + id + '.h')) + '</b><span>' +
+        esc(tL('az.' + id + '.t')) + '</span>' + (f ? '<span class="az-fort">' + esc(t('az.erledigt', { n: f.n, von: f.von })) + '</span>' : '') + '</span></button>';
     });
     h += '</div>';
     box.innerHTML = h;
     if (fokus) { var b = box.querySelector('#az-geh-' + fokus); if (b) b.focus(); }
   }
   function renderBereich(box, b) {
-    var h = '<h3 class="pf-frage" id="azH" tabindex="-1">' + esc(t('az.' + b.id + '.h')) + '</h3><p class="az-lead">' + esc(t('az.' + b.id + '.t')) + '</p>';
+    var h = '<h3 class="pf-frage" id="azH" tabindex="-1">' + esc(tL('az.' + b.id + '.h')) + '</h3><p class="az-lead">' + esc(tL('az.' + b.id + '.t')) + '</p>';
     var f = fortschritt(daten, b.id);
     if (f) h += '<p class="az-fort" id="azFort" role="status">' + esc(t('az.erledigt', { n: f.n, von: f.von })) + '</p>';
     if (b.id === 'geld' && hatPlan()) h += '<div class="btns">' + knopfHtml('plan', 'primary') + '</div>';
     if (b.id === 'hilfen') h += '<div class="btns">' + knopfHtml('check', 'primary').replace(esc(t('az.knopf.check')), esc(t('az.hilfen.check'))) + '</div>';
     if (b.stufen) {
       b.stufen.forEach(function (s) {
-        h += '<h4 class="az-stufe s-' + s.id + '">' + esc(t('az.stufe.' + s.id)) + '</h4><ul class="az-liste">' + s.punkte.map(function (p) { return punktHtml(p, false); }).join('') + '</ul>';
+        h += '<h4 class="az-stufe s-' + s.id + '">' + esc(tL('az.stufe.' + s.id)) + '</h4><ul class="az-liste">' + s.punkte.map(function (p) { return punktHtml(p, false); }).join('') + '</ul>';
       });
-      h += '<p class="small">' + esc(t('az.vers.tipp')) + '</p>';
+      h += '<p class="small">' + esc(tL('az.vers.tipp')) + '</p>';
     } else {
       var oben = b.punkte.filter(function (p) { return !p.mehr; }), unten = b.punkte.filter(function (p) { return p.mehr; });
       h += '<ul class="az-liste">' + oben.map(function (p) { return punktHtml(p, b.liste); }).join('') + '</ul>';
@@ -321,17 +342,17 @@ var Ausziehen = (function () {
     }
     var go = $('goAusziehen'); if (go) go.addEventListener('click', function () { ansicht = ''; herkunft = []; ctx.zeige('ausziehen', true); });
     // „Alle Angaben löschen“ löscht auch Haken und Notizen: das erledigt die App über die Vorgänge (lotse.ausziehen in Vorgaenge.DATEN, danach neuLaden)
-    speicher.laden(function (v) { try { daten = normiere(v ? JSON.parse(v) : null); } catch (e) { daten = leer(); } render(); });
+    speicher.laden(function (v) { daten = lesen(v); render(); });
   }
 
   return {
     // Inhalt und Daten (Tests)
     BEREICHE: BEREICHE, HAUPT: HAUPT, Q: Q, ABGERUFEN: ABGERUFEN, schluessel: schluessel, normiere: normiere, fortschritt: fortschritt, quelleText: quelleText, allePunkte: allePunkte,
     // Oberfläche
-    init: init, zeigen: function () { render(); }, zurueck: zurueck, sprache: function () { render(); }, speicherOrt: speicherOrt, oeffnen: function (id) { geh(id); },
+    init: init, zeigen: function () { render(); }, beratungAbfrage: function (fn) { beratungFn = typeof fn === 'function' ? fn : null; }, zurueck: zurueck, sprache: function () { render(); }, speicherOrt: speicherOrt, oeffnen: function (id) { geh(id); },
     daten: function () { return JSON.parse(JSON.stringify(daten)); }, laden: function (d) { daten = normiere(d); sichern(); render(); },
     // Nach einem Wechsel des Vorgangs: Haken und Notizen des geöffneten Vorgangs lesen (ohne zu schreiben); offen: Unterseite geöffnet?
-    neuLaden: function () { speicher.laden(function (v) { try { daten = normiere(v ? JSON.parse(v) : null); } catch (e) { daten = leer(); } render(); }); },
+    neuLaden: function () { speicher.laden(function (v) { daten = lesen(v); render(); }); },
     offen: function () { return !!ansicht; },
     // Für „Mein Ordner“: erledigte und alle Checklistenpunkte über alle Bereiche
     stand: function () { var n = 0, von = 0; if (!daten) return null; BEREICHE.forEach(function (b) { var f = fortschritt(daten, b.id); if (f) { n += f.n; von += f.von; } }); return { n: n, von: von }; }

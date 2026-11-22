@@ -77,9 +77,13 @@ setTimeout(() => {
     w.Haushalt.laden({ plan: { kg: null, leist: null, sonst: 100000, aus: { essen: 20000 } } });
     zurRate();
     check('[rate-dom] nichts pfändbar: Hinweis Pfändungstabelle und Beratung, kein Kasten', /Nach der Pfändungstabelle könnten Gläubiger/.test(tx($('ra-keine'))) && !$('ra-betrag') && !!$('ra-zur-beratung'));
+    { const tr = $('ra-trotz'), kids = [...d.querySelector('#spInhalt').children];
+      check('[ux-c] nichts pfändbar: Abraten vorne, Hauptknopf „Beratungsstelle finden“, Formular erst nach bewusster Entscheidung (zugeklappt)', !!tr && !tr.open && tr.contains($('ms-rate')) && tr.contains($('ra-warn')) && tr.contains($('ra-zur-pruef')) && $('ra-zur-beratung').className === 'btn' && tx($('ra-zur-beratung')) === 'Beratungsstelle finden' && kids.indexOf($('ra-empf')) < kids.indexOf(tr));
+      tr.open = true; tr.dispatchEvent(new w.Event('toggle')); const f = $('ms-g'); f.value = 'X'; f.dispatchEvent(new w.Event('input', { bubbles: true }));
+      zurRate(); check('[ux-c] „Trotzdem“ bleibt nach erneutem Öffnen offen', $('ra-trotz').open); $('ra-trotz').open = false; $('ra-trotz').dispatchEvent(new w.Event('toggle')); }
     w.Haushalt.laden({ plan: { kg: null, leist: null, sonst: 300000, aus: { essen: 250000 } } }); zurRate();
     klick($('ra-zur-beratung'));
-    check('[rate-dom] Knopf öffnet die Kacheln der Schuldnerberatung', !!d.querySelector('#spInhalt .gs-h-finden') || !!d.querySelector('#spInhalt [class*="gs-h-"]'));
+    check('[rate-dom] Knopf öffnet direkt „Beratungsstelle finden“', !!$('sb-suche'));
     // 4. Sprachen: Englisch und Einfache Sprache zeigen eigene Texte
     w.Haushalt.laden({ plan: { kg: null, leist: null, sonst: 300000, aus: { essen: 150000, energie: 50000 } } });
     w.__solo.lang('en'); zurRate();

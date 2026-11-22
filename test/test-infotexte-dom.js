@@ -76,14 +76,14 @@ setTimeout(() => {
   d.querySelector('#appnav [data-ansicht=start]') && d.querySelector('#appnav [data-ansicht=start]').click();
   $('goLeistungen').click();
   check('Kurzer Check als Wahl oben (vor dem Formular, nicht am Formularende); keine sichtbaren Beispiele', !d.querySelector('.form-ende') && $('einfachBtn') && $('einfachBtn').compareDocumentPosition($('form')) & w.Node.DOCUMENT_POSITION_FOLLOWING && $('presets').hidden);
-  check('Löschen: Textknopf oben in „Deine Angaben“ (vor dem Formular)', !$('clearBtn') && $('clearLink').classList.contains('linkbtn') && $('clearLink').compareDocumentPosition($('form')) & w.Node.DOCUMENT_POSITION_FOLLOWING);
+  check('Löschen: auf der Startwahl ohne Angaben kein „Angaben löschen“ (UX-Audit A, Aufgabe 11), kein alter Löschknopf', !$('clearBtn') && (!$('clearLink') || $('clearLink').hidden));
   const hinweise = [...d.querySelectorAll('#form .hint')].filter(sichtbar);
   check('Formular leer: höchstens 8 sichtbare Feldhinweise', hinweise.length <= 8, hinweise.map((x) => x.textContent.slice(0, 30)));
   check('Alle ⓘ-Bauteile zu, Überschrift als Frage', [...d.querySelectorAll('#form details.mehr')].every((x) => !x.open && /\?$/.test(x.querySelector('summary').textContent)), [...d.querySelectorAll('#form details.mehr summary')].map((x) => x.textContent));
   check('Beträge nie hinter Aufklappen: Freibetrag der Zusatzrente sichtbar', !$('zusatzRenteHint').closest('details') && /281,50/.test(de['ek.zusatzRente.hint']));
   check('Geburtsjahr: Beispiel als Platzhalter', $('gebJahr').getAttribute('placeholder') === de['geb.ph']);
   check('Gelöschte Hinweise sind aus allen Sprachen entfernt', ['briefe.t', 'briefe.hinweis', 'lg.gesund.hint', 'plz.hint', 'ausb.hint', 'auto.hint', 'geb.hint', 'miete.hint'].every((k) => Object.keys(I18N).every((l) => !(k in I18N[l]))));
-  check('Neue Texte in allen 13 Sprachen', ['mehr.warum', 'mehr.wo', 'mehr.wer', 'mehr.was', 'rb.satz', 'geb.ph', 'heiz.kurz', 'unterh.kurz', 'uz.kurz', 'beh.quelle', 'f.intro.mehr', 'f.empfAendern', 'f.empfPlatz', 'f.mehrWege', 'f.auf.1', 'f.auf.4.t'].every((k) => Object.keys(I18N).every((l) => typeof I18N[l][k] === 'string' && I18N[l][k].length > 2)));
+  check('Neue Texte in allen 13 Sprachen', ['mehr.warum', 'mehr.wo', 'mehr.wer', 'mehr.was', 'rb.satz', 'geb.ph', 'heiz.kurz', 'unterh.kurz', 'uz.kurz', 'beh.quelle', 'f.empfAendern', 'f.empfPlatz', 'f.mehrWege', 'f.auf.angaben', 'f.auf.antraege', 'f.unt.alle', 'f.weg.offen', 'fw.wg.by', 'f.auf.4.t'].every((k) => Object.keys(I18N).every((l) => typeof I18N[l][k] === 'string' && I18N[l][k].length > 2)));
 
   // Beispiel laden: Ergebnis
   $('p1').click();
@@ -91,30 +91,31 @@ setTimeout(() => {
   const tipp = (el) => !!el && el.matches('details.mehr.tipp') && !el.open && !!el.querySelector('summary .tipp-sym svg') && el.querySelector('summary .tipp-kurz').textContent.split(/\s+/).length <= 12;
   check('[hilfen-aufraeumen] Ergebnis: Beratungsstelle als kurzer Tipp (Symbol + Satz), Verbände zugeklappt; kein blauer Kasten', tipp($('beratung')) && $('beratung').querySelector('.tipp-kurz').textContent === de['res.beratung'] && $('beratung').textContent.includes(de['foot.2']) && !d.querySelector('.hinweis-koralle'));
   check('Ergebnis: f.intro kurz, Erklärung „formloser Antrag“ zugeklappt (jetzt oben in der Antragsmappe)', !/Gerät/.test(de['f.intro']) && !!d.querySelector('#mappe #helper details.mehr'));
-  const ww = $('zweiWege');
-  if (ww) check('[hilfen-aufraeumen] Zwei Wege: kurzer Tipp unter den Karten, Tipp und Wege zugeklappt', tipp(ww) && !!ww.querySelector('.ww-tun') && !!ww.querySelector('.ww-wege') && ($('mappeKnopf').compareDocumentPosition(ww) & w.Node.DOCUMENT_POSITION_FOLLOWING));
+  const ww = $('wege');
+  if (ww) check('[hilfen-aufraeumen] Zwei Wege: sichtbarer Rahmen über dem Hauptknopf (UX-Prüfung 21.11.2026), Einzelheiten zugeklappt', !ww.closest('details') && !!ww.querySelector('details.mehr') && !ww.querySelector('details.mehr').open && ($('mappeKnopf').compareDocumentPosition(ww) & w.Node.DOCUMENT_POSITION_PRECEDING));
   check('[hilfen-aufraeumen] Ergebnis: „Gut zu wissen“ als kurzer Tipp', !$('gutWissen') || tipp($('gutWissen')));
   check('Erst „Verstanden“: Erststart bleibt weg', $('firstNotice').hidden);
   // Antragsmappe als Aufgabenliste
   $('mappeMake').click();
   $('p-name').value = 'Test'; $('p-name').dispatchEvent(new w.Event('input', { bubbles: true }));
-  d.querySelectorAll('#pick input').forEach((c) => { if (!c.checked) c.click(); });
-  const auf = [...d.querySelectorAll('#mappeBody .aufgabe')];
-  check('Mappe: nummerierte Aufgabenliste mit Knopf und „Erledigt“ je Schritt', auf.length >= 3 && auf.every((a) => a.querySelector('button.btn') && a.querySelector('input[data-haken^="mappe|"]')), auf.length);
-  check('Mappe: Frist (Antrag sichert den Monat) sichtbar im letzten Schritt, nicht zum Aufklappen', /Monat/.test(auf[auf.length - 1].textContent) && !auf[auf.length - 1].querySelector('.mappe-stichtag').closest('details'));
+  d.querySelectorAll('#pick input[type=checkbox]').forEach((c) => { if (!c.checked) c.click(); });
+  { const ra = d.querySelector('#pick input[data-weg][value="a"]'); if (ra && !ra.checked) ra.click(); }
+  const auf = [...d.querySelectorAll('#mappeAufgaben > .aufgabe')];
+  check('Mappe: nummerierte Aufgabenliste, jede Zeile klappt ihren Inhalt auf, „Erledigt“ in den Schritten 2–4', auf.length === 4 && auf.every((a) => a.querySelector(':scope > details > summary .auf-status')) && auf.slice(1).every((a) => a.querySelector('input[data-haken^="mappe|"]')), auf.length);
+  check('Mappe: Frist (Antrag sichert den Monat) sichtbar im letzten Schritt, nicht in einem inneren Aufklapper', /Monat/.test(auf[auf.length - 1].textContent) && !auf[auf.length - 1].querySelector('.mappe-stichtag').closest('.auf-inhalt details'));
   check('Mappe: oben keine Hinweiskästen (Deutsch-Hinweis nur bei anderer Sprache)', $('mappeDeNote').hidden && !d.querySelector('#mappe .mappe-bar .notice:not([hidden])'));
-  check('Mappe: jedes Empfängerfeld steht in seinem eigenen Brief (nie unter dem vorigen)', [...d.querySelectorAll('#mappeBody textarea[data-empf]')].every((x) => x.closest('.page') && x.closest('.page').id === 'm-brief-' + x.getAttribute('data-empf')) && d.querySelectorAll('#mappeBody > .empf-edit').length === 0);
-  const fk = d.querySelector('#m-formulare .form-karte');
+  check('Mappe: jedes Empfängerfeld steht in seinem eigenen Brief (nie unter dem vorigen)', [...d.querySelectorAll('#mappe textarea[data-empf]')].every((x) => x.closest('.page') && x.closest('.page').id === 'm-brief-' + x.getAttribute('data-empf')) && d.querySelectorAll('#mappeBody > .empf-edit').length === 0);
+  const fk = d.querySelector('#aufAntraege .ant-form');
   check('Mappe: Formular-Link groß direkt unter dem Titel', !fk || (fk.children[1] && fk.children[1].querySelector('a.btn[target="_blank"]')));
-  check('Mappe: „Keine Rechtsberatung“ auf dem Ausdruck (Unterlagenliste)', $('m-unterlagen').querySelector('.rb-satz').textContent === de['rb.satz']);
+  check('Mappe: „Keine Rechtsberatung“ auf dem Ausdruck (Unterlagenliste)', $('m-unterlagen').textContent.indexOf(de['rb.satz']) >= 0);
   // Prüfvermerk PR #67, Punkte 5–7
   const letzt = auf[auf.length - 1], mitAlg = !!$('m-brief-alg1'), mitSr = !!$('m-brief-srente');
   check('Mappe: Hinweis Arbeitslosmeldung genau dann, wenn ein Brief zum Arbeitslosengeld dabei ist', !!letzt.querySelector('.mappe-alg1') === mitAlg && (!mitAlg || letzt.querySelector('.mappe-alg1').textContent === de['f.alg1.meldung']));
-  check('Mappe: Hinweis „kein Antrag“ genau dann, wenn die Rentenauskunft (srente) dabei ist', !!letzt.querySelector('.mappe-srente') === mitSr && $('introSrente').hidden === !mitSr);
+  check('Mappe: Hinweis „kein Antrag“ genau dann, wenn die Rentenauskunft (srente) dabei ist', !!letzt.querySelector('.mappe-srente') === mitSr);
   check('Texte zu Arbeitslosmeldung und Rentenauskunft in allen 13 Sprachen', ['f.alg1.meldung', 'f.srente.hinweis'].every((k) => Object.keys(I18N).every((l) => typeof I18N[l][k] === 'string' && I18N[l][k].length > 20)));
   check('Arbeitslosmeldung: „Ein Brief reicht nicht“, persönlich oder online, 3 Monate / 3 Tage (§ 141, § 38 SGB III)', /Brief reicht nicht/.test(de['f.alg1.meldung']) && /persönlich oder online/.test(de['f.alg1.meldung']) && /3 Monate/.test(de['f.alg1.meldung']) && /3 Tagen/.test(de['f.alg1.meldung']));
   check('Datenschutz: „bleiben auf diesem Gerät, solange du nichts selbst sendest“ (Erststart und Start)', /solange du nichts selbst sendest/.test(de['first.text']) && /solange du nichts selbst sendest/.test(de['home.sicher']) && !('home.privat' in de));
-  const hk = auf[0].querySelector('input[data-haken]'); hk.click();
+  const hk = auf[1].querySelector('input[data-haken]'); hk.click();
   check('Mappe: „Erledigt“ wird gemerkt (lotse.haken)', /mappe\|/.test(String(store['lotse.haken'] || '')) || hk.checked);
   console.log(fails ? `\n${fails} Fehler` : '\nInfotexte: alle Prüfungen bestanden');
   process.exit(fails ? 1 : 0);

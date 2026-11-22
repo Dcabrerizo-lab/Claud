@@ -3,9 +3,11 @@
   "su.leeren": "Clear search",
   "su.n": "{n} results",
   "su.n1": "1 result",
+  "su.haeufig": "Often searched",
   "su.nichts": "Nothing found. Try another word.",
   "su.b.leistungen": "Benefits check",
   "su.b.briefe": "Letters",
   "su.b.mappe": "Application",
-  "su.suchen": "Search"
+  "su.suchen": "Search",
+  "su.p.gutachten": "Check a care assessment"
 }

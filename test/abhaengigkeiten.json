@@ -216,7 +216,7 @@
     "vermoegen",
     "wfbm"
    ],
-   "quelle": "§ 4 RBStV"
+   "quelle": "§ 4 RBeitrStV"
   },
   "zuzahl": {
    "haengtAb": [
@@ -273,7 +273,7 @@
     "aufenthalt",
     "baby"
    ],
-   "quelle": "BEEG, §§ 1–2 BEEG"
+   "quelle": "BEEG, §§ 1–2a, 4, 4a BEEG"
   },
   "hzp": {
    "haengtAb": [
@@ -525,7 +525,7 @@
     "rundfunk"
    ],
    "mindestens": "ja",
-   "quelle": "§ 4 Abs. 1 Nr. 4 RBStV: Empfänger von Leistungen nach dem AsylbLG (https://bravors.brandenburg.de/vertraege/rbstv/5, Abruf 20.11.2026)"
+   "quelle": "§ 4 Abs. 1 Nr. 4 RBeitrStV: Empfänger von Leistungen nach dem AsylbLG (https://bravors.brandenburg.de/vertraege/rbstv/5, Abruf 20.11.2026)"
   },
   {
    "merkmal": "aufenthalt",
@@ -681,7 +681,7 @@
     "rundfunk"
    ],
    "mindestens": "ja",
-   "quelle": "§ 4 Abs. 1 Nr. 4 RBStV: Empfänger von Leistungen nach dem AsylbLG (https://bravors.brandenburg.de/vertraege/rbstv/5, Abruf 20.11.2026)"
+   "quelle": "§ 4 Abs. 1 Nr. 4 RBeitrStV: Empfänger von Leistungen nach dem AsylbLG (https://bravors.brandenburg.de/vertraege/rbstv/5, Abruf 20.11.2026)"
   },
   {
    "merkmal": "aufenthalt",
@@ -699,5 +699,11 @@
    "quelle": "§ 3 Abs. 4 AsylbLG (https://www.gesetze-im-internet.de/asylblg/__3.html, Abruf 20.11.2026)"
   }
  ],
- "bekannt": []
+ "bekannt": [
+  {
+   "karte": "wbs",
+   "merkmal": "pflegegrad",
+   "entwurf": "kein Fehler: Bayern seit 21.11.2026 ohne Pflegegrad (Art. 5 Abs. 2 Nr. 1 BayWoFG, 4.000 € je Person mit GdB ab 50; Befund WBS4); der Pflegegrad wirkt nur noch in anderen Ländern (Muster § 24 WoFG) und ist im Zufall selten sichtbar"
+  }
+ ]
 }

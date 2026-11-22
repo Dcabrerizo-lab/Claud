@@ -1,5 +1,7 @@
 // Abgleich mit amtlichen Rechnern: feste Ergebnisse, einmal online abgefragt (tools/amtliche-rechner/), hier ohne Internet geprüft.
-// Elterngeld: 33 Einkommen aus dem Elterngeldrechner des Bundes (Familienportal), auf den Euro.
+// Elterngeld: Einkommen aus dem Elterngeld-Schnellrechner des Bundes (Familienportal). SoLo rechnet nach § 2c Abs. 1 BEEG mit 102,50 € Abzug
+// (1.230 € / 12), der Schnellrechner mit 83,33 € (Entscheidung David, 21.11.2026). Der Unterschied wird genau erklärt (test/referenz.js, egAbgleich):
+// amtlich = Formel mit 83,33 € auf den Cent; SoLo = dieselbe Formel mit 102,50 € auf den Euro; Differenz bei festem Satz = −Satz × 19,17 €.
 // Wohngeld: 60 Haushalte aus dem Wohngeldrechner des Bundesbauministeriums. SoLos obere Schätzung (voller Pauschalabzug) muss
 // auf 10 € gerundet dem amtlichen Ergebnis entsprechen. Findet Fehler, die eigene Tests nicht sehen (falsch verstandene Regeln).
 const R = require('../src/rules.js');
@@ -16,14 +18,21 @@ W.faelle.forEach((x) => {
   n++; if (!ok) { fails++; console.log('FAIL [amtlich-wohngeld] ' + JSON.stringify(f) + ' SoLo ' + w.level + ' ' + solo + ' €, amtlich ' + x.amtlich + ' €'); }
 });
 const nWg = n;
-// Elterngeld: 33 Einkommen aus dem Elterngeldrechner des Familienportals (Basiselterngeld, auf den Euro)
+// Elterngeld: Einkommen aus dem Schnellrechner des Familienportals (Basiselterngeld); Abweichung nur aus dem Pauschbetrag, siehe oben
+const Ref = require('./referenz.js');
+const egGr = {};
 const EG = require('./amtlich-elterngeld.json');
 EG.faelle.forEach((x) => {
-  const e = R.evaluate({ baby: 'bald', egVor: x.vorher, art1: 'lohn', brutto: 2000, netto: 1500, heute: 2026.9, kids: x.geschwister ? 2 : 0, kidsU6: x.geschwister ? 2 : 0 }).results.find((r) => r.id === 'elterngeld');
+  const inp = { baby: 'bald', egVor: x.vorher, art1: 'lohn', brutto: 2000, netto: 1500, heute: 2026.9, kids: x.geschwister ? 2 : 0, kidsU6: x.geschwister ? 2 : 0 };
+  const e = R.evaluate(inp).results.find((r) => r.id === 'elterngeld');
   const solo = e.tx[0][1].basis.eur;
-  n++; if (Math.abs(solo - x.amtlich) > 0.5) { fails++; console.log('FAIL [amtlich-elterngeld] Netto vorher ' + x.vorher + ' €: SoLo ' + solo + ' €, amtlich ' + x.amtlich + ' €'); }
+  const a = Ref.egAbgleich(x, solo, x.amtlich, inp); egGr[a.gruppe] = (egGr[a.gruppe] || 0) + 1;
+  n++; if (a.fehler || a.diff > 0) { fails++; console.log('FAIL [amtlich-elterngeld] Netto vorher ' + x.vorher + ' €: ' + (a.fehler || 'SoLo über dem Schnellrechner (' + a.diff + ' €)')); }
 });
 const nEg = n - nWg;
+// Gegenprobe: Die drei Gruppen müssen alle vorkommen, und die Formel mit Netto darf nie über dem Schnellrechner liegen (der Abzug ist größer).
+// SoLo selbst kann seit 21.11.2026 etwas darüber liegen: Elterngeld-Netto mit den Pauschalen nach § 2f BEEG (Befund E2, egAbgleich, a.sv).
+if (!(egGr.satz > 0 && egGr.grenze > 0 && egGr.gleitend > 0)) { fails++; console.log('FAIL [amtlich-elterngeld] Gruppen fehlen: ' + JSON.stringify(egGr)); }
 // Kinderzuschlag: 40 Familien im KiZ-Lotsen der Familienkasse (nur Anspruch ja/nein). Lotse „Anspruch“: SoLo nie „eher nicht“;
 // Lotse „kein Anspruch“: SoLo nie „wahrscheinlich“ (dazwischen „möglich“ mit Grund).
 const KZ = require('./amtlich-kiz.json');
@@ -34,7 +43,7 @@ KZ.faelle.forEach((x) => {
   const ok = x.lotse === 'ja' ? k.level !== 'nein' : k.level !== 'ja';
   n++; if (!ok) { fails++; console.log('FAIL [amtlich-kiz] ' + JSON.stringify(f) + ' SoLo ' + k.level + ' (' + k.hl + '), KiZ-Lotse ' + x.lotse); }
 });
-console.log(fails ? fails + ' von ' + n + ' FEHLGESCHLAGEN' : '[amtlich-wohngeld] [amtlich-elterngeld] [amtlich-kiz] Abgleich mit amtlichen Rechnern bestanden: Wohngeld ' + nWg + ' Haushalte auf 10 € gleich, Elterngeld ' + nEg + ' Einkommen auf den Euro gleich, Kinderzuschlag ' + (n - nWg - nEg) + ' Familien ohne Widerspruch zum KiZ-Lotsen');
+console.log(fails ? fails + ' von ' + n + ' FEHLGESCHLAGEN' : '[amtlich-wohngeld] [amtlich-elterngeld] [amtlich-kiz] Abgleich mit amtlichen Rechnern bestanden: Wohngeld ' + nWg + ' Haushalte auf 10 € gleich, Elterngeld ' + nEg + ' Einkommen: Unterschied zum Schnellrechner genau aus dem Pauschbetrag erklärt (102,50 statt 83,33 €; ' + egGr.satz + ' × fester Satz, ' + egGr.grenze + ' × Mindest-/Höchstbetrag, ' + egGr.gleitend + ' × gleitender Satz), Kinderzuschlag ' + (n - nWg - nEg) + ' Familien ohne Widerspruch zum KiZ-Lotsen');
 // Großer Abgleich (tools/amtliche-rechner/gross.js auf GitHub): 3.000 Wohngeld-Haushalte, 300 Familien, 1.000 Elterngeld-Einkommen,
 // gespeichert in test/amtlich-gross-*.json und mit denselben Regeln geprüft
 if (require('fs').readdirSync(__dirname).some((d) => /^amtlich-gross-/.test(d))) {

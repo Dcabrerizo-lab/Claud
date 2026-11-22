@@ -106,9 +106,11 @@ var Klient = (function () {
       teile.forEach(function (x) { ul.appendChild(el('li', null, x)); });
       if (teile.length) seite.appendChild(ul); else seite.appendChild(el('p', 'muted kb-leer', t('kb.nichts')));
       ['kbDruck', 'kbTeilen'].forEach(function (id) { var b = $(id); if (b) { b.disabled = true; b.hidden = true; } });
+      if ($('kbWegBlatt')) $('kbWegBlatt').hidden = true;
       return null;
     }
     ['kbDruck', 'kbTeilen'].forEach(function (id) { var b = $(id); if (b) b.hidden = false; });
+    if ($('kbWegBlatt')) $('kbWegBlatt').hidden = !!fremd;
     var doc = dokument();
     seite.classList.toggle('kb-zwei', doc.zwei);
     seite.appendChild(zeileEl(doc.titel, doc)).classList.add('kb-titel');
@@ -252,12 +254,40 @@ var Klient = (function () {
       return dateiAusgeben(name, W().datei(code), 'text/plain', $('kwMsg'));
     }, function (e) { kwMsg(t(e && e.art === 'leer' ? 'kb.leer' : FEHLER[e && e.art] || 'kw.f.technik')); return false; });
   }
+  // Vorab prüfen, ob der Inhalt in einen QR-Code passt (UX-Audit D #8: nicht erst nach dem Tippen „Zu groß“ melden).
+  // Ohne PIN packen (keine Schlüsselableitung, schnell) und Platz für Salz, IV und Prüfsumme (44 Byte ≈ 60 Zeichen) dazurechnen.
+  // Passt es nicht: Hinweis vorher, „Als SoLo-Datei teilen“ wird Hauptknopf, „QR-Code zeigen“ bleibt tippbar (prüft beim Tippen erneut).
+  var qrLauf = 0, qrUhr = null;
+  function qrPruefen() {
+    if (qrUhr) clearTimeout(qrUhr);
+    qrUhr = setTimeout(qrPruefenJetzt, 200);
+  }
+  function qrPruefenJetzt() {
+    qrUhr = null;
+    var w = W(), nr = ++qrLauf;
+    if (!w || !offen || fremd || !$('kwQrBtn')) return Promise.resolve(null);
+    var i = null; try { i = inhaltFuerWeitergabe(); } catch (e) { i = null; }
+    if (!i) { qrAnzeige(true); return Promise.resolve(null); }
+    return w.packen(i, null).then(function (code) {
+      var passt = !!w.qrMatrix(code + new Array(61).join('A'));
+      if (nr === qrLauf) qrAnzeige(passt);
+      return passt;
+    }, function () { if (nr === qrLauf) qrAnzeige(false); return false; });
+  }
+  function qrAnzeige(passt) {
+    var q = $('kwQrBtn'), f = $('kwDateiBtn'), h = $('kwQrHinweis'); if (!q || !f || !h) return;
+    q.className = passt ? 'btn' : 'btn ghost'; f.className = passt ? 'btn ghost' : 'btn';
+    if (passt) q.removeAttribute('aria-disabled'); else q.setAttribute('aria-disabled', 'true');
+    h.hidden = passt;
+    if (!passt && q.nextSibling !== null && q.parentNode.firstChild === q) q.parentNode.insertBefore(f, q); // Datei zuerst
+    if (passt && q.parentNode.firstChild !== q) q.parentNode.insertBefore(q, f);
+  }
   function pinText() { return pin.slice(0, 3) + ' ' + pin.slice(3); }
   function weitergabeZeichnen() {
     var box = $('kwBox'), w = W(); if (!box) return;
     box.textContent = ''; box.hidden = !w || !!fremd;
     if (!w || fremd) return;
-    box.appendChild(el('h3', null, t('kw.h')));
+    box.appendChild(el('h4', null, t('kw.h')));
     box.appendChild(el('p', 'small', t('kw.intro')));
     var lab = el('label', 'check'), cb = el('input');
     cb.type = 'checkbox'; cb.id = 'kwPinAn'; cb.checked = mitPin;
@@ -281,8 +311,10 @@ var Klient = (function () {
     var q = el('button', 'btn', t('kw.qr')); q.type = 'button'; q.id = 'kwQrBtn'; q.addEventListener('click', qrZeigen);
     var f = el('button', 'btn ghost', t('kw.datei')); f.type = 'button'; f.id = 'kwDateiBtn'; f.addEventListener('click', dateiTeilen);
     btns.appendChild(q); btns.appendChild(f); box.appendChild(btns);
+    var qh = el('p', 'small kw-qr-zuviel', t('kw.qr.zuViel')); qh.id = 'kwQrHinweis'; qh.hidden = true; box.appendChild(qh);
     var m = el('p', 'msg'); m.id = 'kwMsg'; m.setAttribute('role', 'status'); box.appendChild(m);
     var qr = el('div', 'kw-qr'); qr.id = 'kwQr'; qr.hidden = true; box.appendChild(qr);
+    qrPruefen();
   }
   function modusWahl(wrap) {
     if (!W()) return;
@@ -290,7 +322,7 @@ var Klient = (function () {
     [['blatt', 'kw.modus.blatt'], ['vorgang', 'kw.modus.vorgang']].forEach(function (x) {
       var lab = el('label', 'check'), r = el('input');
       r.type = 'radio'; r.name = 'kwModus'; r.value = x[0]; r.id = 'kwModus-' + x[0]; r.checked = modus === x[0];
-      r.addEventListener('change', function () { if (!r.checked) return; modus = x[0]; auswahlZeichnen(); blattZeichnen(); var z = $('kwModus-' + x[0]); if (z) z.focus(); });
+      r.addEventListener('change', function () { if (!r.checked) return; modus = x[0]; auswahlZeichnen(); blattZeichnen(); qrPruefen(); var z = $('kwModus-' + x[0]); if (z) z.focus(); });
       lab.appendChild(r); lab.appendChild(el('span', null, t(x[1]))); f.appendChild(lab);
     });
     if (modus === 'vorgang') f.appendChild(el('p', 'small', t('kw.modus.vorgang.t')));
@@ -301,10 +333,24 @@ var Klient = (function () {
   function haken(box, art, id, text) {
     var lab = el('label', 'check'), cb = el('input');
     cb.type = 'checkbox'; cb.checked = gewaehlt(art, id); cb.setAttribute('data-kb', art + '|' + id);
-    cb.addEventListener('change', function () { wahl[art + '|' + id] = cb.checked; blattZeichnen(); });
+    cb.addEventListener('change', function () { wahl[art + '|' + id] = cb.checked; zaehlen(); blattZeichnen(); qrPruefen(); });
     lab.appendChild(cb); lab.appendChild(el('span', null, text)); box.appendChild(lab);
   }
-  function gruppe(wrap, titelKey, id) { var f = el('fieldset', 'kb-gruppe'); f.id = id; f.appendChild(el('legend', null, t(titelKey))); wrap.appendChild(f); return f; }
+  // Jede Gruppe zugeklappt (UX-Audit D #8): Überschrift mit Zähler „8 von 8“, die Haken erst beim Aufklappen
+  function gruppe(wrap, titelKey, id) {
+    var det = el('details', 'kb-auf'); det.id = id + 'Auf'; det.setAttribute('data-titel', t(titelKey));
+    det.appendChild(el('summary', null, t(titelKey)));
+    var f = el('fieldset', 'kb-gruppe'); f.id = id; f.appendChild(el('legend', 'vh', t(titelKey)));
+    det.appendChild(f); wrap.appendChild(det); return f;
+  }
+  function zaehlen() {
+    var wrap = $('kbWahl'); if (!wrap) return;
+    Array.prototype.forEach.call(wrap.querySelectorAll('details.kb-auf'), function (det) {
+      var cb = det.querySelectorAll('input[data-kb]'), n = 0;
+      Array.prototype.forEach.call(cb, function (c) { if (c.checked) n++; });
+      det.querySelector('summary').textContent = t('kb.zaehler', { titel: det.getAttribute('data-titel'), n: String(n), m: String(cb.length) });
+    });
+  }
 
   function vorgangWahl(wrap) {
     var vg = ctx.vorgaenge();
@@ -325,7 +371,7 @@ var Klient = (function () {
     pinBox.appendChild(pl); pinBox.appendChild(pin); pinBox.appendChild(ok); pinBox.appendChild(pm);
     f.appendChild(pinBox);
     var vorher = sel.value;
-    var nehmen = function (id, daten) { vgId = id; vgDaten = daten; wahl = {}; basisNeu(); auswahlZeichnen(); blattZeichnen(); };
+    var nehmen = function (id, daten) { vgId = id; vgDaten = daten; wahl = {}; basisNeu(); auswahlZeichnen(); blattZeichnen(); qrPruefen(); };
     sel.addEventListener('change', function () {
       var o = sel.options[sel.selectedIndex], v = vg.filter(function (x) { return x.id === sel.value; })[0];
       if (!v) return;
@@ -362,8 +408,8 @@ var Klient = (function () {
     dc.type = 'checkbox'; dc.id = 'kbDaneben'; dc.checked = daneben;
     dl.appendChild(dc); dl.appendChild(el('span', null, t('kb.daneben')));
     var zeigen = function () { dl.hidden = spracheTeile(sprache).l === 'de'; };
-    sel.addEventListener('change', function () { sprache = sel.value; zeigen(); blattZeichnen(); });
-    dc.addEventListener('change', function () { daneben = dc.checked; blattZeichnen(); });
+    sel.addEventListener('change', function () { sprache = sel.value; zeigen(); blattZeichnen(); qrPruefen(); });
+    dc.addEventListener('change', function () { daneben = dc.checked; blattZeichnen(); qrPruefen(); });
     f.appendChild(lab); f.appendChild(sel); wrap.appendChild(f); wrap.appendChild(dl); zeigen();
   }
 
@@ -372,6 +418,7 @@ var Klient = (function () {
   function auswahlZeichnen() {
     var wrap = $('kbWahl'); if (!wrap) return;
     wrap.textContent = '';
+    wrap.appendChild(el('h3', 'kb-schritt', t('kb.s1')));
     vorgangWahl(wrap);
     modusWahl(wrap);
     if (modus === 'vorgang' && W()) return; // ganzer Vorgang: keine Sprache, keine Haken
@@ -391,6 +438,7 @@ var Klient = (function () {
     if (b.fristen.length) { var g3 = gruppe(wrap, 'kb.teil.fristen', 'kbFristen'); b.fristen.forEach(function (x) { haken(g3, 'f', x.id, x.text); }); }
     if (b.briefe.length) { var g4 = gruppe(wrap, 'kb.teil.briefe', 'kbBriefe'); b.briefe.forEach(function (x) { haken(g4, 'b', x.id, x.name); }); }
     if (!b.hilfen.length && !mitU.length && !b.fristen.length && !b.briefe.length) wrap.appendChild(el('p', 'muted', t('kb.nichts')));
+    zaehlen();
   }
 
   // ---------- Öffnen, Schließen, Sichtbarkeit ----------
@@ -428,8 +476,14 @@ var Klient = (function () {
   }
   function sprachWechsel() { if (offen && !fremd) { basisNeu(); auswahlZeichnen(); blattZeichnen(); weitergabeZeichnen(); } }
   // Blatt aus einer Weitergabe ansehen (beim Klienten, für alle Nutzer): ohne Auswahl, nur Drucken und Teilen
+  function vorschau(zeigen) {
+    var s = $('kbSeite'), b = $('kbVorschau'); if (s) s.classList.toggle('kb-zu', !zeigen);
+    if (b) { b.setAttribute('aria-expanded', zeigen ? 'true' : 'false'); b.textContent = t(zeigen ? 'kb.vorschau.zu' : 'kb.vorschau'); }
+  }
   function ansichtNurBlatt(an) {
-    ['kbWahl', 'kbDs'].forEach(function (id) { var e = $(id); if (e) e.hidden = !!an; });
+    ['kbWahl', 'kbDs', 'kbS2'].forEach(function (id) { var e = $(id); if (e) e.hidden = !!an; });
+    var vk = $('kbVorschauKopf'); if (vk) vk.hidden = !!an;
+    vorschau(!!an); // empfangenes Blatt: das Blatt ist der Inhalt; beim Zusammenstellen zuerst zugeklappt
     var intro = document.querySelector('#klientBlatt [data-t="kb.intro"]'); if (intro) intro.hidden = !!an;
     var h = $('h-kb'); if (h) h.textContent = t(an ? 'kw.blatt.h' : 'kb.h');
   }
@@ -454,9 +508,10 @@ var Klient = (function () {
     var o = $('kbOpen'); if (o) o.addEventListener('click', oeffnen);
     var d = $('kbDruck'); if (d) d.addEventListener('click', drucken);
     var s = $('kbTeilen'); if (s) s.addEventListener('click', teilen);
+    var v = $('kbVorschau'); if (v) v.addEventListener('click', function () { var sei = $('kbSeite'); vorschau(!!(sei && sei.classList.contains('kb-zu'))); });
   }
 
-  return { init: init, oeffnen: oeffnen, zeigen: zeigen, qrZeigen: qrZeigen, dateiTeilen: dateiTeilen, inhaltFuerWeitergabe: function () { return inhaltFuerWeitergabe(); }, schliessen: schliessen, offen: function () { return offen; }, sichtbar: sichtbar, sprache: sprachWechsel,
+  return { init: init, oeffnen: oeffnen, zeigen: zeigen, qrZeigen: qrZeigen, qrPruefen: qrPruefenJetzt, dateiTeilen: dateiTeilen, inhaltFuerWeitergabe: function () { return inhaltFuerWeitergabe(); }, schliessen: schliessen, offen: function () { return offen; }, sichtbar: sichtbar, sprache: sprachWechsel,
     dokument: function () { return dokument(); }, pdfSeiten: pdfSeiten, teilen: teilen, drucken: drucken };
 })();
 Klient.cacheAufraeumen = (function () {
@@ -478,5 +533,27 @@ Klient.cacheAufraeumen = (function () {
     }).catch(function () { return 0; });
   }
   return cacheAufraeumen;
+})();
+Klient.fotosAufraeumen = (function () {
+  // Android: Fotos der Kamera liegen nicht im Cache, sondern im App-eigenen Bilderordner (getExternalFilesDir(DIRECTORY_PICTURES),
+  // Capacitor Filesystem: Directory.External = 'EXTERNAL', Unterordner „Pictures“). Dort legen ab:
+  //   - die Dateiauswahl der WebView mit Kamera („QR-Code scannen“, src/weitergabe.js), Capacitor BridgeWebChromeClient.createImageFile,
+  //   - das Kamera-Plugin (Foto eines Formulars), CameraUtils.createImageFile,
+  // beide mit dem Namen JPEG_<JJJJMMTT>_<HHMMSS>_<Zufallszahl>.jpg (File.createTempFile). Die WebView löscht ihr Foto nicht
+  // (Schlussprüfung 21.11.2026, P3). Gelöscht werden nur Dateien mit genau diesem Namen, keine Ordner, nichts außerhalb.
+  // Aufruf: nach dem Einlesen eines QR-Fotos und beim App-Start (Reste nach einem Abbruch). Nur Android (src/app.js).
+  var FOTO = /^JPEG_\d{8}_\d{6}_\d+\.jpg$/;
+  return function fotosAufraeumen(fsys) {
+    if (!fsys || typeof fsys.readdir !== 'function' || typeof fsys.deleteFile !== 'function') return Promise.resolve(0);
+    return Promise.resolve().then(function () { return fsys.readdir({ path: 'Pictures', directory: 'EXTERNAL' }); }).then(function (r) {
+      var namen = ((r && r.files) || []).filter(function (f) {
+        var n = typeof f === 'string' ? f : f && f.name;
+        return typeof n === 'string' && !(f && f.type === 'directory') && FOTO.test(n);
+      }).map(function (f) { return typeof f === 'string' ? f : f.name; });
+      return Promise.all(namen.map(function (n) {
+        return Promise.resolve().then(function () { return fsys.deleteFile({ path: 'Pictures/' + n, directory: 'EXTERNAL' }); }).then(function () { return 1; }, function () { return 0; });
+      })).then(function (a) { return a.reduce(function (x, y) { return x + y; }, 0); });
+    }).catch(function () { return 0; });
+  };
 })();
 if (typeof module !== 'undefined') module.exports = Klient;

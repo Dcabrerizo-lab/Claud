@@ -77,7 +77,7 @@ const wechsel = (s, name) => { ordner(s); s.d.querySelector('#setHaushalte butto
     tippe(e('p-name'), 'Anton Vorher'); tippe(e('p-strasse'), 'Altgasse 7'); tippe(e('p-ort'), '91056 Erlangen');
     // Antragsmappe: Empfänger eines Briefs selbst ändern
     e('mappeMake').click();
-    const empf = u.d.querySelector('#mappeBody textarea[data-empf]');
+    const empf = u.d.querySelector('#mappe textarea[data-empf]');
     ck('[wechsel2] Vorbereitung: Mappe mit Brief und Empfängerfeld', !!empf && /Anton Vorher/.test(e('mappeText').value), e('mappeBody').textContent.slice(0, 80));
     const empfId = empf ? empf.getAttribute('data-empf') : '';
     if (empf) tippe(empf, 'Amt von Anton\nGeheimweg 9\n91056 Erlangen');
@@ -109,7 +109,7 @@ const wechsel = (s, name) => { ordner(s); s.d.querySelector('#setHaushalte butto
     u.w.location.hash = '#leistungen'; await warte(10);
     e('p1').click(); await warte(20); // legt wegen des Namens „Klient B“ einen weiteren, leeren Vorgang an (noch ein Wechsel)
     e('mappeMake').click();
-    const empf2 = empfId ? u.d.querySelector('#mappeBody textarea[data-empf="' + empfId + '"]') : null;
+    const empf2 = empfId ? u.d.querySelector('#mappe textarea[data-empf="' + empfId + '"]') : null;
     ck('[wechsel2] Neuer Vorgang, gleiche Hilfe: Empfänger ist wieder der Vorschlag', !!empf2 && !/Geheimweg|Anton/.test(empf2.value) && !/Geheimweg|Anton Vorher/.test(e('mappeText').value), empf2 && empf2.value);
     ck('[wechsel2] keine Fehler', u.errors.length === 0, u.errors);
   }
