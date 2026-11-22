@@ -136,10 +136,23 @@ async function weitere() {
   // P3: Foto vom QR-Code (Android) und andere Kamerafotos im App-Bilderordner löschen, nur genau diese Dateien
   const Klient = require('../src/klient.js');
   const geloescht = [];
-  const fsys = { readdir: (o) => Promise.resolve(o.directory === 'EXTERNAL' && o.path === 'Pictures' ? { files: [{ name: 'JPEG_20261121_101500_12345678901234.jpg', type: 'file' }, { name: 'JPEG_20261121_101501_9.jpg', type: 'file' }, { name: 'Urlaub.jpg', type: 'file' }, { name: 'JPEG_20261121_101500_1.jpg', type: 'directory' }, 'JPEG_2026_x.jpg', { name: 'JPEG_20261121_101500_1.png', type: 'file' }] } : { files: [] }), deleteFile: (o) => { geloescht.push(o.directory + ':' + o.path); return Promise.resolve(); } };
+  const fsys = { readdir: (o) => Promise.resolve(o.directory === 'EXTERNAL' && o.path === '' ? { files: [{ name: 'Pictures', type: 'directory' }, { name: 'Download', type: 'directory' }] } : o.directory === 'EXTERNAL' && o.path === 'Pictures' ? { files: [{ name: 'JPEG_20261121_101500_12345678901234.jpg', type: 'file' }, { name: 'JPEG_20261121_101501_9.jpg', type: 'file' }, { name: 'Urlaub.jpg', type: 'file' }, { name: 'JPEG_20261121_101500_1.jpg', type: 'directory' }, 'JPEG_2026_x.jpg', { name: 'JPEG_20261121_101500_1.png', type: 'file' }] } : { files: [] }), deleteFile: (o) => { geloescht.push(o.directory + ':' + o.path); return Promise.resolve(); } };
   const anzahl = await Klient.fotosAufraeumen(fsys);
   ck('[qr-foto] nur Kamerafotos (JPEG_Datum_Zeit_Zahl.jpg) im App-Bilderordner gelöscht', anzahl === 2 && geloescht.join() === 'EXTERNAL:Pictures/JPEG_20261121_101500_12345678901234.jpg,EXTERNAL:Pictures/JPEG_20261121_101501_9.jpg', geloescht);
   ck('[qr-foto] Lesefehler, Löschfehler, kein Plugin: kein Absturz', (await Klient.fotosAufraeumen({ readdir: () => Promise.reject(new Error('x')), deleteFile: () => Promise.resolve() })) === 0 && (await Klient.fotosAufraeumen(null)) === 0 && (await Klient.fotosAufraeumen({ readdir: () => Promise.resolve({ files: ['JPEG_20261121_101500_1.jpg'] }), deleteFile: () => Promise.reject(new Error('gesperrt')) })) === 0);
+  // Frische Installation: Ordner Pictures fehlt. Attrappe wie das echte Plugin (readdir auf fehlenden Ordner -> OS-PLUG-FILE-0008,
+  // die Capacitor-Brücke schreibt das als console.error). Erwartet: still überspringen, kein readdir auf Pictures, nichts gelöscht.
+  {
+    const gelesen = [], konsole = [];
+    const ohne = { readdir: (o) => { gelesen.push(o.directory + ':' + o.path); if (o.path !== '') { const e = Object.assign(new Error("'readdir' failed because file at '.../files/" + o.path + "/' does not exist."), { code: 'OS-PLUG-FILE-0008' }); konsole.push(e.code); return Promise.reject(e); } return Promise.resolve({ files: [{ name: 'Download', type: 'directory' }] }); }, deleteFile: () => { konsole.push('geloescht'); return Promise.resolve(); } };
+    ck('[qr-foto] Ordner Pictures fehlt (frische Installation): still übersprungen, kein readdir darauf, kein Fehler', (await Klient.fotosAufraeumen(ohne)) === 0 && gelesen.join() === 'EXTERNAL:' && konsole.length === 0, { gelesen, konsole });
+    const nurNamen = { readdir: (o) => Promise.resolve(o.path === '' ? { files: ['Pictures'] } : { files: ['JPEG_20261121_101500_1.jpg'] }), deleteFile: () => Promise.resolve() };
+    ck('[qr-foto] ältere Filesystem-Version (nur Namen): Pictures erkannt', (await Klient.fotosAufraeumen(nurNamen)) === 1);
+    const dateiStattOrdner = { readdir: (o) => { if (o.path !== '') return Promise.reject(Object.assign(new Error('x'), { code: 'OS-PLUG-FILE-0008' })); return Promise.resolve({ files: [{ name: 'Pictures', type: 'file' }] }); }, deleteFile: () => Promise.resolve() };
+    ck('[qr-foto] „Pictures“ ist eine Datei: übersprungen', (await Klient.fotosAufraeumen(dateiStattOrdner)) === 0);
+    const andererFehler = { readdir: (o) => o.path === '' ? Promise.resolve({ files: [{ name: 'Pictures', type: 'directory' }] }) : Promise.reject(Object.assign(new Error('kein Zugriff'), { code: 'OS-PLUG-FILE-0012' })), deleteFile: () => Promise.resolve() };
+    ck('[qr-foto] andere Lesefehler wie bisher: 0, kein Abbruch', (await Klient.fotosAufraeumen(andererFehler)) === 0);
+  }
   ck('[qr-foto] App: nach dem Einlesen des QR-Fotos und beim Start (nur Android) aufgerufen', /fotoWeg: function \(\) \{ if \(androidApp\(\) && window\.Klient\) Klient\.fotosAufraeumen\(plug\('Filesystem'\)\); \}/.test(app) && /if \(androidApp\(\) && window\.Klient\) Klient\.fotosAufraeumen\(plug\('Filesystem'\)\);/.test(app));
   // Weitergabe: nach dem Lesen des Fotos (Erfolg oder Fehler) wird ui.fotoWeg aufgerufen
   {

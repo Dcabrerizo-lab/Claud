@@ -203,7 +203,7 @@ const dateiWaehlen = (w, input, text) => { Object.defineProperty(input, 'files',
       stat: async () => ({ size: dateiOhne.length }),
       readFile: async ({ path }) => { log.gelesen.push(path); if (log.geloescht.includes(path)) throw new Error('gelöscht'); return { data: dateiOhne }; },
       deleteFile: async ({ path, directory }) => { log.geloescht.push(directory ? directory + ':' + path : path); },
-      readdir: async () => ({ files: [{ name: 'alt.solo', type: 'file' }, { name: 'brief.pdf', type: 'file' }] })
+      readdir: async ({ path, directory }) => { log.gelesen.push('readdir:' + directory + ':' + path); return path === '' ? { files: [{ name: 'Inbox', type: 'directory' }] } : { files: [{ name: 'alt.solo', type: 'file' }, { name: 'brief.pdf', type: 'file' }] }; }
     };
     const appFake = { addListener: () => Promise.resolve({ remove() {} }), getLaunchUrl: async () => ({ url }) };
     await w3.Weitergabe.nativInit({ app: appFake, fs: fsFake, ios: true, merker: { m: {}, getItem(k) { return this.m[k] || null; }, setItem(k, v) { this.m[k] = String(v); } }, zeigen: () => d3.querySelector('#appnav [data-ansicht="ordner"]').click() });
@@ -215,6 +215,22 @@ const dateiWaehlen = (w, input, text) => { Object.defineProperty(input, 'files',
     await w3.Weitergabe.nativOeffnen(fremd);
     check('iOS: Datei außerhalb des Eingangsordners wird gelesen, aber nicht gelöscht', log.gelesen.includes(fremd) && !log.geloescht.includes(fremd) && opt && !('length' in opt));
     check('Keine Skriptfehler (iOS-Öffnen)', C.errors.length === 0, C.errors.join(' | '));
+  }
+  {
+    // iOS, frische Installation: Documents/Inbox gibt es noch nicht. Attrappe wie das echte Plugin (readdir auf fehlenden Ordner
+    // -> OS-PLUG-FILE-0008). Erwartet: kein readdir auf Inbox, nichts gelöscht, kein Skriptfehler.
+    const C = app({}), w4 = C.w;
+    const log4 = { gelesen: [], geloescht: [] };
+    const fsFake4 = {
+      readFile: async () => { throw new Error('nicht erwartet'); },
+      deleteFile: async ({ path }) => { log4.geloescht.push(path); },
+      readdir: async ({ path, directory }) => { log4.gelesen.push(directory + ':' + path); if (path !== '') throw Object.assign(new Error("'readdir' failed because file at '" + path + "' does not exist."), { code: 'OS-PLUG-FILE-0008' }); return { files: [{ name: 'Daten', type: 'directory' }] }; }
+    };
+    const appFake4 = { addListener: () => Promise.resolve({ remove() {} }), getLaunchUrl: async () => ({}) };
+    await w4.Weitergabe.nativInit({ app: appFake4, fs: fsFake4, ios: true, merker: { m: {}, getItem(k) { return this.m[k] || null; }, setItem(k, v) { this.m[k] = String(v); } }, zeigen: () => {} });
+    await new Promise((r) => setTimeout(r, 50));
+    check('iOS frisch: Inbox fehlt -> still übersprungen, kein readdir darauf, nichts gelöscht', log4.gelesen.join() === 'DOCUMENTS:' && log4.geloescht.length === 0, log4);
+    check('Keine Skriptfehler (iOS frisch, ohne Inbox)', C.errors.length === 0, C.errors.join(' | '));
   }
   check('Keine Skriptfehler (Klient)', B.errors.length === 0, B.errors.join(' | '));
   console.log(fails ? fails + ' Fehler' : '[weitergabe-dom] alle Prüfungen bestanden');

@@ -534,6 +534,16 @@ Klient.cacheAufraeumen = (function () {
   }
   return cacheAufraeumen;
 })();
+Klient.ordnerDa = function (fsys, directory, name) {
+  // Steht der Unterordner `name` direkt in `directory`? Liest nur die oberste Ebene (die gibt es immer), damit readdir nie auf
+  // einen fehlenden Ordner zielt (OS-PLUG-FILE-0008 würde sonst als Skriptfehler in der Konsole erscheinen).
+  // Ältere Filesystem-Versionen liefern nur Namen ohne Art: dann zählt der Name.
+  return Promise.resolve().then(function () { return fsys.readdir({ path: '', directory: directory }); }).then(function (r) {
+    return ((r && r.files) || []).some(function (f) {
+      return typeof f === 'string' ? f === name : !!(f && f.name === name && (!f.type || f.type === 'directory'));
+    });
+  });
+};
 Klient.fotosAufraeumen = (function () {
   // Android: Fotos der Kamera liegen nicht im Cache, sondern im App-eigenen Bilderordner (getExternalFilesDir(DIRECTORY_PICTURES),
   // Capacitor Filesystem: Directory.External = 'EXTERNAL', Unterordner „Pictures“). Dort legen ab:
@@ -542,10 +552,16 @@ Klient.fotosAufraeumen = (function () {
   // beide mit dem Namen JPEG_<JJJJMMTT>_<HHMMSS>_<Zufallszahl>.jpg (File.createTempFile). Die WebView löscht ihr Foto nicht
   // (Schlussprüfung 21.11.2026, P3). Gelöscht werden nur Dateien mit genau diesem Namen, keine Ordner, nichts außerhalb.
   // Aufruf: nach dem Einlesen eines QR-Fotos und beim App-Start (Reste nach einem Abbruch). Nur Android (src/app.js).
+  // Frische Installation: Den Unterordner „Pictures“ gibt es erst nach dem ersten Kamerafoto. readdir auf einen fehlenden Ordner
+  // lehnt das Plugin ab (OS-PLUG-FILE-0008); die Capacitor-Brücke schreibt das als Skriptfehler in die Konsole, auch wenn es hier
+  // abgefangen wird. Deshalb zuerst den App-Ordner (EXTERNAL, oberste Ebene, legt Android selbst an) lesen und „Pictures“ nur
+  // lesen, wenn es dort steht. Fehlt er: still nichts tun. Andere Fehler wie bisher: 0, kein Abbruch.
   var FOTO = /^JPEG_\d{8}_\d{6}_\d+\.jpg$/;
   return function fotosAufraeumen(fsys) {
     if (!fsys || typeof fsys.readdir !== 'function' || typeof fsys.deleteFile !== 'function') return Promise.resolve(0);
-    return Promise.resolve().then(function () { return fsys.readdir({ path: 'Pictures', directory: 'EXTERNAL' }); }).then(function (r) {
+    return Promise.resolve().then(function () { return Klient.ordnerDa(fsys, 'EXTERNAL', 'Pictures'); }).then(function (da) {
+      return da ? fsys.readdir({ path: 'Pictures', directory: 'EXTERNAL' }) : { files: [] };
+    }).then(function (r) {
       var namen = ((r && r.files) || []).filter(function (f) {
         var n = typeof f === 'string' ? f : f && f.name;
         return typeof n === 'string' && !(f && f.type === 'directory') && FOTO.test(n);
