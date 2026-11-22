@@ -62,9 +62,9 @@ const VERLAUF = 'linear-gradient(160deg,#13806e,#0a4f44)';
   await p.fill('#plz', '91054'); await p.press('#plz', 'Tab');
   if (await p.isVisible('#plzPick')) await p.selectOption('#plzPick', { index: 2 });
   await roh('2-ergebnis', async () => { await zu('#ergebnis', 10); });
-  // Antragsmappe: Musterdaten eintragen, Bild zeigt die Schritte (Anschreiben, Formulare, Unterlagen, Abschicken)
+  // Antragsmappe: Musterdaten eintragen (Geburtsdatum und Telefon stehen seit 1.10 eingeklappt unter „mehr“ und bleiben leer), Bild zeigt die Schritte (Anschreiben, Formulare, Unterlagen, Abschicken)
   await roh('6-mappe', async () => {
-    await p.click('#mappeMake'); await p.fill('#p-name', 'Maria Muster'); await p.fill('#p-geb', '01.01.1991'); await p.fill('#p-strasse', 'Hauptstr. 1'); await p.fill('#p-ort', '91054 Erlangen');
+    await p.click('#mappeMake'); await p.fill('#p-name', 'Maria Muster'); await p.fill('#p-strasse', 'Hauptstr. 1'); await p.fill('#p-ort', '91054 Erlangen');
     await p.press('#p-ort', 'Tab'); await p.waitForTimeout(300); await zu('#mappeBody', 10);
   });
   await p.click('#mappeClose');
