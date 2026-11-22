@@ -301,26 +301,29 @@ check('[drucken] Ein Knopf „Drucken oder teilen“ im Schritt „Abschicken“
 }
 // ---------- UX-Nachprüfung 22.11.2026 (docs/entwuerfe/ux-nachpruefung.md) ----------
 {
-  // Nr. 5: Einkommen von Wohngeld und Kinderzuschlag in einem Punkt, Zeiträume je Leistung; Ausweis in der gemeinsamen Liste
+  // Nr. 5: Einkommen von Wohngeld und Kinderzuschlag in einem Punkt, Zeiträume je Leistung; gemeinsame Liste nur für Punkte, die mindestens zwei Anträge nennen
   const a = wegRadios().find((r) => r.value === 'a'); a.checked = true; fire(a, 'change');
-  const gemeinsam = () => { const h = d.querySelector('#aufUnterlagen h4'); const ul = h && h.nextElementSibling && h.nextElementSibling.nextElementSibling; return ul ? [...ul.querySelectorAll('li')].map((x) => x.textContent.trim()) : []; };
+  // Gemeinsame Liste: Überschrift, Satz zur Kopie, dann die Liste. Je Punkt die Leistungen, die ihn nennen (Einträge „<Leistung>|<Schlüssel>“ in data-haken-alt)
+  const gemeinsam = () => { const h = d.querySelector('#aufUnterlagen h4'); const ul = h && h.nextElementSibling && h.nextElementSibling.matches('p.small') ? h.nextElementSibling.nextElementSibling : null; return ul ? [...ul.querySelectorAll('li')].map((x) => ({ text: x.textContent.trim(), von: [...new Set(JSON.parse(x.querySelector('input').getAttribute('data-haken-alt')).map((k) => k.split('|')[0]).filter((k) => k !== 'u'))] })) : []; };
   const li = [...d.querySelectorAll('#aufUnterlagen .haken-liste li')].map((x) => x.textContent.trim());
   const ek = li.filter((x) => /Einkommen/i.test(x));
   const mitKiz = !!d.querySelector('[data-pick="kiz"]') || wegRadios().length > 0 && /Kinderzuschlag/.test(d.querySelector('.weg-wahl').textContent);
   check('[ux-einkommen] Ein Punkt zum Einkommen mit Zeitraum je Leistung (Wohngeld 12 Monate' + (mitKiz ? ', Kinderzuschlag 6 Monate' : '') + ')', ek.length === 1 && ek[0].includes(I18N.de['u.eink.wg']) && (!mitKiz || ek[0].includes(I18N.de['u.eink.kiz'])) && !li.includes(I18N.de['s.wohngeld.u2']) && !li.includes(I18N.de['s.kiz.u2']), li.join(' | '));
-  check('[ux-einkommen] Ausweis steht in der gemeinsamen Liste', gemeinsam().some((x) => /Ausweis/.test(x)), gemeinsam().join(' | '));
+  // Prüfung PR #179: „Für mehrere Anträge“ nur, wenn mindestens zwei gewählte Anträge den Punkt nennen (Ausweis nicht pauschal dorthin)
+  check('[ux-einkommen] Gemeinsame Liste: jeder Punkt wird von mindestens zwei Anträgen genannt (auch der Ausweis)', gemeinsam().length > 0 && gemeinsam().every((x) => x.von.length > 1), gemeinsam().map((x) => x.text + ' [' + x.von.join(',') + ']').join(' | '));
   check('[ux-einkommen] Gemeinsamer Text in allen 13 Sprachen mit denselben Zeiträumen', LANGS.every((l) => /12/.test(I18N[l]['u.eink.wg']) && /\b6\b|6-/.test(I18N[l]['u.eink.kiz']) && /\{basis\}/.test(I18N[l]['u.eink.mit']) && /\{teile\}/.test(I18N[l]['u.eink.mit'])));
   // Nr. 2: „Ich weiß es noch nicht“ → Zeile „Weg noch nicht gewählt“, Knopf „Weg wählen“, Tipp; Zähler im Titel
   const o = wegRadios().find((r) => r.value === 'offen'); o.checked = true; fire(o, 'change');
   const zeile = d.querySelector('#aufAntraege .ant-weg-offen');
-  check('[ux-weg-offen] Weg offen: Zeile „Weg noch nicht gewählt“ zuerst in „Anträge stellen“, mit Knopf und Tipp', !!zeile && zeile === d.querySelector('#aufAntraege .ant-zeile') && zeile.textContent.includes(I18N.de['f.weg.nochNicht']) && zeile.querySelector('[data-weg-waehlen]').textContent === I18N.de['f.weg.waehlen'] && zeile.textContent.includes(I18N.de['f.weg.tippGg']));
+  check('[ux-weg-offen] Weg offen: Zeile „Weg noch nicht gewählt“ zuerst in „Anträge stellen“, mit Knopf und Tipp', !!zeile && zeile === d.querySelector('#aufAntraege .ant-zeile') && zeile.textContent.includes(I18N.de['f.weg.nochNicht']) && zeile.querySelector('[data-weg-waehlen]').textContent === I18N.de['f.weg.waehlen'] && zeile.textContent.includes(I18N.de[mitKiz ? 'f.weg.tippGgKiz' : 'f.weg.tippGg']));
+  check('[ux-weg-offen] Mit Kinderzuschlag im Weg nennt der Tipp nur Familienkasse und Wohngeldstelle, nie „dort“ (schlösse das Jobcenter ein)', /Familienkasse/.test(I18N.de['f.weg.tippGgKiz']) && /Wohngeldstelle/.test(I18N.de['f.weg.tippGgKiz']) && !/dort/.test(I18N.de['f.weg.tippGgKiz']) && LANGS.every((l) => /Familienkasse/.test(I18N[l]['f.weg.tippGgKiz']) && /Wohngeldstelle/.test(I18N[l]['f.weg.tippGgKiz'])));
   check('[ux-weg-offen] Titel zählt den offenen Weg mit', /\+ 1 offen\)$/.test(d.getElementById('titelAntraege').textContent), d.getElementById('titelAntraege').textContent);
-  check('[ux-weg-offen] Tipp empfiehlt keinen Antrag beim Jobcenter oder Sozialamt', !/Stell (den|einen|zuerst)|beantrag|Jobcenter|Sozialamt/i.test(I18N.de['f.weg.tippGg'] + I18N.de['f.weg.tippGsa']));
+  check('[ux-weg-offen] Tipp empfiehlt keinen Antrag beim Jobcenter oder Sozialamt', !/Stell (den|einen|zuerst)|beantrag|Jobcenter|Sozialamt/i.test(I18N.de['f.weg.tippGg'] + I18N.de['f.weg.tippGgKiz'] + I18N.de['f.weg.tippGsa']));
   zeile.querySelector('[data-weg-waehlen]').click();
   check('[ux-weg-offen] „Weg wählen“ setzt den Fokus auf die Weg-Wahl', d.activeElement && d.activeElement.getAttribute('data-weg') === zeile.getAttribute('data-ant-weg'));
   const a2 = wegRadios().find((r) => r.value === 'a'); a2.checked = true; fire(a2, 'change');
   check('[ux-weg-offen] Weg gewählt: Zeile weg, Titel ohne „offen“', !d.querySelector('#aufAntraege .ant-weg-offen') && !/offen/.test(d.getElementById('titelAntraege').textContent));
-  check('[ux-weg-offen] Neue Texte in allen 13 Sprachen (Du bzw. höflich in fa/fa-AF/ps)', LANGS.every((l) => ['f.weg.nochNicht', 'f.weg.waehlen', 'f.weg.tippGg', 'f.weg.tippGsa', 'f.weg.zeile', 'f.auf.antraegeOffen', 'akt.ergDrucken', 'f.empfKurz'].every((k) => typeof I18N[l][k] === 'string' && I18N[l][k].length > 2)) && /\{n\}/.test(I18N.ar['f.auf.antraegeOffen']) && /\{m\}/.test(I18N.ps['f.auf.antraegeOffen']));
+  check('[ux-weg-offen] Neue Texte in allen 13 Sprachen (Du bzw. höflich in fa/fa-AF/ps)', LANGS.every((l) => ['f.weg.nochNicht', 'f.weg.waehlen', 'f.weg.tippGg', 'f.weg.tippGgKiz', 'f.weg.tippGsa', 'f.weg.zeile', 'f.auf.antraegeOffen', 'akt.ergDrucken', 'f.empfKurz'].every((k) => typeof I18N[l][k] === 'string' && I18N[l][k].length > 2)) && /\{n\}/.test(I18N.ar['f.auf.antraegeOffen']) && /\{m\}/.test(I18N.ps['f.auf.antraegeOffen']));
   // Nr. 1: Knopf „Antrag vorbereiten“ in einer Ergebniskarte öffnet die Mappe mit dieser Leistung
   d.getElementById('mappeClose').click();
   check('[ux-karte] Mappe geschlossen', d.getElementById('mappe').hidden === true);

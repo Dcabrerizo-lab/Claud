@@ -131,6 +131,7 @@
   "f.weg.waehlen": "Choose route",
   "f.weg.tippGsa": "Tip: You cannot get Grundsicherung im Alter and Wohngeld at the same time. Have both checked and ask which route gives you more.",
   "f.weg.tippGg": "Tip: You cannot get both routes together. The offices check which route applies to you. Ask there, then choose your route here.",
+  "f.weg.tippGgKiz": "Tip: You cannot get both routes together. First ask the Familienkasse or the Wohngeldstelle which route applies to you. Then choose your route here.",
   "f.auf.antraegeOffen": "Submit applications ({n} + {m} open)",
   "f.empfKurz": "Add your town in the search yourself and enter the address above.",
   "u.eink.basis": "Proof of income",

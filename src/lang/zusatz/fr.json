@@ -131,6 +131,7 @@
   "f.weg.waehlen": "Choisir la voie",
   "f.weg.tippGsa": "Conseil : on ne peut pas toucher la Grundsicherung im Alter et le Wohngeld en même temps. Fais vérifier les deux et demande quelle voie te rapporte le plus.",
   "f.weg.tippGg": "Conseil : les deux voies ne se cumulent pas. Les services vérifient quelle voie s’applique à toi. Renseigne-toi auprès d’eux, puis choisis ta voie ici.",
+  "f.weg.tippGgKiz": "Conseil : les deux voies ne se cumulent pas. Demande d’abord à la Familienkasse ou à la Wohngeldstelle quelle voie s’applique à toi. Choisis ensuite ta voie ici.",
   "f.auf.antraegeOffen": "Faire les demandes ({n} + {m} en attente)",
   "f.empfKurz": "Ajoute toi-même ta ville dans la recherche et inscris l’adresse plus haut.",
   "u.eink.basis": "Justificatifs de revenus",

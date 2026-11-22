@@ -131,6 +131,7 @@
   "f.weg.waehlen": "Yol seç",
   "f.weg.tippGsa": "İpucu: Grundsicherung im Alter ve Wohngeld aynı anda alınamaz. İkisini de kontrol ettir ve hangi yolun sana daha çok kazandırdığını sor.",
   "f.weg.tippGg": "İpucu: İki yol birlikte olmaz. Hangi yolun senin için geçerli olduğunu kurumlar kontrol eder. Orada sor, sonra yolunu burada seç.",
+  "f.weg.tippGgKiz": "İpucu: İki yol birlikte olmaz. Önce Familienkasse’ye veya Wohngeldstelle’ye hangi yolun senin için geçerli olduğunu sor. Sonra yolunu burada seç.",
   "f.auf.antraegeOffen": "Başvuruları yap ({n} + {m} açık)",
   "f.empfKurz": "Yaşadığın yeri aramaya kendin ekle ve adresi yukarıya yaz.",
   "u.eink.basis": "Gelir belgeleri",

@@ -131,6 +131,7 @@
   "f.weg.waehlen": "Alege calea",
   "f.weg.tippGsa": "Sfat: Grundsicherung im Alter și Wohngeld nu se primesc în același timp. Cere să fie verificate amândouă și întreabă ce cale îți aduce mai mult.",
   "f.weg.tippGg": "Sfat: Cele două căi nu se pot combina. Autoritățile verifică ce cale este valabilă pentru tine. Întreabă acolo, apoi alege aici calea ta.",
+  "f.weg.tippGgKiz": "Sfat: Cele două căi nu se pot combina. Întreabă mai întâi la Familienkasse sau la Wohngeldstelle ce cale este valabilă pentru tine. Apoi alege aici calea ta.",
   "f.auf.antraegeOffen": "Depune cererile ({n} + {m} deschise)",
   "f.empfKurz": "Adaugă singur localitatea în căutare și scrie adresa mai sus.",
   "u.eink.basis": "Dovezi de venit",

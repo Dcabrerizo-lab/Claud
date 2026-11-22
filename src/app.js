@@ -1641,8 +1641,9 @@
       p.ab = !!haken[p.hk] || p.alt.some(function (k) { return haken[k]; });
     });
     var mehrere = ids.length > 1;
-    // Ausweis steht bei mehreren Anträgen in der gemeinsamen Liste (UX-Nachprüfung 22.11.2026, Nr. 5): nur verschoben, keine neue Anforderung
-    var gemeinsam = mehrere ? liste.filter(function (p) { return p.n > 1 || p.sachen.indexOf('ausweis') >= 0; }) : [];
+    // Gemeinsame Liste („Für mehrere Anträge“) nur für Punkte, die mindestens zwei gewählte Anträge nennen. Der Ausweis steht dort also nur,
+    // wenn ihn zwei Anträge nennen; sonst bleibt er bei seinem Antrag (keine Anforderung behaupten, die keine Quelle hat; Prüfung PR #179, 22.11.2026).
+    var gemeinsam = mehrere ? liste.filter(function (p) { return p.n > 1; }) : [];
     return {
       gemeinsam: gemeinsam, alle: gemeinsam.every(function (p) { return p.n === ids.length; }), liste: liste,
       je: ids.map(function (r) { return { r: r, punkte: liste.filter(function (p) { return p.rids[r.id] && gemeinsam.indexOf(p) < 0; }) }; })
@@ -1719,16 +1720,19 @@
   // mit Knopf „Weg wählen“ (springt zur Weg-Wahl) und einem sachlichen Tipp ohne Empfehlung eines Wegs. Rechtslage: docs/entwuerfe/entweder-oder.md
   // (Stand 21.11.2026): Rente: Grundsicherung im Alter und Wohngeld nie gleichzeitig, echte Wahl (§ 7 Abs. 1 Satz 1 Nr. 5 WoGG, § 2 SGB XII,
   // BSG B 8 SO 2/20 R; Satz nach Nr. 14). Sonst: Wohngeld/Kinderzuschlag und Grundsicherungsgeld nicht zusammen (§ 7 Abs. 1 Satz 1 Nr. 1 WoGG,
-  // § 6a Abs. 1 Nr. 3 BKGG); die Stellen prüfen den Vorrang (§ 12a SGB II; Nr. 2). Bewusst kein „Stell zuerst den Antrag bei …“: Ein Antrag auf
+  // § 6a Abs. 1 Satz 1 Nr. 3 BKGG); die Stellen prüfen den Vorrang (§ 12a SGB II; Nr. 2). Bewusst kein „Stell zuerst den Antrag bei …“: Ein Antrag auf
   // Grundsicherungsgeld sperrt den erweiterten Zugang zum Kinderzuschlag (§ 6a Abs. 1a Nr. 3 BKGG).
   function wegeOffen() { return (letzteWege || []).filter(function (g) { return wegAktiv(g) === 'offen'; }); }
   function wegeOffenHtml() {
     return wegeOffen().map(function (g) {
       var nm = function (id) { var o = g.optionen.filter(function (x) { return x.id === id; })[0]; return o ? t(o.name) : ''; };
+      // Mit Kinderzuschlag im Weg: Tipp nennt nur Familienkasse und Wohngeldstelle. „Frag dort nach“ schlösse das Jobcenter ein; eine Vorsprache dort
+      // kann als Antrag gelten (§ 37 SGB II schreibt keine Form vor) und sperrt dann den erweiterten Zugang (§ 6a Abs. 1a Nr. 3 BKGG; Prüfung PR #179, 22.11.2026).
+      var mitKiz = g.alle.indexOf('kiz') >= 0;
       return '<section class="ant-zeile ant-weg-offen" data-ant-weg="' + esc(g.id) + '"><h4>' + esc(t('f.weg.zeile', { a: nm('a'), b: nm('b') })) + '</h4>' +
         '<p class="small ant-an fehlt">' + esc(t('f.weg.nochNicht')) + '</p>' +
         '<p class="btns"><button type="button" class="btn ghost" data-weg-waehlen="' + esc(g.id) + '">' + esc(t('f.weg.waehlen')) + '</button></p>' +
-        '<p class="small ant-tipp">' + esc(t(g.id === 'gsa' ? 'f.weg.tippGsa' : 'f.weg.tippGg')) + '</p></section>';
+        '<p class="small ant-tipp">' + esc(t(g.id === 'gsa' ? 'f.weg.tippGsa' : mitKiz ? 'f.weg.tippGgKiz' : 'f.weg.tippGg')) + '</p></section>';
     }).join('');
   }
   // Alte Stände: „Anschreiben“ und „Formular“ waren zwei Schritte; beide erledigt zählt als erledigt
