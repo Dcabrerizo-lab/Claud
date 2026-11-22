@@ -1009,6 +1009,14 @@
   fieldset { min-width: 0; } .summary h2 { min-width: 0; overflow-wrap: anywhere; } /* Systemschrift 200 % auf 320 px: Fieldset nicht breiter als der Bildschirm (Standard min-width: min-content) */
   .wege, .weg-gruppe { grid-template-columns: minmax(0, 1fr); } .weg-kopf > *, .weg-kopf .pill { max-width: 100%; overflow-wrap: anywhere; }
   .wege > h3, .card header .pill { overflow-wrap: anywhere; } /* Systemschrift 200 % auf 320 px: „Unwahrscheinlich“, „L'un ou l'autre …“ */
+  /* Systemschrift 200 % auf 320 px in Safari/Firefox (ar, fa, fa-AF, ps; schwere Tests 22.11.2026): Raster- und Flex-Kinder dürfen schmaler
+     als ihr längstes Wort werden (Standard min-width: auto), lange deutsche Fachwörter brechen um statt seitlich zu scrollen */
+  .card.auf > details.karte > summary { grid-template-columns: minmax(0, 1fr); } .card.auf > details.karte > summary > *, .card header, .card header h3 { min-width: 0; max-width: 100%; }
+  .haken-liste { grid-template-columns: minmax(0, 1fr); } .haken-liste > li { min-width: 0; } .haken-liste .haken { width: 100%; max-width: 100%; } /* Safari: justify-self: start (.aufgabe .haken) machte die Zeile so breit wie der Text */ .haken > span { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+  .pa-einstieg { grid-template-columns: minmax(0, 1fr); } .pa-einstieg > *, .pa-karte-knopf, .pa-karte-knopf > * { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+  .pa-einstieg .btn, .pa-karte-knopf .btn { white-space: normal; text-align: start; padding-block: 8px; }
+  .summary > * { min-width: 0; max-width: 100%; } .summary .res-satz { overflow-wrap: anywhere; }
+  .weg-wahl .check > span { flex: 1 1 auto; grid-template-columns: minmax(0, 1fr); } .weg-wahl .check > span > * { min-width: 0; overflow-wrap: anywhere; }
   .together { border-inline-start-color: var(--accent); }
   .pill { border: 0; padding: 5px 12px; }
   .card .behoerde { border-radius: var(--r-ctl); border-inline-start-width: 4px; }
