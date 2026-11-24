@@ -880,7 +880,8 @@ const zusammen = (jetzt, dann) => (jetzt === 'na' ? 'na' : jetzt === dann ? jetz
 function kduGrenze(e) {
   const st = [1, 2, 3, 4, 5, 6, 7].indexOf(Number(e.mietstufe)) >= 0 ? Number(e.mietstufe) : null;
   if (!st || e.wohnart === 'eigentum' || e.wohnform === 'eltern' || e.wohnform === 'heim') return null;
-  const n = Math.min((e.adults === 2 ? 2 : 1) + Math.max(0, e.kids | 0) + Math.max(0, e.young | 0), 12);
+  // Baby ist da: zählt als Kind im Haushalt (wie in der App, Vollprüfung familie Fable 11)
+  const n = Math.min((e.adults === 2 ? 2 : 1) + kinderMitBaby(e) + Math.max(0, e.young | 0), 12);
   return hoechst(st, n) * 1.1 + heiz(n);
 }
 
@@ -1001,4 +1002,4 @@ if (require.main === module) {
   process.exit(v.fehler.length ? 1 : 0);
 }
 
-module.exports = { asylbewerber, kdu15: (e) => { const g = kduGrenze(e); if (!g) return null; const st = Number(e.mietstufe), n = Math.min((e.adults === 2 ? 2 : 1) + Math.max(0, e.kids | 0) + Math.max(0, e.young | 0), 12); return hoechst(st, n) * 1.1 * 1.5 + heiz(n); }, wbs, pfaendung, pkonto, vergleich, kappe, euAus, kduGrenze, kuenftig, zusammen, elterngeld, egAbgleich, egHaushalt, egNettoRef, svAN, EG_PAUSCH, EG_PAUSCH_RECHNER, grenze85, schon90, ASYL_NEIN, ASYL_MOEGLICH, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };
+module.exports = { asylbewerber, kdu15: (e) => { const g = kduGrenze(e); if (!g) return null; const st = Number(e.mietstufe), n = Math.min((e.adults === 2 ? 2 : 1) + kinderMitBaby(e) + Math.max(0, e.young | 0), 12); return hoechst(st, n) * 1.1 * 1.5 + heiz(n); }, wbs, pfaendung, pkonto, vergleich, kappe, euAus, kduGrenze, kuenftig, zusammen, elterngeld, egAbgleich, egHaushalt, egNettoRef, svAN, EG_PAUSCH, EG_PAUSCH_RECHNER, grenze85, schon90, ASYL_NEIN, ASYL_MOEGLICH, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };
