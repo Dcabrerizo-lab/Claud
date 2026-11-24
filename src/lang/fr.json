@@ -624,7 +624,7 @@
   "lg.ausb": "Formation et études",
   "c.leer": "Pas encore d'informations",
   "warn.netto": "Le montant qui arrive sur le compte est plus élevé que le brut. C'est presque toujours une faute de frappe : vérifie.",
-  "bh.person.hint": "Enfant de 18 ans ou plus : seulement si le handicap existait déjà avant ses 25 ans (important pour les allocations familiales, Kindergeld). Sinon, choisis « un adulte ».",
+  "bh.person.hint": "Enfant de 18 ans ou plus : seulement si le handicap existait déjà avant ses 25 ans (important pour les allocations familiales, Kindergeld). Sinon, choisis « un adulte ». Si tu travailles toi-même dans un atelier, choisis « une personne adulte ».",
   "bh.gdb.hint": "Figure dans la décision du Versorgungsamt ou du ZBFS, ou sur la carte de personne gravement handicapée (Schwerbehindertenausweis).",
   "geb.label": "En quelle année est né l'adulte le plus âgé ?",
   "warn.geb": "Saisis une année de naissance à 4 chiffres, par exemple 1962.",
@@ -710,7 +710,7 @@
   "ek.betrag.hint.unt": "Pension pour l’adulte lui-même, pas pour les enfants : par exemple Trennungsunterhalt (pension pendant la séparation), pension après le divorce ou pension des parents pour un jeune adulte. Indique le montant réellement versé.",
   "t.schaetz.mind": "Estimation approximative : au moins {a} par mois.",
   "t.gsa.essen": "S'y ajoute un besoin supplémentaire (Mehrbedarf) pour le repas de midi à l'atelier.",
-  "t.gsa.eltern": "Si tu habites chez tes parents, tu reçois le minimum social (Grundsicherung) pour toi seul(e). Le revenu de tes parents ne compte pas (seulement à partir de 100 000 € par an). S'y ajoute une part des frais de logement.",
+  "t.gsa.eltern": "Si tu habites chez tes parents, tu peux recevoir le minimum social (Grundsicherung) pour toi seul(e). Le revenu de tes parents ne compte pas (seulement si un parent a plus de 100 000 € par an). S'y ajoute une part des frais de logement.",
   "t.gsa.heim": "En foyer d'hébergement (Wohnheim), le minimum social (Grundsicherung) paie le montant forfaitaire (Regelsatz) et les frais de logement. Le Sozialamt règle les frais de logement directement avec le foyer.",
   "t.wohngeld.eltern": "Si tu habites chez tes parents, tu fais partie de leur foyer. Ce sont alors tes parents qui demandent l'aide au logement (Wohngeld) pour tout le monde. Pour toi seul(e), c'est en général le minimum social (Grundsicherung) qui convient.",
   "t.wohngeld.heim": "En foyer d'hébergement (Wohnheim), le minimum social (Grundsicherung) passe en priorité.",
@@ -1678,5 +1678,10 @@
   "fw.gsa": "Au Sozialamt de la ville ou de l’arrondissement ; beaucoup ont leur propre formulaire sur leur site. Mais une demande informelle vaut aussi : une lettre suffit",
   "fw.wbs.BY": "Bavière : formulaire WBS I du Staatsministerium (à droite sous « Formulare ») ou demande en ligne ; Munich a sa propre procédure (SOWON)",
   "fw.wbs.sonst": "Ce Land n’a pas de formulaire unique. Tu l’obtiens au Wohnungsamt (dans les petites communes au Bauamt ou au Bürgerbüro) de ta ville ou commune, souvent sur son site sous « Wohnberechtigungsschein »",
-  "fw.wbs.leer": "Indique ton Land ou ton code postal ; SoLo te dira alors où obtenir la demande"
+  "fw.wbs.leer": "Indique ton Land ou ton code postal ; SoLo te dira alors où obtenir la demande",
+  "t.gsa.kindU18": "Cette Grundsicherung n'existe qu'à partir de 18 ans. Un enfant de moins de 18 ans est compté dans les aides pour la famille.",
+  "t.wohngeld.kindGsa": "Si seul ton enfant adulte reçoit la Grundsicherung du Sozialamt, seul l'enfant est exclu du Wohngeld. Pour les autres, le Wohngeld est possible, calculé sans l'enfant. C'est pourquoi nous n'indiquons pas de montant.",
+  "t.kiz.kindGsa": "Si seul ton enfant adulte reçoit la Grundsicherung du Sozialamt, cela n'exclut pas d'emblée le Kinderzuschlag. La Familienkasse calcule sans l'enfant. C'est pourquoi nous n'indiquons pas de montant.",
+  "t.rundfunk.kindGsa": "L'exonération de ton enfant ne s'applique pas à toi.",
+  "t.ggeld.emWer": "Si c'est toi qui travailles à l'atelier, c'est en général le Sozialamt qui est compétent. Si c'est ton enfant adulte, le Jobcenter peut être compétent pour toi. C'est pourquoi nous n'indiquons pas de montant."
 }

@@ -70,7 +70,7 @@
   "sf.q.euJahre": "Since when have you lived in Germany?",
   "sf.q.pflege": "Does anyone in the household have a Pflegegrad (care level)?",
   "sf.q.bhPerson": "Does anyone in the household have a disability?",
-  "sf.h.bhPerson": "Child aged 18 or over: only if the disability already existed before the 25th birthday (important for Kindergeld). Otherwise choose “an adult”.",
+  "sf.h.bhPerson": "Child aged 18 or over: only if the disability already existed before the 25th birthday (important for Kindergeld). Otherwise choose “an adult”. If you yourself work in a workshop, choose “an adult”.",
   "sf.q.gdb": "Which degree of disability (GdB) has been determined?",
   "sf.mehrere": "You can choose more than one answer",
   "sf.oder": "or",

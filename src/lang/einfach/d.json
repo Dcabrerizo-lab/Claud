@@ -61,7 +61,7 @@
   "ek.betrag.hint.alg": "Das steht im Bescheid der Agentur für Arbeit. Steht dort ein Betrag pro Tag? Dann rechne mal 30.",
   "ek.betrag.hint.kg": "Das steht im Schreiben der Krankenkasse. Steht dort ein Betrag pro Tag? Dann rechne mal 30.",
   "warn.netto": "Der Betrag auf dem Konto ist höher als das Brutto. Das ist fast immer ein Tippfehler. Bitte prüfe ihn.",
-  "bh.person.hint": "Kind ab 18: Wähle das nur, wenn die Behinderung schon vor dem 25. Geburtstag da war (wichtig für das Kindergeld). Sonst wähle „Ja, eine erwachsene Person“.",
+  "bh.person.hint": "Kind ab 18: Wähle das nur, wenn die Behinderung schon vor dem 25. Geburtstag da war (wichtig für das Kindergeld). Sonst wähle „Ja, eine erwachsene Person“. Du arbeitest selbst in einer Werkstatt? Dann wähle „eine erwachsene Person“.",
   "bh.gdb.hint": "Das steht im Bescheid vom Versorgungsamt (auch ZBFS genannt) oder im Schwerbehindertenausweis.",
   "warn.geb": "Bitte trage ein Geburtsjahr mit 4 Ziffern ein, zum Beispiel 1962.",
   "cb.mzG": "Im Schwerbehindertenausweis steht das Merkzeichen G oder aG",

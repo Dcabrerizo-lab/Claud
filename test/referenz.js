@@ -176,6 +176,9 @@ function grundsicherungsgeld(h) {
   // (§ 7 Abs. 1 Satz 1, Abs. 3 Nr. 3 SGB II; gemischte Bedarfsgemeinschaft) – nie „nein“, auch ohne Kinder; laufender Bezug: „na“
   // Voll erwerbsgemindert: nur der Elternteil zählt (emElternteil); ein erwachsenes Kind in der Werkstatt hat eigene Grundsicherung (§ 41 Abs. 3
   // SGB XII, § 5 Abs. 2 SGB II), der erwerbsfähige Elternteil bleibt beim Jobcenter (§ 7 Abs. 1 SGB II)
+  // Allein, Werkstatt-Haken nur bei „eine erwachsene Person“ ohne eigenen Werkstattlohn: kann die Person selbst oder ein Kind ab 25 sein
+  // (eigene Bedarfsgemeinschaft, § 7 Abs. 3 Nr. 4 SGB II) -> rechnen wie ohne Werkstatt, höchstens „möglich“
+  if (!h.rente && h.erwachsene === 1 && emWerRef(h.e)) { const r = grundsicherungsgeld(haushalt({ ...h.e, wfbm: false })); return { level: r.level === 'ja' ? 'vielleicht' : r.level }; }
   if (h.rente || emElternteil(h.e)) return { level: h.erwachsene === 2 ? (h.bezug.grundsicherungsgeld ? 'na' : 'vielleicht') : 'nein' };
   const b = h.bezug;
   if (b.grundsicherungsgeld) return { level: 'na' };
@@ -231,6 +234,9 @@ const ABZUG_AUSZ = { lohn: [0, 0.12], rente: [0, 0.06], kg: [0, 0.06], alg: [0, 
 const abzugAus = (x, i) => (x.aus ? ABZUG_AUSZ : ABZUG)[x.art][i];
 
 function wohngeld(h) {
+  // Nur das erwachsene Kind bekommt Grundsicherung vom Sozialamt: nur das Kind ist ausgeschlossen (§ 7 Abs. 1 Satz 1 Nr. 5, Abs. 2 WoGG; Einkommen
+  // der Eltern zählt bei seiner Grundsicherung nicht, § 43 Abs. 5 SGB XII) -> wie ohne Bezug, höchstens „möglich“
+  if (h.bezug.sozialamt && kindNurEMRef(h)) { const r = wohngeld(haushalt({ ...h.e, bezug: { ...h.e.bezug, sozialamt: false } })); return { level: r.level === 'ja' ? 'vielleicht' : r.level }; }
   const b = h.bezug, e = h.e;
   if (b.grundsicherungsgeld || b.sozialamt) return { level: 'nein' };
   if (b.wohngeld) return { level: 'na' };
@@ -308,6 +314,10 @@ function nurRenteAb60(h) {
 function kindNurEMRef(h) {
   return !!h.em && !emElternteil(h.e) && (h.e.bhPerson === 'erwVor25' || h.e.bhPerson === 'erwNach25');
 }
+function emWerRef(e) {
+  const wfbmEink = e.art1 === 'wfbm' || (e.adults === 2 && e.art2 === 'wfbm') || (Array.isArray(e.einkommen) && e.einkommen.some((x) => x.art === 'wfbm'));
+  return !e.erwerbsgemindert && e.emStd !== 'unter3' && !wfbmEink && !!e.wfbm && !e.wfbmSelbst && e.bhPerson === 'erwNach25';
+}
 function emElternteil(e) {
   const wfbmEink = e.art1 === 'wfbm' || (e.adults === 2 && e.art2 === 'wfbm') || (Array.isArray(e.einkommen) && e.einkommen.some((x) => x.art === 'wfbm'));
   return e.emStd === 'unter3' || !!e.erwerbsgemindert || wfbmEink || (!!e.wfbm && (!!e.wfbmSelbst || ['minder', 'erwVor25'].indexOf(e.bhPerson) < 0));
@@ -315,6 +325,10 @@ function emElternteil(e) {
 function kinderzuschlag(h) {
   const b = h.bezug;
   if (h.kids === 0) return { level: 'nein' };
+  // Nur das erwachsene Kind bekommt Grundsicherung vom Sozialamt: kein Ausschluss der Eltern, höchstens „möglich“
+  // Einziges Kind: für das Kind mit eigener Grundsicherung gibt es keinen Kinderzuschlag (DA-KiZ 20.02.2026 B.2 Abs. 2 Satz 8) -> „nein“
+  if (b.sozialamt && kindNurEMRef(h) && h.kids === 1) return { level: 'nein' };
+  if (b.sozialamt && kindNurEMRef(h)) { const r = kinderzuschlag(haushalt({ ...h.e, bezug: { ...h.e.bezug, sozialamt: false } })); return { level: r.level === 'ja' ? 'vielleicht' : r.level }; }
   if (b.grundsicherungsgeld || b.sozialamt) return { level: 'nein' };
   if (b.kiz) return { level: 'na' };
   // § 6a Abs. 1 Nr. 3 BKGG mit § 7 SGB II (DA-KiZ 20.02.2026 D.2 Abs. 1 Satz 5; BSG B 7/14 KG 1/21 R): Im Haushalt muss jemand

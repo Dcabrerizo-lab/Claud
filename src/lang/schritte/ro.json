@@ -70,7 +70,7 @@
   "sf.q.euJahre": "De când locuiești în Germania?",
   "sf.q.pflege": "Are cineva din gospodărie un Pflegegrad (grad de îngrijire)?",
   "sf.q.bhPerson": "Are cineva din gospodărie o dizabilitate?",
-  "sf.h.bhPerson": "Copil de la 18 ani: doar dacă dizabilitatea exista înainte de împlinirea vârstei de 25 de ani (important pentru Kindergeld). Altfel alege „o persoană adultă”.",
+  "sf.h.bhPerson": "Copil de la 18 ani: doar dacă dizabilitatea exista înainte de împlinirea vârstei de 25 de ani (important pentru Kindergeld). Altfel alege „o persoană adultă”. Dacă lucrezi tu însuți într-un atelier, alege „o persoană adultă”.",
   "sf.q.gdb": "Ce grad de dizabilitate (GdB) a fost stabilit?",
   "sf.mehrere": "Poți alege mai multe răspunsuri",
   "sf.oder": "sau",

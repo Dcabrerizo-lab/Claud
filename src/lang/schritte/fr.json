@@ -70,7 +70,7 @@
   "sf.q.euJahre": "Depuis quand vis-tu en Allemagne ?",
   "sf.q.pflege": "Quelqu’un dans le foyer a-t-il un Pflegegrad (degré de dépendance) ?",
   "sf.q.bhPerson": "Quelqu’un dans le foyer a-t-il un handicap ?",
-  "sf.h.bhPerson": "Enfant de 18 ans ou plus : seulement si le handicap existait déjà avant ses 25 ans (important pour le Kindergeld). Sinon, choisis « une personne adulte ».",
+  "sf.h.bhPerson": "Enfant de 18 ans ou plus : seulement si le handicap existait déjà avant ses 25 ans (important pour le Kindergeld). Sinon, choisis « une personne adulte ». Si tu travailles toi-même dans un atelier, choisis « une personne adulte ».",
   "sf.q.gdb": "Quel taux de handicap (GdB) a été reconnu ?",
   "sf.mehrere": "Tu peux choisir plusieurs réponses",
   "sf.oder": "ou",

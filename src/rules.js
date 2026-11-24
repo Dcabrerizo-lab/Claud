@@ -830,6 +830,8 @@ const Rules = (function () {
       // Kindheit“ setzt bhPerson auf erwVor25, gemeint ist aber sie selbst, kein Kind im Haushalt. Ohne diese Angabe hielt die App sie bei
       // übersprungener Lohnfrage für einen Elternteil (zweite Prüfung 24.11.2026).
       emEltern: !!inp.erwerbsgemindert || inp.emStd === 'unter3' || pers.some((x) => x[0] === 'wfbm') || (!!inp.wfbm && (!!inp.wfbmSelbst || (inp.bhPerson !== 'minder' && inp.bhPerson !== 'erwVor25'))),
+      // Werkstatt-Haken bei „eine erwachsene Person“ ohne Werkstattlohn: die Person selbst oder ein Kind ab 25 (§ 7 Abs. 3 Nr. 4 SGB II)
+      emWer: !inp.erwerbsgemindert && inp.emStd !== 'unter3' && !pers.some((x) => x[0] === 'wfbm') && !!inp.wfbm && !inp.wfbmSelbst && inp.bhPerson === 'erwNach25',
       behinderung: !!inp.behinderung || String(inp.gdb) === '100',
       kinder12: !!inp.kinder12,
       // Alter der Kinder bekannt: ausdrücklich angegeben (Frage „14 bis 17“ beantwortet) oder alle Kinder unter 6
@@ -1000,7 +1002,8 @@ const Rules = (function () {
     // (https://www.gesetze-im-internet.de/wogg/__3.html, Abruf 20.11.2026)
     if (h.ausreise) return mk('wohngeld', 'nein', 'ausschluss', [['wohngeld.ausreise']]);
     if (h.asylBezug) return mk('wohngeld', 'nein', 'ausschluss', [['wohngeld.asylBezug']]);
-    const r = wohngeld0(h);
+    const r0 = wohngeld0(h);
+    const r = sozialamtKind(h) ? ohneKindBetrag(r0, 'wohngeld.kindGsa') : r0;
     return h.asyl && (r.level === 'ja' || r.level === 'vielleicht') ? { ...r, tx: [['wohngeld.asyl']].concat(r.tx) } : r;
   }
   // Einkommen nach §§ 14-17a WoGG und Grenzwerte (Formel § 19 WoGG) für die Wohngeld-Karte und die Wohngeld-Schätzung beim Kinderzuschlag
@@ -1099,7 +1102,7 @@ const Rules = (function () {
   }
   function wohngeld0(h) {
     const id = 'wohngeld';
-    if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'nein', 'ausschluss', [['wohngeld.ausschluss']]);
+    if (h.bezug.grundsicherungsgeld || sozialamtEigen(h)) return mk(id, 'nein', 'ausschluss', [['wohngeld.ausschluss']]);
     if (h.bezug.wohngeld) return mk(id, 'na', 'na', [['wohngeld.na']]);
     // Bei den Eltern: Wohngeld gibt es nur für den ganzen Haushalt (Antrag der Eltern); im Wohnheim geht die Grundsicherung vor
     if (h.wohnform) return mk(id, 'nein', 'vorausFehlt', [['wohngeld.' + h.wohnform]]);
@@ -1171,9 +1174,16 @@ const Rules = (function () {
   // ein erwerbsfähiger Elternteil oder ein Kind ab 15. Altersrentner (Regelaltersgrenze, auch vorgezogene Altersrente, § 7 Abs. 4 SGB II)
   // und voll Erwerbsgeminderte zählen nicht.
   function kinderzuschlag(h) {
+    // Einziges Kind ist das erwachsene Kind mit eigener Grundsicherung vom Sozialamt: für dieses Kind gibt es keinen Kinderzuschlag
+    // (DA-KiZ vom 20.02.2026, B.2 Abs. 2 Satz 8, https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf, Abruf 24.11.2026): weiter „nein“.
+    if (sozialamtKind(h) && h.children === 1) return mk('kiz', 'nein', 'ausschluss', [['kiz.ausschluss']]);
+    const r = kinderzuschlag0(h);
+    return sozialamtKind(h) ? ohneKindBetrag(r, 'kiz.kindGsa') : r;
+  }
+  function kinderzuschlag0(h) {
     const id = 'kiz';
     if (h.children === 0) return mk(id, 'nein', 'keinKind', [['kiz.keinKind']]);
-    if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'nein', 'ausschluss', [['kiz.ausschluss']]);
+    if (h.bezug.grundsicherungsgeld || sozialamtEigen(h)) return mk(id, 'nein', 'ausschluss', [['kiz.ausschluss']]);
     if (h.bezug.kiz) return mk(id, 'na', 'na', [['kiz.na']]);
     if (h.asyl) return mk(id, 'nein', 'ausschluss', [['kiz.asyl']]);
     let hinweis = null;
@@ -1331,6 +1341,7 @@ const Rules = (function () {
         if (h.bezug.grundsicherungsgeld) return mk(id, 'na', 'na', [['ggeld.na'], ['ggeld.gemischt']]);
         return mk(id, 'vielleicht', 'vielleicht', [['ggeld.gemischt']]);
       }
+      if (h.emWer && !h.alter) return ohneKindBetrag(ggeldRechnung({ ...h, emEltern: false, emWer: false, erwerbsgemindert: false }), 'ggeld.emWer');
       return mk(id, 'nein', 'andereStelle', [['ggeld.sozialamtZustaendig']]);
     }
     if (h.bezug.grundsicherungsgeld) return mk(id, 'na', 'na', [['ggeld.na']]);
@@ -1359,6 +1370,9 @@ const Rules = (function () {
     // https://www.arbeitsagentur.de/datei/fw-sgb-ii-19_ba015859.pdf, Abruf 24.11.2026). Die App rechnet den ganzen Haushalt: deshalb
     // höchstens „möglich“ mit Hinweis ggeld.kindGsa, ohne Betrag und ohne Bedarfszeile (beide enthielten das Kind; die Bedarfszeile sagte
     // außerdem „Einkommen knapp darunter oder darüber“, auch wenn es weit darunter lag).
+    const r3 = kindNurEM(h) && r2.level === 'nein' && r2.hl === 'einkoHoch' && (h.kindEink || 0) > 0
+      ? ggeldRechnung0({ ...h, kindEink: 0 }) : null;
+    if (r3 && (r3.level === 'ja' || r3.level === 'vielleicht')) return mk(r2.id, 'vielleicht', 'vielleicht', [['ggeld.kindGsa']]);
     if (!kindNurEM(h) || (r2.level !== 'ja' && r2.level !== 'vielleicht')) return r2;
     const tx = r2.tx.filter((t) => t[0].indexOf('schaetz.') !== 0 && t[0].indexOf('bedarf') !== 0);
     const out = mk(r2.id, 'vielleicht', 'vielleicht', [['ggeld.kindGsa']].concat(tx));
@@ -1366,6 +1380,14 @@ const Rules = (function () {
   }
   // Voll erwerbsgemindert ist nur ein erwachsenes Kind mit Behinderung (Werkstatt-Haken bei „Kind ab 18“), nicht der Elternteil
   const kindNurEM = (h) => !!h.erwerbsgemindert && !h.emEltern && (h.bhPerson === 'erwVor25' || h.bhPerson === 'erwNach25');
+  // Bezug vom Sozialamt nur des erwachsenen Kindes: Begründung in docs/PRUEFLISTE.md (Marke kind-werkstatt)
+  const sozialamtKind = (h) => !!h.bezug.sozialamt && kindNurEM(h);
+  const sozialamtEigen = (h) => !!h.bezug.sozialamt && !kindNurEM(h);
+  const ohneKindBetrag = (r, key) => {
+    if (r.level !== 'ja' && r.level !== 'vielleicht') return r;
+    const tx = r.tx.filter((t) => t[0].indexOf('schaetz.') !== 0 && t[0].indexOf('bedarf') !== 0);
+    return mk(r.id, 'vielleicht', 'vielleicht', [[key]].concat(tx));
+  };
   function ggeldRechnung0(h) {
     const id = 'ggeld';
     const einkommen = elternEinkSGB2(h) + h.children * R.kindergeld + unterhaltAnrechenbar(h);
@@ -1448,7 +1470,13 @@ const Rules = (function () {
     // (https://www.gesetze-im-internet.de/sgb_8/__90.html, .../__22.html, Abruf 20.11.2026)
     const betreuung = (h.kidsU6 > 0 ? [['but.kita']] : []).concat(h.kids > h.kidsU6 ? [['but.hort']] : []);
     const inhalt = h.young === 0 && h.kids > 0 && h.kidsU6 === h.kids ? ['but.inhaltKlein', { teil: eur(R.but.teilhabeMonat) }] : ['but.inhalt', { schul: eur(R.but.schulbedarf), teil: eur(R.but.teilhabeMonat) }];
-    if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt || h.bezug.kiz || h.bezug.wohngeld) {
+    // Einziges Kind ist das erwachsene Kind in der Werkstatt: kein Schüler im Sinn von § 28 Abs. 1 Satz 2 SGB II, § 34 Abs. 1 SGB XII
+    if (h.children === 1 && h.young === 1 && kindNurEM(h)) return mk(id, 'nein', 'vorausFehlt', [['but.azubi']]);
+    // Grundsicherung vom Sozialamt nur des erwachsenen Kindes (sozialamtKind): Sie umfasst Bildung und Teilhabe nur für das Kind selbst
+    // (§ 42 Nr. 3 SGB XII), nicht für Geschwister. Für diese hängt der Anspruch an Grundsicherungsgeld, Kinderzuschlag oder Wohngeld
+    // (§ 28 SGB II, § 6b Abs. 1 BKGG; gesetze-im-internet.de/sgb_12/__42.html, bkgg_1996/__6b.html, Abruf 24.11.2026): kein „bekommst du“,
+    // sondern weiter unten nach den drei Karten (dort höchstens „möglich“). Bis 24.11.2026: „bekommst du“.
+    if (h.bezug.grundsicherungsgeld || sozialamtEigen(h) || h.bezug.kiz || h.bezug.wohngeld) {
       return mk(id, 'ja', 'ja', [['but.bezug'], inhalt].concat(betreuung));
     }
     // § 3 Abs. 4 AsylbLG: Bildung und Teilhabe auch mit Asylbewerberleistungen (entsprechend §§ 34, 34a, 34b SGB XII), nach 36 Monaten
@@ -1571,7 +1599,7 @@ const Rules = (function () {
     // 24.11.2026). Ist nur ein Kind unter 18 in der Werkstatt, gibt es diese Leistung nicht; das Kind bekommt Grundsicherungsgeld in der
     // Bedarfsgemeinschaft des Elternteils (§ 19 Abs. 1 Satz 2, § 23 SGB II). Bis 24.11.2026 zeigte die App hier „wahrscheinlich“ mit Betrag.
     const emAb18 = h.erwerbsgemindert && (h.emEltern || h.bhPerson !== 'minder');
-    if (!h.alter && !emAb18 && !h.alterGrenz) return mk(id, 'nein', 'vorausFehlt', [['gsa.voraus']]);
+    if (!h.alter && !emAb18 && !h.alterGrenz) return mk(id, 'nein', 'vorausFehlt', [[h.erwerbsgemindert && h.bhPerson === 'minder' ? 'gsa.kindU18' : 'gsa.voraus']]);
     if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['gsa.eu']]);
     if (h.bezug.sozialamt) return mk(id, 'na', 'na', [['gsa.na']]);
     // Nur das erwachsene Kind im Haushalt ist voll erwerbsgemindert (Angaben der Eltern): Die Grundsicherung ist die Leistung des Kindes allein.
@@ -2331,7 +2359,8 @@ const Rules = (function () {
   // Ersten des Antragsmonats (§ 4 Abs. 4 Satz 1 und 2 RBeitrStV, gesetze-bayern.de Dokument RBeitrStV-4, abgerufen 21.11.2026) – keine Zwei-Monats-Frist.
   function rundfunk0(h, gg, gsa, w) {
     const id = 'rundfunk';
-    if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt) return mk(id, 'ja', 'ja', [['rundfunk.bezug']]);
+    if (h.bezug.grundsicherungsgeld || sozialamtEigen(h)) return mk(id, 'ja', 'ja', [['rundfunk.bezug']]);
+    if (sozialamtKind(h)) { const r = rundfunk0({ ...h, bezug: { ...h.bezug, sozialamt: false } }, gg, gsa, w); return mk(id, r.level, r.hl, [['rundfunk.kindGsa']].concat(r.tx)); }
     // § 4 Abs. 1 Nr. 4 RBeitrStV: Empfänger von Leistungen nach dem Asylbewerberleistungsgesetz (https://bravors.brandenburg.de/vertraege/rbstv/5,
     // Abruf 20.11.2026; gleicher Staatsvertrag in allen Ländern). Mit Bezug (h.asylBezug) „bekommst du“, sonst „möglich“
     if (h.asylBezug) return mk(id, 'ja', 'ja', [['rundfunk.asyl']]);
