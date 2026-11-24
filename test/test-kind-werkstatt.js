@@ -53,7 +53,7 @@ m = run({ adults: 1, netto: 300, brutto: 300, art1: 'minijob', bezug: { sozialam
 ck('Ohne Kind in Werkstatt, Bezug vom Sozialamt: ggeld weiter „nein“', m.ggeld.level === 'nein' && hat(m.ggeld, 'ggeld.sozialamt'), m.ggeld);
 // 9) Kind unter 18 in der Werkstatt: keine Grundsicherung bei Erwerbsminderung (erst ab 18, § 41 Abs. 3 SGB XII), Grundsicherungsgeld mit Betrag
 m = run({ adults: 1, kids: 1, kids14: 1, bhPerson: 'minder', wfbm: true, netto: 300, brutto: 300, art1: 'minijob' });
-ck('[kind-werkstatt] Kind unter 18 in Werkstatt: gsa „nein“ (erst ab 18)', m.gsa.level === 'nein' && hat(m.gsa, 'gsa.voraus'), m.gsa);
+ck('[kind-werkstatt] Kind unter 18 in Werkstatt: gsa „nein“ (erst ab 18)', m.gsa.level === 'nein' && hat(m.gsa, 'gsa.kindU18'), m.gsa);
 ck('Kind unter 18 in Werkstatt: ggeld „wahrscheinlich“ mit Betrag', m.ggeld.level === 'ja' && m.ggeld.tx.some((a) => a[0].indexOf('schaetz.') === 0), m.ggeld);
 // 10) Wohngeld-Hinweis bei zu niedrigem Einkommen: Schonvermögen des Jobcenters (40 bis 49 Jahre: 12.500 € + 5.000 € fürs Kind, § 12 Abs. 2 SGB II),
 //     nicht das des Sozialamts (10.500 €). Vorher: „Grundsicherung eher nicht“ neben „Grundsicherungsgeld möglich“.
@@ -70,6 +70,46 @@ for (const ein of [[], [{ art: 'rente', b: 600 }], [{ art: 'wfbm', b: 250 }]]) f
   ck('[kind-werkstatt] Einfache Version, selbst in der Werkstatt (' + (wohnform || 'eigene Wohnung') + ', ' + ein.length + ' Einkommen): ggeld nein, Sozialamt', m.ggeld.level === 'nein' && hat(m.ggeld, 'ggeld.sozialamtZustaendig') && !hat(m.ggeld, 'ggeld.kindGsa'), m.ggeld);
   ck('Einfache Version, selbst in der Werkstatt: gsa ohne Hinweis „erwachsenes Kind“', !hat(m.gsa, 'ggeld.kindGsa') && m.gsa.level !== 'nein' && m.gsa.tx.some((a) => a[0].indexOf('bedarf') === 0), m.gsa);
 }
+
+// ---- Restpunkte 24.11.2026 (Auftrag „Ja, schaue es dir an“) ----
+// 12) Nur das erwachsene Kind bekommt Grundsicherung vom Sozialamt: Wohngeld nicht „nein“ (§ 7 Abs. 1 Satz 1 Nr. 5, Abs. 2 WoGG), höchstens „möglich“
+//     ohne Betrag; Kinderzuschlag nicht „nein“ wegen des Bezugs; Rundfunk nicht „bekommst du“ (§ 4 Abs. 3 RBeitrStV: Befreiung gilt nicht für Eltern)
+const kindBezug = { adults: 1, young: 1, kids: 1, kids14: 1, kidsAlter: true, bhPerson: 'erwVor25', wfbm: true, netto: 1700, brutto: 2300, art1: 'lohn', miete: 900, bezug: { sozialamt: true } };
+m = run(kindBezug);
+ck('[kind-werkstatt] Kind mit eigener Grundsicherung: Wohngeld nicht „nein“ wegen Ausschluss', m.wohngeld.hl !== 'ausschluss', m.wohngeld);
+ck('Kind mit eigener Grundsicherung: Wohngeld höchstens „möglich“, Hinweis, kein Betrag', m.wohngeld.level !== 'ja' && (m.wohngeld.level === 'nein' || (hat(m.wohngeld, 'wohngeld.kindGsa') && !m.wohngeld.tx.some((a) => a[0].indexOf('schaetz.') === 0))), m.wohngeld);
+ck('Kind mit eigener Grundsicherung: Kinderzuschlag nicht „nein“ wegen Ausschluss', m.kiz.hl !== 'ausschluss', m.kiz);
+ck('Kind mit eigener Grundsicherung: Kinderzuschlag höchstens „möglich“', m.kiz.level !== 'ja', m.kiz);
+ck('Kind mit eigener Grundsicherung: Rundfunk nicht „bekommst du“, Hinweis', m.rundfunk.level !== 'ja' && hat(m.rundfunk, 'rundfunk.kindGsa'), m.rundfunk);
+// Gegenprobe: eigener Bezug vom Sozialamt (ohne Kind in der Werkstatt) bleibt Ausschluss bzw. Befreiung
+m = run({ adults: 1, kids: 1, netto: 300, brutto: 300, art1: 'minijob', bezug: { sozialamt: true } });
+ck('Eigener Bezug vom Sozialamt: Wohngeld weiter „nein“ (Ausschluss)', m.wohngeld.level === 'nein' && hat(m.wohngeld, 'wohngeld.ausschluss'), m.wohngeld);
+ck('Eigener Bezug vom Sozialamt: Kinderzuschlag weiter „nein“', m.kiz.level === 'nein' && hat(m.kiz, 'kiz.ausschluss'), m.kiz);
+ck('Eigener Bezug vom Sozialamt: Rundfunk „bekommst du“', m.rundfunk.level === 'ja' && hat(m.rundfunk, 'rundfunk.bezug'), m.rundfunk);
+// 13) Kind unter 18 in der Werkstatt: eigener Hinweis gsa.kindU18 statt gsa.voraus
+m = run({ adults: 1, kids: 1, kids14: 1, bhPerson: 'minder', wfbm: true, netto: 300, brutto: 300, art1: 'minijob' });
+ck('Kind unter 18 in Werkstatt: Hinweis gsa.kindU18, nicht gsa.voraus', hat(m.gsa, 'gsa.kindU18') && !hat(m.gsa, 'gsa.voraus'), m.gsa);
+// 14) Allein, Werkstatt-Haken bei „eine erwachsene Person“ ohne eigenen Werkstattlohn: kann die Person selbst oder ein Kind ab 25 sein.
+//     Wenig Einkommen: höchstens „möglich“ mit Hinweis ggeld.emWer, kein Betrag; viel Vermögen: weiter „nein“
+m = run({ adults: 1, bhPerson: 'erwNach25', wfbm: true, netto: 300, brutto: 300, art1: 'minijob' });
+ck('[kind-werkstatt] Allein, unklar wer in der Werkstatt: ggeld „möglich“ mit Hinweis emWer', m.ggeld.level === 'vielleicht' && hat(m.ggeld, 'ggeld.emWer') && !m.ggeld.tx.some((a) => a[0].indexOf('schaetz.') === 0), m.ggeld);
+m = run({ adults: 1, bhPerson: 'erwNach25', wfbm: true, netto: 300, brutto: 300, art1: 'minijob', vermoegen: 90000 });
+ck('Allein, unklar wer in der Werkstatt, viel Vermögen: ggeld „nein“', m.ggeld.level === 'nein', m.ggeld);
+m = run({ adults: 1, bhPerson: 'erwNach25', wfbm: true, art1: 'wfbm', netto: 250, brutto: 250 });
+ck('Allein, eigener Werkstattlohn: weiter „Sozialamt zuständig“', m.ggeld.level === 'nein' && hat(m.ggeld, 'ggeld.sozialamtZustaendig'), m.ggeld);
+m = run({ adults: 1, bhPerson: 'erwNach25', wfbm: true, wfbmSelbst: true, netto: 0, brutto: 0, art1: '' });
+ck('Einfache Version (wfbmSelbst): weiter „Sozialamt zuständig“', m.ggeld.level === 'nein' && hat(m.ggeld, 'ggeld.sozialamtZustaendig'), m.ggeld);
+// 15) Absage nur wegen Einkommen des erwachsenen Kindes in der Werkstatt (kindEink): ohne Kindeinkommen reicht es -> „möglich“
+//     (unterhaltAnrechenbar begrenzt das Kindeinkommen auf den Bedarf der Kinder; hier also nur, wenn es die Lücke schließt)
+//     Vorher (main d7437ad6): netto 1.600 € ohne Kindeinkommen „möglich“, mit 1.500 € Kindeinkommen „nein“
+const ohneKE = run({ adults: 1, young: 1, bhPerson: 'erwVor25', wfbm: true, netto: 1600, brutto: 2160, art1: 'lohn', miete: 650 });
+const mitKE = run({ adults: 1, young: 1, bhPerson: 'erwVor25', wfbm: true, netto: 1600, brutto: 2160, art1: 'lohn', miete: 650, kindEink: 1500 });
+ck('[kind-werkstatt] Kindeinkommen allein führt nicht zur Absage beim Elternteil', ohneKE.ggeld.level === 'vielleicht' && mitKE.ggeld.level === 'vielleicht' && hat(mitKE.ggeld, 'ggeld.kindGsa') && !mitKE.ggeld.tx.some((a) => a[0].indexOf('schaetz.') === 0), { ohne: ohneKE.ggeld.level, mit: mitKE.ggeld });
+// Einkommen des Elternteils selbst zu hoch: weiter „nein“
+ck('Einkommen des Elternteils zu hoch: weiter „nein“', run({ adults: 1, young: 1, bhPerson: 'erwVor25', wfbm: true, netto: 2600, brutto: 3500, art1: 'lohn', miete: 650, kindEink: 1500 }).ggeld.level === 'nein');
+// 16) gsa.eltern: „mehr als 100.000 €“ (§ 94 Abs. 1a SGB XII) und „kann … bekommen“
+const de = require('../src/lang/de.json');
+ck('gsa.eltern: „mehr als 100.000 €“ und „kann“', /mehr als 100\.000/.test(de['t.gsa.eltern']) && /kann/.test(de['t.gsa.eltern']) && !/erst ab 100/.test(de['t.gsa.eltern']), de['t.gsa.eltern']);
 
 console.log(fails ? fails + ' von ' + n + ' Prüfungen ROT' : 'Kind in der Werkstatt: ' + n + ' Prüfungen bestanden');
 process.exitCode = fails ? 1 : 0;

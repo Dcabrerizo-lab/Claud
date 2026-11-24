@@ -70,7 +70,7 @@
   "sf.q.euJahre": "Seit wann lebst du in Deutschland?",
   "sf.q.pflege": "Hat jemand im Haushalt einen Pflegegrad?",
   "sf.q.bhPerson": "Hat jemand im Haushalt eine Behinderung?",
-  "sf.h.bhPerson": "Kind ab 18: nur wenn die Behinderung schon vor dem 25. Geburtstag bestand (wichtig für das Kindergeld). Sonst „eine erwachsene Person“ wählen.",
+  "sf.h.bhPerson": "Kind ab 18: nur wenn die Behinderung schon vor dem 25. Geburtstag bestand (wichtig für das Kindergeld). Sonst „eine erwachsene Person“ wählen. Arbeitest du selbst in einer Werkstatt, wähle „eine erwachsene Person“.",
   "sf.q.gdb": "Welcher Grad der Behinderung (GdB) ist festgestellt?",
   "sf.mehrere": "Mehrere Antworten möglich",
   "sf.oder": "oder",

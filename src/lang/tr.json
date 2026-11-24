@@ -624,7 +624,7 @@
   "lg.ausb": "Meslek eğitimi ve öğrenim",
   "c.leer": "Henüz bilgi yok",
   "warn.netto": "Net tutar brüt tutardan yüksek. Bu neredeyse her zaman bir yazım hatasıdır: lütfen kontrol et.",
-  "bh.person.hint": "18 yaş üstü çocuk: yalnızca engellilik 25. yaş gününden önce başladıysa (Kindergeld için önemli). Aksi halde „bir yetişkin“ seç.",
+  "bh.person.hint": "18 yaş üstü çocuk: yalnızca engellilik 25. yaş gününden önce başladıysa (Kindergeld için önemli). Aksi halde „bir yetişkin“ seç. Kendin bir atölyede çalışıyorsan, „yetişkin bir kişi“yi seç.",
   "bh.gdb.hint": "Versorgungsamt veya ZBFS kararında ya da Schwerbehindertenausweis'ta yazar.",
   "geb.label": "En yaşlı yetişkin hangi yıl doğdu?",
   "warn.geb": "Lütfen 4 haneli bir doğum yılı gir, örneğin 1962.",
@@ -710,7 +710,7 @@
   "ek.betrag.hint.unt": "Çocuklar için değil, yetişkinin kendisi için nafaka: örneğin Trennungsunterhalt (ayrılık döneminde nafaka), boşanma sonrası nafaka veya genç yetişkinler için ebeveynlerden nafaka. Gerçekten ödenen tutarı yaz.",
   "t.schaetz.mind": "Kaba tahmin: ayda en az {a}.",
   "t.gsa.essen": "Buna atölyedeki öğle yemeği için ek ihtiyaç eklenir.",
-  "t.gsa.eltern": "Ebeveynleriyle yaşayan, Grundsicherung'u yalnızca kendisi için alır. Ebeveynlerin geliri sayılmaz (ancak yılda 100.000 €'dan itibaren). Konut masraflarından bir pay eklenir.",
+  "t.gsa.eltern": "Ebeveynleriyle yaşayan, Grundsicherung'u yalnızca kendisi için alabilir. Ebeveynlerin geliri sayılmaz (ancak bir ebeveynin yılda 100.000 €'dan fazla geliri varsa). Konut masraflarından bir pay eklenir.",
   "t.gsa.heim": "Yurtta Grundsicherung standart tutarı ve konut masraflarını öder. Sozialamt konut masraflarını yurtla hesaplaşır.",
   "t.wohngeld.eltern": "Anne babasıyla yaşayan kişi onların hanesine aittir. Wohngeld için o zaman anne baba herkes adına başvurur. Yalnız senin için genellikle Grundsicherung doğrudur.",
   "t.wohngeld.heim": "Yurtta Grundsicherung önceliklidir.",
@@ -1678,5 +1678,10 @@
   "fw.gsa": "Şehrin veya ilçenin Sozialamt’ında; birçoğunun sitesinde kendi formu vardır. Ama serbest biçimli başvuru da geçerlidir, bir mektup yeterli",
   "fw.wbs.BY": "Bavyera: Staatsministerium’un WBS I formu (sağda „Formulare“ altında) veya çevrimiçi başvuru; Münih’te ayrı bir usul vardır (SOWON)",
   "fw.wbs.sonst": "Bu eyalette tek tip form yoktur. Şehrinin veya belediyenin Wohnungsamt’ından (küçük yerlerde Bauamt veya Bürgerbüro) alırsın, çoğu zaman sitesinde „Wohnberechtigungsschein“ altında",
-  "fw.wbs.leer": "Eyaletini veya posta kodunu gir; SoLo sana başvurunun nerede olduğunu söyler"
+  "fw.wbs.leer": "Eyaletini veya posta kodunu gir; SoLo sana başvurunun nerede olduğunu söyler",
+  "t.gsa.kindU18": "Bu Grundsicherung ancak 18 yaşından itibaren vardır. 18 yaşından küçük bir çocuk, aile için verilen yardımlarda hesaba katılır.",
+  "t.wohngeld.kindGsa": "Sozialamt'tan Grundsicherung'u yalnızca yetişkin çocuğun alıyorsa, Wohngeld'den yalnızca çocuk hariç tutulur. Diğerleri için Wohngeld mümkündür, çocuk olmadan hesaplanır. Bu yüzden tutar vermiyoruz.",
+  "t.kiz.kindGsa": "Sozialamt'tan Grundsicherung'u yalnızca yetişkin çocuğun alıyorsa, bu Kinderzuschlag'ı baştan engellemez. Familienkasse çocuk olmadan hesaplar. Bu yüzden tutar vermiyoruz.",
+  "t.rundfunk.kindGsa": "Çocuğunun muafiyeti senin için geçerli değildir.",
+  "t.ggeld.emWer": "Atölyede kendin çalışıyorsan, genellikle Sozialamt sorumludur. Yetişkin çocuğun ise, senin için Jobcenter sorumlu olabilir. Bu yüzden tutar vermiyoruz."
 }

@@ -624,7 +624,7 @@
   "lg.ausb": "Nauka zawodu i studia",
   "c.leer": "Brak danych",
   "warn.netto": "Kwota netto jest wyższa niż brutto. To prawie zawsze literówka: sprawdź.",
-  "bh.person.hint": "Dziecko od 18 lat: tylko jeśli niepełnosprawność istniała przed 25. urodzinami (ważne dla Kindergeld). W przeciwnym razie wybierz „osoba dorosła”.",
+  "bh.person.hint": "Dziecko od 18 lat: tylko jeśli niepełnosprawność istniała przed 25. urodzinami (ważne dla Kindergeld). W przeciwnym razie wybierz „osoba dorosła”. Jeśli sam pracujesz w warsztacie, wybierz „osoba dorosła”.",
   "bh.gdb.hint": "Podany w decyzji Versorgungsamt lub ZBFS albo w legitymacji Schwerbehindertenausweis.",
   "geb.label": "W którym roku urodziła się najstarsza osoba dorosła?",
   "warn.geb": "Wpisz rok urodzenia z 4 cyframi, na przykład 1962.",
@@ -710,7 +710,7 @@
   "ek.betrag.hint.unt": "Alimenty dla samej osoby dorosłej, nie na dzieci: na przykład Trennungsunterhalt (alimenty w czasie separacji), alimenty po rozwodzie lub alimenty od rodziców dla młodych dorosłych. Wpisz kwotę, która jest naprawdę płacona.",
   "t.schaetz.mind": "Szacunkowo: co najmniej {a} miesięcznie.",
   "t.gsa.essen": "Do tego dochodzi dodatek na obiad w warsztacie.",
-  "t.gsa.eltern": "Kto mieszka z rodzicami, dostaje Grundsicherung tylko dla siebie. Dochód rodziców się nie liczy (dopiero od 100 000 € rocznie). Do tego dochodzi część kosztów mieszkania.",
+  "t.gsa.eltern": "Kto mieszka z rodzicami, może dostać Grundsicherung tylko dla siebie. Dochód rodziców się nie liczy (dopiero gdy jedno z rodziców ma więcej niż 100 000 € rocznie). Do tego dochodzi część kosztów mieszkania.",
   "t.gsa.heim": "W placówce mieszkalnej (Wohnheim) Grundsicherung pokrywa stawkę podstawową (Regelsatz) i koszty mieszkania. Sozialamt rozlicza koszty mieszkania z placówką.",
   "t.wohngeld.eltern": "Kto mieszka z rodzicami, należy do ich gospodarstwa. O Wohngeld wnioskują wtedy rodzice dla wszystkich. Dla ciebie samego (samej) zwykle właściwa jest Grundsicherung.",
   "t.wohngeld.heim": "W domu mieszkalnym pierwszeństwo ma Grundsicherung.",
@@ -1678,5 +1678,10 @@
   "fw.gsa": "W Sozialamt miasta lub powiatu; wiele urzędów ma własny formularz na stronie. Wniosek nieformalny też jest ważny, wystarczy pismo",
   "fw.wbs.BY": "Bawaria: formularz WBS I Staatsministerium (po prawej pod „Formulare”) lub wniosek online; w Monachium obowiązuje osobna procedura (SOWON)",
   "fw.wbs.sonst": "W tym kraju związkowym nie ma jednolitego formularza. Dostaniesz go w Wohnungsamt (w mniejszych miejscowościach w Bauamt lub Bürgerbüro) swojego miasta lub gminy, zwykle też na ich stronie pod „Wohnberechtigungsschein”",
-  "fw.wbs.leer": "Podaj swój kraj związkowy lub kod pocztowy; wtedy SoLo powie, gdzie jest wniosek"
+  "fw.wbs.leer": "Podaj swój kraj związkowy lub kod pocztowy; wtedy SoLo powie, gdzie jest wniosek",
+  "t.gsa.kindU18": "Ta Grundsicherung przysługuje dopiero od 18 lat. Dziecko poniżej 18 lat jest liczone w pomocy dla rodziny.",
+  "t.wohngeld.kindGsa": "Jeśli Grundsicherung z Sozialamt dostaje tylko twoje dorosłe dziecko, z Wohngeld wykluczone jest tylko ono. Dla pozostałych Wohngeld jest możliwy, liczony bez tego dziecka. Dlatego nie podajemy kwoty.",
+  "t.kiz.kindGsa": "Jeśli Grundsicherung z Sozialamt dostaje tylko twoje dorosłe dziecko, nie wyklucza to z góry Kinderzuschlag. Familienkasse liczy bez tego dziecka. Dlatego nie podajemy kwoty.",
+  "t.rundfunk.kindGsa": "Zwolnienie twojego dziecka nie obejmuje ciebie.",
+  "t.ggeld.emWer": "Jeśli to ty pracujesz w warsztacie, zwykle właściwy jest Sozialamt. Jeśli to twoje dorosłe dziecko, dla ciebie może być właściwe Jobcenter. Dlatego nie podajemy kwoty."
 }
