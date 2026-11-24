@@ -55,6 +55,8 @@ function sprachObjekte() {
   LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'suche', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
   // Sicherheitsnetz für Übersetzungen (src/denetz.js): Texte src/lang/denetz/<Sprache>.json, Schlüssel „dn.*“
   LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'denetz', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
+  // Vorlesen (src/vorlesen.js): src/lang/vorlesen/<Sprache>.json, Schlüssel „vl.*“
+  LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'vorlesen', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
   return all;
 }
 // Alle 13 Sprachen vollständig (dist/i18n.js für die Tests)
@@ -172,11 +174,14 @@ function denetzJs() {
   return js.replace('/*WICHTIG*/null', () => JSON.stringify(w));
 }
 
+// Vorlesen (src/vorlesen.js) nur in der Pflege-/Senioren-Variante: SoLo selbst bleibt ohne Vorlesen (Entscheidung „kein Vorlesen“)
+// und unter der Startgrenze 3 MB. Ein: opts.vorlesen, VARIANTE=pflege oder VORLESEN=1.
+const mitVorlesen = (opts) => opts.vorlesen === true || process.env.VARIANTE === 'pflege' || process.env.VORLESEN === '1';
 // opts.native: Store-App (Android/iOS) statt Web
 function render(opts = {}) {
   const pp = pruefpaket();
   const sprachTeile = i18nGeteilt(!!opts.native);
-  const parts = { rules: read('rules.js'), i18n: sprachTeile.js, fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), vorgaenge: read('vorgaenge.js'), haushalt: read('haushalt.js'), ausziehen: read('ausziehen.js'), fristen: read('fristen.js'), schulden: read('schulden.js'), geld: read('geld.js'), schritte: read('schritte.js'), klient: read('klient.js'), suche: sucheJs(), denetz: denetzJs(), navigation: read('navigation.js'), app: read('app.js') };
+  const parts = { rules: read('rules.js'), i18n: sprachTeile.js, fmt: read('fmt.js'), plz: read('plz.js'), behoerden: read('behoerden.js'), formulare: read('formulare.js'), vorgaenge: read('vorgaenge.js'), haushalt: read('haushalt.js'), ausziehen: read('ausziehen.js'), fristen: read('fristen.js'), schulden: read('schulden.js'), geld: read('geld.js'), schritte: read('schritte.js'), klient: read('klient.js'), suche: sucheJs(), denetz: denetzJs(), navigation: read('navigation.js') + (mitVorlesen(opts) ? '\n' + read('vorlesen.js') : ''), app: read('app.js') };
   if (opts.native) {
     if (!parts.app.includes('/*NATIVE*/ false')) throw new Error('Marker /*NATIVE*/ fehlt in src/app.js');
     parts.app = parts.app.replace('/*NATIVE*/ false', 'true');
