@@ -182,10 +182,11 @@
  {
   "id": "T12",
   "schluessel": "gs.d.mahn.frist",
-  "beschreibung": "Mahnbescheid-Widerspruch und Einspruch je 2 Wochen",
+  "beschreibung": "Mahnbescheid-Widerspruch und Einspruch je 2 Wochen; seit Vollprüfung: Satz zu anderen Briefen im gelben Umschlag (ebenfalls oft 2 Wochen)",
   "sprachen": "alle",
   "erwartet": {
    "zahlen": [
+    "2",
     "2",
     "2",
     "339",
