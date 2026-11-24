@@ -31,3 +31,4 @@ node test/test-vorgang-pin-dom.js
 node test/test-vorgang-wechsel-dom.js
 node test/test-denetz-dom.js
 node test/test-cache-reste.js
+node test/test-vorlesen.js

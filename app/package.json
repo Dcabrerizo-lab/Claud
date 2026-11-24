@@ -4,6 +4,7 @@
   "private": true,
   "description": "Capacitor-Hülle von SoLo – Sozialleistungslotse für Android und iOS",
   "dependencies": {
+    "@capacitor-community/text-to-speech": "^8.0.2",
     "@capacitor/android": "^8.6.2",
     "@capacitor/app": "^8.1.2",
     "@capacitor/browser": "^8.0.5",
