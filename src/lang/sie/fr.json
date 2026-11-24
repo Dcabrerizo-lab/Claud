@@ -10,7 +10,7 @@
   "beh.pruefen": "Adresse tirée d'informations officielles (mentions légales de l'administration ou BayernPortal, consultées le {stand}). Vérifiez-la avant l'envoi : les administrations déménagent parfois.",
   "beh.pruefenKurz": "Vérifiez l'adresse avant l'envoi.",
   "beh.stelle": "Service compétent pour votre lieu de domicile :",
-  "bh.person.hint": "Enfant de 18 ans ou plus : seulement si le handicap existait déjà avant ses 25 ans (important pour les allocations familiales, Kindergeld). Sinon, choisissez « un adulte ».",
+  "bh.person.hint": "Enfant de 18 ans ou plus : seulement si le handicap existait déjà avant ses 25 ans (important pour les allocations familiales, Kindergeld). Sinon, choisissez « un adulte ». Si vous travaillez vous-même dans un atelier, choisissez « un adulte ».",
   "bp.an.pruefen": "Vérifiez vous-même le délai dans la lettre. La reconnaissance de texte peut se tromper.",
   "bp.art.anh.t": "Une audition n’est pas encore une décision. Expliquez brièvement ce qui s’est passé et joignez des justificatifs. Le recours n’est possible que contre la décision qui suit.",
   "bp.datum.t": "Saisissez la date. SoLo montre tout de suite jusqu’à quand vous pouvez faire un recours.",
@@ -370,7 +370,7 @@
   "sc.tipp": "Conseil : si vous remplissez d'abord le test des prestations, l'appli affiche ici vos valeurs à recopier.",
   "sc.vorschau": "Votre formulaire (uniquement sur cet appareil, il n'est pas enregistré). Touchez pour agrandir.",
   "set.eine.t": "Pour les familles et les couples, utilisez le formulaire normal.",
-  "sf.h.bhPerson": "Enfant de 18 ans ou plus : seulement si le handicap existait déjà avant ses 25 ans (important pour le Kindergeld). Sinon, choisissez « une personne adulte ».",
+  "sf.h.bhPerson": "Enfant de 18 ans ou plus : seulement si le handicap existait déjà avant ses 25 ans (important pour le Kindergeld). Sinon, choisissez « un adulte ». Si vous travaillez vous-même dans un atelier, choisissez « un adulte ».",
   "sf.h.egVor": "Moyenne des 12 mois avant la naissance. Indiquez 0 s’il n’y avait pas de revenu.",
   "sf.h.ekArt": "Deux revenus ? Choisissez ici le plus élevé. L’application demande le deuxième ensuite. Ne pas indiquer ici le Kindergeld, le Wohngeld ni le Kinderzuschlag.",
   "sf.h.miete": "Loyer de base, charges et chauffage ensemble. En colocation, seulement votre part.",
@@ -436,7 +436,7 @@
   "t.fehlt.einkommen": "Saisissez le revenu brut mensuel du foyer (0 s'il n'y en a pas). C'est seulement ensuite que la prestation peut être estimée.",
   "t.fehlt.miete": "Saisissez votre loyer, 0 si vous n'en payez pas.",
   "t.fehlt.vermoegen": "Saisissez votre patrimoine (épargne), 0 si vous n'en avez pas.",
-  "t.gsa.eltern": "Si vous habitez chez vos parents, vous recevez le minimum social (Grundsicherung) pour vous seul(e). Le revenu de vos parents ne compte pas (seulement à partir de 100 000 € par an). S'y ajoute une part des frais de logement.",
+  "t.gsa.eltern": "Si vous habitez chez vos parents, vous pouvez recevoir le minimum social (Grundsicherung) pour vous seul(e). Le revenu de vos parents ne compte pas (seulement si un parent a plus de 100 000 € par an). S'y ajoute une part des frais de logement.",
   "t.gsa.eu": "Pour les personnes venant d'autres pays de l'UE, l'aide sociale (Sozialhilfe) n'est en général versée pendant les 5 premières années qu'avec un emploi ou un droit de séjour (§ 23 SGB XII) ; sinon, seulement des prestations transitoires de courte durée. Faites-vous conseiller sur votre cas.",
   "t.gsa.ggBezug": "Vous recevez le revenu de base (Grundsicherungsgeld) du Jobcenter. À l'âge de la retraite ou en cas d'incapacité de travail durable, c'est le Sozialamt qui devient compétent.",
   "t.gsa.na": "Signalez au Sozialamt les changements de retraite, de loyer ou de patrimoine et demandez la prolongation à temps.",
@@ -550,5 +550,7 @@
   "z.gsaWg": "Le minimum vieillesse (Grundsicherung im Alter) et l'aide au logement (Wohngeld) ne se cumulent pas. Faites vérifier les deux et demandez quelle voie est la plus avantageuse pour vous.",
   "z.keine": "D'après ces informations, aucune prestation ne correspond avec certitude. Si vos revenus, votre loyer ou votre foyer changent, refaites le test. Un service de conseil social peut vous indiquer d'autres aides.",
   "z.stichtag": "Beaucoup de prestations ne sont versées qu'à partir du mois de la demande. Faites votre demande tôt, même sans formulaire.",
-  "z.verfahren": "Après la demande : vous pouvez former un recours (Widerspruch) contre une décision (Bescheid) dans un délai d'un mois (§ 84 SGG). Si une décision plus ancienne est fausse, une demande de réexamen (Überprüfungsantrag) peut aider (§ 44 SGB X) ; l'argent n'est alors versé rétroactivement que pour une durée limitée. Les services doivent vous conseiller (§ 14 SGB I). Une demande déposée au mauvais service est transmise et reste valable (§ 16 SGB I)."
+  "z.verfahren": "Après la demande : vous pouvez former un recours (Widerspruch) contre une décision (Bescheid) dans un délai d'un mois (§ 84 SGG). Si une décision plus ancienne est fausse, une demande de réexamen (Überprüfungsantrag) peut aider (§ 44 SGB X) ; l'argent n'est alors versé rétroactivement que pour une durée limitée. Les services doivent vous conseiller (§ 14 SGB I). Une demande déposée au mauvais service est transmise et reste valable (§ 16 SGB I).",
+  "t.rundfunk.kindGsa": "L'exonération de votre enfant ne s'applique pas à vous.",
+  "t.wohngeld.kindGsa": "Si seul votre enfant adulte reçoit la Grundsicherung du Sozialamt, seul l'enfant est exclu du Wohngeld. Pour les autres, le Wohngeld est possible, calculé sans l'enfant. C'est pourquoi nous n'indiquons pas de montant."
 }

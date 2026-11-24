@@ -13,7 +13,7 @@
   "beh.pruefenKurz": "Bitte prüfen Sie die Anschrift vor dem Absenden.",
   "beh.stelle": "Diese Stelle ist für Ihren Wohnort zuständig:",
   "beh.wgWeiter": "In manchen Ländern ist für Wohngeld die Stadt oder Gemeinde zuständig. Der Antrag gilt auch dann als gestellt, wenn Sie ihn beim Landkreis abgeben. Der Landkreis leitet ihn weiter (§ 16 SGB I).",
-  "bh.person.hint": "Kind ab 18: Wählen Sie das nur, wenn die Behinderung schon vor dem 25. Geburtstag da war (wichtig für das Kindergeld). Sonst wählen Sie „Ja, eine erwachsene Person“.",
+  "bh.person.hint": "Kind ab 18: Wählen Sie das nur, wenn die Behinderung schon vor dem 25. Geburtstag da war (wichtig für das Kindergeld). Sonst wählen Sie „Ja, eine erwachsene Person“. Sie arbeiten selbst in einer Werkstatt? Dann wählen Sie „eine erwachsene Person“.",
   "bhWeitere.label": "Wohnen noch andere Menschen mit Schwerbehinderung bei Ihnen?",
   "bp.an.pruefen": "Lesen Sie die Frist bitte selbst im Brief nach. Die App kann sich beim Lesen irren.",
   "bp.art.anh": "Anhörung (das Amt fragt Sie, bevor es entscheidet)",
@@ -278,7 +278,7 @@
   "sc.vorschau": "Ihr Formular. Es bleibt nur auf diesem Gerät und wird nicht gespeichert. Tippen Sie darauf, um es größer zu sehen.",
   "sf.h.adults": "Partner heißt: Sie sind verheiratet. Oder Sie leben fest zusammen in einer Wohnung.",
   "sf.h.bezug": "Dann zeigt die App: Das bekommen Sie schon. Und sie prüft, was Sie noch bekommen können.",
-  "sf.h.bhPerson": "Ist das Kind schon 18 oder älter? Dann nur, wenn die Behinderung schon vor dem 25. Geburtstag da war. Das ist wichtig für das Kindergeld. Sonst wählen Sie „eine erwachsene Person“.",
+  "sf.h.bhPerson": "Ist das Kind schon 18 oder älter? Dann nur, wenn die Behinderung schon vor dem 25. Geburtstag da war. Das ist wichtig für das Kindergeld. Sonst wählen Sie „eine erwachsene Person“. Sie arbeiten selbst in einer Werkstatt? Dann wählen Sie „eine erwachsene Person“.",
   "sf.h.ekArt": "Gibt es zwei Einkommen? Wählen Sie hier das größere. Das zweite fragt die App danach. Kindergeld, Wohngeld und Kinderzuschlag gehören nicht hierher.",
   "sf.h.heiz": "Das steht im Miet-Vertrag oder in der Neben-Kosten-Abrechnung. Dann rechnet die App das Wohngeld genauer. Wissen Sie es nicht? Dann schätzt die App vorsichtig.",
   "sf.h.mietstufe": "Die Mietenstufe ist wichtig für das Wohngeld. Sie wissen sie nicht? Dann rechnet die App vorsichtig.",
@@ -333,7 +333,7 @@
   "t.fehlt.einkommen": "Tragen Sie das monatliche Bruttoeinkommen des Haushalts ein (0, wenn es keins gibt). Erst dann können wir die Leistung einschätzen.",
   "t.fehlt.miete": "Tragen Sie Ihre Miete ein. Schreiben Sie 0, wenn Sie keine zahlen.",
   "t.fehlt.vermoegen": "Tragen Sie Ihr Vermögen (Erspartes) ein. Schreiben Sie 0, wenn Sie keins haben.",
-  "t.gsa.eltern": "Sie wohnen bei Ihren Eltern? Dann bekommen Sie die Grundsicherung für sich allein. Das Einkommen Ihrer Eltern zählt nicht. Nur wenn sie mehr als 100.000 € im Jahr verdienen, zählt es doch. Dazu bekommen Sie einen Anteil an den Wohnkosten.",
+  "t.gsa.eltern": "Sie wohnen bei Ihren Eltern? Dann können Sie die Grundsicherung für sich allein bekommen. Das Einkommen Ihrer Eltern zählt nicht. Nur wenn ein Elternteil mehr als 100.000 € im Jahr verdient, ist das anders. Sie bekommen auch Geld für einen Teil der Wohnkosten.",
   "t.gsa.eu": "Sie kommen aus einem anderen EU-Land? Dann gibt es Sozialhilfe in den ersten 5 Jahren meist nur mit Arbeit oder einem Aufenthaltsrecht (§ 23 SGB XII). Sonst gibt es nur kurze Überbrückungsleistungen. Lassen Sie Ihren Fall beraten.",
   "t.gsa.ggBezug": "Sie bekommen Grundsicherungsgeld vom Jobcenter. Erreichen Sie die Altersgrenze oder sind Sie dauerhaft erwerbsgemindert, ist danach das Sozialamt zuständig.",
   "t.gsa.grenz": "Ob Sie das Rentenalter schon erreicht haben, hängt von Ihrem Geburtsmonat ab. Davor ist das Jobcenter zuständig.",
@@ -483,5 +483,6 @@
   "z.gsaWg": "Grundsicherung im Alter und Wohngeld gibt es nicht gleichzeitig. Lassen Sie beides prüfen. Fragen Sie, welcher Weg Ihnen mehr bringt.",
   "z.keine": "Nach Ihren Angaben passt keine Leistung sicher. Prüfen Sie noch einmal, wenn sich etwas ändert: Einkommen, Miete oder Haushalt. Eine Sozialberatung kann Ihnen weitere Hilfen nennen.",
   "z.stichtag": "Viele Leistungen gibt es erst ab dem Monat, in dem Sie den Antrag stellen. Stellen Sie den Antrag früh. Das geht auch formlos.",
-  "z.verfahren": "Nach dem Antrag: Sie können innerhalb eines Monats Widerspruch gegen einen Bescheid einlegen (§ 84 SGG). Ein älterer Bescheid ist falsch? Dann hilft ein Überprüfungsantrag (§ 44 SGB X). Rückwirkend gibt es dann aber nur für eine begrenzte Zeit Geld. Die Ämter müssen Sie beraten (§ 14 SGB I). Sie stellen den Antrag bei der falschen Stelle? Dann leitet die Stelle ihn weiter. Er gilt trotzdem (§ 16 SGB I)."
+  "z.verfahren": "Nach dem Antrag: Sie können innerhalb eines Monats Widerspruch gegen einen Bescheid einlegen (§ 84 SGG). Ein älterer Bescheid ist falsch? Dann hilft ein Überprüfungsantrag (§ 44 SGB X). Rückwirkend gibt es dann aber nur für eine begrenzte Zeit Geld. Die Ämter müssen Sie beraten (§ 14 SGB I). Sie stellen den Antrag bei der falschen Stelle? Dann leitet die Stelle ihn weiter. Er gilt trotzdem (§ 16 SGB I).",
+  "t.ggeld.kindGsa": "Ein erwachsenes Kind arbeitet in einer Werkstatt für behinderte Menschen? Oder es kann dauerhaft nicht arbeiten? Dann kann es eigene Grundsicherung beim Sozialamt bekommen. Das gilt auch, wenn es bei den Eltern wohnt. Das Sozialamt rechnet dann nur für das Kind. Das Jobcenter rechnet für die Eltern. Meist rechnet es ohne dieses Kind. Darum nennen wir hier keinen Betrag. Lassen Sie beides prüfen."
 }

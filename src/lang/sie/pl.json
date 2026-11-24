@@ -9,7 +9,7 @@
   "beh.pruefen": "Adres z oficjalnych danych (stopka redakcyjna urzędu lub BayernPortal, pobrano {stand}). Proszę sprawdzić przed wysłaniem, urzędy czasem się przeprowadzają.",
   "beh.pruefenKurz": "Przed wysłaniem proszę sprawdzić adres.",
   "beh.stelle": "Właściwy urząd dla miejsca zamieszkania:",
-  "bh.person.hint": "Dziecko od 18 lat: tylko jeśli niepełnosprawność istniała przed 25. urodzinami (ważne dla Kindergeld). W przeciwnym razie proszę wybrać „osoba dorosła”.",
+  "bh.person.hint": "Dziecko od 18 lat: tylko jeśli niepełnosprawność istniała przed 25. urodzinami (ważne dla Kindergeld). W przeciwnym razie proszę wybrać „osoba dorosła”. Jeśli to Pan/Pani pracuje w warsztacie, proszę wybrać „osoba dorosła”.",
   "bp.an.pruefen": "Proszę samodzielnie sprawdzić termin w piśmie. Rozpoznawanie tekstu może się mylić.",
   "bp.art.anh.t": "Wysłuchanie nie jest jeszcze decyzją. Proszę krótko wyjaśnić, jak było, i dołączyć dowody. Sprzeciw jest możliwy dopiero od decyzji, która przyjdzie potem.",
   "bp.datum.t": "Proszę wpisać datę. SoLo od razu pokaże, do kiedy można złożyć sprzeciw.",
@@ -356,7 +356,7 @@
   "sc.summary": "{n} pól, w tym {m} z wartością ze sprawdzenia",
   "sc.tipp": "Wskazówka: po wcześniejszym wypełnieniu sprawdzenia świadczeń aplikacja pokaże tu dane do przepisania.",
   "sc.vorschau": "Formularz (tylko na tym urządzeniu, nie jest zapisywany). Dotknięcie powiększa.",
-  "sf.h.bhPerson": "Dziecko od 18 lat: tylko jeśli niepełnosprawność istniała przed 25. urodzinami (ważne dla Kindergeld). W przeciwnym razie proszę wybrać „osoba dorosła”.",
+  "sf.h.bhPerson": "Dziecko od 18 lat: tylko jeśli niepełnosprawność istniała przed 25. urodzinami (ważne dla Kindergeld). W przeciwnym razie proszę wybrać „osoba dorosła”. Jeśli to Pan/Pani pracuje w warsztacie, proszę wybrać „osoba dorosła”.",
   "sf.h.egVor": "Średnia z 12 miesięcy przed porodem. Proszę wpisać 0, jeśli nie było dochodu.",
   "sf.h.ekArt": "Są dwa dochody? Proszę wybrać tutaj większy. O drugi aplikacja zapyta potem. Proszę nie wpisywać tu Kindergeld, Wohngeld ani Kinderzuschlag.",
   "sf.h.miete": "Czynsz podstawowy, koszty dodatkowe i ogrzewanie razem. We wspólnym mieszkaniu tylko własna część.",
@@ -531,5 +531,8 @@
   "z.gsaWg": "Grundsicherung im Alter i Wohngeld nie przysługują jednocześnie. Warto zlecić sprawdzenie obu i zapytać, która droga jest korzystniejsza.",
   "z.keine": "Według tych danych nic nie pasuje na pewno. Jeśli zmieni się dochód, czynsz lub gospodarstwo, proszę sprawdzić ponownie. Poradnia socjalna może wskazać inną pomoc.",
   "z.stichtag": "Wiele świadczeń przysługuje dopiero od miesiąca złożenia wniosku. Warto złożyć go wcześnie, także bez formularza (formlos).",
-  "z.verfahren": "Po złożeniu wniosku: od decyzji można wnieść sprzeciw (Widerspruch) w ciągu jednego miesiąca (§ 84 SGG). Jeśli starsza decyzja jest błędna, pomoże wniosek o ponowną kontrolę (Überprüfungsantrag) (§ 44 SGB X); wstecz pieniądze są wypłacane tylko za ograniczony czas. Urzędy muszą udzielić porady (§ 14 SGB I). Wniosek złożony w niewłaściwym urzędzie zostaje przekazany i nadal obowiązuje (§ 16 SGB I)."
+  "z.verfahren": "Po złożeniu wniosku: od decyzji można wnieść sprzeciw (Widerspruch) w ciągu jednego miesiąca (§ 84 SGG). Jeśli starsza decyzja jest błędna, pomoże wniosek o ponowną kontrolę (Überprüfungsantrag) (§ 44 SGB X); wstecz pieniądze są wypłacane tylko za ograniczony czas. Urzędy muszą udzielić porady (§ 14 SGB I). Wniosek złożony w niewłaściwym urzędzie zostaje przekazany i nadal obowiązuje (§ 16 SGB I).",
+  "t.ggeld.kindGsa": "Dorosłe dziecko, które pracuje w warsztacie dla osób z niepełnosprawnościami (Werkstatt für behinderte Menschen) albo trwale nie może pracować, może dostać własną Grundsicherung w Sozialamt, nawet gdy mieszka z rodzicami. Sozialamt liczy wtedy tylko dziecko. Jobcenter liczy dla rodziców, zwykle bez tego dziecka. Dlatego nie podajemy tu kwoty. Warto sprawdzić jedno i drugie.",
+  "t.rundfunk.kindGsa": "Zwolnienie dziecka nie obejmuje rodzica.",
+  "t.wohngeld.kindGsa": "Jeśli Grundsicherung z Sozialamt dostaje tylko dorosłe dziecko, z Wohngeld wykluczone jest tylko ono. Dla pozostałych Wohngeld jest możliwy, liczony bez tego dziecka. Dlatego nie podajemy kwoty."
 }

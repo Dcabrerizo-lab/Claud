@@ -10,7 +10,7 @@
   "beh.pruefen": "Adres resmî bilgilerden alınmıştır (kurumun künye sayfası veya BayernPortal, {stand}). Göndermeden önce lütfen kontrol edin; kurumlar bazen taşınır.",
   "beh.pruefenKurz": "Göndermeden önce adresi kontrol edin.",
   "beh.stelle": "Oturduğunuz yer için yetkili makam:",
-  "bh.person.hint": "18 yaş üstü çocuk: yalnızca engellilik 25. yaş gününden önce başladıysa (Kindergeld için önemli). Aksi halde „bir yetişkin“ seçin.",
+  "bh.person.hint": "18 yaş üstü çocuk: yalnızca engellilik 25. yaş gününden önce başladıysa (Kindergeld için önemli). Aksi halde „bir yetişkin“ seçin. Kendiniz bir atölyede çalışıyorsanız, „bir yetişkin“i seçin.",
   "bp.an.pruefen": "Lütfen süreyi mektuptan kendiniz kontrol edin. Metin tanıma yanılabilir.",
   "bp.art.anh.t": "Görüş bildirme çağrısı (Anhörung) henüz bir karar değildir. Ne olduğunu kısaca açıklayın ve kanıt ekleyin. İtiraz ancak sonraki karara karşı yapılabilir.",
   "bp.datum.t": "Tarihi girin. SoLo hemen ne zamana kadar itiraz (Widerspruch) edebileceğinizi gösterir.",
@@ -373,7 +373,7 @@
   "sc.summary": "{n} alan, {m} tanesinde kontrolünüzden bir değer var",
   "sc.tipp": "İpucu: Önce yardım kontrolünü doldurursanız, uygulama burada yazmanız için değerlerinizi gösterir.",
   "sc.vorschau": "Formunuz (yalnızca bu cihazda, kaydedilmez). Büyütmek için dokunun.",
-  "sf.h.bhPerson": "18 yaş ve üstü çocuk: sadece engel 25. doğum gününden önce varsa (Kindergeld için önemli). Yoksa „yetişkin bir kişi“ seçin.",
+  "sf.h.bhPerson": "18 yaş ve üstü çocuk: sadece engel 25. doğum gününden önce varsa (Kindergeld için önemli). Yoksa „bir yetişkin“ seçin. Kendiniz bir atölyede çalışıyorsanız, „bir yetişkin“i seçin.",
   "sf.h.egVor": "Doğumdan önceki 12 ayın ortalaması. Gelir yoksa 0 yazın.",
   "sf.h.ekArt": "İki gelir mi var? Burada büyük olanı seçin. İkincisini uygulama sonra sorar. Kindergeld, Wohngeld ve Kinderzuschlag’ı buraya yazmayın.",
   "sf.h.miete": "Soğuk kira, yan giderler ve ısınma birlikte. Paylaşımlı evde sadece kendi payınız.",
@@ -560,5 +560,8 @@
   "z.gsaWg": "Grundsicherung im Alter ve Wohngeld aynı anda alınamaz. İkisini de kontrol ettirin ve hangi yolun size daha çok kazandırdığını sorun.",
   "z.keine": "Bu bilgilere göre kesin uyan bir yardım yok. Gelir, kira veya hanede bir şey değişirse yeniden kontrol edin. Bir sosyal danışmanlık başka yardımları söyleyebilir.",
   "z.stichtag": "Birçok yardım ancak başvuru ayından itibaren ödenir. Serbest biçimli bile olsa başvuruyu erken yapın.",
-  "z.verfahren": "Başvurudan sonra: Bir karara karşı bir ay içinde itiraz (Widerspruch) edebilirsiniz (§ 84 SGG). Daha eski bir karar yanlışsa, inceleme talebi (Überprüfungsantrag) yardımcı olur (§ 44 SGB X); geriye dönük para yalnızca sınırlı bir süre için ödenir. Kurumlar size danışmanlık yapmak zorundadır (§ 14 SGB I). Yanlış kuruma yapılan başvuru iletilir ve yine geçerlidir (§ 16 SGB I)."
+  "z.verfahren": "Başvurudan sonra: Bir karara karşı bir ay içinde itiraz (Widerspruch) edebilirsiniz (§ 84 SGG). Daha eski bir karar yanlışsa, inceleme talebi (Überprüfungsantrag) yardımcı olur (§ 44 SGB X); geriye dönük para yalnızca sınırlı bir süre için ödenir. Kurumlar size danışmanlık yapmak zorundadır (§ 14 SGB I). Yanlış kuruma yapılan başvuru iletilir ve yine geçerlidir (§ 16 SGB I).",
+  "t.ggeld.kindGsa": "Engelliler atölyesinde (Werkstatt für behinderte Menschen) çalışan veya kalıcı olarak çalışamayan yetişkin çocuk, ebeveynleriyle yaşasa bile Sozialamt'tan kendi Grundsicherung'unu alabilir. Sozialamt o zaman yalnızca çocuğu hesaba katar. Jobcenter ebeveynler için hesap yapar, çoğunlukla bu çocuk olmadan. Bu yüzden burada bir tutar belirtmiyoruz. İkisini de kontrol ettirin.",
+  "t.rundfunk.kindGsa": "Çocuğunuzun muafiyeti sizin için geçerli değildir.",
+  "t.wohngeld.kindGsa": "Sozialamt'tan Grundsicherung'u yalnızca yetişkin çocuğunuz alıyorsa, Wohngeld'den yalnızca çocuk hariç tutulur. Diğerleri için Wohngeld mümkündür, çocuk olmadan hesaplanır. Bu yüzden tutar vermiyoruz."
 }

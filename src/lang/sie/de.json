@@ -468,5 +468,10 @@
   "z.verfahren": "Nach dem Antrag: Gegen einen Bescheid können Sie innerhalb eines Monats Widerspruch einlegen (§ 84 SGG). Ist ein älterer Bescheid falsch, hilft ein Überprüfungsantrag (§ 44 SGB X); rückwirkend gibt es dann Geld nur für eine begrenzte Zeit. Die Ämter müssen Sie beraten (§ 14 SGB I). Ein Antrag bei der falschen Stelle wird weitergeleitet und gilt trotzdem (§ 16 SGB I).",
   "z.keine": "Nach diesen Angaben passt keine Leistung sicher. Ändert sich etwas bei Einkommen, Miete oder Haushalt, prüfen Sie bitte noch einmal. Eine Sozialberatung kann weitere Hilfen nennen.",
   "es.warn.hoch": "Stimmt das? {v} im Monat ist viel. Wenn es stimmt, tippen Sie noch einmal auf Weiter.",
-  "es.warn.niedrig": "Stimmt das? {v} im Monat ist sehr wenig. Wenn es stimmt, tippen Sie noch einmal auf Weiter."
+  "es.warn.niedrig": "Stimmt das? {v} im Monat ist sehr wenig. Wenn es stimmt, tippen Sie noch einmal auf Weiter.",
+  "bh.person.hint": "Kind ab 18: nur wenn die Behinderung schon vor dem 25. Geburtstag bestand (wichtig für das Kindergeld). Sonst „eine erwachsene Person“ wählen. Arbeiten Sie selbst in einer Werkstatt, wählen Sie „eine erwachsene Person“.",
+  "sf.h.bhPerson": "Kind ab 18: nur wenn die Behinderung schon vor dem 25. Geburtstag bestand (wichtig für das Kindergeld). Sonst „eine erwachsene Person“ wählen. Arbeiten Sie selbst in einer Werkstatt, wählen Sie „eine erwachsene Person“.",
+  "t.ggeld.kindGsa": "Ein erwachsenes Kind, das in einer Werkstatt für behinderte Menschen arbeitet oder dauerhaft nicht arbeiten kann, kann eigene Grundsicherung beim Sozialamt bekommen, auch wenn es bei den Eltern wohnt. Das Sozialamt rechnet dann nur mit dem Kind. Das Jobcenter rechnet für die Eltern, meist ohne dieses Kind. Darum nennen wir hier keinen Betrag. Lassen Sie beides prüfen.",
+  "t.rundfunk.kindGsa": "Die Befreiung Ihres Kindes gilt nicht für Sie.",
+  "t.wohngeld.kindGsa": "Bekommt nur Ihr erwachsenes Kind Grundsicherung vom Sozialamt, ist nur das Kind vom Wohngeld ausgeschlossen. Für die anderen ist Wohngeld möglich, gerechnet ohne das Kind. Darum nennen wir keinen Betrag."
 }

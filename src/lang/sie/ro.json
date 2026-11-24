@@ -11,7 +11,7 @@
   "beh.pruefen": "Adresa provine din date oficiale (pagina de impressum a instituției sau BayernPortal, preluată la {stand}). Verificați înainte de trimitere, instituțiile se mută uneori.",
   "beh.pruefenKurz": "Verificați adresa înainte de trimitere.",
   "beh.stelle": "Autoritatea competentă pentru localitatea dumneavoastră:",
-  "bh.person.hint": "Copil de peste 18 ani: doar dacă dizabilitatea exista înainte de 25 de ani (important pentru Kindergeld). Altfel alegeți „o persoană adultă”.",
+  "bh.person.hint": "Copil de peste 18 ani: doar dacă dizabilitatea exista înainte de 25 de ani (important pentru Kindergeld). Altfel alegeți „o persoană adultă”. Dacă lucrați chiar dumneavoastră într-un atelier, alegeți „o persoană adultă”.",
   "bp.an.pruefen": "Vă rugăm să verificați singur(ă) termenul în scrisoare. Recunoașterea textului poate greși.",
   "bp.art.anh.t": "O audiere nu este încă o decizie. Explicați pe scurt cum a fost și atașați dovezi. Contestația este posibilă abia împotriva deciziei care urmează.",
   "bp.datum.t": "Introduceți data. SoLo arată imediat până când puteți face contestație.",
@@ -358,7 +358,7 @@
   "sc.summary": "{n} câmpuri, dintre care {m} cu valoare din verificarea dumneavoastră",
   "sc.tipp": "Sfat: dacă completați mai întâi verificarea prestațiilor, aplicația vă arată aici valorile de copiat.",
   "sc.vorschau": "Formularul dumneavoastră (doar pe acest dispozitiv, nu se salvează). Atingeți pentru mărire.",
-  "sf.h.bhPerson": "Copil de la 18 ani: doar dacă dizabilitatea exista înainte de împlinirea vârstei de 25 de ani (important pentru Kindergeld). Altfel alegeți „o persoană adultă”.",
+  "sf.h.bhPerson": "Copil de la 18 ani: doar dacă dizabilitatea exista înainte de împlinirea vârstei de 25 de ani (important pentru Kindergeld). Altfel alegeți „o persoană adultă”. Dacă lucrați chiar dumneavoastră într-un atelier, alegeți „o persoană adultă”.",
   "sf.h.egVor": "Media celor 12 luni dinainte de naștere. Introduceți 0 dacă nu a existat venit.",
   "sf.h.ekArt": "Există două venituri? Alegeți aici pe cel mai mare. Despre al doilea aplicația întreabă după aceea. Nu introduceți aici Kindergeld, Wohngeld sau Kinderzuschlag.",
   "sf.h.miete": "Chiria de bază, cheltuielile și încălzirea la un loc. În locuință comună doar partea dumneavoastră.",
@@ -540,5 +540,8 @@
   "z.stichtag": "Multe prestații se acordă abia din luna cererii. Depuneți cererea devreme, chiar și în formă liberă.",
   "z.verfahren": "După cerere: împotriva unei decizii puteți face contestație (Widerspruch) în termen de o lună (§ 84 SGG). Dacă o decizie mai veche este greșită, ajută o cerere de reexaminare (Überprüfungsantrag) (§ 44 SGB X); retroactiv se plătesc bani doar pentru o perioadă limitată. Autoritățile trebuie să vă consilieze (§ 14 SGB I). O cerere depusă la autoritatea greșită este transmisă mai departe și rămâne valabilă (§ 16 SGB I).",
   "es.warn.hoch": "Este corect? {v} pe lună este mult. Dacă este corect, atingeți din nou Mai departe.",
-  "es.warn.niedrig": "Este corect? {v} pe lună este foarte puțin. Dacă este corect, atingeți din nou Mai departe."
+  "es.warn.niedrig": "Este corect? {v} pe lună este foarte puțin. Dacă este corect, atingeți din nou Mai departe.",
+  "t.ggeld.kindGsa": "Un copil adult care lucrează într-un atelier pentru persoane cu dizabilități (Werkstatt für behinderte Menschen) sau care nu poate lucra permanent poate primi propria Grundsicherung de la Sozialamt, chiar dacă locuiește cu părinții. Sozialamt ia atunci în calcul doar copilul. Jobcenter calculează pentru părinți, de obicei fără acest copil. De aceea nu indicăm aici nicio sumă. Cereți verificarea ambelor.",
+  "t.rundfunk.kindGsa": "Scutirea copilului dumneavoastră nu se aplică și dumneavoastră.",
+  "t.wohngeld.kindGsa": "Dacă doar copilul dumneavoastră adult primește Grundsicherung de la Sozialamt, doar copilul este exclus de la Wohngeld. Pentru ceilalți, Wohngeld este posibil, calculat fără copil. De aceea nu dăm o sumă."
 }
