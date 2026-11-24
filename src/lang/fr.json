@@ -867,7 +867,7 @@
   "bhWeitere.0": "Aucune",
   "t.mehr.teilhabe": "Ce montant comprend un besoin supplémentaire (Mehrbedarf) de {betrag} : 35 % du montant forfaitaire (Regelsatz), parce que la personne reçoit, à cause de son handicap, une aide pour l'école, la formation ou le travail.",
   "t.ggeld.mehrBeh": "Pour un enfant handicapé de 15 ans ou plus, un besoin supplémentaire (Mehrbedarf) peut s'ajouter (35 % en cas d'aide pour l'école ou la formation, 17 % avec la mention, Merkzeichen, G). Dis-le dans ta demande.",
-  "t.ggeld.kindGsa": "Un enfant adulte qui ne peut durablement pas travailler reçoit son propre minimum social (Grundsicherung) du Sozialamt, même s'il habite chez ses parents.",
+  "t.ggeld.kindGsa": "Un enfant adulte qui travaille dans un atelier pour personnes handicapées (Werkstatt für behinderte Menschen) ou qui ne peut durablement pas travailler peut recevoir son propre minimum social (Grundsicherung) du Sozialamt, même s'il habite chez ses parents. Le Sozialamt ne tient alors compte que de l'enfant. Le Jobcenter calcule pour les parents, le plus souvent sans cet enfant. C'est pourquoi nous n'indiquons pas de montant ici. Faites vérifier les deux.",
   "t.pflege.pauschbetrag": "La personne qui s'occupe de cette personne à domicile sans être payée a droit, dans sa déclaration d'impôts, à un abattement forfaitaire pour soins (Pflege-Pauschbetrag) de {betrag} par an.",
   "cb.schwanger": "Une personne du foyer est enceinte (à partir de la 13e semaine)",
   "cb.ernaehrung": "Une personne a besoin d'une alimentation coûteuse à cause d'une maladie (par exemple maladie cœliaque, mucoviscidose, maladie rénale grave)",

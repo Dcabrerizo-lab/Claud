@@ -12,7 +12,7 @@
  "t.alg1.minijob": "Ein Minijob (bis {mini} im Monat) ist nicht arbeitslosenversichert. Er zählt nicht für das Arbeitslosengeld. Frühere Stellen mit höherem Lohn können zählen.",
  "t.mehr.teilhabe": "Darin ist ein Mehrbedarf von {betrag} enthalten. Das sind 35 % vom Regelsatz. Den gibt es, weil die Person wegen der Behinderung Hilfe für Schule, Ausbildung oder Arbeit bekommt.",
  "t.ggeld.mehrBeh": "Dein Kind hat eine Behinderung und ist mindestens 15 Jahre alt? Dann kann ein Mehrbedarf dazukommen: 35 % bei Hilfe für Schule oder Ausbildung, 17 % bei Merkzeichen G. Sag das beim Antrag.",
- "t.ggeld.kindGsa": "Ein erwachsenes Kind kann dauerhaft nicht arbeiten? Dann bekommt es eigene Grundsicherung beim Sozialamt. Das gilt auch, wenn es bei den Eltern wohnt.",
+ "t.ggeld.kindGsa": "Ein erwachsenes Kind arbeitet in einer Werkstatt für behinderte Menschen? Oder es kann dauerhaft nicht arbeiten? Dann kann es eigene Grundsicherung beim Sozialamt bekommen. Das gilt auch, wenn es bei den Eltern wohnt. Das Sozialamt rechnet dann nur für das Kind. Das Jobcenter rechnet für die Eltern. Meist rechnet es ohne dieses Kind. Darum nennen wir hier keinen Betrag. Lass beides prüfen.",
  "t.pflege.pauschbetrag": "Du pflegst diese Person zu Hause und bekommst dafür kein Geld? Dann bekommst du in der Steuererklärung einen Pflege-Pauschbetrag. Er beträgt {betrag} im Jahr.",
  "t.mehr.schwanger": "Darin ist ein Mehrbedarf für die Schwangerschaft von {betrag} enthalten. Das sind 17 % vom Regelsatz ab der 13. Woche.",
  "t.mehr.ernaehrung": "Du musst dich wegen einer Krankheit teurer ernähren? Dann gibt es einen Mehrbedarf. Wie hoch er ist, hängt von der Krankheit ab. Du brauchst dafür eine Bescheinigung vom Arzt.",

@@ -174,10 +174,13 @@ function grundsicherungsgeld(h) {
   if (euAus(h)) return { level: 'nein' };
   // Paar mit einer Person im Rentenalter bzw. voll erwerbsgemindert: die andere kann erwerbsfähig und selbst leistungsberechtigt sein
   // (§ 7 Abs. 1 Satz 1, Abs. 3 Nr. 3 SGB II; gemischte Bedarfsgemeinschaft) – nie „nein“, auch ohne Kinder; laufender Bezug: „na“
-  if (h.rente || h.em) return { level: h.erwachsene === 2 ? (h.bezug.grundsicherungsgeld ? 'na' : 'vielleicht') : 'nein' };
+  // Voll erwerbsgemindert: nur der Elternteil zählt (emElternteil); ein erwachsenes Kind in der Werkstatt hat eigene Grundsicherung (§ 41 Abs. 3
+  // SGB XII, § 5 Abs. 2 SGB II), der erwerbsfähige Elternteil bleibt beim Jobcenter (§ 7 Abs. 1 SGB II)
+  if (h.rente || emElternteil(h.e)) return { level: h.erwachsene === 2 ? (h.bezug.grundsicherungsgeld ? 'na' : 'vielleicht') : 'nein' };
   const b = h.bezug;
   if (b.grundsicherungsgeld) return { level: 'na' };
-  if (b.sozialamt) return { level: 'nein' };
+  // Nur das erwachsene Kind voll erwerbsgemindert: der Bezug vom Sozialamt ist dann in der Regel der des Kindes und schließt den Elternteil nicht aus
+  if (b.sozialamt && !kindNurEMRef(h)) return { level: 'nein' };
   const jung = h.jahre ? h.jahre < 45 : (h.gruppe === '' || h.gruppe === '<30' || h.gruppe === '30-39');
   if (h.e.ausbildung === 'ich' && !h.e.babBetrieb && jung) return { level: 'nein' };
   const schon = { '': 10000, '<30': 5000, '30-39': 10000, '40-49': 12500, '50+': 20000 }[h.gruppe] * h.erwachsene + 5000 * h.kids;
@@ -190,6 +193,9 @@ function grundsicherungsgeld(h) {
   const offen = kinderEinkommen(h, h.uvgOffenGG) - kinderEinkommen(h);
   const level = luecke >= 50 ? (luecke - offen >= 50 ? 'ja' : 'vielleicht') : luecke > -(100 + bm.moeglich + ms.moeglich) ? 'vielleicht' : 'nein';
   // § 7 Abs. 4 SGB II: Altersrente (auch vorgezogen) schließt aus; allein mit nur Rente, Alter unbekannt oder ab 60 -> höchstens „möglich“
+  // Nur das erwachsene Kind voll erwerbsgemindert: eigene Grundsicherung, Haushalt trotzdem mitgerechnet -> höchstens „möglich“
+  // Dann auch kein Bedarf und kein Betrag: beide enthielten das Kind, das Jobcenter rechnet meist ohne es (§ 5 Abs. 2 Satz 2, § 19 Abs. 1 Satz 2 SGB II)
+  if (kindNurEMRef(h) && level !== 'nein') return { level: 'vielleicht' };
   return { level: level === 'ja' && h.erwachsene === 1 && nurRenteAb60(h) ? 'vielleicht' : level, bedarf, luecke };
 }
 
@@ -298,9 +304,13 @@ function nurRenteAb60(h) {
   return h.jahre ? h.jahre >= 60 : (h.gruppe === '' || h.gruppe === '50+');
 }
 // Der Elternteil selbst voll erwerbsgemindert: weniger als 3 Stunden, Werkstattlohn, oder Werkstatt-Haken ohne Angabe „Kind mit Behinderung“
+// Nur ein erwachsenes Kind mit Behinderung ist voll erwerbsgemindert (Werkstatt-Haken bei „Kind ab 18“), nicht der Elternteil
+function kindNurEMRef(h) {
+  return !!h.em && !emElternteil(h.e) && (h.e.bhPerson === 'erwVor25' || h.e.bhPerson === 'erwNach25');
+}
 function emElternteil(e) {
   const wfbmEink = e.art1 === 'wfbm' || (e.adults === 2 && e.art2 === 'wfbm') || (Array.isArray(e.einkommen) && e.einkommen.some((x) => x.art === 'wfbm'));
-  return e.emStd === 'unter3' || !!e.erwerbsgemindert || wfbmEink || (!!e.wfbm && ['minder', 'erwVor25'].indexOf(e.bhPerson) < 0);
+  return e.emStd === 'unter3' || !!e.erwerbsgemindert || wfbmEink || (!!e.wfbm && (!!e.wfbmSelbst || ['minder', 'erwVor25'].indexOf(e.bhPerson) < 0));
 }
 function kinderzuschlag(h) {
   const b = h.bezug;
@@ -398,10 +408,14 @@ function einkommenSGB12(e, h) {
 function grundsicherungAlter(e) {
   const h = haushalt(e);
   if (Array.isArray(e.einkommen)) { const s = e.einkommen.reduce((a, x) => a + zahl(x.b), 0); h.brutto = s; h.netto = e.einkommen.reduce((a, x) => a + (leer(x.n) ? zahl(x.b) : zahl(x.n)), 0); h.p = [{ art: e.einkommen.length ? e.einkommen[0].art : 'ohne', brutto: s }]; }
-  const em = h.em;
+  // § 41 Abs. 3 SGB XII: dauerhaft voll erwerbsgemindert zählt erst ab 18 Jahren – ein Kind unter 18 in der Werkstatt reicht nicht
+  const em = h.em && (emElternteil(e) || e.bhPerson !== 'minder');
   if (!h.rente && !em && !h.grenz) return { level: 'nein' };
   if (euAus(h)) return { level: 'nein' };
   if (h.bezug.sozialamt) return { level: 'na' };
+  // Nur das erwachsene Kind voll erwerbsgemindert (Angaben der Eltern): Leistung des Kindes allein, Einkommen und Vermögen der Eltern zählen
+  // nicht (§ 43 Abs. 1, 5, § 94 Abs. 1a SGB XII) -> weder Betrag noch „nein“, sondern „möglich“
+  if (kindNurEMRef(h) && !h.rente && !h.grenz && e.wohnform !== 'eltern' && e.wohnform !== 'heim') return { level: 'vielleicht' };
   if (h.bezug.grundsicherungsgeld) return { level: 'nein' };
   const wf = e.wohnform === 'eltern' || e.wohnform === 'heim' ? e.wohnform : '';
   // Angemessenes Auto ist im SGB XII geschützt (§ 90 Abs. 2 Nr. 10 SGB XII); hoher Wert nur „möglich“ (kappe)

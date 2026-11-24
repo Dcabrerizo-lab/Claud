@@ -100,6 +100,7 @@
    "haengtAb": [
     "alter",
     "aufenthalt",
+    "bhPerson",
     "einkommen",
     "einkommen2",
     "kinder",
@@ -108,7 +109,7 @@
     "wfbm",
     "wohnart"
    ],
-   "quelle": "§§ 41 ff. SGB XII"
+   "quelle": "§§ 41 ff. SGB XII; bhPerson: Werkstatt-Haken beim Kind unter 18 reicht nicht (§ 41 Abs. 3 SGB XII: ab 18); beim Kind ab 18 ist es die Leistung des Kindes allein, ohne Einkommen und Vermögen der Eltern (§ 43 Abs. 1, 5, § 94 Abs. 1a SGB XII; seit 24.11.2026)"
   },
   "bafoeg": {
    "haengtAb": [
@@ -207,6 +208,7 @@
     "aufenthalt",
     "ausbildung",
     "baby",
+    "bhPerson",
     "blind",
     "einkommen",
     "einkommen2",
@@ -216,7 +218,7 @@
     "vermoegen",
     "wfbm"
    ],
-   "quelle": "§ 4 RBeitrStV"
+   "quelle": "§ 4 RBeitrStV; bhPerson über die Befreiung bei Grundsicherungsgeld (§ 4 Abs. 1 Nr. 3 RBeitrStV): Werkstatt-Haken beim Kind ab 18 – der erwerbsfähige Elternteil bleibt beim Jobcenter (§ 7 Abs. 1, § 5 Abs. 2 SGB II, § 41 Abs. 3 SGB XII; seit 24.11.2026)"
   },
   "zuzahl": {
    "haengtAb": [

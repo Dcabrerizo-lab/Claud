@@ -826,7 +826,10 @@ const Rules = (function () {
       // WfbM-Arbeitsbereich gilt als voll erwerbsgemindert (BA-Weisung § 8 SGB II Rz. 8.8-8.10a) -> Sozialamt statt Jobcenter
       erwerbsgemindert: !!inp.erwerbsgemindert || inp.emStd === 'unter3' || !!inp.wfbm || pers.some((x) => x[0] === 'wfbm'),
       // Voll erwerbsgemindert ist der Elternteil selbst, nicht ein Kind mit Behinderung (Werkstatt-Haken bei „Kind unter 18“ / „Kind ab 18“)
-      emEltern: !!inp.erwerbsgemindert || inp.emStd === 'unter3' || pers.some((x) => x[0] === 'wfbm') || (!!inp.wfbm && inp.bhPerson !== 'minder' && inp.bhPerson !== 'erwVor25'),
+      // wfbmSelbst: einfache Version („Arbeitest du?“ – Werkstatt). Dort antwortet die Person in der Werkstatt selbst; „Behinderung seit der
+      // Kindheit“ setzt bhPerson auf erwVor25, gemeint ist aber sie selbst, kein Kind im Haushalt. Ohne diese Angabe hielt die App sie bei
+      // übersprungener Lohnfrage für einen Elternteil (zweite Prüfung 24.11.2026).
+      emEltern: !!inp.erwerbsgemindert || inp.emStd === 'unter3' || pers.some((x) => x[0] === 'wfbm') || (!!inp.wfbm && (!!inp.wfbmSelbst || (inp.bhPerson !== 'minder' && inp.bhPerson !== 'erwVor25'))),
       behinderung: !!inp.behinderung || String(inp.gdb) === '100',
       kinder12: !!inp.kinder12,
       // Alter der Kinder bekannt: ausdrücklich angegeben (Frage „14 bis 17“ beantwortet) oder alle Kinder unter 6
@@ -1139,7 +1142,11 @@ const Rules = (function () {
     const mindest = h.miete + R.wohngeld.mindestAnteil * h.regel;
     if (h.miete > 0 && mittel < mindest) {
       level = 'vielleicht'; hl = 'einkoNiedrig';
-      const schonGS = (h.alter || h.erwerbsgemindert)
+      // Vergleich mit dem Schonvermögen der Stelle, die sonst zuständig wäre: Sozialamt nur, wenn die erwachsene Person selbst im Rentenalter
+      // oder voll erwerbsgemindert ist (h.emEltern). Ist nur ein Kind in der Werkstatt, bleibt der Elternteil beim Jobcenter (§ 7 Abs. 1 Satz 1,
+      // § 12 Abs. 2 SGB II). Bis 24.11.2026 stand hier h.erwerbsgemindert: Karte Wohngeld sagte „Grundsicherung eher nicht“, Karte
+      // Grundsicherungsgeld „möglich“. Das ist nicht die Prüfung „erhebliches Vermögen“ nach § 21 Nr. 3 WoGG (die macht vermGrenzen).
+      const schonGS = (h.alter || h.emEltern)
         ? R.grundsicherung.schonAllein * h.adults + 500 * h.children
         : R.sgb2.schon[h.gruppe] * h.adults + R.sgb2.schon['<30'] * h.children;
       // Keine Ablehnung (Nr. 15.01 Abs. 2 WoGVwV: die Person kann darlegen, wovon sie lebt): geschätzter Betrag bleibt sichtbar
@@ -1304,9 +1311,15 @@ const Rules = (function () {
   function ggeldRechnung(h) {
     const id = 'ggeld';
     // Paar, eine Person über der Regelaltersgrenze oder voll erwerbsgemindert: gemischte Bedarfsgemeinschaft (siehe unten)
+    // Voll erwerbsgemindert ist hier der Elternteil bzw. eine erwachsene Person der Bedarfsgemeinschaft (h.emEltern), nicht ein Kind mit
+    // Behinderung (Werkstatt-Haken bei „Kind ab 18“). Ein dauerhaft voll erwerbsgemindertes Kind ab 18 bekommt eigene Grundsicherung nach
+    // § 41 Abs. 3 SGB XII und ist vom Sozialgeld ausgeschlossen (§ 5 Abs. 2 Satz 2, § 19 Abs. 1 Satz 2 SGB II); der erwerbsfähige Elternteil
+    // bleibt beim Jobcenter leistungsberechtigt (§ 7 Abs. 1 Satz 1 SGB II). Bis 24.11.2026 prüfte die App h.erwerbsgemindert und sagte
+    // Alleinerziehenden mit erwachsenem Kind in der Werkstatt fälschlich „nein, Sozialamt zuständig“ (Quellen: gesetze-im-internet.de/sgb_2/
+    // __7.html, __5.html, __19.html, sgb_12/__41.html, Abruf 24.11.2026).
     if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);
     if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);
-    if (h.alter || h.erwerbsgemindert) {
+    if (h.alter || h.emEltern) {
       // Paar: Die App kennt nur das Alter der ältesten Person bzw. weiß nur, dass EINE Person voll erwerbsgemindert ist. Die andere
       // Person kann erwerbsfähig sein und ist dann selbst beim Jobcenter leistungsberechtigt (§ 7 Abs. 1 Satz 1, Abs. 3 Nr. 3 SGB II);
       // die ältere bzw. DAUERHAFT voll erwerbsgeminderte Person bekommt Grundsicherung nach § 41 Abs. 2, 3 SGB XII (§ 7 Abs. 1 Satz 1 Nr. 1,
@@ -1321,7 +1334,9 @@ const Rules = (function () {
       return mk(id, 'nein', 'andereStelle', [['ggeld.sozialamtZustaendig']]);
     }
     if (h.bezug.grundsicherungsgeld) return mk(id, 'na', 'na', [['ggeld.na']]);
-    if (h.bezug.sozialamt) return mk(id, 'nein', 'ausschluss', [['ggeld.sozialamt']]);
+    // Nur das erwachsene Kind ist voll erwerbsgemindert: „Grundsicherung vom Sozialamt“ ist dann in der Regel die Leistung des Kindes
+    // (§ 41 Abs. 3 SGB XII). Sie schließt den erwerbsfähigen Elternteil nicht aus (§ 7 Abs. 1 Satz 1, § 5 Abs. 2 Satz 2 SGB II): kein „nein“.
+    if (h.bezug.sozialamt && !kindNurEM(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.sozialamt']]);
     // § 7 Abs. 5 SGB II: Schule/Studium, die nach BAföG förderfähig sind, schließen Grundsicherungsgeld in der Regel aus
     // (betriebliche Ausbildung mit Berufsausbildungsbeihilfe: aufstockend möglich). Ab 45 (Altersgrenze BAföG) nicht mehr förderfähig: offen.
     if (h.ausbildung === 'ich' && !h.babBetrieb && bafoegAlter(h)) {
@@ -1336,8 +1351,21 @@ const Rules = (function () {
     // ggeldMin), ist es offen: höchstens „möglich“ mit Hinweis. Bis 21.11.2026 galt der Freibetrag der ältesten Person für beide.
     const vMin = vermGrenzen(h).ggeldMin;
     const r = ggeldRechnung0(h);
-    return h.adults === 2 && vMin && h.vermoegen > vMin ? hoechstensMoeglich(r, 'ggeld.vermAlter') : r;
+    const r2 = h.adults === 2 && vMin && h.vermoegen > vMin ? hoechstensMoeglich(r, 'ggeld.vermAlter') : r;
+    // Nur das erwachsene Kind ist voll erwerbsgemindert: Es kann eigene Grundsicherung beim Sozialamt bekommen (§ 41 Abs. 3 SGB XII, vorrangig
+    // nach § 5 Abs. 2 Satz 2, § 19 Abs. 1 Satz 2 SGB II); das Jobcenter rechnet dann für den Elternteil ohne Bedarf und Einkommen des Kindes.
+    // Bekommt das Kind im Einzelfall keine Grundsicherung (eigenes Einkommen oder Vermögen), kann es doch zur Bedarfsgemeinschaft zählen
+    // („soweit“, § 19 Abs. 1 Satz 2 SGB II; Fachliche Weisungen der BA zu § 19 SGB II, Rz. 19.2 bis 19.4,
+    // https://www.arbeitsagentur.de/datei/fw-sgb-ii-19_ba015859.pdf, Abruf 24.11.2026). Die App rechnet den ganzen Haushalt: deshalb
+    // höchstens „möglich“ mit Hinweis ggeld.kindGsa, ohne Betrag und ohne Bedarfszeile (beide enthielten das Kind; die Bedarfszeile sagte
+    // außerdem „Einkommen knapp darunter oder darüber“, auch wenn es weit darunter lag).
+    if (!kindNurEM(h) || (r2.level !== 'ja' && r2.level !== 'vielleicht')) return r2;
+    const tx = r2.tx.filter((t) => t[0].indexOf('schaetz.') !== 0 && t[0].indexOf('bedarf') !== 0);
+    const out = mk(r2.id, 'vielleicht', 'vielleicht', [['ggeld.kindGsa']].concat(tx));
+    return r2.lage ? Object.defineProperty(out, 'lage', { value: r2.lage }) : out;
   }
+  // Voll erwerbsgemindert ist nur ein erwachsenes Kind mit Behinderung (Werkstatt-Haken bei „Kind ab 18“), nicht der Elternteil
+  const kindNurEM = (h) => !!h.erwerbsgemindert && !h.emEltern && (h.bhPerson === 'erwVor25' || h.bhPerson === 'erwNach25');
   function ggeldRechnung0(h) {
     const id = 'ggeld';
     const einkommen = elternEinkSGB2(h) + h.children * R.kindergeld + unterhaltAnrechenbar(h);
@@ -1346,7 +1374,7 @@ const Rules = (function () {
     const luecke = bedarf - einkommen;
     mb.offen += ma.offen;
     const behTx = (mb.fest ? [['mehr.teilhabe', { betrag: eur(mb.fest) }]] : []).concat(mb.offen - ma.offen ? [['ggeld.mehrBeh']] : [],
-      h.bhPerson === 'erwVor25' && h.erwerbsgemindert ? [['ggeld.kindGsa']] : [], ma.tx, h.schwanger ? [['mehr.erstausstattung']] : [],
+      ma.tx, h.schwanger ? [['mehr.erstausstattung']] : [],
       h.kids > 0 && h.land && h.land !== 'BY' ? [['ggeld.schulbuch']] : [], h.miete > 0 ? [['kdu.angemessen']] : []);
     let r;
     if (luecke >= R.grundsicherung.sicherAb) r = mk(id, 'ja', 'ja', bedarfTx('ja', bedarf).concat([['schaetz.eins', { a: eur(r10(luecke)) }]], behTx));
@@ -1539,16 +1567,28 @@ const Rules = (function () {
   function grundsicherungAlter(h) {
     const id = 'gsa';
     if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);
-    if (!h.alter && !h.erwerbsgemindert && !h.alterGrenz) return mk(id, 'nein', 'vorausFehlt', [['gsa.voraus']]);
+    // Voll erwerbsgemindert zählt hier erst ab 18 Jahren (§ 41 Abs. 3 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__41.html, Abruf
+    // 24.11.2026). Ist nur ein Kind unter 18 in der Werkstatt, gibt es diese Leistung nicht; das Kind bekommt Grundsicherungsgeld in der
+    // Bedarfsgemeinschaft des Elternteils (§ 19 Abs. 1 Satz 2, § 23 SGB II). Bis 24.11.2026 zeigte die App hier „wahrscheinlich“ mit Betrag.
+    const emAb18 = h.erwerbsgemindert && (h.emEltern || h.bhPerson !== 'minder');
+    if (!h.alter && !emAb18 && !h.alterGrenz) return mk(id, 'nein', 'vorausFehlt', [['gsa.voraus']]);
     if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['gsa.eu']]);
     if (h.bezug.sozialamt) return mk(id, 'na', 'na', [['gsa.na']]);
+    // Nur das erwachsene Kind im Haushalt ist voll erwerbsgemindert (Angaben der Eltern): Die Grundsicherung ist die Leistung des Kindes allein.
+    // Einkommen und Vermögen der Eltern zählen nicht: § 43 Abs. 1 SGB XII nennt nur Ehegatten und Partner, § 43 Abs. 5 schließt die Vermutung
+    // der Bedarfsdeckung im gemeinsamen Haushalt aus (§ 39 Satz 1 nicht anzuwenden), Unterhalt der Eltern erst über 100.000 € Jahreseinkommen
+    // (§ 94 Abs. 1a SGB XII); https://www.gesetze-im-internet.de/sgb_12/__43.html, __94.html, Abruf 24.11.2026. Der Bedarf ist nur der des
+    // Kindes. Die App kennt Einkommen und Vermögen des Kindes
+    // nicht getrennt: weder Betrag noch „nein“ wegen Einkommen oder Vermögen des Haushalts, sondern „möglich“ mit Hinweis.
+    // Bis 24.11.2026 rechnete die App hier den ganzen Haushalt („wahrscheinlich, 1.250 €“ bzw. „nein“ bei gut verdienenden Eltern).
+    if (kindNurEM(h) && !h.alter && !h.alterGrenz && h.wohnform === '') return mk(id, 'vielleicht', 'vielleicht', [['ggeld.kindGsa'], ['gsa.eltern']]);
     if (h.bezug.grundsicherungsgeld) return mk(id, 'nein', 'schonGrund', [['gsa.ggBezug']]);
     // Barbetrag-Verordnung zu § 90 SGB XII: 10.000 € je volljähriger Person, 500 € je überwiegend unterhaltene Person
     const eigen = h.wohnform !== '';
     const schon = eigen ? R.grundsicherung.schonAllein : R.grundsicherung.schonAllein * h.adults + 500 * h.children;
     if (vermSGB12(h) > schon) return mk(id, 'nein', 'vermHoch', [['gsa.verm', { schon: eur(schon) }]]);
-    // Bei den Eltern oder im Wohnheim zählt nur der eigene Bedarf der Person (keine Einsatzgemeinschaft mit den Eltern; § 43 Abs. 5 SGB XII:
-    // Einkommen der Eltern erst ab 100.000 € im Jahr). Regelbedarfsstufe 1 bei den Eltern, Stufe 2 im Wohnheim.
+    // Bei den Eltern oder im Wohnheim zählt nur der eigene Bedarf der Person (keine Einsatzgemeinschaft mit den Eltern; § 43 Abs. 1, 5, § 94 Abs. 1a SGB XII:
+    // Einkommen der Eltern erst über 100.000 € im Jahr; Paragraf am 24.11.2026 berichtigt, vorher nur „§ 43 Abs. 5“). Regelbedarfsstufe 1 bei den Eltern, Stufe 2 im Wohnheim.
     const regelP = h.wohnform === 'heim' ? R.regelbedarf.partner : (h.adults === 2 && !eigen ? R.regelbedarf.partner : R.regelbedarf.alleinstehend);
     // Mehrbedarf Merkzeichen G (§ 30 Abs. 1 SGB XII): 17 % des Regelsatzes der Person
     const mehrG = h.mzG ? R.mehr.g * regelP : 0;
