@@ -13,8 +13,6 @@ const Rules = (function () {
     // RBSFV 2026, Anlage zu § 28 SGB XII: Stufe 1 563, Stufe 2 506, Stufe 3 451, Stufe 4 (14-17) 471, Stufe 5 (6-13) 390, Stufe 6 (0-5) 357
     regelbedarf: { alleinstehend: 563, partner: 506, kind0: 357, kind: 390, kind14: 471, jungErwachsener: 451 },
     kindergeld: 259,
-    // Sofortzuschlag je Kind mit Regelbedarfsstufe 3–6 (§ 72 Abs. 1 SGB II i. d. F. ab 1.7.2026, https://www.buzer.de/72_SGB_II.htm, abgerufen 24.11.2026)
-    sofortzuschlag: 25,
     // Wohnkostenanteil der Eltern (§ 6a Abs. 5 BKGG): Tabelle der Familienkasse nach dem Existenzminimumbericht
     // (DA-KiZ C.3.1.2, Stand 20.02.2026), Index = Zahl der Kinder 1-10; ab 10 Kindern gilt der Wert für 10
     kiz: { vermZwei: 55000, vermDrei: 70000, vermJeWeiteres: 15000, max: 297, minAlleinerziehend: 600, minPaar: 900, anrechnung: 0.45, ampelGruenAb: 60,
