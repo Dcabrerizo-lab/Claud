@@ -18,6 +18,7 @@ ck('Paar 70/55 + EM: Hinweis Regelaltersgrenze dabei', hat(m.emrente, 'emrente.a
 // teilweise erwerbsgemindert, Wartezeit offen: wie bisher „vielleicht“ mit Wartezeit-Hinweis
 m = run({ adults: 2, gebJahr: 1956, emStd: '3bis6', netto: 1400 });
 ck('Paar 70/55 + teilweise EM: vielleicht mit Wartezeit', m.emrente.level === 'vielleicht' && hat(m.emrente, 'emrente.warte'), m.emrente);
+ck('Paar 70/55 + teilweise EM: Hinweis Regelaltersgrenze auch bei „vielleicht“', hat(m.emrente, 'emrente.alter'), m.emrente.tx);
 // Paar über der Grenze ohne Angabe zur Erwerbsminderung: nein (wie bisher, Grund „keine Erwerbsminderung angegeben“)
 m = run({ adults: 2, gebJahr: 1950, netto: 1400 });
 ck('Paar beide über der Grenze, keine EM: emrente nein', m.emrente.level === 'nein', m.emrente);
@@ -43,6 +44,19 @@ ck('Einzelperson über der Grenze GdB 50: srente nein', m.srente.level === 'nein
 // Paar ohne Behinderung: srente nein (keine Behinderung)
 m = run({ adults: 2, gebJahr: 1956, netto: 1400 });
 ck('Paar ohne GdB: srente nein', m.srente.level === 'nein', m.srente);
+
+// 4a) Reihenfolge der Hinweise: erst die Voraussetzung, dann die Altersgrenze (unter „Möglich“ soll nicht zuerst eine Absage stehen)
+m = run({ adults: 2, gebJahr: 1956, arbeitSit: 'arbeitslos', netto: 1400 });
+ck('Paar arbeitslos: alg1 zuerst Voraussetzung, dann Altersgrenze', m.alg1.tx[0][0] === 'alg1.zeit' && m.alg1.tx[1][0] === 'alg1.alter', m.alg1.tx);
+m = run({ adults: 2, gebJahr: 1956, gdb: '50', netto: 1400 });
+ck('Paar GdB 50: srente zuerst Voraussetzung, dann Altersgrenze', m.srente.tx[0][0] === 'srente.allg' && m.srente.tx[1][0] === 'srente.alter', m.srente.tx);
+// 4b) Budget für Arbeit (§ 61, § 58 Abs. 1 Satz 3 SGB IX): Paar, jüngere Person kann in der Werkstatt arbeiten → nicht „nein“ wegen Alters
+m = run({ adults: 2, gebJahr: 1956, wfbm: true, netto: 1400 });
+ck('[alter-paar] Paar 70/55 + Werkstatt: Budget für Arbeit vielleicht', m.arbeit.level === 'vielleicht', m.arbeit);
+m = run({ adults: 1, gebJahr: 1950, wfbm: true, netto: 900 });
+ck('Einzelperson über der Grenze + Werkstatt: Budget für Arbeit nein', m.arbeit.level === 'nein', m.arbeit);
+m = run({ adults: 1, gebJahr: 1980, wfbm: true, netto: 900 });
+ck('Einzelperson 46 + Werkstatt: Budget für Arbeit vielleicht (unverändert)', m.arbeit.level === 'vielleicht', m.arbeit);
 
 // 5) Grundsicherung im Alter und bei Erwerbsminderung: Alter ODER Erwerbsminderung genügt (kein Muster „nur älteste Person“)
 m = run({ adults: 2, gebJahr: 1975, emStd: 'unter3', netto: 300 });

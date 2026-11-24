@@ -1835,8 +1835,9 @@ const Rules = (function () {
     if (h.alter && !altPaar) return mk(id, 'nein', 'vorausFehlt', [['emrente.alter']]);
     if (h.bezug.emrente) return mk(id, 'na', 'na', [['emrente.na']]);
     if (altPaar) {
+      // Auch bei „vielleicht“ den Hinweis auf die Regelaltersgrenze zeigen: Ist die ältere Person betroffen, gibt es die Rente nicht
       const r = emrenteJung(h, id);
-      return r.level === 'ja' ? mk(id, 'vielleicht', 'vielleicht', r.tx.concat([['emrente.alter']])) : r;
+      return r.level === 'ja' || r.level === 'vielleicht' ? mk(id, 'vielleicht', 'vielleicht', r.tx.concat([['emrente.alter']])) : r;
     }
     return emrenteJung(h, id);
   }
@@ -1874,7 +1875,7 @@ const Rules = (function () {
     // Bei einem Paar gilt das Geburtsjahr der ältesten Person; die jüngere kann arbeitslos sein und die Grenze noch nicht erreicht haben
     // (§ 136 Abs. 2 SGB III: kein Anspruch erst ab der Regelaltersgrenze) – dann nicht verneinen.
     if (h.alter && h.adults !== 2) return mk(id, 'nein', 'vorausFehlt', [['alg1.alter']]);
-    if (h.alter) return mk(id, 'vielleicht', 'vielleicht', [['alg1.alter'], ['alg1.zeit'], melden]);
+    if (h.alter) return mk(id, 'vielleicht', 'vielleicht', [['alg1.zeit'], ['alg1.alter'], melden]);
     // Selbstständige: Arbeitslosengeld nur mit freiwilliger Arbeitslosenversicherung (§ 28a SGB III)
     if (h.selbst) return mk(id, 'vielleicht', 'vielleicht', [['alg1.selbst'], melden]);
     if (!h.algZeit) return mk(id, 'vielleicht', 'vielleicht', [['alg1.zeit'], melden]);
@@ -2112,7 +2113,7 @@ const Rules = (function () {
     // Paar: Das Geburtsjahr gilt der ältesten Person; die jüngere kann noch unter der Regelaltersgrenze sein (Geburtsjahr unbekannt)
     if (h.alter && h.adults !== 2) return mk(id, 'nein', 'vorausFehlt', [['srente.alter']]);
     if (!(gdbNum(h) >= 50) && !h.gdbAntrag) return keinBeh(id);
-    if (h.alter) return mk(id, 'vielleicht', 'vielleicht', [['srente.alter'], ['srente.allg', { abschlag: R.srente.abschlag }]]);
+    if (h.alter) return mk(id, 'vielleicht', 'vielleicht', [['srente.allg', { abschlag: R.srente.abschlag }], ['srente.alter']]);
     const j = h.gebJahr;
     if (!(j >= 1900 && j <= 2010)) return mk(id, 'vielleicht', 'vielleicht', [['srente.allg', { abschlag: R.srente.abschlag }]]);
     const frei = j <= 1951 ? R.srente.bis1951 : j >= 1964 ? R.srente.frei : R.srente.frei - 2 + R.rag[j] / 12;
@@ -2259,7 +2260,9 @@ const Rules = (function () {
   // Budget für Arbeit (§ 61 SGB IX)
   function budgetArbeit(h) {
     const id = 'arbeit';
-    if (!h.wfbm || h.alter) return mk(id, 'nein', 'vorausFehlt', [['arbeit.keine']]);
+    // Werkstatt-Leistungen in der Regel längstens bis zur Regelaltersgrenze (§ 58 Abs. 1 Satz 3 SGB IX, Abruf 24.11.2026). Paar: Das
+    // Geburtsjahr gilt der ältesten Person; die jüngere kann in der Werkstatt arbeiten -> nicht wegen des Alters verneinen.
+    if (!h.wfbm || (h.alter && h.adults !== 2)) return mk(id, 'nein', 'vorausFehlt', [['arbeit.keine']]);
     return mk(id, 'vielleicht', 'vielleicht', [['arbeit.ja', { prozent: R.beh.budgetProzent }]]);
   }
 
