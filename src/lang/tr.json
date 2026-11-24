@@ -1682,6 +1682,7 @@
   "t.gsa.kindU18": "Bu Grundsicherung ancak 18 yaşından itibaren vardır. 18 yaşından küçük bir çocuk, aile için verilen yardımlarda hesaba katılır.",
   "t.wohngeld.kindGsa": "Sozialamt'tan Grundsicherung'u yalnızca yetişkin çocuğun alıyorsa, Wohngeld'den yalnızca çocuk hariç tutulur. Diğerleri için Wohngeld mümkündür, çocuk olmadan hesaplanır. Bu yüzden tutar vermiyoruz.",
   "t.kiz.kindGsa": "Atölyedeki 18 yaş üstü çocuğun için Kinderzuschlag yoktur. Ama çocuk hanede sayılır. Bu yüzden tutar vermiyoruz.",
+  "t.kiz.kindWerkstatt": "Atölyede (Werkstatt) çalışan 18 yaş ve üstü çocuk için Kinderzuschlag yoktur. Çocuk Sozialamt'tan kendi Grundsicherung'unu alabilir. Evde 25 yaşından küçük başka bir çocuğun varsa, o çocuk için Kinderzuschlag mümkündür.",
   "t.rundfunk.kindGsa": "Çocuğunun muafiyeti senin için geçerli değildir.",
   "t.ggeld.emWer": "Atölyede kendin çalışıyorsan, genellikle Sozialamt sorumludur. Yetişkin çocuğun ise, senin için Jobcenter sorumlu olabilir. Bu yüzden tutar vermiyoruz."
 }

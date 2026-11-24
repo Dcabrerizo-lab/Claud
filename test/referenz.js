@@ -330,7 +330,8 @@ function kinderzuschlag(h, ohneKindPruefung) {
   // Auch ohne laufenden Bezug: für ein Kind ab 18 in der Werkstatt (Kind ab 18 bis 24, nur das Kind voll erwerbsgemindert) gibt es keinen
   // Kinderzuschlag, es bleibt in der Bedarfsgemeinschaft (DA-KiZ 20.02.2026 B.2 Abs. 2 Satz 5 bis 8): einziges Kind „nein“, sonst höchstens „möglich“
   const ohneKiz = !ohneKindPruefung && kindNurEMRef(h) && (b.sozialamt || (h.e.bhPerson === 'erwVor25' && h.jung > 0));
-  if (ohneKiz && h.kids === 1) return { level: 'nein' };
+  // Unabhängige Prüfung 24.11.2026: nur wenn das einzige Kind das gezählte Kind von 18 bis 24 ist und kein Kinderzuschlag läuft
+  if (ohneKiz && h.kids === 1 && h.jung === 1 && !b.kiz) return { level: 'nein' };
   if (ohneKiz) { const r = kinderzuschlag(b.sozialamt ? haushalt({ ...h.e, bezug: { ...h.e.bezug, sozialamt: false } }) : h, true); return { level: r.level === 'ja' ? 'vielleicht' : r.level }; }
   if (b.grundsicherungsgeld || b.sozialamt) return { level: 'nein' };
   if (b.kiz) return { level: 'na' };

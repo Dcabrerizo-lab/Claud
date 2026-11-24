@@ -124,7 +124,16 @@ ck('gsa.eltern: „mehr als 100.000 €“ und „kann“', /mehr als 100\.000/.
 //     ohne Betrag (die Rechnung kann das Kind nicht herausnehmen). Bis 24.11.2026: Betrag für alle Kinder.
 const kizBasis = { adults: 1, young: 1, bhPerson: 'erwVor25', wfbm: true, netto: 1700, brutto: 2300, art1: 'lohn', miete: 900, vermoegen: 0 };
 m = run(kizBasis);
-ck('[kind-werkstatt] Einziges Kind ab 18 in der Werkstatt (ohne Bezug): Kinderzuschlag „nein“', m.kiz.level === 'nein' && hat(m.kiz, 'kiz.ausschluss'), m.kiz);
+ck('[kind-werkstatt] Einziges Kind ab 18 in der Werkstatt (ohne Bezug): Kinderzuschlag „nein“', m.kiz.level === 'nein' && hat(m.kiz, 'kiz.kindWerkstatt') && !hat(m.kiz, 'kiz.ausschluss'), m.kiz);
+// Unabhängige Prüfung 24.11.2026: keine unnötige Absage
+// a) Das Kind in der Werkstatt ist nicht bei den Kindern von 18 bis 24 gezählt (z. B. über 25), ein Kind unter 18 lebt im Haushalt: kein „nein“
+m = run({ ...kizBasis, young: 0, kids: 1, kids14: 1, kidsAlter: true, bezug: { sozialamt: true } });
+ck('[kind-werkstatt] Kind mit eigener Grundsicherung nicht gezählt + 1 Kind unter 18: Kinderzuschlag nicht „nein“ wegen Ausschluss', m.kiz.hl !== 'ausschluss', m.kiz);
+// b) Kinderzuschlag läuft schon: weiter „bekommst du schon“ (DA-KiZ B.2 Abs. 2 Satz 9 bis 11), kein „nein“
+m = run({ ...kizBasis, bezug: { kiz: true } });
+ck('Einziges Kind ab 18 in der Werkstatt, Kinderzuschlag läuft: nicht „nein“', m.kiz.level !== 'nein', m.kiz);
+// c) Der Text der Absage sagt nichts von „dort schon mit abgedeckt“ und nennt die eigene Grundsicherung als „kann“
+ck('t.kiz.kindWerkstatt: „keinen Kinderzuschlag“, „kann“, „möglich“', /keinen Kinderzuschlag/.test(de['t.kiz.kindWerkstatt']) && /kann eigene Grundsicherung/.test(de['t.kiz.kindWerkstatt']) && /möglich/.test(de['t.kiz.kindWerkstatt']), de['t.kiz.kindWerkstatt']);
 m = run({ ...kizBasis, kids: 2, kids14: 1, kidsAlter: true });
 ck('Kind ab 18 in der Werkstatt + 2 weitere Kinder: Kinderzuschlag höchstens „möglich“', m.kiz.level !== 'ja', m.kiz);
 ck('Kind ab 18 in der Werkstatt + weitere Kinder: kein Betrag', !m.kiz.tx.some((a) => a[0].indexOf('schaetz.') === 0) && typeof m.kiz.est !== 'number', m.kiz);

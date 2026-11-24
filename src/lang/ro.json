@@ -1682,6 +1682,7 @@
   "t.gsa.kindU18": "Această Grundsicherung există abia de la 18 ani. Un copil sub 18 ani este socotit la ajutoarele pentru familie.",
   "t.wohngeld.kindGsa": "Dacă doar copilul tău adult primește Grundsicherung de la Sozialamt, doar copilul este exclus de la Wohngeld. Pentru ceilalți, Wohngeld este posibil, calculat fără copil. De aceea nu dăm o sumă.",
   "t.kiz.kindGsa": "Pentru copilul tău de peste 18 ani din atelier nu există Kinderzuschlag. Dar copilul se socotește în gospodărie. De aceea nu dăm o sumă.",
+  "t.kiz.kindWerkstatt": "Pentru un copil de la 18 ani în sus din atelier (Werkstatt) nu există Kinderzuschlag. Copilul poate primi propria Grundsicherung de la Sozialamt. Dacă mai ai în casă un alt copil sub 25 de ani, Kinderzuschlag este posibil pentru acel copil.",
   "t.rundfunk.kindGsa": "Scutirea copilului tău nu se aplică și ție.",
   "t.ggeld.emWer": "Dacă lucrezi tu însuți în atelier, de obicei răspunde Sozialamt. Dacă este copilul tău adult, pentru tine poate răspunde Jobcenter. De aceea nu dăm o sumă."
 }

@@ -1179,7 +1179,8 @@ const Rules = (function () {
     // Ebenso ohne laufenden Bezug: Für ein Kind ab 18 in der Werkstatt (bzw. voll erwerbsgemindert, nur das Kind) gibt es keinen Kinderzuschlag,
     // es bleibt aber in der Bedarfsgemeinschaft (DA-KiZ B.2 Abs. 2 Satz 5 bis 8). Die Rechnung kann es nicht herausnehmen: höchstens „möglich“
     // ohne Betrag; ist es das einzige Kind: „nein“. Bis 24.11.2026 rechnete die App ohne Bezug mit allen Kindern und Betrag.
-    if (kindOhneKiz(h) && h.children === 1) return mk('kiz', 'nein', 'ausschluss', [['kiz.ausschluss']]);
+    // Prüfung 24.11.2026: „nein“ nur, wenn das einzige Kind das gezählte Kind von 18 bis 24 ist und kein Kinderzuschlag läuft (Satz 9 bis 11).
+    if (kindOhneKiz(h) && h.children === 1 && h.young === 1 && !h.bezug.kiz) return mk('kiz', 'nein', 'ausschluss', [[sozialamtKind(h) ? 'kiz.ausschluss' : 'kiz.kindWerkstatt']]);
     const r = kinderzuschlag0(h);
     return kindOhneKiz(h) ? ohneKindBetrag(r, 'kiz.kindGsa') : r;
   }
