@@ -410,7 +410,7 @@
  {
   "id": "GW-AZ-01",
   "pruefer": "grundsicherung-wohnen",
-  "beschreibung": "Studium, 25 J., allein: kein Grundsicherungsgeld (§ 7 Abs. 5), kein Wohngeld (§ 20 Abs. 2 WoGG)",
+  "beschreibung": "Studium, 25 J., allein: kein Grundsicherungsgeld (§ 7 Abs. 5), kein Wohngeld (§ 20 Abs. 2 WoGG) – korrigiert 25.11.2026: Schule/Studium nicht getrennt, Schüler mit Schüler-BAföG auch mit eigener Wohnung nicht ausgeschlossen (§ 7 Abs. 6 Nr. 2 SGB II) -> „möglich“ ohne Betrag (Gegenprüfung Befund 3)",
   "quelle": "§ 7 Abs. 5 SGB II; § 20 Abs. 2 WoGG; § 4 Abs. 1 Nr. 5 RBStV",
   "h": {
    "adults": 1,
@@ -430,7 +430,8 @@
   },
   "erwartet": {
    "ggeld": {
-    "status": "nein"
+    "status": "vielleicht",
+    "ohneBetrag": true
    },
    "wohngeld": {
     "status": "nein"
@@ -446,7 +447,7 @@
  {
   "id": "GW-AZ-02",
   "pruefer": "grundsicherung-wohnen",
-  "beschreibung": "Studium mit 50 J. (über BAföG-Altersgrenze): Ausschluss § 7 Abs. 5 SGB II bleibt (dem Grunde nach förderfähig), Wohngeld möglich",
+  "beschreibung": "Studium mit 50 J. (über BAföG-Altersgrenze): Ausschluss § 7 Abs. 5 SGB II bleibt (dem Grunde nach förderfähig), Wohngeld möglich – korrigiert 25.11.2026: Schule/Studium nicht getrennt, Schüler mit Schüler-BAföG auch mit eigener Wohnung nicht ausgeschlossen (§ 7 Abs. 6 Nr. 2 SGB II) -> „möglich“ ohne Betrag (Gegenprüfung Befund 3)",
   "quelle": "§ 7 Abs. 5 SGB II ('dem Grunde nach förderungsfähig', unabhängig von persönlichen Voraussetzungen); Merkblatt Thomé 2024",
   "h": {
    "adults": 1,
@@ -466,7 +467,8 @@
   },
   "erwartet": {
    "ggeld": {
-    "status": "nein"
+    "status": "vielleicht",
+    "ohneBetrag": true
    },
    "wohngeld": {
     "status": "vielleicht"
@@ -1722,7 +1724,7 @@
  {
   "id": "FA-GG-09",
   "pruefer": "fable-familie-grundsicherung",
-  "beschreibung": "Student, 23, allein",
+  "beschreibung": "Student, 23, allein – korrigiert 25.11.2026: Schule/Studium nicht getrennt, Schüler mit Schüler-BAföG auch mit eigener Wohnung nicht ausgeschlossen (§ 7 Abs. 6 Nr. 2 SGB II) -> „möglich“ ohne Betrag (Gegenprüfung Befund 3)",
   "quelle": "§ 7 Abs. 5 SGB II, § 20 Abs. 2 WoGG, § 4 Abs. 1 Nr. 5 RBeitrStV",
   "h": {
    "adults": 1,
@@ -1745,7 +1747,8 @@
   },
   "erwartet": {
    "ggeld": {
-    "status": "nein"
+    "status": "vielleicht",
+    "ohneBetrag": true
    },
    "wohngeld": {
     "status": "nein"
@@ -1764,7 +1767,7 @@
  {
   "id": "FA-GG-10",
   "pruefer": "fable-familie-grundsicherung",
-  "beschreibung": "Student, 47, allein (BAföG-Altersgrenze überschritten)",
+  "beschreibung": "Student, 47, allein (BAföG-Altersgrenze überschritten) – korrigiert 25.11.2026: Schule/Studium nicht getrennt, Schüler mit Schüler-BAföG auch mit eigener Wohnung nicht ausgeschlossen (§ 7 Abs. 6 Nr. 2 SGB II) -> „möglich“ ohne Betrag (Gegenprüfung Befund 3)",
   "quelle": "§ 7 Abs. 5 und Abs. 6 Nr. 3 SGB II (Ausschluss knüpft an die Ausbildung, nicht an persönliche Gründe; BSG 19.08.2010, B 14 AS 24/09 R); WoGVwV Nr. 20.21",
   "h": {
    "adults": 1,
@@ -1787,10 +1790,8 @@
   },
   "erwartet": {
    "ggeld": {
-    "status": "nein",
-    "auchOk": [
-     "vielleicht"
-    ]
+    "status": "vielleicht",
+    "ohneBetrag": true
    },
    "bafoeg": {
     "status": "vielleicht",
@@ -4399,6 +4400,168 @@
   "erwartet": {
    "asylblg": {
     "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "GP-03",
+  "pruefer": "gegenpruefung-pr194",
+  "beschreibung": "Schule oder Studium, 19, allein, eigene Wohnung: höchstens „möglich“ ohne Betrag",
+  "quelle": "§ 7 Abs. 5, Abs. 6 Nr. 2 SGB II; § 12 BAföG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "ausbildung": "ich",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 400,
+   "mietstufe": "3",
+   "gebJahr": 2007,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht",
+    "ohneBetrag": true
+   },
+   "rundfunk": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GP-06",
+  "pruefer": "gegenpruefung-pr194",
+  "beschreibung": "Grundsicherung im Alter, allein mit Kind 10, Unterhalt 700 (deckt den Kindbedarf): Kindergeld-Rest ohne 30 € Pauschale (SGB XII) (563 + 390 + 500 + 68 Mehrbedarf − 640 Unterhalt − 259 Kindergeld ≈ 620; mit Pauschale wären es 650)",
+  "quelle": "§ 82 Abs. 2 Satz 1 Nr. 3 SGB XII",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "unterhalt": 700,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1950,
+   "vermoegen": 0,
+   "ohneWege": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 620,
+    "toleranz": 15
+   }
+  }
+ },
+ {
+  "id": "GP-07a",
+  "pruefer": "gegenpruefung-pr194",
+  "beschreibung": "Asylverfahren, allein, kein Einkommen, Erspartes 900: nur „möglich“",
+  "quelle": "§ 7 Abs. 1, 5 AsylbLG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "asyl",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 0,
+   "gebJahr": 1990,
+   "vermoegen": 900
+  },
+  "erwartet": {
+   "asylblg": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GP-07b",
+  "pruefer": "gegenpruefung-pr194",
+  "beschreibung": "Asylverfahren, Familie, Erspartes 3.000: nur „möglich“",
+  "quelle": "§ 7 Abs. 1, 5 AsylbLG",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "asyl",
+   "art1": "ohne",
+   "art2": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 600,
+   "gebJahr": 1990,
+   "vermoegen": 3000
+  },
+  "erwartet": {
+   "asylblg": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GP-12a",
+  "pruefer": "gegenpruefung-pr194",
+  "beschreibung": "Ohne Altersangabe, allein, Vermögen 11.000: „möglich“ (kann 40 oder 50 sein)",
+  "quelle": "§ 12 Abs. 2 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 11000
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GP-12b",
+  "pruefer": "gegenpruefung-pr194",
+  "beschreibung": "Ohne Altersangabe, allein, Vermögen 20.001: „eher nicht“",
+  "quelle": "§ 12 Abs. 2 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 20001
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
    }
   }
  }

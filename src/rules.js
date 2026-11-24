@@ -952,14 +952,16 @@ const Rules = (function () {
   // Abruf 24.11.2026), davon geht die Versicherungspauschale von 30 € ab, wenn sie bei dieser Person noch nicht abgezogen ist
   // (§ 6 Abs. 1 Nr. 1 Grundsicherungsgeld-Verordnung). Das Kindergeld zählt der Aufrufer voll; zurück kommt der Unterhaltsteil.
   // Bis 24.11.2026 zählte der Unterhalt nur bis zum Bedarf nach Abzug des Kindergelds: Lücke bis 259 € je Kind zu hoch.
-  function unterhaltAnrechenbar(h) {
+  // ohnePauschale: Grundsicherung im Alter (SGB XII) kennt keine Pauschale; abgezogen werden nur tatsächliche Beiträge (§ 82 Abs. 2 Satz 1 Nr. 3
+  // SGB XII, https://www.buzer.de/82_SGB_XII.htm, Abruf 25.11.2026; Gegenprüfung PR #194, Befund 6)
+  function unterhaltAnrechenbar(h, ohnePauschale) {
     const eink = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - h.minijob);
     if (!eink) return 0;
     const kinderBedarf = Math.max(0, (h.regel - h.regelElt) + h.miete * h.children / h.persons);
     const anr = Math.min(eink, kinderBedarf);
     const kgUeber = Math.min(h.children * R.kindergeld, Math.max(0, h.children * R.kindergeld - (kinderBedarf - anr)));
     const pauschaleSchon = (h.vPausch || 0) > 0 || (h.erwerb && h.brutto - (h.brutto2 || 0) >= R.versPauschale);
-    return Math.max(0, anr - (kgUeber > 0 && !pauschaleSchon ? Math.min(kgUeber, R.versPauschale) : 0));
+    return Math.max(0, anr - (kgUeber > 0 && !pauschaleSchon && !ohnePauschale ? Math.min(kgUeber, R.versPauschale) : 0));
   }
   // Alte Rechnung (Unterhalt nur bis zum Bedarf nach Kindergeld): bei mehreren Kindern ist offen, wessen Unterhalt es ist. Der Überschuss
   // eines Kindes zählt nicht für ein Geschwister. Für „eher nicht“ rechnet SoLo deshalb auch mit dieser kleineren Anrechnung.
@@ -1489,11 +1491,16 @@ const Rules = (function () {
     const ausbAus = h.ausbildung === 'ich' && !h.babBetrieb;
     if (ausbAus && h.wohnform !== 'eltern') {
       if (h.adults === 2 || h.children > 0) return mk(id, 'vielleicht', 'vielleicht', [['ggeld.ausbildungFamilie'], ['ggeld.ausbildung']]);
-      return mk(id, 'nein', 'ausschluss', [['ggeld.ausbildung']]);
+      // Gegenprüfung PR #194 (Befund 3): Schülerinnen und Schüler mit Bedarf nach § 12 BAföG sind auch mit eigener Wohnung nicht
+      // ausgeschlossen, wenn sie BAföG bekommen oder es nur wegen des Einkommens nicht bekommen (§ 7 Abs. 6 Nr. 2 SGB II, buzer.de/7_SGB_II.htm,
+      // Abruf 25.11.2026). Die App trennt Schule und Studium nicht: allein höchstens „möglich“, ohne Betrag (Schüler-BAföG zählt als Einkommen).
+      return mk(id, 'vielleicht', 'vielleicht', [['ggeld.ausbildung']]);
     }
     // § 12 Abs. 2 SGB II: je Person der Bedarfsgemeinschaft ein Freibetrag nach Alter; Kinder und junge Erwachsene bis 30: 5.000 €
     // Grenzjahr (h.gruppeAlt): „eher nicht“ erst über dem höheren der beiden möglichen Freibeträge
-    const schonVon = (g) => R.sgb2.schon[g] * h.adults + R.sgb2.schon['<30'] * h.children;
+    // Ohne Altersangabe kann die Person auch 50 oder älter sein: „eher nicht“ erst über 20.000 € je Erwachsenem (Gegenprüfung PR #194, Befund 12;
+    // § 12 Abs. 2 SGB II, buzer.de/12_SGB_II.htm, Abruf 25.11.2026); darunter über der kleinsten Grenze „möglich“ (vermGrenzen ggeldMin)
+    const schonVon = (g) => R.sgb2.schon[g === '' ? '50+' : g] * h.adults + R.sgb2.schon['<30'] * h.children;
     const schon = Math.max(schonVon(h.gruppe), h.gruppeAlt ? schonVon(h.gruppeAlt) : 0);
     if (h.vermoegen > schon) return mk(id, 'nein', 'vermHoch', [['ggeld.verm', { schon: eur(schon) }]]);
     // Paar: Der Freibetrag gilt je Person nach ihrem eigenen Alter (§ 12 Abs. 2 SGB II, https://www.gesetze-im-internet.de/sgb_2/__12.html,
@@ -1817,7 +1824,7 @@ const Rules = (function () {
     const maG = mehrAllg(h, eigen, regelP);
     bedarf += maG.fest;
     const offen = kduOffen + (h.wfbmEssen ? R.offen.essen : 0) + teilOffen + maG.offen;
-    const eink = gsaEinkommen(h) + (eigen ? 0 : h.children * R.kindergeld + unterhaltAnrechenbar(h));
+    const eink = gsaEinkommen(h) + (eigen ? 0 : h.children * R.kindergeld + unterhaltAnrechenbar(h, true));
     const luecke = bedarf - eink;
     const hatRente = (h.pers || []).some((x) => x[0] === 'rente' && x[1] > 0);
     const extra = (h.alterGrenz ? [['gsa.grenz']] : []).concat(h.wfbmEssen ? [['gsa.essen']] : [], kduOffen ? [[h.wohnform === 'heim' ? 'gsa.heim' : 'gsa.eltern']] : [],
@@ -2438,14 +2445,15 @@ const Rules = (function () {
     // § 7 AsylbLG (https://www.buzer.de/7_AsylbLG.htm, Abruf 24.11.2026; Befunde B-15 / Fable 3): Einkommen und Vermögen sind vorher
     // aufzubrauchen (Abs. 1). Frei: 25 % vom Lohn, höchstens 50 % der Bedarfsstufe (Abs. 3), 200 € Vermögen je Person (Abs. 5).
     // Grob gerechnet mit den Regelbedarfen nach dem SGB II als obere Grenze (Analogleistungen nach § 2 AsylbLG) plus Miete.
-    // Vermögen über dem Freibetrag von mehr als einem Monatsbedarf oder Einkommen mehr als 100 € über diesem Bedarf: „eher nicht“.
+    // Einkommen mehr als 100 € über diesem Bedarf: „eher nicht“. Vermögen über dem Freibetrag: „möglich“ (nach dem Verbrauch kann der Anspruch
+    // entstehen; eine feste Schwelle nennt das Gesetz nicht – Gegenprüfung PR #194, Befund 7).
     const bedarf = h.regel + h.miete;
     const lohnNetto = h.erwerb || h.erwerb2 ? (h.pers || []).reduce((a, x) => a + (x[0] === 'lohn' ? (h.liste ? x[2] : (h.brutto > 0 ? h.netto * x[1] / h.brutto : 0)) : 0), 0) : 0;
     const frei = Math.min(R.asylblg.lohnFrei * lohnNetto, 0.5 * R.regelbedarf.alleinstehend * h.adults);
     const luecke = bedarf - Math.max(0, h.netto - frei);
     const vermUeber = h.vermoegen - R.asylblg.vermFrei * h.persons;
     const tx = [['asyl.einkommen'], ['asyl.ja'], ['asyl.analog']];
-    if (vermUeber > bedarf || luecke < -R.grundsicherung.knappPuffer) return mk(id, 'nein', vermUeber > bedarf ? 'vermHoch' : 'einkoHoch', tx);
+    if (luecke < -R.grundsicherung.knappPuffer) return mk(id, 'nein', 'einkoHoch', tx);
     // Die Grundleistungen (§ 3a AsylbLG) liegen unter den Regelbedarfen: „wahrscheinlich“ nur ohne eigenes Einkommen und Vermögen
     if (vermUeber > 0 || h.netto > 0 || luecke < R.grundsicherung.sicherAb) return mk(id, 'vielleicht', 'vielleicht', tx);
     return mk(id, 'ja', 'ja', [['asyl.ja'], ['asyl.analog']]);
@@ -2652,6 +2660,9 @@ const Rules = (function () {
     if (h.asylBezug) return mk(id, 'ja', 'ja', [['rundfunk.asyl']]);
     if (h.asyl) return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.asyl']]);
     if (gg.level === 'ja' || gsa.level === 'ja') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.folgt']]);
+    // In Ausbildung allein: Grundsicherungsgeld nur „möglich“ (Schüler-BAföG, § 7 Abs. 6 Nr. 2 SGB II); die Befreiung folgt dann aus dem
+    // BAföG (§ 4 Abs. 1 Nr. 5 Buchst. a RBeitrStV), nicht aus dem Härtefall
+    if (gg.level === 'vielleicht' && gg.tx[0] && gg.tx[0][0] === 'ggeld.ausbildung' && w.baf && (w.baf.level === 'ja' || w.baf.level === 'vielleicht')) return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.weitere']].concat(h.mzRF ? [['rundfunk.rf']] : []));
     if (gg.level === 'vielleicht' || gsa.level === 'vielleicht') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.haerte']]);
     // § 4 Abs. 1 RBeitrStV, weitere Befreiungsgründe: Hilfe zur Pflege (SGB XII), Blindenhilfe (§ 72 SGB XII), BAföG nicht bei den Eltern
     const okW = (r) => r && (r.level === 'ja' || r.level === 'vielleicht');
@@ -3071,7 +3082,7 @@ const Rules = (function () {
     const erste = h.gruppe ? Math.min(R.sgb2.schon[h.gruppe], h.gruppeAlt ? R.sgb2.schon[h.gruppeAlt] : Infinity) : R.sgb2.schon['<30'];
     const min = unsicher ? erste + R.sgb2.schon['<30'] * (h.adults - 1 + h.children) : 0;
     const sv = (g) => R.sgb2.schon[g] * h.adults + R.sgb2.schon['<30'] * h.children;
-    return { ggeld: Math.max(sv(h.gruppe), h.gruppeAlt ? sv(h.gruppeAlt) : 0), ggeldMin: min,
+    return { ggeld: Math.max(sv(h.gruppe === '' ? '50+' : h.gruppe), h.gruppeAlt ? sv(h.gruppeAlt) : 0), ggeldMin: min,
       gsa: h.wohnform !== '' ? R.grundsicherung.schonAllein : R.grundsicherung.schonAllein * h.adults + R.schonUnterhalten * h.children,
       wohngeld: R.wohngeld.vermoegenErste + R.wohngeld.vermoegenJeWeitere * (h.persons - 1),
       kiz: h.persons <= 2 ? R.kiz.vermZwei : R.kiz.vermDrei + R.kiz.vermJeWeiteres * (h.persons - 3) };

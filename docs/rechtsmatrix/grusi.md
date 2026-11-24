@@ -1,7 +1,7 @@
 # Rechtsmatrix Grundsicherung, Wohnen, Ausbildung, Asyl (Stand 24.11.2026)
 
 Bereinigte Matrix aus der Vollprüfung vom 24.11.2026 (Prüfung „grundsicherung-wohnen“ B-01–B-15 und Fable-Blindprüfung, Befunde zu diesem Gebiet).
-Grundlage für künftige Aktualitätsprüfungen. Feste Fälle: `test/rechtsmatrix/grusi.json`, Läufer: `test/test-rechtsmatrix-grusi.js` (138 Fälle).
+Grundlage für künftige Aktualitätsprüfungen. Feste Fälle: `test/rechtsmatrix/grusi.json`, Läufer: `test/test-rechtsmatrix-grusi.js` (144 Fälle, Stand 25.11.2026 nach der Gegenprüfung von PR #194).
 Abrufdatum aller Quellen: 24.11.2026, wenn nicht anders genannt. gesetze-im-internet.de war am 24.11.2026 aus der Arbeitsumgebung zeitweise nicht erreichbar; dann buzer.de (gleicher Wortlaut, mit Fassungsangabe) oder gesetze-bayern.de.
 
 ## Rechtsgrundlagen
@@ -24,7 +24,7 @@ Abrufdatum aller Quellen: 24.11.2026, wenn nicht anders genannt. gesetze-im-inte
 | Schonvermögen SGB II je Person | 5.000 € (unter 30), 10.000 € (ab 30), 12.500 € (ab 40), 20.000 € (ab 50); höherer Betrag ab dem Monat des Geburtstags | § 12 Abs. 2 Satz 1, 2 SGB II |
 | Freibetrag Arbeit | 100 € + 20 % (100–520) + 30 % (520–1.000) + 10 % (1.000–1.200 bzw. 1.500 mit Kind) | § 11b Abs. 2, 3 SGB II |
 | Freibetrag unter 25 in Schule/Studium/Ausbildung/Freiwilligendienst | Minijob-Grenze (603 €, ab 2027 633 €) + 30 % (520–1.000) + 10 % (bis 1.200/1.500); 20-%-Stufe entfällt | § 11b Abs. 2b, Abs. 3 Satz 4 SGB II; § 8 Abs. 1a SGB IV |
-| Versicherungspauschale | 30 € je volljähriger Person (auch auf Kindergeld-Rest beim Elternteil) | § 6 Abs. 1 Nr. 1 GrusiGV |
+| Versicherungspauschale | 30 € je volljähriger Person (auch auf Kindergeld-Rest beim Elternteil), nur SGB II | § 6 Abs. 1 Nr. 1 GrusiGV; nicht im SGB XII (§ 82 Abs. 2) |
 | Unterkunft, Deckel ab 1.7.2026 | höchstens 1,5 × abstrakt angemessene Unterkunftskosten, auch in der Karenzzeit; mit Kindern im Einzelfall mehr | § 22 Abs. 1 Satz 6, 7 SGB II; § 35 Abs. 1 Satz 7, 8 SGB XII |
 | Orientierung angemessene Miete in SoLo | Wohngeld-Höchstbetrag (mit Klimakomponente) × 1,1 + Heizkostenkomponente; Deckel: × 1,1 × 1,5 + Heizkostenkomponente | BSG-Rechtsprechung (ohne schlüssiges Konzept), Anlage 1 WoGG |
 | AsylbLG Freibeträge | 25 % vom Erwerbseinkommen (höchstens 50 % der Bedarfsstufe), 200 € Vermögen je Person | § 7 Abs. 3, 5 AsylbLG (`R.asylblg`) |
@@ -34,7 +34,7 @@ Abrufdatum aller Quellen: 24.11.2026, wenn nicht anders genannt. gesetze-im-inte
 
 | Nr | Konstellation | Soll | Rechtsgrundlage |
 |---|---|---|---|
-| 1 | Studium/Schule, allein, eigene Wohnung, jedes Alter (auch ab 45) | Grundsicherungsgeld „eher nicht“ (Ausschluss dem Grunde nach) | § 7 Abs. 5 SGB II; BSG 19.08.2010, B 14 AS 24/09 R |
+| 1 | Studium/Schule, allein, eigene Wohnung, jedes Alter (auch ab 45) | Grundsicherungsgeld „möglich“ ohne Betrag: Studierende ausgeschlossen (dem Grunde nach, auch ab 45), Schüler mit Schüler-BAföG auch mit eigener Wohnung nicht (§ 12 BAföG); die App trennt Schule und Studium nicht (Gegenprüfung 25.11.2026, Befund 3) | § 7 Abs. 5, Abs. 6 Nr. 2 SGB II; BSG 19.08.2010, B 14 AS 24/09 R |
 | 2 | Studium mit Partner oder Kind | „möglich“ ohne Betrag: Partner/Kind eigener Anspruch, Mehrbedarfe nach § 27 | § 7 Abs. 3, 5, § 27 SGB II |
 | 3 | Studium/Schule bei den Eltern | „möglich“ (nicht ausgeschlossen, wenn BAföG bezogen oder nur wegen Einkommen abgelehnt) | § 7 Abs. 6 Nr. 2 SGB II |
 | 4 | Betriebliche Ausbildung, nicht bei den Eltern | BAföG „eher nicht“, BAB „möglich“, Wohngeld ausgeschlossen, Grundsicherungsgeld höchstens „möglich“ (BAB vorrangig, zählt als Einkommen), Rundfunk „möglich“ | § 2 BAföG; §§ 56, 60 SGB III; § 12a SGB II; § 20 Abs. 2 WoGG; § 4 Abs. 1 Nr. 5 b RBeitrStV |
@@ -46,14 +46,15 @@ Abrufdatum aller Quellen: 24.11.2026, wenn nicht anders genannt. gesetze-im-inte
 | 10 | Bei den Eltern (einfache Version), unter 25 ohne Kind | „möglich“, Stufe 3 (451 €), Eltern-Einkommen zählt | § 7 Abs. 3 Nr. 4, § 9 Abs. 2, § 20 Abs. 2 SGB II |
 | 11 | Bei den Eltern, ab 25 | „möglich“ (Vermutung der Unterstützung) | § 9 Abs. 5 SGB II |
 | 12 | EU-Bürger unter 5 Jahren, früher gearbeitet, jetzt ohne Arbeit | höchstens „möglich“ | § 7 Abs. 1 Satz 2 SGB II; § 2 Abs. 3 FreizügG/EU |
-| 13 | Kein Geburtsjahr, Vermögen 5.000–10.000 € | höchstens „möglich“ | § 12 Abs. 2 SGB II |
+| 13 | Kein Geburtsjahr, Vermögen 5.000–20.000 € je Erwachsenem | höchstens „möglich“; „eher nicht“ erst über 20.000 € (Gegenprüfung 25.11.2026, Befund 12) | § 12 Abs. 2 SGB II |
 | 14 | Geburtsjahr = Jahr des 30./40./50. Geburtstags, Vermögen zwischen den Freibeträgen | höchstens „möglich“ | § 12 Abs. 2 Satz 2 SGB II |
 | 15 | Miete über 1,5 × Orientierungsgrenze | Betrag mit der 1,5-fachen Grenze (allein, Stufe III, Miete 1.500, kein Einkommen: ca. 1.460 €) | § 22 Abs. 1 Satz 6 SGB II, § 35 Abs. 1 Satz 7 SGB XII |
 | 16 | Paar, eine Person im Rentenalter/dauerhaft voll erwerbsgemindert, ohne Kinder | Grundsicherungsgeld „möglich“ (gemischte Bedarfsgemeinschaft; schon auf main mit PR #193) | § 7 Abs. 1, 3, 4 SGB II |
 | 17 | dasselbe, zweite Person mit Lohn oder ALG I, oder Kinder ab 14/volljährig | Grundsicherung im Alter höchstens „möglich“ ohne Betrag | § 43 Abs. 1 SGB XII; § 7 Abs. 2, 3 SGB II |
-| 18 | Volle Erwerbsminderung befristet, bei den Eltern | Text: Hilfe zum Lebensunterhalt oder Sozialgeld, Eltern-Einkommen kann zählen | §§ 27, 39, 41 Abs. 3, 43 Abs. 5 SGB XII |
-| 19 | Gestattung/Duldung ohne Bezug, mit Lohn oder Vermögen | AsylbLG „möglich“; klar gedeckt (mehr als 100 € über Regelbedarf + Miete nach 25 % Freibetrag) oder Vermögen > 200 € je Person + 1 Monatsbedarf: „eher nicht“ | § 7 Abs. 1, 3, 5 AsylbLG |
+| 18 | Volle Erwerbsminderung befristet, bei den Eltern | Text: Hilfe zum Lebensunterhalt oder Grundsicherungsgeld, Eltern-Einkommen kann zählen | §§ 27, 39, 41 Abs. 3, 43 Abs. 5 SGB XII; § 19 Abs. 1 SGB II |
+| 19 | Gestattung/Duldung ohne Bezug, mit Lohn oder Vermögen | AsylbLG „möglich“; „eher nicht“ nur, wenn das Einkommen nach 25 % Freibetrag mehr als 100 € über Regelbedarf + Miete liegt. Vermögen über 200 € je Person: nur „möglich“ (keine gesetzliche Schwelle; Gegenprüfung 25.11.2026, Befund 7) | § 7 Abs. 1, 3, 5 AsylbLG |
 | 20 | WBS Bayern, schwanger | Grenze + 1.300 € | Art. 4 Abs. 1 Satz 4 BayWoBindG |
+| 22 | Grundsicherung im Alter, Kindergeld-Rest beim Elternteil | ohne 30-€-Pauschale (SGB XII zieht nur tatsächliche Beiträge ab; Gegenprüfung 25.11.2026, Befund 6) | § 82 Abs. 2 Satz 1 Nr. 3 SGB XII |
 | 21 | Wohngeld Studium ab 45 allein | „möglich“ (kein § 20 WoGG ohne BAföG-Anspruch dem Grunde nach wegen Alters) | § 20 Abs. 2 WoGG; WoGVwV 20.21 |
 
 ## Offen (nicht in SoLo abgebildet)
@@ -61,3 +62,7 @@ Abrufdatum aller Quellen: 24.11.2026, wenn nicht anders genannt. gesetze-im-inte
 - Eigene Karte „Hilfe zum Lebensunterhalt“ (SGB XII, 3. Kapitel) für vorgezogene Altersrente, befristete volle Erwerbsminderung und Kinder bei Eltern mit Grundsicherung im Alter fehlt (Fable 14). Heute nur Texte.
 - Humanitäre Aufenthaltstitel (§ 23 Abs. 1, § 24, § 25 Abs. 4, 5 AufenthG) laufen als „Aufenthaltstitel“, obwohl teils AsylbLG gilt (Z-01 / Z5). Rechtskreiswechsel Ukraine: Verkündung am 24.11.2026 nicht feststellbar.
 - Geringfügige Tätigkeit von EU-Bürgern (Z-02), Rundfunk-Härtefall bei Vorrang Wohngeld (Z-03), Werte ab 1.1.2027 (Z-05).
+
+## Bekanntgabe per Post (Fristtexte)
+
+Ein Bescheid per Post gilt am vierten Tag nach der Aufgabe zur Post als bekannt gegeben (§ 37 Abs. 2 SGB X, § 122 Abs. 2 Nr. 1 AO; buzer.de, Abruf 25.11.2026). Die Texte nennen das seit 25.11.2026 so („meist ist das sein Datum“). Der Fristenrechner rechnet weiter ab dem Datum des Bescheids: Die Aufgabe zur Post ist nie früher als das Datum, die Frist fällt also eher zu früh (sichere Seite).

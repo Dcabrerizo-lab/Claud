@@ -55,12 +55,14 @@ const f6b = { ...f6, babWohnt: false };
 ck('F6b Azubi bei den Eltern: BAB unwahrscheinlich, Wohngeld nicht per § 20 ausgeschlossen', L(f6b, 'bab') === 'nein' && K(f6b, 'wohngeld')[0] !== 'wohngeld.ausbildung');
 // 7 Studierende allein
 const f7 = { ausbildung: 'ich', nichtArbeit: true, miete: 400, mietstufe: 3 };
-ck('[gg-studium] F7 Student: kein Grundsicherungsgeld (§ 7 Abs. 5 SGB II)', L(f7, 'ggeld') === 'nein' && K(f7, 'ggeld')[0] === 'ggeld.ausbildung');
+// Gegenprüfung PR #194 (Befund 3): Schule und Studium trennt die App nicht; Schüler mit Schüler-BAföG sind auch mit eigener Wohnung nicht
+// ausgeschlossen (§ 7 Abs. 6 Nr. 2 SGB II) -> „möglich“ ohne Betrag, Hinweis zum Ausschluss vorn
+ck('[gg-studium] F7 Student allein: Grundsicherungsgeld nur „möglich“ ohne Betrag (§ 7 Abs. 5, Abs. 6 Nr. 2 SGB II)', L(f7, 'ggeld') === 'vielleicht' && K(f7, 'ggeld')[0] === 'ggeld.ausbildung' && !K(f7, 'ggeld').some((k) => /^schaetz\./.test(k)));
 ck('F7 Student: kein Wohngeld', L(f7, 'wohngeld') === 'nein');
 ck('F7 BAföG möglich', L(f7, 'bafoeg') === 'vielleicht');
 ck('F7 Student mit Kind: Wohngeld nicht per § 20 ausgeschlossen', K({ ...f7, kids: 1 }, 'wohngeld')[0] !== 'wohngeld.ausbildung');
 // Vollprüfung 24.11.2026 (Befunde B-07, Fable 1): Ausschluss „dem Grunde nach“ auch ohne BAföG wegen des Alters (BSG B 14 AS 24/09 R)
-ck('F7 Student 51+: Ausschluss bleibt (§ 7 Abs. 5 SGB II, dem Grunde nach)', L({ ...f7, alterGruppe: '50+' }, 'ggeld') === 'nein' && K({ ...f7, alterGruppe: '50+' }, 'ggeld')[0] === 'ggeld.ausbildung');
+ck('F7 Student 51+: Ausschluss gilt unabhängig vom Alter, Hinweis wie unter 45', L({ ...f7, alterGruppe: '50+' }, 'ggeld') === L(f7, 'ggeld') && K({ ...f7, alterGruppe: '50+' }, 'ggeld')[0] === 'ggeld.ausbildung');
 // 8 Familie, Kind 20 mit GdB 100
 const f8 = { adults: 2, young: 1, brutto: 3000, brutto2: 1000, miete: 900, mietstufe: 3, bhPerson: 'erwVor25', bhSelbst: true, gdb: '100', ausbildung: 'kind' };
 ck('[kgbeh-ja] F8 KG-Beh ja, 259', L(f8, 'kgBeh') === 'ja' && P(f8, 'kgBeh', 'kg') === '259 €');
@@ -627,7 +629,7 @@ ck('[eg-hinweise] Elterngeld: Hinweise Mutterschaftsgeld und Einkommensgrenze 17
 const gv = (jahr, verm) => L(ohne({ miete: 400, vermoegen: verm, gebJahr: jahr, heute: 2026.8 }), 'ggeld');
 ck('[gg-verm] Schonvermögen ab dem 30. Geburtstag 10.000 € (29: 5.000 €), ab dem 40. 12.500 €, ab dem 50. 20.000 €', gv(1997, 8000) === 'nein' && gv(1996, 8000) !== 'nein' && gv(1987, 12000) === 'nein' && gv(1986, 12000) !== 'nein' && gv(1977, 18000) === 'nein' && gv(1976, 18000) !== 'nein');
 ck('[bafoeg-verm] BAföG-Vermögen: ab dem 30. Geburtstag 45.000 € (29 Jahre: 15.000 €)', L({ ausbildung: 'ich', vermoegen: 30000, gebJahr: 1997, heute: 2026.8 }, 'bafoeg') === 'nein' && L({ ausbildung: 'ich', vermoegen: 30000, gebJahr: 1996, heute: 2026.8 }, 'bafoeg') === 'vielleicht');
-ck('[gg-studium] Studium mit 44 und mit 46: kein Grundsicherungsgeld (Ausschluss dem Grunde nach, unabhängig vom BAföG-Alter; Vollprüfung 24.11.2026)', K(ohne({ ausbildung: 'ich', miete: 400, gebJahr: 1982, heute: 2026.8 }), 'ggeld')[0] === 'ggeld.ausbildung' && L(ohne({ ausbildung: 'ich', miete: 400, gebJahr: 1980, heute: 2026.8 }), 'ggeld') === 'nein');
+ck('[gg-studium] Studium mit 44 und mit 46: kein Grundsicherungsgeld (Ausschluss dem Grunde nach, unabhängig vom BAföG-Alter; Vollprüfung 24.11.2026)', K(ohne({ ausbildung: 'ich', miete: 400, gebJahr: 1982, heute: 2026.8 }), 'ggeld')[0] === 'ggeld.ausbildung' && K(ohne({ ausbildung: 'ich', miete: 400, gebJahr: 1980, heute: 2026.8 }), 'ggeld')[0] === 'ggeld.ausbildung');
 ck('[bafoeg-alter] BAföG mit 44 normal geprüft, mit 46 nur möglich (Altersgrenze 45), mit 50 nein', K({ ausbildung: 'ich', gebJahr: 1982, heute: 2026.8 }, 'bafoeg')[0] === 'bafoeg.ab30' && K({ ausbildung: 'ich', gebJahr: 1980, heute: 2026.8 }, 'bafoeg')[0] === 'bafoeg.alter' && L({ ausbildung: 'ich', gebJahr: 1976, heute: 2026.8 }, 'bafoeg') === 'nein');
 ck('[gg-verm] Alte gespeicherte Altersgruppen werden übernommen', L(ohne({ miete: 400, vermoegen: 6000, alterGruppe: '<31' }), 'ggeld') === 'nein' && L(ohne({ miete: 400, vermoegen: 15000, alterGruppe: '51+' }), 'ggeld') !== 'nein');
 
