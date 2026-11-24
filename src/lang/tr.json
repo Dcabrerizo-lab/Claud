@@ -857,7 +857,7 @@
   "es.tipp.grundrente": "33 yıl primi olanın (atölye yılları dahil) emekli maaşının bir kısmı 281,50 €'ya kadar serbest kalır. Emeklilik kararında yazar.",
   "t.gsa.grundrente": "En az 33 yıl Grundrente süresi olanın (çalışma, atölye dahil, çocuk yetiştirme, bakım) emekli maaşının bir kısmı serbest kalır: 100 € ve kalanın %30'u, en fazla 281,50 € (§ 82a SGB XII). O zaman daha yüksek maaşla da Grundsicherung mümkün olabilir.",
   "t.kgBeh.hoch": "Kendi geliri temel muafiyetin (yılda {gfb}) ve götürü indirimin açıkça üzerinde. O zaman kişi genellikle kendini geçindirebilir, Kindergeld pek olası değil.",
-  "t.ggeld.gemischt": "Bir kişi emeklilik yaşındaysa veya tamamen çalışamıyorsa, onun için Sozialamt yetkilidir (Grundsicherung). Diğer kişi çalışabiliyorsa Jobcenter'a bağlıdır; hanedeki çocuklar da öyle (gemischte Bedarfsgemeinschaft – karma ihtiyaç birliği). İkisini de kontrol ettir.",
+  "t.ggeld.gemischt": "Bir kişi yasal emeklilik yaşına ulaştıysa veya kalıcı olarak tamamen çalışamıyorsa, onun için Sozialamt yetkilidir (Grundsicherung). Diğer kişi çalışabiliyorsa Jobcenter'a bağlıdır; hanedeki çocuklar da öyle (gemischte Bedarfsgemeinschaft – karma ihtiyaç birliği). Tam çalışamama durumu kalıcı değilse bu kişi de Jobcenter'a bağlı olabilir. İkisini de kontrol ettir.",
   "t.krank.minijob": "Minijob (ayda {mini}'ya kadar) işten sağlık sigortası sağlamaz. Krankengeld yoktur.",
   "t.alg1.minijob": "Minijob (ayda {mini}'ya kadar) işsizlik sigortalı değildir ve işsizlik parası için sayılmaz. Daha yüksek ücretli önceki işler sayılabilir.",
   "alt.hinweis": "Dikkat: Bu sürümün kuralları {stand} tarihlidir. 2027 için değişikliklerin yalnızca bir kısmı eklendi. Tutarları yetkili kurumda kontrol et. Lütfen uygulamayı güncelle.",

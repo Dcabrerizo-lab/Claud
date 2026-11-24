@@ -45,7 +45,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Mehrbedarf Alleinerziehende (§ 21 Abs. 3) | ✓ | `gg-mb-ae` |
 | Mehrbedarf 35 % bei Teilhabe am Arbeitsleben bzw. Schule und Ausbildung (§ 21 Abs. 4, § 23 Nr. 2); bei Kindern Alter unbekannt | ✓ / ◐ | `gg-mb-teilhabe`, `gg-mb-kind` |
 | Mehrbedarf G für nicht erwerbsfähige Personen (§ 23 Nr. 4) | ◐ | `gg-mb-kind` |
-| Gemischte Bedarfsgemeinschaft (eine Person im Rentenalter oder voll erwerbsgemindert) | ◐ | `gg-gemischt` |
+| Gemischte Bedarfsgemeinschaft (eine Person über der Regelaltersgrenze oder dauerhaft voll erwerbsgemindert) | ◐ | `gg-gemischt` |
 | Mehrbedarf Schwangerschaft 17 % ab der 13. Woche (§ 21 Abs. 2), Hinweis Erstausstattung (§ 24 Abs. 3) | ✓ | `gg-schwanger` |
 | Mehrbedarf kostenaufwändige Ernährung (§ 21 Abs. 5): Höhe je Krankheit | ◐ | `gg-ernaehrung` |
 | Mehrbedarf dezentrale Warmwasserbereitung (§ 21 Abs. 7) | ✓ | `gg-warmwasser` |
@@ -322,7 +322,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Altersrente für schwerbehinderte Menschen, Jahrgänge 1960, 1963, 1964 wie DRV Knappschaft-Bahn-See 20.04.2026 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-srente` |
 | Erwerbsminderungsrente: unter 3 Stunden voll, 3 bis unter 6 Stunden teilweise; Wartezeit 5 Jahre (§ 43) | ✓ | `rente-em` |
 | Paar, älteste Person über der Regelaltersgrenze: Erwerbsminderungsrente, Arbeitslosengeld und Altersrente für schwerbehinderte Menschen nicht „nein“, sondern höchstens „möglich“, weil die jüngere Person die Grenze noch nicht erreicht haben kann; Hinweis auf die Regelaltersgrenze immer dabei, nach der Voraussetzung. Ebenso Budget für Arbeit bei Werkstatt (§ 43 Abs. 1, 2, §§ 35, 235, 37, 236a SGB VI; § 136 Abs. 2 SGB III; § 58 Abs. 1 Satz 3, § 61 SGB IX; Abruf 24.11.2026, unabhängig geprüft 24.11.2026) | ✓ | `alter-paar` |
-| Paar, eine Person im Rentenalter oder voll erwerbsgemindert: Grundsicherungsgeld (Jobcenter) nie „nein“, sondern „möglich“ mit Hinweis auf die gemischte Bedarfsgemeinschaft, auch ohne Kinder; bei laufendem Bezug „schon vorhanden“. Arbeitslosengeld-Dauer und Altersgrenzen der Schwerbehindertenrente bei Paaren nicht konkret zugesagt (Alter gilt der ältesten Person) (§ 7 Abs. 1 Satz 1, Abs. 3 Nr. 3, Abs. 4, § 7a SGB II; § 41 SGB XII; § 147 Abs. 2 SGB III; §§ 37, 236a SGB VI; Abruf 24.11.2026) | ✓ | `alter-paar` |
+| Paar, eine Person im Rentenalter oder voll erwerbsgemindert: Grundsicherungsgeld (Jobcenter) nie „nein“, sondern „möglich“ mit Hinweis auf die gemischte Bedarfsgemeinschaft, auch ohne Kinder; bei laufendem Bezug „schon vorhanden“. Text nennt „dauerhaft“ voll erwerbsgemindert (sonst Jobcenter, § 19 Abs. 1 Satz 2 SGB II). Arbeitslosengeld-Dauer bei Paaren ab 30 Versicherungsmonaten nicht konkret zugesagt (darunter altersunabhängig, bleibt konkret), Altersgrenzen der Schwerbehindertenrente bei Paaren nicht konkret (Alter gilt der ältesten Person) (§ 7 Abs. 1 Satz 1, Abs. 3 Nr. 3, § 7a, § 5 Abs. 2 Satz 2, § 19 Abs. 1 Satz 2 SGB II; § 41 Abs. 2, 3 SGB XII; § 147 Abs. 2 SGB III; §§ 37, 236a SGB VI; Abruf 24.11.2026, unabhängig geprüft 24.11.2026) | ✓ | `alter-paar` |
 | Werkstatt: volle Erwerbsminderung, Rente nach 20 Jahren (§ 43 Abs. 6) | ✓ | `rente-wfbm` |
 | Altersrente für schwerbehinderte Menschen (§§ 37, 236a), Altersgrenzen je Jahrgang | ✓ | `rente-sb` |
 
