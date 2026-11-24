@@ -161,7 +161,7 @@ function elternEinkommenSGB2(h, azubi, egHoch) {
 // Einkommen der Kinder, das ihren Bedarf deckt (Überschuss mindert nicht den Bedarf der Eltern). § 11 Abs. 1 Satz 5 SGB II: zuerst das eigene
 // Einkommen des Kindes; Kindergeld nur, soweit noch Bedarf bleibt, der Rest zählt beim Elternteil (minus 30 €, wenn bei ihm noch keine
 // Pauschale abgeht). Rückgabe ohne Kindergeld (das zählt der Aufrufer voll). alt: frühere Reihenfolge (untere Grenze bei mehreren Kindern).
-function kinderEinkommen(h, extra, alt) {
+function kinderEinkommen(h, extra, alt, ohnePauschale) {
   const e = h.unterhalt + h.waisen + h.uvg + (extra || 0) + Math.max(0, h.kindEink - h.mini);
   if (!e) return 0;
   const bedarf = Math.max(0, h.regelKinder + h.miete * h.kids / h.personen);
@@ -169,7 +169,8 @@ function kinderEinkommen(h, extra, alt) {
   const anr = Math.min(e, bedarf);
   const rest = Math.min(h.kids * KG, Math.max(0, h.kids * KG - (bedarf - anr)));
   const pauschaleSchon = h.p.some((x, i) => (x.art !== 'lohn' && x.art !== 'ohne' && x.brutto > 0) || (i === 0 && x.art === 'lohn' && x.brutto >= 30));
-  return Math.max(0, anr - (rest > 0 && !pauschaleSchon ? Math.min(rest, 30) : 0));
+  // SGB XII: keine Pauschale (§ 82 Abs. 2 Satz 1 Nr. 3 SGB XII nur tatsächliche Beiträge)
+  return Math.max(0, anr - (rest > 0 && !pauschaleSchon && !ohnePauschale ? Math.min(rest, 30) : 0));
 }
 
 // Regelsatz der Person mit Behinderung und Mehrbedarfe wegen Behinderung (§ 21 Abs. 4, § 23 Nr. 2 und 4 SGB II; § 30 Abs. 1 und 4 SGB XII)
@@ -234,9 +235,11 @@ function grundsicherungsgeld(h) {
   // § 7 Abs. 5 SGB II: Ausschluss dem Grunde nach, unabhängig vom Alter (BSG B 14 AS 24/09 R); nur die Person in Ausbildung (Partner/Kinder:
   // eigener Anspruch -> „möglich“ ohne Betrag); bei den Eltern § 7 Abs. 6 Nr. 2 -> weiter rechnen, höchstens „möglich“
   const ausb = h.e.ausbildung === 'ich' && !h.e.babBetrieb, eltern = h.e.wohnform === 'eltern';
-  if (ausb && !eltern) return { level: h.erwachsene === 2 || h.kids > 0 ? 'vielleicht' : 'nein' };
+  // § 7 Abs. 6 Nr. 2: Schüler mit Schüler-BAföG auch mit eigener Wohnung nicht ausgeschlossen; Schule/Studium nicht getrennt -> „möglich“
+  if (ausb && !eltern) return { level: 'vielleicht' };
   const SCH = { '': 10000, '<30': 5000, '30-39': 10000, '40-49': 12500, '50+': 20000 };
-  const schonG = (g) => SCH[g] * h.erwachsene + 5000 * h.kids;
+  // ohne Altersangabe „nein“ erst über der höchsten Grenze (50 Jahre oder älter möglich)
+  const schonG = (g) => SCH[g === '' ? '50+' : g] * h.erwachsene + 5000 * h.kids;
   const schon = Math.max(schonG(h.gruppe), h.gruppeAlt ? schonG(h.gruppeAlt) : 0);
   if (h.vermoegen > schon) return { level: 'nein' };
   // kleinste mögliche Grenze: erste Person ohne Alter unter 30 bzw. im Grenzjahr die kleinere Gruppe, weitere Personen unter 30
@@ -542,7 +545,7 @@ function grundsicherungAlter(e) {
   if (e.wfbmEssen) unsicher += 90;
   unsicher += tMoeglich + msG.moeglich;
   bedarf += msG.sicher;
-  const eink = einkommenSGB12(e, h) + (wf ? 0 : h.kids * KG + kinderEinkommen(h));
+  const eink = einkommenSGB12(e, h) + (wf ? 0 : h.kids * KG + kinderEinkommen(h, 0, false, true));
   const luecke = bedarf - eink;
   const altersAngabe = !!e.kidsAlter || (h.kinder > 0 && h.u6 === h.kinder);
   let level = luecke >= 50 ? 'ja' : luecke > -(100 + unsicher + (wf || altersAngabe ? 0 : h.mitte * (RB[4] - RB[5]))) ? 'vielleicht' : 'nein';
@@ -852,7 +855,7 @@ function asylbewerber(e) {
   const netto = Array.isArray(e.einkommen) ? e.einkommen.reduce((a, x) => a + (x ? (leer(x.n) ? zahl(x.b) : zahl(x.n)) : 0), 0) : h.netto;
   const luecke = bedarf - Math.max(0, netto - Math.min(0.25 * lohn, 0.5 * RB[1] * h.erwachsene));
   const ueber = h.vermoegen - 200 * h.personen;
-  if (ueber > bedarf || luecke < -100) return { level: 'nein' };
+  if (luecke < -100) return { level: 'nein' }; // Vermögen über dem Freibetrag: nur „möglich“ (keine feste Schwelle im Gesetz)
   if (ueber > 0 || netto > 0 || luecke < 50) return { level: 'vielleicht' };
   return { level: 'ja' };
 }
