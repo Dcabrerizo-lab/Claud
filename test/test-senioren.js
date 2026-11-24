@@ -16,7 +16,7 @@ const ok = (b, m) => { if (!b) fehler.push(m); };
 // Soll-Werte (Quelltabelle): bei einer Gesetzesänderung hier UND in senioren.js und der Quellen-Datei ändern
 const SOLL = { beratungTage: 14, bescheidArbeitstage: 25, verzugJeWoche: 70, widerspruchMonate: 1, akutTage: 10, pugProzent: 90,
   pflegezeitMonate: 6, pflegezeitBeschaeftigte: 15, pflegezeitAnkuendigung: 10, letzteLebensphaseMonate: 3, fpzMonate: 24,
-  fpzBeschaeftigte: 25, fpzStunden: 15, rvStunden: 10, rvTage: 2, rvArbeitMax: 30 };
+  fpzBeschaeftigte: 25, fpzStunden: 15, fpzAnkuendigungWochen: 8, rvStunden: 10, rvTage: 2, rvArbeitMax: 30 };
 const AMTLICH = /^https:\/\/www\.(gesetze-im-internet\.de|bundesgesundheitsministerium\.de)\//;
 
 const dom = new JSDOM('<!doctype html><body><div id="b"></div></body>', { runScripts: 'outside-only' });
