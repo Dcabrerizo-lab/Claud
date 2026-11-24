@@ -867,7 +867,7 @@
   "bhWeitere.0": "Keine",
   "t.mehr.teilhabe": "Darin ist ein Mehrbedarf von {betrag} enthalten: 35 % des Regelsatzes, weil die Person wegen der Behinderung Hilfe für Schule, Ausbildung oder Arbeit bekommt.",
   "t.ggeld.mehrBeh": "Für ein Kind mit Behinderung ab 15 Jahren kann ein Mehrbedarf dazukommen (35 % bei Hilfe für Schule oder Ausbildung, 17 % bei Merkzeichen G). Sag das beim Antrag.",
-  "t.ggeld.kindGsa": "Ein erwachsenes Kind, das dauerhaft nicht arbeiten kann, bekommt eigene Grundsicherung beim Sozialamt, auch wenn es bei den Eltern wohnt.",
+  "t.ggeld.kindGsa": "Ein erwachsenes Kind, das in einer Werkstatt für behinderte Menschen arbeitet oder dauerhaft nicht arbeiten kann, kann eigene Grundsicherung beim Sozialamt bekommen, auch wenn es bei den Eltern wohnt. Das Sozialamt rechnet dann nur mit dem Kind. Das Jobcenter rechnet für die Eltern, meist ohne dieses Kind. Darum nennen wir hier keinen Betrag. Lass beides prüfen.",
   "t.pflege.pauschbetrag": "Wer diese Person ohne Bezahlung zu Hause pflegt, bekommt in der Steuererklärung einen Pflege-Pauschbetrag von {betrag} im Jahr.",
   "cb.schwanger": "Jemand im Haushalt ist schwanger (ab der 13. Woche)",
   "cb.ernaehrung": "Jemand braucht wegen einer Krankheit eine teure Ernährung (zum Beispiel Zöliakie, Mukoviszidose, schwere Nierenerkrankung)",

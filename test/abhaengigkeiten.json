@@ -100,6 +100,7 @@
    "haengtAb": [
     "alter",
     "aufenthalt",
+    "bhPerson",
     "einkommen",
     "einkommen2",
     "kinder",
@@ -108,7 +109,7 @@
     "wfbm",
     "wohnart"
    ],
-   "quelle": "§§ 41 ff. SGB XII"
+   "quelle": "§§ 41 ff. SGB XII; bhPerson: Werkstatt-Haken beim Kind unter 18 reicht nicht (§ 41 Abs. 3 SGB XII: ab 18); beim Kind ab 18 ist es die Leistung des Kindes allein, ohne Einkommen und Vermögen der Eltern (§ 43 Abs. 1, 5, § 94 Abs. 1a SGB XII; seit 24.11.2026)"
   },
   "bafoeg": {
    "haengtAb": [
