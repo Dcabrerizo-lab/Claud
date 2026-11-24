@@ -2539,7 +2539,7 @@ const Rules = (function () {
     kgBeh: ['u.ausweis', 'u.arzt', 'u.steuerid'], emrente: ['u.ausweis', 'u.arzt', 'u.rentenverlauf'],
     eingl: ['u.ausweis', 'u.arzt', 'u.einkommen'], ausweis: ['u.ausweis', 'u.arzt', 'u.foto'],
     blindengeld: ['u.ausweis', 'u.arzt', 'u.bescheide'], pflegeplus: ['u.versichertenkarte', 'u.pflegebescheid', 'u.kosten'],
-    arbeit: ['u.ausweis', 'u.arzt', 'u.vertrag'], rundfunk: ['u.beitragsnr', 'u.bescheide', 'u.ausweis'],
+    arbeit: ['u.ausweis', 'u.arzt', 'u.vertrag'], rundfunk: ['u.beitragsnr', 'u.bescheidBefreiung', 'u.ausweis'], // Nachweis = Bescheid über die befreiende Leistung (§ 4 Abs. 1, 7 RBeitrStV), nicht „andere Leistungen, z. B. Pflegegeld“ (Prüfung Schulden 24.11.2026)
     zuzahl: ['u.versichertenkarte', 'u.quittungen', 'u.einkommen'], bab: ['u.ausbildungsvertrag', 'u.einkommen', 'u.mietvertrag'],
     wbs: ['u.einkommen', 'u.ausweis', 'u.haushalt'],
     srente: ['u.ausweis', 'u.arzt', 'u.rentenverlauf'],

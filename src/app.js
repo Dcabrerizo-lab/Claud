@@ -3520,8 +3520,21 @@
     } else if (pf.schritt === 2 && pf.art === 'konto') {
       p(t('pf.kg.q'), 'pf-frage'); p(t('pf.kg.hint'), 'hint');
       var r2 = knoepfe('wahl-raster');
-      [0, 1, 2, 3, 4, 5].forEach(function (n) { r2.appendChild(nhKnopf('wahl', '<b>' + esc(n === 5 ? t('pf.mehr') : String(n)) + '</b>', pf.kg === n, function () { pf.kg = n; pf.schritt = 3; pfRender(true); })); });
+      [0, 1, 2, 3, 4, 5].forEach(function (n) { r2.appendChild(nhKnopf('wahl', '<b>' + esc(n === 5 ? t('pf.mehr') : String(n)) + '</b>', pf.kg === n, function () { pf.kg = n; if (!n) pf.kiz = ''; pf.schritt = 3; pfRender(true); })); });
       leiste(null);
+    } else if (pf.schritt === 3 && pf.art === 'konto' && pf.kg > 0) {
+      // Kinderzuschlag ist auf dem P-Konto zusätzlich geschützt: „andere gesetzliche Geldleistungen für Kinder“ (§ 902 Satz 1 Nr. 5 ZPO,
+      // https://www.gesetze-im-internet.de/zpo/__902.html, abgerufen 24.11.2026; Prüfung Schulden 24.11.2026). Leer = kein Kinderzuschlag.
+      p(t('pf.kiz.q'), 'pf-frage');
+      var fk = document.createElement('div'); fk.className = 'field';
+      fk.innerHTML = '<label for="pfKiz">' + esc(t('pf.kiz.l')) + '</label><div class="money"><input type="text" inputmode="decimal" autocomplete="off" id="pfKiz"><span aria-hidden="true">€</span></div><span class="hint">' + esc(t('pf.kiz.hint')) + '</span>';
+      box.appendChild(fk);
+      var inK = fk.querySelector('input'); inK.value = pf.kiz === '' ? '' : String(pf.kiz).replace('.', ',');
+      var msgK = p('', 'warn'); msgK.hidden = true; msgK.setAttribute('role', 'status');
+      var weiterK = function () { var leerK = inK.value.trim() === '', v = leerK ? '' : parseAmount(inK.value); if (!leerK && !(v >= 0 && v !== '')) { msgK.hidden = false; msgK.textContent = t('pf.netto.fehlt'); inK.focus(); return; } pf.kiz = v; pf.schritt = 4; pfRender(true); };
+      inK.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') weiterK(); });
+      leiste(weiterK);
+      if (fokus) { inK.focus(); return; }
     } else if (pf.art === 'lohn') {
       var e = Rules.pfaendung(pf.netto, pf.pers);
       p(t('pf.erg.h'), 'pf-frage');
@@ -3541,18 +3554,18 @@
       spVerweis();
       box.appendChild(quellenEl([t('pf.stand')])); // Quelle der Werte unter dem Ergebnis, zugeklappt
     } else {
-      var k = Rules.pkonto({ personen: pf.pers, kindergeldKinder: pf.kg });
+      var k = Rules.pkonto({ personen: pf.pers, kindergeldKinder: pf.kg, kiz: pf.kg > 0 ? pf.kiz : 0 });
       p(t('pf.erg.h'), 'pf-frage');
       p(t('pf.erg.konto', { g: { eur: k.gesamt } }), 'pf-zahl');
-      // Aufschlüsselung nur bei Erhöhung (Unterhalt, Kindergeld); sonst stünde der Grundfreibetrag zweimal da (UX-Audit C)
-      if (k.unterhalt || k.kindergeld) {
+      // Aufschlüsselung nur bei Erhöhung (Unterhalt, Kindergeld, Kinderzuschlag); sonst stünde der Grundfreibetrag zweimal da (UX-Audit C)
+      if (k.unterhalt || k.kindergeld || k.kiz) {
         var tab = document.createElement('table'); tab.className = 'pf-tab';
-        [['pf.k.sockel', k.sockel], ['pf.k.unterhalt', k.unterhalt], ['pf.k.kg', k.kindergeld]].forEach(function (x) { if (!x[1] && x[0] !== 'pf.k.sockel') return; var tr = tab.insertRow(); tr.insertCell().textContent = t(x[0]); tr.insertCell().textContent = E(x[1]); });
+        [['pf.k.sockel', k.sockel], ['pf.k.unterhalt', k.unterhalt], ['pf.k.kg', k.kindergeld], ['pf.k.kiz', k.kiz]].forEach(function (x) { if (!x[1] && x[0] !== 'pf.k.sockel') return; var tr = tab.insertRow(); tr.insertCell().textContent = t(x[0]); tr.insertCell().textContent = E(x[1]); });
         box.appendChild(tab);
       }
-      var mk = k.unterhalt || k.kindergeld ? 'pf.tipp.bescheinigung' : 'pf.tipp.kontomehr';
-      jetzt(['pf.tipp.umwandeln', mk, 'pf.tipp.beratung']);
-      tipps(['pf.tipp.uebertrag', 'pf.tipp.sozial'].concat(mk === 'pf.tipp.kontomehr' ? [] : ['pf.tipp.kontomehr']));
+      // Bescheinigung immer nennen: auch ohne Unterhalt und Kinder kann mehr geschützt werden (§ 902 Satz 1 Nr. 1 b, 2, 4, 6 ZPO, Prüfung Schulden 24.11.2026)
+      jetzt(['pf.tipp.umwandeln', 'pf.tipp.bescheinigung', 'pf.tipp.beratung']);
+      tipps(['pf.tipp.uebertrag', 'pf.tipp.sozial', 'pf.tipp.kontomehr']);
       var d2 = knoepfe('btns');
       d2.appendChild(nhKnopf('btn ghost', esc(t('pf.neu')), null, function () { pf = { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; pfRender(true); }));
       spVerweis();
@@ -4727,7 +4740,7 @@
     var r = BriefLesen.lies(text, briefArt || null);
     // Auch in einer Kachel: Anhörung oder Aufforderung zur Mitwirkung erkennen und erklären statt nachzurechnen
     var e0 = briefArt ? BriefLesen.erkenne(text) : null;
-    if (e0 && (e0.art === 'anh' || e0.art === 'mit')) r = BriefLesen.lies(text, null);
+    if (e0 && (e0.art === 'anh' || e0.art === 'mit' || (e0.art === 'kg' && briefArt === 'fk'))) r = BriefLesen.lies(text, null); // Kindergeld in der Kachel „Familienkasse“ (Kinderzuschlag)
     $('elErg').textContent = '';
     // Aufforderung zur Senkung der Wohn- oder Heizkosten: Erklärung statt Nachrechnung (erweiterungen/kostensenkung.js)
     var ks = BriefLesen.kostensenkung ? BriefLesen.kostensenkung(text) : null;
@@ -4739,11 +4752,11 @@
     // Anderer Brief: Frist mit Beleg suchen, Mahnbescheid und Inkasso erkennen (Anhörung und Mitwirkung erklärt der Teil darunter)
     if (briefArt === 'an' && r.art !== 'anh' && r.art !== 'mit') { elNachricht(''); if (window.PruefpaketAndere) window.PruefpaketAndere.zeige(text, { box: $('elErg'), wechseln: function (art) { var tx = text; briefOeffnen(art); textLesen(tx); } }); return; }
     if (!r.art) { elNachricht(t('el.unbekannt')); return; }
-    if (r.art === 'anh' || r.art === 'mit') {
+    if (r.art === 'anh' || r.art === 'mit' || r.art === 'kg') { // kg: Kindergeld-Bescheid nur erklären (Einspruch § 347 AO), kein Nachrechnen
       var d = document.createElement('div'); d.className = 'el-erkl';
       var b = document.createElement('b'); b.textContent = ppEin(r.titel); d.appendChild(b);
       var p = document.createElement('p'); p.textContent = BriefLesen.ERKLAERUNG[r.art]; d.appendChild(p);
-      var fr = BriefLesen.frist(text);
+      var fr = r.art === 'kg' ? null : BriefLesen.frist(text);
       if (fr) { var q = document.createElement('p'); q.className = 'frist frist-wann'; q.setAttribute('role', 'note'); q.textContent = t('el.frist', { frist: BriefLesen.fristLesbar ? BriefLesen.fristLesbar(fr) : fr }); $('elErg').appendChild(q); } // Frist-Muster ganz oben
       var fk = fr && window.FristenOrdner ? FristenOrdner.briefKnopf(text, r.art) : null; if (fk) d.appendChild(fk); // nur auf Knopfdruck merken
       $('elErg').appendChild(d); if (ks) ksZeigen(ks, text); elNachricht(t('el.erkanntOhne', { titel: ppEin(r.titel) })); return;
