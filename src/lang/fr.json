@@ -624,7 +624,7 @@
   "lg.ausb": "Formation et études",
   "c.leer": "Pas encore d'informations",
   "warn.netto": "Le montant qui arrive sur le compte est plus élevé que le brut. C'est presque toujours une faute de frappe : vérifie.",
-  "bh.person.hint": "Enfant de 18 ans ou plus : seulement si le handicap existait déjà avant ses 25 ans (important pour les allocations familiales, Kindergeld). Sinon, choisis « un adulte ». Si tu travailles toi-même dans un atelier, choisis « une personne adulte ».",
+  "bh.person.hint": "Enfant de 18 ans ou plus : seulement si le handicap existait déjà avant ses 25 ans (important pour les allocations familiales, Kindergeld). Sinon, choisis « un adulte ». Si tu travailles toi-même dans un atelier, choisis « un adulte ».",
   "bh.gdb.hint": "Figure dans la décision du Versorgungsamt ou du ZBFS, ou sur la carte de personne gravement handicapée (Schwerbehindertenausweis).",
   "geb.label": "En quelle année est né l'adulte le plus âgé ?",
   "warn.geb": "Saisis une année de naissance à 4 chiffres, par exemple 1962.",
@@ -1681,7 +1681,8 @@
   "fw.wbs.leer": "Indique ton Land ou ton code postal ; SoLo te dira alors où obtenir la demande",
   "t.gsa.kindU18": "Cette Grundsicherung n'existe qu'à partir de 18 ans. Un enfant de moins de 18 ans est compté dans les aides pour la famille.",
   "t.wohngeld.kindGsa": "Si seul ton enfant adulte reçoit la Grundsicherung du Sozialamt, seul l'enfant est exclu du Wohngeld. Pour les autres, le Wohngeld est possible, calculé sans l'enfant. C'est pourquoi nous n'indiquons pas de montant.",
-  "t.kiz.kindGsa": "Si seul ton enfant adulte reçoit la Grundsicherung du Sozialamt, cela n'exclut pas d'emblée le Kinderzuschlag. La Familienkasse calcule sans l'enfant. C'est pourquoi nous n'indiquons pas de montant.",
+  "t.kiz.kindGsa": "Il n'y a pas de Kinderzuschlag pour ton enfant de 18 ans ou plus qui travaille en atelier. Mais il compte dans le foyer. C'est pourquoi nous n'indiquons pas de montant.",
+  "t.kiz.kindWerkstatt": "Il n'y a pas de Kinderzuschlag pour un enfant de 18 ans ou plus qui travaille en atelier (Werkstatt). L'enfant peut recevoir sa propre Grundsicherung auprès du Sozialamt. Si tu as un autre enfant de moins de 25 ans à la maison, le Kinderzuschlag est possible pour cet enfant.",
   "t.rundfunk.kindGsa": "L'exonération de ton enfant ne s'applique pas à toi.",
   "t.ggeld.emWer": "Si c'est toi qui travailles à l'atelier, c'est en général le Sozialamt qui est compétent. Si c'est ton enfant adulte, le Jobcenter peut être compétent pour toi. C'est pourquoi nous n'indiquons pas de montant."
 }

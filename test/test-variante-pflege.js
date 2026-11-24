@@ -12,7 +12,7 @@ const check = (n, c, x) => { if (!c) { fails++; console.log('FAIL', n, x === und
 
 const solo = render({ variante: 'solo' });
 check('Grundfassung: keine Teile der Pflege-Variante', !/goSelbst|id="v-sen"|VAR-START|VAR-ANSICHT|VAR-STIL|VARJS|VAR-PFLEGE|var-einstiege/.test(solo.html));
-check('Grundfassung: Variante „solo“', solo.variante.id === 'solo' && /var VARIANTE = \/\*VARIANTE\*\/ 'solo';/.test(solo.html));
+check('Grundfassung: Variante „solo“', solo.variante.id === 'solo' && /var VARIANTE = (\/\*VARIANTE\*\/)? *'solo';/.test(solo.html));
 check('Name, App-Kennung und Datei der Variante an einer Stelle', VARIANTEN.pflege.name === 'SoLo Pflege & Rente' && VARIANTEN.pflege.kurzname === 'SoLo Pflege' && VARIANTEN.pflege.appId === 'com.Sozialleistungslotse.pflege' && VARIANTEN.pflege.datei === 'solo-pflege.html');
 
 const gebaut = render({ variante: 'pflege' });

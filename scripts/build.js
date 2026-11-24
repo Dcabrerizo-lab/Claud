@@ -35,6 +35,29 @@ function variante(v) {
 
 const read = (f) => fs.readFileSync(path.join(SRC, f), 'utf8');
 
+// Kommentare aus den ausführbaren Skriptblöcken entfernen (Startgröße, Grenze 3 MB). Sicher: Die Kommentarstellen liefert der
+// JavaScript-Parser espree (kommt mit ESLint), also nie Text in Zeichenketten oder Vorlagen. Lizenz-/Copyright-Kommentare bleiben.
+// Datenblöcke (<script type="application/json">) bleiben unberührt. Lässt sich ein Block nicht parsen, bleibt er unverändert.
+function ohneKommentare(html) {
+  let espree;
+  try { espree = require('espree'); } catch (e) { console.warn('Hinweis: espree fehlt, Kommentare bleiben (npm install)'); return html; }
+  return html.replace(/<script>([\s\S]*?)<\/script>/g, (m, code) => {
+    let ast;
+    try { ast = espree.parse(code, { comment: true, range: true, ecmaVersion: 'latest', sourceType: 'script' }); } catch (e) {
+      console.warn('Hinweis: Skriptblock nicht parsebar, Kommentare bleiben: ' + e.message); return m;
+    }
+    let aus = '', pos = 0;
+    ast.comments.forEach((k) => {
+      if (k.type === 'Block' && /^!|@license|@preserve|copyright|lizenz|license/i.test(k.value)) return;
+      aus += code.slice(pos, k.range[0]) + (k.type === 'Block' ? (k.value.includes('\n') ? '\n' : ' ') : '');
+      pos = k.range[1];
+    });
+    aus += code.slice(pos);
+    // Leerraum außerhalb der Kommentare bleibt unverändert (Vorlagen-Zeichenketten könnten Leerzeilen enthalten; Zeilenumbrüche: ASI gleich)
+    return '<script>' + aus + '</script>';
+  });
+}
+
 // Einfache Sprache: src/lang/einfach/*.json (Dateien mit Unterstrich, z. B. _test.json, werden übersprungen) zu einem Objekt
 // I18N_EINFACH zusammenführen. Nur Schlüssel, die es in de.json gibt; andere Schlüssel und Nicht-Texte werden mit Warnung verworfen.
 // Wert "=": Der Standardtext ist schon einfach (kurze Beschriftung, Name, Betrag). Er wird nicht doppelt ausgeliefert;
@@ -287,7 +310,7 @@ function render(opts = {}) {
     .replace('/*APP*/\n', () => parts.app.replace("'/*VERSION*/'", () => JSON.stringify(require(path.join(ROOT, 'package.json')).version)));
   const left = html.match(/\/\*(RULES|I18N|FMT|PLZ|PLZDATA|BEHOERDEN|BEHOERDENDATA|FORMULARE|VORGAENGE|HAUSHALT|AUSZIEHEN|FRISTEN|SCHULDEN|GELD|NAVIGATION|SCHRITTE|KLIENT|SUCHE|DENETZ|APP|PPSTIL|PRUEFPAKET)\*\/|<!--PRUEFPAKET-->/);
   if (left) throw new Error('Platzhalter nicht ersetzt: ' + left[0]);
-  return { html, i18n: i18nSource(vari), sprachDateien: sprachTeile.dateien, variante: vari };
+  return { html: ohneKommentare(html), i18n: i18nSource(vari), sprachDateien: sprachTeile.dateien, variante: vari };
 }
 
 // Sicherheitsrichtlinie der Web-Version (Sicherheitsprüfung 21.11.2026, S9). Erlaubt genau das, was die Seite braucht:

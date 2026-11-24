@@ -1681,7 +1681,8 @@
   "fw.wbs.leer": "Geli gobolkaaga ama koodhka boostada; markaas SoLo ayaa kuu sheegaya halka codsiga laga helo",
   "t.gsa.kindU18": "Grundsicherung-kan waxaa jira oo keliya laga bilaabo 18 sano. Ilmo ka yar 18 waxaa lagu xisaabiyaa caawimaadyada qoyska.",
   "t.wohngeld.kindGsa": "Haddii ilmahaaga qaangaarka ah oo keliya uu Grundsicherung ka helo Sozialamt, ilmaha oo keliya ayaa laga reebay Wohngeld. Kuwa kale Wohngeld waa suurtagal, iyadoo ilmaha aan la tirin. Sidaas darteed lacag ma sheegno.",
-  "t.kiz.kindGsa": "Haddii ilmahaaga qaangaarka ah oo keliya uu Grundsicherung ka helo Sozialamt, taasi bilowga kama reebayso Kinderzuschlag. Familienkasse waxay xisaabisaa iyadoo ilmaha aan la tirin. Sidaas darteed lacag ma sheegno.",
+  "t.kiz.kindGsa": "Ilmahaaga 18 jir ama ka weyn ee ka shaqeeya warshadda (Werkstatt) Kinderzuschlag looma helo. Laakiin ilmaha waa lagu tiriyaa qoyska. Sidaas darteed lacag ma sheegno.",
+  "t.kiz.kindWerkstatt": "Ilmo 18 jir ama ka weyn oo ka shaqeeya warshadda (Werkstatt) Kinderzuschlag looma helo. Ilmuhu wuxuu Grundsicherung u gaar ah ka heli karaa Sozialamt. Haddii aad guriga ku leedahay ilmo kale oo ka yar 25 sano, ilmahaas Kinderzuschlag waa suurtagal.",
   "t.rundfunk.kindGsa": "Dhaafidda ilmahaaga adiga kuma khuseyso.",
   "t.ggeld.emWer": "Haddii adigu aad ka shaqeyso goobta shaqada, badanaa Sozialamt ayaa mas'uul ah. Haddii uu yahay ilmahaaga qaangaarka ah, Jobcenter ayaa laga yaabaa inuu adiga kuu mas'uul yahay. Sidaas darteed lacag ma sheegno."
 }

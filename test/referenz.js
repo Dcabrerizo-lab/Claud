@@ -322,13 +322,17 @@ function emElternteil(e) {
   const wfbmEink = e.art1 === 'wfbm' || (e.adults === 2 && e.art2 === 'wfbm') || (Array.isArray(e.einkommen) && e.einkommen.some((x) => x.art === 'wfbm'));
   return e.emStd === 'unter3' || !!e.erwerbsgemindert || wfbmEink || (!!e.wfbm && (!!e.wfbmSelbst || ['minder', 'erwVor25'].indexOf(e.bhPerson) < 0));
 }
-function kinderzuschlag(h) {
+function kinderzuschlag(h, ohneKindPruefung) {
   const b = h.bezug;
   if (h.kids === 0) return { level: 'nein' };
   // Nur das erwachsene Kind bekommt Grundsicherung vom Sozialamt: kein Ausschluss der Eltern, höchstens „möglich“
   // Einziges Kind: für das Kind mit eigener Grundsicherung gibt es keinen Kinderzuschlag (DA-KiZ 20.02.2026 B.2 Abs. 2 Satz 8) -> „nein“
-  if (b.sozialamt && kindNurEMRef(h) && h.kids === 1) return { level: 'nein' };
-  if (b.sozialamt && kindNurEMRef(h)) { const r = kinderzuschlag(haushalt({ ...h.e, bezug: { ...h.e.bezug, sozialamt: false } })); return { level: r.level === 'ja' ? 'vielleicht' : r.level }; }
+  // Auch ohne laufenden Bezug: für ein Kind ab 18 in der Werkstatt (Kind ab 18 bis 24, nur das Kind voll erwerbsgemindert) gibt es keinen
+  // Kinderzuschlag, es bleibt in der Bedarfsgemeinschaft (DA-KiZ 20.02.2026 B.2 Abs. 2 Satz 5 bis 8): einziges Kind „nein“, sonst höchstens „möglich“
+  const ohneKiz = !ohneKindPruefung && kindNurEMRef(h) && (b.sozialamt || (h.e.bhPerson === 'erwVor25' && h.jung > 0));
+  // Unabhängige Prüfung 24.11.2026: nur wenn das einzige Kind das gezählte Kind von 18 bis 24 ist und kein Kinderzuschlag läuft
+  if (ohneKiz && h.kids === 1 && h.jung === 1 && !b.kiz) return { level: 'nein' };
+  if (ohneKiz) { const r = kinderzuschlag(b.sozialamt ? haushalt({ ...h.e, bezug: { ...h.e.bezug, sozialamt: false } }) : h, true); return { level: r.level === 'ja' ? 'vielleicht' : r.level }; }
   if (b.grundsicherungsgeld || b.sozialamt) return { level: 'nein' };
   if (b.kiz) return { level: 'na' };
   // § 6a Abs. 1 Nr. 3 BKGG mit § 7 SGB II (DA-KiZ 20.02.2026 D.2 Abs. 1 Satz 5; BSG B 7/14 KG 1/21 R): Im Haushalt muss jemand
