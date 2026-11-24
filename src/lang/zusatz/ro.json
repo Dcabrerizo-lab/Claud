@@ -124,7 +124,7 @@
   "bp.vgl.pg": "grad de îngrijire (Pflegegrad) {pg}",
   "bp.vgl.kein": "fără grad de îngrijire (Pflegegrad)",
   "bp.vgl.klein": "Puncte ponderate, așa cum calculează Pflegekasse (§ 15 SGB XI). Plus înseamnă: estimarea ta dă acolo mai multe puncte. Mai jos vezi la ce întrebări exact.",
-  "t.bafoeg.vermTeil": "Averea depășește suma scutită de {verm}. Cei 2.300 € în plus se acordă doar pentru soț/soție sau partener înregistrat și pentru fiecare copil propriu. Contează doar partea de peste suma scutită: împărțită pe 12 luni, reduce BAföG cu aproximativ {monat} pe lună. Amt für Ausbildungsförderung calculează exact.",
+  "t.bafoeg.vermTeil": "Averea depășește suma scutită de {verm}. Cei {eur:2300} în plus se acordă doar pentru soț/soție sau partener înregistrat și pentru fiecare copil propriu. Contează doar partea de peste suma scutită: împărțită pe 12 luni, reduce BAföG cu aproximativ {monat} pe lună. Amt für Ausbildungsförderung calculează exact.",
   "akt.ergDrucken": "Tipărește sau trimite rezultatul",
   "f.weg.zeile": "{a} sau {b}",
   "f.weg.nochNicht": "Calea nu este încă aleasă",

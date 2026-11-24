@@ -160,7 +160,7 @@ ok('[mb2-wohngeld] VG Bayreuth: zu berücksichtigende Miete 438,00 €', nah(R.w
     // 9) Neue Texte in allen Sprachen, Platzhalter erhalten
     const neu = { 'bafoeg.betragWohnen': ['{a}', '{b}', '{c}', '{d}'], 'bafoeg.vermEvtl': ['{verm}', '{monat}'], 'bafoeg.schule': [], 'bafoeg.andererElternteil': [], 'bafoeg.kindHinweis': [], 'bafoeg.ab30': [] };
     ok('[bafoeg-betrag] neue Texte in allen Sprachen mit Platzhaltern', Object.keys(I18N).every((l) => Object.keys(neu).every((k) => typeof I18N[l]['t.' + k] === 'string' && neu[k].every((ph) => I18N[l]['t.' + k].includes(ph)))));
-    ok('[bafoeg-betrag] vermTeil nennt 2.300 € nur für Ehe-/Lebenspartner und eigene Kinder (de)', /2\.300 € gibt es nur für Ehe- oder eingetragene Lebenspartner und für jedes eigene Kind/.test(I18N.de['t.bafoeg.vermTeil']));
+    ok('[bafoeg-betrag] vermTeil nennt 2.300 € nur für Ehe-/Lebenspartner und eigene Kinder (de)', /(2\.300 €|\{eur:2300\}) gibt es nur für Ehe- oder eingetragene Lebenspartner und für jedes eigene Kind/.test(I18N.de['t.bafoeg.vermTeil']));
   }
 }
 

@@ -124,7 +124,7 @@
   "bp.vgl.pg": "heerka daryeelka (Pflegegrad) {pg}",
   "bp.vgl.kein": "heer daryeel (Pflegegrad) ma jiro",
   "bp.vgl.klein": "Dhibco miisaaman, sida Pflegekasse u xisaabiso (§ 15 SGB XI). Calaamadda (+) waxay ka dhigan tahay: qiimayntaadu halkaas dhibco ka badan ayay bixisaa. Hoos waxaa ku qoran su’aalaha ay si gaar ah u khusayso.",
-  "t.bafoeg.vermTeil": "Hantidaadu waxay ka badan tahay qadarka la cafiyay ee {verm}. 2.300 € dheeraad ah waxaa la bixiyaa oo keliya xaas ama lammaane diiwaangashan iyo carruur kasta oo adiga kuu dhalatay. Kaliya qaybta ka sarreysa qadarka la cafiyay ayaa la xisaabiyaa: waxaa loo qaybiyaa 12 bilood, waxayna BAföG ka dhimaysaa qiyaastii {monat} bishiiba. Amt für Ausbildungsförderung ayaa si sax ah u xisaabiya.",
+  "t.bafoeg.vermTeil": "Hantidaadu waxay ka badan tahay qadarka la cafiyay ee {verm}. {eur:2300} dheeraad ah waxaa la bixiyaa oo keliya xaas ama lammaane diiwaangashan iyo carruur kasta oo adiga kuu dhalatay. Kaliya qaybta ka sarreysa qadarka la cafiyay ayaa la xisaabiyaa: waxaa loo qaybiyaa 12 bilood, waxayna BAföG ka dhimaysaa qiyaastii {monat} bishiiba. Amt für Ausbildungsförderung ayaa si sax ah u xisaabiya.",
   "akt.ergDrucken": "Daabac ama la wadaag natiijada",
   "f.weg.zeile": "{a} ama {b}",
   "f.weg.nochNicht": "Waddada weli lama dooran",

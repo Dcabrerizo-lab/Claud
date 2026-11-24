@@ -54,7 +54,7 @@ Was die App prüft
 Kindergeld, Elterngeld, Mutterschaftsgeld, Wohngeld, Kinderzuschlag, Grundsicherungsgeld, Arbeitslosengeld I, Krankengeld, Kinderkrankengeld, Bildung und Teilhabe, Unterhaltsvorschuss, Grundsicherung im Alter und bei Erwerbsminderung, BAföG, Berufsausbildungsbeihilfe, Pflegegeld, Entlastungsbetrag, Verhinderungspflege und Pflegehilfsmittel, Bayerisches Landespflegegeld, Hilfe zur Pflege, Leistungen bei Behinderung (Pauschbetrag, Schwerbehindertenausweis, Eingliederungshilfe, Budget für Arbeit, Erwerbsminderungsrente, Altersrente für schwerbehinderte Menschen), Landesblindengeld, Blindenhilfe, Wohnberechtigungsschein, Befreiung vom Rundfunkbeitrag und von Zuzahlungen, Leistungen nach dem Asylbewerberleistungsgesetz.
 
 Mein Ordner
-Speichere deine Angaben als Vorgang, etwa je Haushalt, und öffne sie später wieder. Eine PIN schützt sie. Dazu kommen eine Checkliste der Unterlagen und ein Ergebnisblatt zum Drucken oder Mitgeben. Die Fristen-Übersicht zeigt, was bis wann zu tun ist.
+Speichere deine Angaben als Vorgang, etwa je Haushalt, und öffne sie später wieder. Eine PIN schützt sie. Dazu kommen eine Checkliste der Unterlagen und ein Ergebnisblatt zum Drucken. Die Fristen-Übersicht zeigt, was bis wann zu tun ist.
 
 Geld und Schulden
 - Es ist dringend: Bei Kontopfändung, Stromsperre, Mahnbescheid oder Kündigung siehst du Frist und ersten Schritt.
@@ -81,7 +81,7 @@ Für Beratungsstellen
 Der Beratungsmodus zeigt bei den Ergebnissen die Rechtsgrundlagen mit Paragrafen, bei Schulden auch Tabelle und Gesprächsnotiz.
 
 Auch in Einfacher Sprache und in 13 Sprachen
-Deutsch, Englisch, Türkisch, Arabisch, Russisch, Ukrainisch, Polnisch, Rumänisch, Französisch, Dari, Farsi, Paschtu und Somali. Amtsbegriffe bleiben deutsch, wie beim Amt.
+Deutsch, Englisch, Türkisch, Arabisch, Russisch, Ukrainisch, Polnisch, Rumänisch, Französisch, Dari, Farsi, Paschtu und Somali. Amtsbegriffe bleiben deutsch. Pflege: Paschtu und Somali noch auf Deutsch.
 
 Deine Daten bleiben bei dir
 Keine Anmeldung, keine Server, keine Werbung, kein Tracking. Alles wird offline auf deinem Gerät berechnet und gespeichert. Auch Brief- und Kassenzettel-Scan laufen nur auf deinem Gerät.
@@ -93,16 +93,17 @@ Wichtig: SoLo ist eine Orientierung, keine Rechtsberatung. Über deinen Anspruch
 
 Quellen: gesetze-im-internet.de, arbeitsagentur.de, familienportal.de, bmas.de, deutsche-rentenversicherung.de. SoLo ist keine App einer Behörde.
 ```
-(3.982 Zeichen)
+(3.999 Zeichen)
 
 ### Neuigkeiten in dieser Version (max. 500)
 
 Nur Deutsch (weitere Sprachen für die Neuigkeiten sind in dieser Datei nicht angelegt).
+Pflege-Texte gibt es auf Paschtu und Somali bewusst noch nicht (Entscheidung David: bleiben Deutsch, bis Muttersprachler geprüft haben). Deshalb für Pflege keine höhere Sprachzahl als 11 nennen; `test/test-rechtsmatrix-texte.js` prüft das.
 
 ```
-Neu: Pflege jetzt in allen 13 Sprachen. Die Antragsmappe führt dich Schritt für Schritt wie eine Aufgabenliste. Gibt es zwei Wege (z. B. Wohngeld oder Grundsicherungsgeld), zeigt das Ergebnis beide. Geld und Schulden: Beratungsstelle in deiner Nähe suchen, Musterschreiben bei Mietschulden und drohender Stromsperre, Fristen klarer. SoLo-Dateien von der Beratung öffnen sich direkt. Sprachen laden schneller, auch offline. Besserer Datenschutz am iPhone. Viele Leistungen genauer gerechnet.
+Neu: Pflege in 11 Sprachen (Paschtu und Somali folgen). Die Antragsmappe führt dich Schritt für Schritt wie eine Aufgabenliste. Gibt es zwei Wege (z. B. Wohngeld oder Grundsicherungsgeld), zeigt das Ergebnis beide. Geld und Schulden: Beratungsstelle in deiner Nähe suchen, Musterschreiben bei Mietschulden und drohender Stromsperre, Fristen klarer. SoLo-Dateien von der Beratung öffnen sich direkt. Sprachen laden schneller. Besserer Datenschutz am iPhone. Viele Leistungen genauer gerechnet.
 ```
-(490 Zeichen; Version 1.10.0, Build 153; PRs #152–#173 sind enthalten. Text von 1.9.0 steht im Git-Verlauf.)
+(492 Zeichen; Version 1.10.0, Build 153; PRs #152–#173 sind enthalten. Text von 1.9.0 steht im Git-Verlauf.)
 
 ### Kategorie und Tags (Vorschlag)
 
@@ -154,7 +155,7 @@ Welche Hilfen stehen dir zu? Prüfe 31 Sozialleistungen, lass Briefe vom Amt nac
 
 ### Beschreibung (max. 4.000)
 
-Gleicher Text wie bei Google Play (siehe oben, Abschnitt „Vollständige Beschreibung“). App Store Connect zeigt ebenfalls keine Formatierung. Damit stehen Quellenzeile und Behörden-Hinweis auch hier (3.982 Zeichen).
+Gleicher Text wie bei Google Play (siehe oben, Abschnitt „Vollständige Beschreibung“). App Store Connect zeigt ebenfalls keine Formatierung. Damit stehen Quellenzeile und Behörden-Hinweis auch hier (3.999 Zeichen).
 
 ### Schlüsselwörter (max. 100, kommagetrennt, ohne Leerzeichen)
 
@@ -170,9 +171,9 @@ Wohngeld,Bürgergeld,Grundsicherung,Kinderzuschlag,Bescheid,Widerspruch,Pflegegr
 Gleicher Text wie „Neuigkeiten in dieser Version“ bei Google Play:
 
 ```
-Neu: Pflege jetzt in allen 13 Sprachen. Die Antragsmappe führt dich Schritt für Schritt wie eine Aufgabenliste. Gibt es zwei Wege (z. B. Wohngeld oder Grundsicherungsgeld), zeigt das Ergebnis beide. Geld und Schulden: Beratungsstelle in deiner Nähe suchen, Musterschreiben bei Mietschulden und drohender Stromsperre, Fristen klarer. SoLo-Dateien von der Beratung öffnen sich direkt. Sprachen laden schneller, auch offline. Besserer Datenschutz am iPhone. Viele Leistungen genauer gerechnet.
+Neu: Pflege in 11 Sprachen (Paschtu und Somali folgen). Die Antragsmappe führt dich Schritt für Schritt wie eine Aufgabenliste. Gibt es zwei Wege (z. B. Wohngeld oder Grundsicherungsgeld), zeigt das Ergebnis beide. Geld und Schulden: Beratungsstelle in deiner Nähe suchen, Musterschreiben bei Mietschulden und drohender Stromsperre, Fristen klarer. SoLo-Dateien von der Beratung öffnen sich direkt. Sprachen laden schneller. Besserer Datenschutz am iPhone. Viele Leistungen genauer gerechnet.
 ```
-(490 Zeichen; Version 1.10.0, Build 153; PRs #152–#173 sind enthalten. Text von 1.9.0 steht im Git-Verlauf.)
+(492 Zeichen; Version 1.10.0, Build 153; PRs #152–#173 sind enthalten. Text von 1.9.0 steht im Git-Verlauf.)
 
 ### URLs
 
