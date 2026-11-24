@@ -47,3 +47,4 @@ node test/test-ausziehen.js
 node test/test-krypto.js
 node test/test-doku-zusammenfuehrung.js
 node test/test-alter-paar.js
+node test/test-kind-werkstatt.js

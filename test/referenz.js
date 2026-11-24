@@ -174,7 +174,9 @@ function grundsicherungsgeld(h) {
   if (euAus(h)) return { level: 'nein' };
   // Paar mit einer Person im Rentenalter bzw. voll erwerbsgemindert: die andere kann erwerbsfähig und selbst leistungsberechtigt sein
   // (§ 7 Abs. 1 Satz 1, Abs. 3 Nr. 3 SGB II; gemischte Bedarfsgemeinschaft) – nie „nein“, auch ohne Kinder; laufender Bezug: „na“
-  if (h.rente || h.em) return { level: h.erwachsene === 2 ? (h.bezug.grundsicherungsgeld ? 'na' : 'vielleicht') : 'nein' };
+  // Voll erwerbsgemindert: nur der Elternteil zählt (emElternteil); ein erwachsenes Kind in der Werkstatt hat eigene Grundsicherung (§ 41 Abs. 3
+  // SGB XII, § 5 Abs. 2 SGB II), der erwerbsfähige Elternteil bleibt beim Jobcenter (§ 7 Abs. 1 SGB II)
+  if (h.rente || emElternteil(h.e)) return { level: h.erwachsene === 2 ? (h.bezug.grundsicherungsgeld ? 'na' : 'vielleicht') : 'nein' };
   const b = h.bezug;
   if (b.grundsicherungsgeld) return { level: 'na' };
   if (b.sozialamt) return { level: 'nein' };
@@ -190,7 +192,9 @@ function grundsicherungsgeld(h) {
   const offen = kinderEinkommen(h, h.uvgOffenGG) - kinderEinkommen(h);
   const level = luecke >= 50 ? (luecke - offen >= 50 ? 'ja' : 'vielleicht') : luecke > -(100 + bm.moeglich + ms.moeglich) ? 'vielleicht' : 'nein';
   // § 7 Abs. 4 SGB II: Altersrente (auch vorgezogen) schließt aus; allein mit nur Rente, Alter unbekannt oder ab 60 -> höchstens „möglich“
-  return { level: level === 'ja' && h.erwachsene === 1 && nurRenteAb60(h) ? 'vielleicht' : level, bedarf, luecke };
+  // Nur das erwachsene Kind voll erwerbsgemindert: eigene Grundsicherung, Haushalt trotzdem mitgerechnet -> höchstens „möglich“
+  const kindNurEM = h.em && !emElternteil(h.e) && (h.e.bhPerson === 'erwVor25' || h.e.bhPerson === 'erwNach25');
+  return { level: level === 'ja' && ((h.erwachsene === 1 && nurRenteAb60(h)) || kindNurEM) ? 'vielleicht' : level, bedarf, luecke };
 }
 
 // ---------- Wohngeld (WoGG) ----------

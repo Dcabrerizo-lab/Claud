@@ -49,7 +49,7 @@ const M = [
   ['Blindenhilfe: 60 % statt 40 %', 'blh: { einsatzUeber: 0.4 }', 'blh: { einsatzUeber: 0.6 }'],
   ['Blindenhilfe: Asyl ohne Hinweis', "if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['blh.asyl']]);", ''],
   ['Asyl: Grundsicherungsgeld nicht ausgeschlossen', "    if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);\n    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);", "    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);"],
-  ['EU-Bürger: Grundsicherungsgeld nicht ausgeschlossen', "    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);\n    if (h.alter || h.erwerbsgemindert) {", '    if (h.alter || h.erwerbsgemindert) {'],
+  ['EU-Bürger: Grundsicherungsgeld nicht ausgeschlossen', "    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);\n    if (h.alter || h.emEltern) {", '    if (h.alter || h.emEltern) {'],
   ['KiZ: Wohnanteil Paar 2 Kinder 71,4 statt 71 %', 'wohnPaar: [1, 0.83, 0.71,', 'wohnPaar: [1, 0.83, 0.714,'],
   ['Bürgergeld: Freibetragsstufe 20 % fehlt', 'if (b > 100) f += 0.2 * (Math.min(b, 520) - 100);', ''],
   ['KiZ: Rentner allein mit Kindern unter 15 nicht ausgeschlossen (DA-KiZ D.2)', "if (h.kids14 === 0 && h.kidsAlter) return mk(id, 'nein', 'ausschluss',", "if (false) return mk(id, 'nein', 'ausschluss',"],
@@ -63,7 +63,7 @@ const M = [
   ['Elterngeld: Pauschbetrag beim Netto nach der Geburt fehlt (§ 2 Abs. 1 Satz 3 BEEG)', 'Math.max(0, o.nach - E.pausch)', 'o.nach'],
   // Abgleich Musterbescheide 21.11.2026: Befund 1 (Plausibilitätsprüfung Nr. 15.01 WoGVwV mit Wohngeld) und Befund 2 (Vermögen Paar je Person, § 12 Abs. 2 SGB II)
   ['Wohngeld: Mindesteinkommen ohne das Wohngeld selbst (Befund 1)', "- (h.uzBetrag || 0) + wgVorsichtig(h, yPess);", "- (h.uzBetrag || 0);"],
-  ['Grundsicherungsgeld: Paar-Vermögen mit Freibetrag der ältesten Person für beide (Befund 2)', "return h.adults === 2 && vMin && h.vermoegen > vMin ? hoechstensMoeglich(r, 'ggeld.vermAlter') : r;", 'return r;'],
+  ['Grundsicherungsgeld: Paar-Vermögen mit Freibetrag der ältesten Person für beide (Befund 2)', "const r2 = h.adults === 2 && vMin && h.vermoegen > vMin ? hoechstensMoeglich(r, 'ggeld.vermAlter') : r;", 'const r2 = r;'],
   ['Kinderzuschlag: Hilfebedürftigkeit mit vollem Netto statt bereinigtem Einkommen', '    const mitKiz = elternEinkSGB2(h) + h.children * R.kindergeld', '    const mitKiz = h.netto + 0 * h.children * R.kindergeld'],
   // Ausfüllhilfe: falsche Anlage, Name falsch geteilt
   ['Formulare: Anlage KDU fehlt bei Miete', "if (miete > 0 || eigen) anl.push('Anlage KDU", "if (eigen) anl.push('Anlage KDU", 'src/formulare.js'],

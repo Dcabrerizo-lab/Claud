@@ -207,6 +207,7 @@
     "aufenthalt",
     "ausbildung",
     "baby",
+    "bhPerson",
     "blind",
     "einkommen",
     "einkommen2",
@@ -216,7 +217,7 @@
     "vermoegen",
     "wfbm"
    ],
-   "quelle": "§ 4 RBeitrStV"
+   "quelle": "§ 4 RBeitrStV; bhPerson über die Befreiung bei Grundsicherungsgeld (§ 4 Abs. 1 Nr. 3 RBeitrStV): Werkstatt-Haken beim Kind ab 18 – der erwerbsfähige Elternteil bleibt beim Jobcenter (§ 7 Abs. 1, § 5 Abs. 2 SGB II, § 41 Abs. 3 SGB XII; seit 24.11.2026)"
   },
   "zuzahl": {
    "haengtAb": [

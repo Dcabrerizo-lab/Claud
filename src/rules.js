@@ -1304,9 +1304,15 @@ const Rules = (function () {
   function ggeldRechnung(h) {
     const id = 'ggeld';
     // Paar, eine Person über der Regelaltersgrenze oder voll erwerbsgemindert: gemischte Bedarfsgemeinschaft (siehe unten)
+    // Voll erwerbsgemindert ist hier der Elternteil bzw. eine erwachsene Person der Bedarfsgemeinschaft (h.emEltern), nicht ein Kind mit
+    // Behinderung (Werkstatt-Haken bei „Kind ab 18“). Ein dauerhaft voll erwerbsgemindertes Kind ab 18 bekommt eigene Grundsicherung nach
+    // § 41 Abs. 3 SGB XII und ist vom Sozialgeld ausgeschlossen (§ 5 Abs. 2 Satz 2, § 19 Abs. 1 Satz 2 SGB II); der erwerbsfähige Elternteil
+    // bleibt beim Jobcenter leistungsberechtigt (§ 7 Abs. 1 Satz 1 SGB II). Bis 24.11.2026 prüfte die App h.erwerbsgemindert und sagte
+    // Alleinerziehenden mit erwachsenem Kind in der Werkstatt fälschlich „nein, Sozialamt zuständig“ (Quellen: gesetze-im-internet.de/sgb_2/
+    // __7.html, __5.html, __19.html, sgb_12/__41.html, Abruf 24.11.2026).
     if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);
     if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);
-    if (h.alter || h.erwerbsgemindert) {
+    if (h.alter || h.emEltern) {
       // Paar: Die App kennt nur das Alter der ältesten Person bzw. weiß nur, dass EINE Person voll erwerbsgemindert ist. Die andere
       // Person kann erwerbsfähig sein und ist dann selbst beim Jobcenter leistungsberechtigt (§ 7 Abs. 1 Satz 1, Abs. 3 Nr. 3 SGB II);
       // die ältere bzw. DAUERHAFT voll erwerbsgeminderte Person bekommt Grundsicherung nach § 41 Abs. 2, 3 SGB XII (§ 7 Abs. 1 Satz 1 Nr. 1,
@@ -1336,8 +1342,17 @@ const Rules = (function () {
     // ggeldMin), ist es offen: höchstens „möglich“ mit Hinweis. Bis 21.11.2026 galt der Freibetrag der ältesten Person für beide.
     const vMin = vermGrenzen(h).ggeldMin;
     const r = ggeldRechnung0(h);
-    return h.adults === 2 && vMin && h.vermoegen > vMin ? hoechstensMoeglich(r, 'ggeld.vermAlter') : r;
+    const r2 = h.adults === 2 && vMin && h.vermoegen > vMin ? hoechstensMoeglich(r, 'ggeld.vermAlter') : r;
+    // Nur das erwachsene Kind ist voll erwerbsgemindert: Es bekommt eigene Grundsicherung beim Sozialamt; die App rechnet seinen Bedarf und
+    // sein Einkommen aber im Haushalt mit. Deshalb höchstens „möglich“ mit Hinweis ggeld.kindGsa.
+    if (!kindNurEM(h) || (r2.level !== 'ja' && r2.level !== 'vielleicht')) return r2;
+    // Bedarf bleibt vorn (Anzeige), geschätzter Betrag entfällt; Hinweis direkt danach
+    const tx = r2.tx.filter((t) => t[0].indexOf('schaetz.') !== 0).map((t) => (t[0] === 'bedarfJa' ? ['bedarfRand', t[1]] : t));
+    const out = mk(r2.id, 'vielleicht', 'vielleicht', tx.slice(0, 1).concat([['ggeld.kindGsa']], tx.slice(1)));
+    return r2.lage ? Object.defineProperty(out, 'lage', { value: r2.lage }) : out;
   }
+  // Voll erwerbsgemindert ist nur ein erwachsenes Kind mit Behinderung (Werkstatt-Haken bei „Kind ab 18“), nicht der Elternteil
+  const kindNurEM = (h) => !!h.erwerbsgemindert && !h.emEltern && (h.bhPerson === 'erwVor25' || h.bhPerson === 'erwNach25');
   function ggeldRechnung0(h) {
     const id = 'ggeld';
     const einkommen = elternEinkSGB2(h) + h.children * R.kindergeld + unterhaltAnrechenbar(h);
@@ -1346,7 +1361,7 @@ const Rules = (function () {
     const luecke = bedarf - einkommen;
     mb.offen += ma.offen;
     const behTx = (mb.fest ? [['mehr.teilhabe', { betrag: eur(mb.fest) }]] : []).concat(mb.offen - ma.offen ? [['ggeld.mehrBeh']] : [],
-      h.bhPerson === 'erwVor25' && h.erwerbsgemindert ? [['ggeld.kindGsa']] : [], ma.tx, h.schwanger ? [['mehr.erstausstattung']] : [],
+      ma.tx, h.schwanger ? [['mehr.erstausstattung']] : [],
       h.kids > 0 && h.land && h.land !== 'BY' ? [['ggeld.schulbuch']] : [], h.miete > 0 ? [['kdu.angemessen']] : []);
     let r;
     if (luecke >= R.grundsicherung.sicherAb) r = mk(id, 'ja', 'ja', bedarfTx('ja', bedarf).concat([['schaetz.eins', { a: eur(r10(luecke)) }]], behTx));
