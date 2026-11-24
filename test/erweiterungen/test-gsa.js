@@ -48,7 +48,9 @@ ok('Widerspruch Grundsicherung im Alter', /Widerspruch gegen den Bescheid über 
 let rnd = 777; const zuf = () => (rnd = (rnd * 1103515245 + 12345) % 2147483648) / 2147483648;
 let verglichen = 0;
 for (let i = 0; i < 1500; i++) {
-  const netto = Math.round(200 + zuf() * 1100), miete = Math.round((300 + zuf() * 600) / 10) * 10, gr = zuf() < 0.5;
+  // Miete höchstens 890 €: darüber deckelt die App seit 24.11.2026 auf das Eineinhalbfache der Orientierungsgrenze (Stufe III, 1 Person: etwa 894 €;
+  // § 35 Abs. 1 Satz 7 SGB XII), der Bescheid-Check rechnet mit der Miete laut Bescheid
+  const netto = Math.round(200 + zuf() * 1100), miete = Math.round((300 + zuf() * 590) / 10) * 10, gr = zuf() < 0.5;
   const brutto = Math.round(netto * 1.12);
   const inp = { adults: 1, kids: 0, art1: 'rente', brutto, netto, miete, mietstufe: '3', vermoegen: 0, alter: true, grundrente33: gr, bezug: {} };
   const app = Rules.evaluate(inp).results.find((x) => x.id === 'gsa');

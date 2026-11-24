@@ -49,6 +49,7 @@ function haushalt(e) {
   // Alter
   const jahr = Number(e.gebJahr) | 0;
   const heute = e.heute ? Number(e.heute) : new Date().getFullYear() + new Date().getMonth() / 12;
+  let gruppeAlt = '';
   let rente = !!e.alter, grenz = false, gruppe = { '<31': '<30', '31-40': '30-39', '41-50': '40-49', '51+': '50+', '<30': '<30', '30-39': '30-39', '40-49': '40-49', '50+': '50+' }[e.alterGruppe] || '', jahre = 0;
   if (jahr >= 1900 && jahr <= 2010) {
     const rag = regelaltersgrenze(jahr);
@@ -57,7 +58,12 @@ function haushalt(e) {
     const alter = heute - jahr - 0.5;
     jahre = alter; // vollendete Lebensjahre (Mitte des Geburtsjahres)
     gruppe = alter < 30 ? '<30' : alter < 40 ? '30-39' : alter < 50 ? '40-49' : '50+';
+    // § 12 Abs. 2 Satz 2 SGB II: Wer dieses Jahr 30, 40 oder 50 wird, hat je nach Geburtsmonat den kleineren oder größeren Freibetrag
+    const vor = Math.floor(heute) - jahr - 1, nach = vor + 1;
+    if ([30, 40, 50].indexOf(nach) >= 0) gruppeAlt = gruppe === (nach === 30 ? '30-39' : nach === 40 ? '40-49' : '50+') ? (vor < 30 ? '<30' : vor < 40 ? '30-39' : '40-49') : (nach === 30 ? '30-39' : nach === 40 ? '40-49' : '50+');
   }
+  // § 11b Abs. 2b SGB II: unter 25 in Ausbildung (Person 1): Minijob-Grenze statt 100 € frei; Alter unbekannt: offen
+  const azubi = e.ausbildung === 'ich' ? (jahre ? (jahre < 25 ? 'ja' : '') : (gruppe === '' || gruppe === '<30' ? 'evtl' : '')) : '';
   const regelEltern = erwachsene === 2 ? 2 * RB[2] : RB[1];
   const regelKinder = u6 * RB[6] + mitte * RB[5] + k14 * RB[4] + jung * RB[3];
   const personen = erwachsene + kinder + jung;
@@ -96,7 +102,7 @@ function haushalt(e) {
     mehrAE = prozent * RB[1];
   }
   const em = e.emStd === 'unter3' || !!e.wfbm || !!e.erwerbsgemindert || e.art1 === 'wfbm' || e.art2 === 'wfbm' || (Array.isArray(e.einkommen) && e.einkommen.some((x) => x.art === 'wfbm'));
-  return { e, erwachsene, kinder, jung, u6, k14, mitte, personen, brutto, brutto2, netto, p, rente, grenz, gruppe, jahre, em,
+  return { e, erwachsene, kinder, jung, u6, k14, mitte, personen, brutto, brutto2, netto, p, rente, grenz, gruppe, gruppeAlt, azubi, jahre, em,
     mini: minijobAm(heute), regelEltern, regel: regelEltern + regelKinder, regelKinder, miete: zahl(e.miete), vermoegen: zahl(e.vermoegen), unterhalt, waisen, azubiAnr, kindEink, uvg, uvgOffen, uvgOffenGG, mehrAE, uz, uzFest, uzDeckel,
     bezug: e.bezug || {}, kids: kinder + jung };
 }
@@ -107,22 +113,34 @@ function freibetragArbeit(b, mitKind) {
   const stufen = [[0, 100, 1], [100, 520, 0.2], [520, 1000, 0.3], [1000, mitKind ? 1500 : 1200, 0.1]];
   return stufen.reduce((s, [von, bis, q]) => s + Math.max(0, Math.min(b, bis) - von) * q, 0);
 }
-function elternEinkommenSGB2(h) {
+// § 11b Abs. 2b, Abs. 3 Satz 4 SGB II: Minijob-Grenze statt 100 €, ohne die Stufe 20 %
+function freibetragAzubi(b, mitKind, mini) {
+  const stufen = [[520, 1000, 0.3], [1000, mitKind ? 1500 : 1200, 0.1]];
+  return Math.min(b, Math.min(b, mini) + stufen.reduce((s, [von, bis, q]) => s + Math.max(0, Math.min(b, bis) - von) * q, 0));
+}
+function elternEinkommenSGB2(h, azubi) {
   let abzug = 0;
-  h.p.forEach((x) => {
-    if (x.art === 'lohn') abzug += freibetragArbeit(x.brutto, h.kinder > 0);
+  const az = azubi != null ? azubi : h.azubi === 'ja';
+  h.p.forEach((x, i) => {
+    if (x.art === 'lohn') abzug += i === 0 && az ? freibetragAzubi(x.brutto, h.kinder > 0, h.mini) : freibetragArbeit(x.brutto, h.kinder > 0);
     else if (x.art !== 'ohne' && x.brutto > 0) abzug += 30; // Versicherungspauschale
     if (x.art === 'eg' && x.brutto > 300 * egMehrlinge(h.e)) abzug += 300; // § 10 Abs. 5 BEEG: nur mit Einkommen vor der Geburt, bei Mehrlingen nicht vervielfacht
   });
   if (h.uzFest) abzug += h.uz; // § 11b Abs. 1 Satz 1 Nr. 7 SGB II
   return Math.max(0, h.netto - abzug);
 }
-// Einkommen der Kinder, das ihren Bedarf deckt (Überschuss mindert nicht den Bedarf der Eltern)
-function kinderEinkommen(h, extra) {
+// Einkommen der Kinder, das ihren Bedarf deckt (Überschuss mindert nicht den Bedarf der Eltern). § 11 Abs. 1 Satz 5 SGB II: zuerst das eigene
+// Einkommen des Kindes; Kindergeld nur, soweit noch Bedarf bleibt, der Rest zählt beim Elternteil (minus 30 €, wenn bei ihm noch keine
+// Pauschale abgeht). Rückgabe ohne Kindergeld (das zählt der Aufrufer voll). alt: frühere Reihenfolge (untere Grenze bei mehreren Kindern).
+function kinderEinkommen(h, extra, alt) {
   const e = h.unterhalt + h.waisen + h.uvg + (extra || 0) + Math.max(0, h.kindEink - h.mini);
   if (!e) return 0;
-  const bedarfKinder = h.regelKinder + h.miete * h.kids / h.personen - h.kids * KG;
-  return Math.min(e, Math.max(0, bedarfKinder));
+  const bedarf = Math.max(0, h.regelKinder + h.miete * h.kids / h.personen);
+  if (alt) return Math.min(kinderEinkommen(h, extra), Math.max(0, bedarf - h.kids * KG));
+  const anr = Math.min(e, bedarf);
+  const rest = Math.min(h.kids * KG, Math.max(0, h.kids * KG - (bedarf - anr)));
+  const pauschaleSchon = h.p.some((x, i) => (x.art !== 'lohn' && x.art !== 'ohne' && x.brutto > 0) || (i === 0 && x.art === 'lohn' && x.brutto >= 30));
+  return Math.max(0, anr - (rest > 0 && !pauschaleSchon ? Math.min(rest, 30) : 0));
 }
 
 // Regelsatz der Person mit Behinderung und Mehrbedarfe wegen Behinderung (§ 21 Abs. 4, § 23 Nr. 2 und 4 SGB II; § 30 Abs. 1 und 4 SGB XII)
@@ -184,17 +202,37 @@ function grundsicherungsgeld(h) {
   if (b.grundsicherungsgeld) return { level: 'na' };
   // Nur das erwachsene Kind voll erwerbsgemindert: der Bezug vom Sozialamt ist dann in der Regel der des Kindes und schließt den Elternteil nicht aus
   if (b.sozialamt && !kindNurEMRef(h)) return { level: 'nein' };
-  const jung = h.jahre ? h.jahre < 45 : (h.gruppe === '' || h.gruppe === '<30' || h.gruppe === '30-39');
-  if (h.e.ausbildung === 'ich' && !h.e.babBetrieb && jung) return { level: 'nein' };
-  const schon = { '': 10000, '<30': 5000, '30-39': 10000, '40-49': 12500, '50+': 20000 }[h.gruppe] * h.erwachsene + 5000 * h.kids;
+  // § 7 Abs. 5 SGB II: Ausschluss dem Grunde nach, unabhängig vom Alter (BSG B 14 AS 24/09 R); nur die Person in Ausbildung (Partner/Kinder:
+  // eigener Anspruch -> „möglich“ ohne Betrag); bei den Eltern § 7 Abs. 6 Nr. 2 -> weiter rechnen, höchstens „möglich“
+  const ausb = h.e.ausbildung === 'ich' && !h.e.babBetrieb, eltern = h.e.wohnform === 'eltern';
+  if (ausb && !eltern) return { level: h.erwachsene === 2 || h.kids > 0 ? 'vielleicht' : 'nein' };
+  const SCH = { '': 10000, '<30': 5000, '30-39': 10000, '40-49': 12500, '50+': 20000 };
+  const schonG = (g) => SCH[g] * h.erwachsene + 5000 * h.kids;
+  const schon = Math.max(schonG(h.gruppe), h.gruppeAlt ? schonG(h.gruppeAlt) : 0);
   if (h.vermoegen > schon) return { level: 'nein' };
+  // kleinste mögliche Grenze: erste Person ohne Alter unter 30 bzw. im Grenzjahr die kleinere Gruppe, weitere Personen unter 30
+  const erste = h.gruppe === '' ? 5000 : Math.min(SCH[h.gruppe], h.gruppeAlt ? SCH[h.gruppeAlt] : Infinity);
+  const vMin = erste + 5000 * (h.erwachsene - 1 + h.kids);
+  // Bei den Eltern unter 25 ohne Kind: Regelbedarfsstufe 3 (§ 20 Abs. 2 Satz 2 Nr. 1 SGB II)
+  const u25 = eltern && h.erwachsene === 1 && h.kids === 0 && h.jahre && h.jahre < 25;
+  const regel = h.regel - (u25 ? RB[1] - RB[3] : 0);
   const bm = behMehrSGB2(h), ms = mehrSonst(h);
-  const bedarf = h.regel + h.miete + h.mehrAE + bm.sicher + ms.sicher;
-  const eink = elternEinkommenSGB2(h) + h.kids * KG + kinderEinkommen(h);
+  const bedarf = regel + h.miete + h.mehrAE + bm.sicher + ms.sicher;
+  const hR = u25 ? { ...h, regel } : h;
+  const eink = elternEinkommenSGB2(h) + h.kids * KG + kinderEinkommen(hR);
   const luecke = bedarf - eink;
   // Befund G2: möglicher, nicht sicherer UVG (Einkommen des Kindes bis zu seinem Bedarf) -> „wahrscheinlich“ nur, wenn die Lücke bleibt
-  const offen = kinderEinkommen(h, h.uvgOffenGG) - kinderEinkommen(h);
-  const level = luecke >= 50 ? (luecke - offen >= 50 ? 'ja' : 'vielleicht') : luecke > -(100 + bm.moeglich + ms.moeglich) ? 'vielleicht' : 'nein';
+  const offen = kinderEinkommen(hR, h.uvgOffenGG) - kinderEinkommen(hR);
+  // Gegen ein falsches „nein“: Kinder ohne Altersangabe vielleicht 14 bis 17 (471 statt 390 €), Unterhalt bei mehreren Kindern, Freibetrag § 11b Abs. 2b
+  const altersAngabe = !!h.e.kidsAlter || (h.kinder > 0 && h.u6 === h.kinder);
+  const pAlter = altersAngabe ? 0 : h.mitte * (RB[4] - RB[5]);
+  const pUnt = h.kids > 1 ? kinderEinkommen(hR) - kinderEinkommen(hR, 0, true) : 0;
+  const p2b = h.azubi === 'evtl' && h.p[0].art === 'lohn' ? elternEinkommenSGB2(h, false) - elternEinkommenSGB2(h, true) : 0;
+  let level = luecke >= 50 ? (luecke - offen >= 50 ? 'ja' : 'vielleicht') : luecke > -(100 + bm.moeglich + ms.moeglich + pAlter + pUnt + p2b) ? 'vielleicht' : 'nein';
+  // höchstens „möglich“: bei den Eltern (§ 9 Abs. 2, 5 SGB II), BAB geht vor (§ 12a), volljähriges Kind in Schule/Studium (§ 7 Abs. 5, 6),
+  // EU früher gearbeitet (§ 2 Abs. 3 FreizügG/EU), Vermögen zwischen kleinster und größter Grenze (§ 12 Abs. 2)
+  const eu = h.e.aufenthalt === 'eu' && h.e.euJahre !== 'ab5' && h.e.euArbeit === 'ja' && !(h.e.art1 === 'selbst' || (h.erwachsene === 2 && h.e.art2 === 'selbst')) && !(h.p[0].art === 'lohn' && h.brutto > 0);
+  if (level === 'ja' && (eltern || (h.e.ausbildung === 'ich' && h.e.babBetrieb && h.e.babWohnt) || (h.e.ausbildung === 'kind' && h.jung > 0) || eu || h.vermoegen > vMin)) level = 'vielleicht';
   // § 7 Abs. 4 SGB II: Altersrente (auch vorgezogen) schließt aus; allein mit nur Rente, Alter unbekannt oder ab 60 -> höchstens „möglich“
   // Nur das erwachsene Kind voll erwerbsgemindert: eigene Grundsicherung, Haushalt trotzdem mitgerechnet -> höchstens „möglich“
   // Dann auch kein Bedarf und kein Betrag: beide enthielten das Kind, das Jobcenter rechnet meist ohne es (§ 5 Abs. 2 Satz 2, § 19 Abs. 1 Satz 2 SGB II)
@@ -456,8 +494,11 @@ function grundsicherungAlter(e) {
   bedarf += msG.sicher;
   const eink = einkommenSGB12(e, h) + (wf ? 0 : h.kids * KG + kinderEinkommen(h));
   const luecke = bedarf - eink;
-  let level = luecke >= 50 ? 'ja' : luecke > -(100 + unsicher) ? 'vielleicht' : 'nein';
+  const altersAngabe = !!e.kidsAlter || (h.kinder > 0 && h.u6 === h.kinder);
+  let level = luecke >= 50 ? 'ja' : luecke > -(100 + unsicher + (wf || altersAngabe ? 0 : h.mitte * (RB[4] - RB[5]))) ? 'vielleicht' : 'nein';
   if (h.grenz && level === 'ja') level = 'vielleicht';
+  // Gemischtes Paar: zweite Person mit Lohn oder Arbeitslosengeld, Kinder ab 14 oder volljährig -> Jobcenter für sie, höchstens „möglich“ ohne Betrag
+  if (!wf && level !== 'nein' && h.erwachsene === 2 && ((h.p[1].art === 'lohn' && h.p[1].brutto > 0) || h.p[1].art === 'alg' || h.jung > 0 || h.k14 > 0)) return { level: 'vielleicht' };
   // Konvention der App: Fehlt eine Angabe (Einkommen, Vermögen, Miete in der eigenen Wohnung), gibt es kein „wahrscheinlich“
   const fehlt = (!Array.isArray(e.einkommen) && leer(e.brutto) && leer(e.netto)) || leer(e.vermoegen) || (!wf && leer(e.miete));
   if (fehlt && level === 'ja') return { level: 'vielleicht' };
@@ -505,8 +546,7 @@ function uvgOhneAufenthalt(e, ggStufe) {
   // § 1 Abs. 1a: Nr. 2 eigenes Einkommen mindestens 600 €; sonst Nr. 1 nur sicher, wenn das Grundsicherungsgeld allein
   // an Einkommen oder Vermögen scheitert (kein Ausschluss wegen Rente, Erwerbsminderung, Studium, EU-Recht, Sozialamt)
   if (e.kinder12 && h.brutto - h.brutto2 < 600) {
-    const jung = h.jahre ? h.jahre < 45 : (h.gruppe === '' || h.gruppe === '<30' || h.gruppe === '30-39');
-    const ausgeschlossen = euAus(h) || h.rente || h.em || h.bezug.sozialamt || (e.ausbildung === 'ich' && !e.babBetrieb && jung);
+    const ausgeschlossen = euAus(h) || h.rente || h.em || h.bezug.sozialamt || (e.ausbildung === 'ich' && !e.babBetrieb);
     if (ausgeschlossen || (ggStufe || grundsicherungsgeldStufe(e)) !== 'nein') return OFFEN;
   }
   if (h.azubiAnr > 0 || (h.kinder === 1 && h.k14 > 0 && h.kindEink > UVG_WK)) return OFFEN;
@@ -565,6 +605,7 @@ function bafoeg0(e) {
   const a = e.ausbildung;
   if (a !== 'kind' && a !== 'kindBetrieb' && a !== 'ich') return { level: 'nein' };
   if (a === 'kindBetrieb') return { level: 'nein' };
+  if (a === 'ich' && e.babBetrieb) return { level: 'nein' }; // § 2 Abs. 1 BAföG: betriebliche Ausbildung -> BAB
   if (a === 'kind') {
     if (h.kids === 0) return { level: 'nein' };
     const frei = (h.erwachsene === 2 ? 2540 : 1690) + Math.max(0, h.kids - 1) * 770;
@@ -747,6 +788,25 @@ const ASYL_NEIN = ['ggeld', 'gsa', 'kiz', 'wbs'];
 // ausgeschlossen (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG) – eigene Prüfung im Raster-Test
 const ASYL_MOEGLICH = ['bafoeg', 'alg1', 'kgBeh', 'ausweis', 'blindengeld'];
 
+// ---------- Asylbewerberleistungen (§ 7 AsylbLG): Einkommen und Vermögen zuerst; frei 25 % vom Lohn (höchstens 50 % RS 1 je Erwachsenem),
+// 200 € Vermögen je Person. Bedarf grob: Regelbedarfe (SGB II, obere Grenze) plus Miete.
+function asylbewerber(e) {
+  const h = haushalt(e);
+  if (e.aufenthalt !== 'asyl' && e.aufenthalt !== 'ausreise') return { level: 'nein' };
+  const bezug = e.art1 === 'asylblg' || (h.erwachsene === 2 && e.art2 === 'asylblg') || (Array.isArray(e.einkommen) && e.einkommen.some((x) => x && x.art === 'asylblg'));
+  if (bezug) return { level: 'na' };
+  const bedarf = h.regel + h.miete;
+  let lohn = 0;
+  if (Array.isArray(e.einkommen)) e.einkommen.forEach((x) => { if (x && (x.art === 'lohn' || x.art === 'selbst')) lohn += leer(x.n) ? zahl(x.b) : zahl(x.n); });
+  else h.p.forEach((x) => { if (x.art === 'lohn' && h.brutto > 0) lohn += h.netto * x.brutto / h.brutto; });
+  const netto = Array.isArray(e.einkommen) ? e.einkommen.reduce((a, x) => a + (x ? (leer(x.n) ? zahl(x.b) : zahl(x.n)) : 0), 0) : h.netto;
+  const luecke = bedarf - Math.max(0, netto - Math.min(0.25 * lohn, 0.5 * RB[1] * h.erwachsene));
+  const ueber = h.vermoegen - 200 * h.personen;
+  if (ueber > bedarf || luecke < -100) return { level: 'nein' };
+  if (ueber > 0 || netto > 0 || luecke < 50) return { level: 'vielleicht' };
+  return { level: 'ja' };
+}
+
 // ---------- Künftige vorrangige Leistung der ersten Person (Arbeitslosengeld, Krankengeld, Elterngeld) ----------
 // Sie zählt bei Grundsicherungsgeld, Wohngeld und Kinderzuschlag als Einkommen (§ 11 SGB II, § 14 WoGG; Elterngeld über 300 €).
 // Zweiter Haushalt: Einkommen der ersten Person (Lohn oder keins) wird durch die Mitte der geschätzten Spanne ersetzt.
@@ -811,7 +871,9 @@ function wbs(e) {
   const erw = e.adults === 2 ? 2 : 1, kinder = Math.max(0, e.kids | 0) + Math.max(0, e.young | 0), n = erw + kinder;
   const kindEink = kinder > 0 ? zahl(e.kindEink) : 0;
   const jahr = (zahl(e.brutto) + kindEink) * 12;
-  const grenze = (t) => (n <= 1 ? t[0] : t[1] + (n - 2) * t[2]) + kinder * t[3];
+  // Art. 4 Abs. 1 Satz 4 BayWoBindG: Schwangerschaft zählt wie ein Kind (nur in Bayern)
+  const schw = (e.bundesland || 'BY') === 'BY' && (e.schwanger || e.baby === 'bald') ? 1 : 0;
+  const grenze = (t) => (n <= 1 ? t[0] : t[1] + (n - 2) * t[2]) + (kinder + (t === WBS_BY || t === WBS_BY_MAX ? schw : 0)) * t[3];
   const lohn1 = e.art1 === 'lohn' ? Math.max(0, zahl(e.brutto) - (erw === 2 ? zahl(e.brutto2) : 0)) : 0, lohn2 = erw === 2 && e.art2 === 'lohn' ? zahl(e.brutto2) : 0;
   const wk = Math.min(1230, lohn1 * 12) + Math.min(1230, lohn2 * 12) + Math.min(1230, kindEink * 12);
   const land = e.bundesland || 'BY';
@@ -892,4 +954,4 @@ if (require.main === module) {
   process.exit(v.fehler.length ? 1 : 0);
 }
 
-module.exports = { wbs, pfaendung, pkonto, vergleich, kappe, euAus, kduGrenze, kuenftig, zusammen, elterngeld, egAbgleich, egHaushalt, egNettoRef, svAN, EG_PAUSCH, EG_PAUSCH_RECHNER, grenze85, schon90, ASYL_NEIN, ASYL_MOEGLICH, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };
+module.exports = { asylbewerber, kdu15: (e) => { const g = kduGrenze(e); if (!g) return null; const st = Number(e.mietstufe), n = Math.min((e.adults === 2 ? 2 : 1) + Math.max(0, e.kids | 0) + Math.max(0, e.young | 0), 12); return hoechst(st, n) * 1.1 * 1.5 + heiz(n); }, wbs, pfaendung, pkonto, vergleich, kappe, euAus, kduGrenze, kuenftig, zusammen, elterngeld, egAbgleich, egHaushalt, egNettoRef, svAN, EG_PAUSCH, EG_PAUSCH_RECHNER, grenze85, schon90, ASYL_NEIN, ASYL_MOEGLICH, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };

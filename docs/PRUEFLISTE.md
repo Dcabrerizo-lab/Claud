@@ -33,9 +33,9 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Schüler und Azubis unter 25: Einkommen bis zur Minijob-Grenze frei (§ 11b Abs. 2b) | ✓ | `gg-azubi` |
 | Minijob-Grenze ab 1.1.2027: 633 € (Mindestlohn 14,60 €), die App schaltet am Stichtag selbst um (auch Krankengeld und Arbeitslosengeld) | ✓ | `minijob-2027` |
 | Weitere Beträge 2027 (Kindergeld 267 €, Grundfreibetrag 12.564 €, Regelsätze, Wohngeld, Pflegegeld) | ○ (Stand 20.11.2026 nur Entwürfe; werden nicht angezeigt, auch nicht als „geplant“ (Nutzerregel 20.11.2026: nur geltendes Recht); erst nach Verkündung und ab Stichtag einarbeiten; die App weist ab 1.1.2027 auf veraltete Regeln hin) | |
-| Schüler und Azubis über der Minijob-Grenze: auf den Teil darüber zusätzlich der Freibetrag nach Abs. 3 | ○ (die App rechnet vorsichtig ohne diesen Zusatz, der Betrag fällt also eher zu niedrig aus; von einer Fachperson bestätigen lassen) | |
+| Schüler, Studierende, Azubis und Freiwilligendienst unter 25 (Person selbst): Minijob-Grenze statt 100 € frei, dazu 30 % (520–1.000 €) und 10 % (bis 1.200/1.500 €), ohne die Stufe 20 % (§ 11b Abs. 2b, Abs. 3 Satz 4); Alter unbekannt: nur gegen ein falsches „eher nicht“ (Vollprüfung 24.11.2026, buzer.de, Abruf 24.11.2026) | ✓ | `rechtsmatrix-grusi` |
 | Elterngeld 300 € frei bei Einkommen vor der Geburt (§ 10 Abs. 5 BEEG) | ✓ | `gg-eg300` |
-| Unterhalt und Unterhaltsvorschuss als Einkommen der Kinder, gedeckelt auf ihren Bedarf | ✓ | `gg-unterhalt` |
+| Unterhalt und Unterhaltsvorschuss als Einkommen der Kinder, gedeckelt auf ihren Bedarf; Kindergeld nur, soweit das Kind es noch braucht, der Rest zählt beim Elternteil (minus 30 € Versicherungspauschale), § 11 Abs. 1 Satz 5; mehrere Kinder: für „eher nicht“ auch die kleinere Anrechnung (Vollprüfung 24.11.2026) | ✓ | `gg-unterhalt`, `rechtsmatrix-grusi` |
 | Selbst gezahlter Unterhalt: Abzug vom Einkommen, wenn festgelegt (Unterhaltstitel, Jugendamtsurkunde, notarielle Vereinbarung) und gezahlt (§ 11b Abs. 1 Satz 1 Nr. 7); ohne Titel kein Abzug, Hinweis | ✓ | `uz-sgb2` |
 | Unterhalt für die Person selbst (Trennungs- oder Ehegattenunterhalt, Unterhalt von den Eltern; Einkommensart „Unterhalt für dich“): voll Einkommen (§ 11 Abs. 1), kein Freibetrag für Arbeit, nur Versicherungspauschale 30 € (§ 6 Abs. 1 Nr. 1 Bürgergeld-V); Netto = Zahlbetrag ohne Steuer-/Beitragsschätzung | ✓ | `unt-sgb2` |
 | Zweites Einkommen je Person (auch bei Paaren, Liste mit Person 1/2): Freibetrag für Arbeit je erwerbstätiger Person aus der Summe ihrer Löhne (§ 11b Abs. 3; BA-FW Rz. 11.144, 11.15); Versicherungspauschale 30 € je Person ohne Lohn, bei Lohn unter 30 € nur der Rest (§ 6 Abs. 1 Nr. 1 GrusiGV; Rz. 11.155); beim Wohngeld Werbungskosten-Pauschbetrag einmal je Person (§ 9a EStG) und § 16-Abzug je Person; SGB-XII-Freibetrag für Arbeit je Person (§ 82 Abs. 3 SGB XII); KiZ-Mindesteinkommen aus allen Einkommen beider Eltern; Familienversicherung aus allen Einkommen von Person 2 | ✓ | `paar-ek` |
@@ -52,7 +52,11 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Mehrbedarf Schulbücher (§ 21 Abs. 6a); in Bayern Lernmittelfreiheit | ◐ | `gg-schulbuch` |
 | Angemessenheit der Miete nach örtlicher Richtlinie | ◐ | `gg-kdu` |
 | Ausschluss: Rentenalter oder volle Erwerbsminderung (Sozialamt zuständig, § 7 Abs. 1) | ✓ | `gg-alter` |
-| Ausschluss: Studium und förderfähige Ausbildung (§ 7 Abs. 5) | ✓ | `gg-studium` |
+| Ausschluss: Studium und förderfähige Ausbildung (§ 7 Abs. 5) dem Grunde nach, auch ab 45 ohne BAföG wegen des Alters (BSG 19.08.2010, B 14 AS 24/09 R); nur die Person selbst: mit Partner oder Kind „möglich“ ohne Betrag; bei den Eltern (§ 7 Abs. 6 Nr. 2) „möglich“; betriebliche Ausbildung: BAB geht vor, höchstens „möglich“; volljähriges Kind in Schule/Studium: höchstens „möglich“ (Vollprüfung 24.11.2026) | ✓ | `gg-studium`, `rechtsmatrix-grusi` |
+| Wohnen bei den Eltern (einfache Version): unter 25 ohne Kind Bedarfsgemeinschaft der Eltern, Regelbedarfsstufe 3 (§ 7 Abs. 3 Nr. 4, § 20 Abs. 2 Satz 2 Nr. 1); ab 25 Vermutung der Unterstützung (§ 9 Abs. 5): höchstens „möglich“ (Vollprüfung 24.11.2026) | ✓ | `rechtsmatrix-grusi` |
+| EU-Bürger, früher in Deutschland gearbeitet, jetzt ohne Arbeit, unter 5 Jahren: höchstens „möglich“ (Fortwirken des Arbeitnehmerstatus nur bei unfreiwilliger Arbeitslosigkeit, § 2 Abs. 3 FreizügG/EU) | ✓ | `rechtsmatrix-grusi` |
+| Schonvermögen ohne Geburtsjahr (unter 30 nur 5.000 €) und im Jahr des 30., 40. oder 50. Geburtstags (höherer Betrag erst ab dem Geburtsmonat, § 12 Abs. 2 Satz 2): zwischen kleinster und größter möglicher Grenze höchstens „möglich“ (Vollprüfung 24.11.2026) | ✓ | `rechtsmatrix-grusi` |
+| Unterkunftskosten über dem Eineinhalbfachen der angemessenen Grenze auch im ersten Jahr nicht anerkannt (§ 22 Abs. 1 Satz 6 SGB II, § 35 Abs. 1 Satz 7 SGB XII): Betrag mit höchstens 1,5 × Orientierungsgrenze gerechnet (Abruf 24.11.2026) | ✓ | `rechtsmatrix-grusi` |
 | Ausschluss: Asylbewerberleistungen (§ 7 Abs. 1 Satz 2 Nr. 3) | ✓ | `asyl-ausschluss` |
 | Unterhaltsvorschuss als Einkommen des Kindes (§ 11 Abs. 1 Satz 1, § 9 Abs. 2 SGB II; vorrangig § 12a): sicher erwarteter UVG mindert die Lücke (allein, Kind unter 6, 1.800 € Lohn: 640 -> 410 €); möglicher, nicht sicherer UVG (zweite Person ohne Angabe, anderer Elternteil bei mehreren Kindern) -> höchstens „möglich“ (Befund G2, Rechenplan; abgerufen 21.11.2026) | ✓ | `rechenbefunde-g2` |
 
@@ -74,14 +78,15 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Freibetrag für Betriebs-, Riester- und private Rente (§ 82 Abs. 4), Grundrentenfreibetrag nur auf die gesetzliche Rente | ✓ | `gsa-zusatzrente` |
 | Kinderzuschlag: anderes Elterneinkommen über dem Bedarf voll, Arbeitseinkommen zu 45 % (§ 6a Abs. 6 BKGG) | ✓ | `kiz-anderes` |
 | Versicherungspauschale 30 € einmal je Person, nicht neben Arbeitseinkommen (§ 6 Bürgergeld-V, § 11b Abs. 2 SGB II) | ✓ | `vpausch-person` |
-| Rundfunkbeitrag: Befreiung auch bei Blindenhilfe, Hilfe zur Pflege, BAföG nicht bei den Eltern (§ 4 Abs. 1 RBeitrStV) | ✓ | `rf-weitere` |
+| Rundfunkbeitrag: Befreiung auch bei Blindenhilfe, Hilfe zur Pflege, BAföG oder Berufsausbildungsbeihilfe nicht bei den Eltern (§ 4 Abs. 1 Nr. 5 RBeitrStV; BAB seit 24.11.2026) | ✓ | `rf-weitere`, `rechtsmatrix-grusi` |
 | Rundfunkbeitrag: Befreiung ab dem Monat, in dem der Bescheid gilt, rückwirkend höchstens 3 Jahre vor dem Antragsmonat, keine Zwei-Monats-Frist (§ 4 Abs. 4 RBeitrStV, abgerufen 21.11.2026; Text s.rundfunk.tip) | ✓ | `rf-frist` |
 | Grundrentenfreibetrag höchstens so hoch wie die Rente | ✓ | `gsa-grundrente-klein` |
 | Mehrbedarf G 17 % (§ 30 Abs. 1) | ✓ | `gsa-mb-g` |
 | Mehrbedarf Alleinerziehende (§ 30 Abs. 3) | ✓ | `gsa-mb-ae` |
 | Mehrbedarf 35 % bei Eingliederungshilfe für Schule oder Ausbildung (§ 30 Abs. 4), nicht neben G | ✓ | `gsa-mb-teilhabe` |
 | Mittagessen in der Werkstatt (§ 42b Abs. 2) | ◐ | `gsa-essen` |
-| Bei den Eltern: eigene Grundsicherung, Stufe 1, Wohnkosten anteilig (§ 42a Abs. 3); Einkommen der Eltern erst ab 100.000 € (§ 94 Abs. 1a) | ✓ / ◐ Wohnkosten | `gsa-eltern` |
+| Bei den Eltern: eigene Grundsicherung, Stufe 1, Wohnkosten anteilig (§ 42a Abs. 3); Einkommen der Eltern erst ab 100.000 € (§ 94 Abs. 1a); nur bei dauerhafter voller Erwerbsminderung, befristet: Hilfe zum Lebensunterhalt oder Sozialgeld, Einkommen der Eltern kann zählen (Text, seit 24.11.2026) | ✓ / ◐ Wohnkosten | `gsa-eltern` |
+| Gemischtes Paar: zweite Person mit Lohn oder Arbeitslosengeld, Kinder ab 14 oder volljährig -> sie gehören meist zum Jobcenter; Grundsicherung nur für die Person im Rentenalter bzw. voll erwerbsgemindert (§ 43 Abs. 1 SGB XII, § 7 Abs. 2, 3 SGB II): höchstens „möglich“ ohne Betrag (Vollprüfung 24.11.2026) | ◐ | `rechtsmatrix-grusi` |
 | Wohnheim: Stufe 2, Wohnkosten (§ 42a Abs. 5) | ✓ / ◐ Wohnkosten | `gsa-heim` |
 | Schonvermögen 10.000 € je Erwachsenem (Barbetragsverordnung) | ✓ | `gsa-verm` |
 | Merkzeichen G nur für eine Person abgefragt; bei Paaren Hinweis, dass der Mehrbedarf (17 %) mit zwei Ausweisen für jede Person gilt (§ 30 Abs. 1 SGB XII; Merkblatt Bochum Beispiel b); Bescheid-Check rechnet beide; abgerufen 21.11.2026 | ✓ | `gsa-g-paar` |
@@ -227,7 +232,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Vermögen über dem Freibetrag: nur der Rest, geteilt durch 12 Monate Bewilligungszeitraum, mindert das BAföG (§ 30 BAföG, bafög.de Beispiel „Stefan“): „möglich“ mit Hinweis und Betrag im Monat, „eher nicht“ erst über 12 × 1.088 €, Befund 11 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-bafoeg`, `bafoeg-verm`, `auto` |
 | Altersgrenze bei Beginn: 45. Lebensjahr noch nicht vollendet, also unter 45 (§ 10 Abs. 3, Abruf 21.11.2026), Ausnahmen möglich | ✓ | `bafoeg-alter` |
 | Grob geschätzter Betrag (nur Studium): Bedarf 475 € + 59/380 € Wohnen (§ 13), + 0 / 102 + 35 / bis 185 + 48 € KV/PV (§ 13a), + 160 € je eigenem Kind unter 14 (§ 14b) minus Anrechnung: Eltern §§ 21, 25 (Einkommen über 2.540/1.690 € + 770 € je Kind, davon 50 % − 5 % je Kind), Geschwister in Ausbildung § 11 Abs. 4 (Spanne über alle Fälle), eigenes Einkommen § 23 (389 € frei, Bek. 18.11.2025, BGBl. 2025 I Nr. 279), Ehegatte § 25 Abs. 1 Nr. 2, Vermögen §§ 29, 30; § 51 Abs. 3, 4 (Rundung, unter 10 € nichts). Unbekanntes als Spanne; Elternteil allein und Studierende unter 37 (§ 11 Abs. 3 Nr. 2: maßgeblich ist das Alter bei Beginn des Ausbildungsabschnitts, die App kennt nur das Alter heute): nur „bis etwa“. Annahme im Text `bafoeg.kindHinweis`: Erwachsene im Haushalt sind die Eltern, Einkommen wie heute. Amtlicher Abgleich (BAföG Digital, 200 Fälle, 21.11.2026): alle amtlichen Beträge in SoLos Spanne (`tools/amtlich-vergleich-bafoeg-eg.js`) | ✓ | `bafoeg-betrag` |
-| Betriebliche Ausbildung: kein BAföG, sondern Berufsausbildungsbeihilfe | ✓ | `bafoeg-betrieb` |
+| Betriebliche Ausbildung (Kind oder Person selbst, seit 24.11.2026 auch „Ich bin in Ausbildung“ mit Haken Ausbildungsberuf): kein BAföG, sondern Berufsausbildungsbeihilfe (§ 2 Abs. 1 BAföG, § 56 SGB III) | ✓ | `bafoeg-betrieb`, `rechtsmatrix-grusi` |
 | Einstufung beim Kind mit dem Einkommen nach § 21 BAföG statt Netto: Lohn mit Brutto = (Brutto − 102,50 €) − Sozialpauschale 22,3 % (höchstens 17.200 €/Jahr) − Steuer (Brutto − Netto − Beiträge); ohne Brutto „wahrscheinlich“ weiter mit dem Netto; für „wahrscheinlich“ als Steuer höchstens die Lohnsteuer nach Splitting (verheiratete Eltern, § 25 Abs. 1 Nr. 1) bzw. Steuerklasse II/I (§ 21 Abs. 1, 2 BAföG, abgerufen 21.11.2026; Befund B1, Prüfung 21.11.2026) | ✓ | `rechenbefunde-b1` |
 
 ## Berufsausbildungsbeihilfe (§§ 56 ff. SGB III)
@@ -405,7 +410,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Regel | Status | Test |
 |---|---|---|
 | Asylverfahren oder Duldung: WBS nur bei Möglichkeit eines dauerhaften Wohnsitzes (§ 27 Abs. 2 WoFG, Art. 14 Abs. 2 BayWoFG): „unwahrscheinlich“ mit Hinweis auf Ausnahmen (z. B. Ausbildungsduldung: VG Berlin, Urteil vom 25.06.2019, VG 8 K 202.18) und Wohnungsamt (Entscheidung David 20.11.2026; Abruf 20.11.2026) | ◐ | `wbs-asyl` |
-| Einkommensgrenzen nach Haushaltsgröße und Kindern; höhere Grenzen per Gebietsverordnung | ✓ | `wbs-grenze` |
+| Einkommensgrenzen nach Haushaltsgröße und Kindern; höhere Grenzen per Gebietsverordnung; Bayern: Schwangerschaft zählt wie ein Kind (Art. 4 Abs. 1 Satz 4 BayWoBindG, Abruf 24.11.2026) | ✓ | `wbs-grenze`, `rechtsmatrix-grusi` |
 | Freibetrag Schwerbehinderte: Bayern 4.000 € je Person mit GdB ab 50 (Art. 5 Abs. 2 Nr. 1 BayWoFG); andere Länder nach dem Muster § 24 WoFG (4.500 € / 2.100 €) | ✓ | `wbs-schwerb` |
 | Arbeitnehmer-Pauschbetrag 1.230 € je Person mit Lohn (und einmal für Einkommen der Kinder) vor den pauschalen 30 % abgezogen (Art. 6 Abs. 1 und 3 BayWoFG über Art. 4 Abs. 1 BayWoBindG; § 21, § 23 WoFG; § 9a Satz 1 Nr. 1 Buchst. a EStG; abgerufen 21.11.2026); nur für „möglich“ und „unwahrscheinlich“, „wahrscheinlich“ bleibt beim Brutto (Abgleich Runde 2, H2; SH-Tabelle ab 06.01.2026, Fußnote) | ✓ | `wbs-werbung` |
 | Freibetrag Schwerbehinderte nach § 24 WoFG (4.500 € / 2.100 €) | ✓ | `wbs-schwerb` |
@@ -465,6 +470,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Ausschluss vom Grundsicherungsgeld, von der Grundsicherung im Alter und vom Kinderzuschlag; Wohnberechtigungsschein „unwahrscheinlich“; Wohngeld nur ohne AsylbLG-Bezug (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG) | ✓ | `asyl-ausschluss` |
 | Einkommensart „Asylbewerberleistungen“ (nur bei Aufenthalt „asyl“ wählbar): Karte „bekommst du schon“, Wohngeld „unwahrscheinlich“ (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG), Bildung und Teilhabe „bekommst du“ über das Sozialamt (§ 3 Abs. 4 AsylbLG), Kita ohne Beitrag (§ 90 Abs. 4 Satz 2 SGB VIII), Rundfunkbeitrag befreit (§ 4 Abs. 1 Nr. 4 RBeitrStV); Zuzahlung unverändert „möglich“ (Abruf 20.11.2026) | ✓ | `asyl-bezug` |
 | Höhe der Leistungen (Bedarfsstufen, Sachleistungen in Unterkünften) | ○ (hängt von der Unterbringung ab; die Stelle rechnet) | |
+| Einkommen und Vermögen zuerst (§ 7 AsylbLG): frei 25 % vom Lohn (höchstens 50 % der Bedarfsstufe), 200 € Vermögen je Person; grobe Rechnung mit Regelbedarfen plus Miete: mit Einkommen oder Vermögen höchstens „möglich“, klar gedeckt „eher nicht“ (Vollprüfung 24.11.2026, buzer.de, Abruf 24.11.2026) | ◐ | `rechtsmatrix-grusi` |
 
 ## Zuständige Stellen außerhalb Bayerns
 <!-- karten: -->

@@ -17,7 +17,7 @@
   "cb.bhSelbst": "Die Person mit Behinderung kann sich wegen der Behinderung nicht selbst versorgen. Sie hat kein oder nur sehr wenig eigenes Einkommen.",
   "cb.em5": "Diese Person hat mindestens 5 Jahre in die Rentenversicherung eingezahlt. Davon waren 3 Jahre in den letzten 5 Jahren.",
   "cb.babBetrieb": "Ich mache eine Berufsausbildung (Azubi). Der Beruf ist ein anerkannter Ausbildungsberuf.",
-  "cb.babWohnt": "Ich wohne wegen der Ausbildung nicht bei meinen Eltern. Oder ich bin mindestens 18, verheiratet oder habe ein Kind.",
+  "cb.babWohnt": "Ich wohne nicht bei meinen Eltern. Bin ich unter 18 (nicht verheiratet, kein Kind)? Dann nur, weil der Ausbildungsort von dort zu weit weg ist.",
   "u.arzt": "Berichte vom Arzt, Gutachten oder Schwerbehindertenausweis",
   "u.steuerid": "Steuer-Identifikationsnummer (bei Kindergeld auch die Nummer des Kindes)",
   "u.rentenverlauf": "Versicherungsnummer und Angaben zu deinen bisherigen Arbeitsstellen",
