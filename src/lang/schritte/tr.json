@@ -70,7 +70,7 @@
   "sf.q.euJahre": "Ne zamandan beri Almanya’da yaşıyorsun?",
   "sf.q.pflege": "Hanede Pflegegrad (bakım derecesi) olan biri var mı?",
   "sf.q.bhPerson": "Hanede engelli biri var mı?",
-  "sf.h.bhPerson": "18 yaş ve üstü çocuk: sadece engel 25. doğum gününden önce varsa (Kindergeld için önemli). Yoksa „yetişkin bir kişi“ seç. Kendin bir atölyede çalışıyorsan, „yetişkin bir kişi“yi seç.",
+  "sf.h.bhPerson": "18 yaş ve üstü çocuk: sadece engel 25. doğum gününden önce varsa (Kindergeld için önemli). Yoksa „bir yetişkin“ seç. Kendin bir atölyede çalışıyorsan, „bir yetişkin“i seç.",
   "sf.q.gdb": "Hangi engellilik derecesi (GdB) tespit edildi?",
   "sf.mehrere": "Birden fazla cevap seçebilirsin",
   "sf.oder": "veya",
