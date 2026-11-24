@@ -624,7 +624,7 @@
   "lg.ausb": "Training and studies",
   "c.leer": "No details yet",
   "warn.netto": "The amount paid into your account is higher than gross. This is almost always a typo: please check.",
-  "bh.person.hint": "Child aged 18+: only if the disability already existed before the 25th birthday (important for Kindergeld). Otherwise choose “an adult”.",
+  "bh.person.hint": "Child aged 18+: only if the disability already existed before the 25th birthday (important for Kindergeld). Otherwise choose “an adult”. If you yourself work in a workshop, choose “an adult”.",
   "bh.gdb.hint": "Shown in the decision from the Versorgungsamt or ZBFS, or on the Schwerbehindertenausweis.",
   "geb.label": "In what year was the oldest adult born?",
   "warn.geb": "Please enter a 4-digit year of birth, for example 1962.",
@@ -710,7 +710,7 @@
   "ek.betrag.hint.unt": "Maintenance for the adult themselves, not for the children: for example Trennungsunterhalt (maintenance during separation), maintenance after divorce, or maintenance from parents for young adults. Enter the amount that is actually paid.",
   "t.schaetz.mind": "Rough estimate: at least {a} per month.",
   "t.gsa.essen": "In addition there is an extra allowance for lunch at the workshop.",
-  "t.gsa.eltern": "If you live with your parents, you get Grundsicherung for yourself alone. Your parents' income does not count (only from 100,000 € a year). A share of the housing costs is added.",
+  "t.gsa.eltern": "If you live with your parents, you can get Grundsicherung for yourself alone. Your parents' income does not count (only if a parent has more than 100,000 € a year). A share of the housing costs is added.",
   "t.gsa.heim": "In a residential home, Grundsicherung pays the standard rate and housing costs. The Sozialamt settles the housing costs with the home.",
   "t.wohngeld.eltern": "If you live with your parents, you belong to their household. Your parents then apply for Wohngeld for everyone. For you alone, Grundsicherung is usually right.",
   "t.wohngeld.heim": "In a residential home, Grundsicherung comes first.",
@@ -1678,5 +1678,10 @@
   "fw.gsa": "At the Sozialamt of the city or district; many have their own form on their website. But an informal application also counts – a letter is enough",
   "fw.wbs.BY": "Bavaria: form WBS I from the Staatsministerium (on the right under “Formulare”) or online application; Munich has its own procedure (SOWON)",
   "fw.wbs.sonst": "This state has no uniform form. You get it from the Wohnungsamt (in smaller places the Bauamt or Bürgerbüro) of your city or municipality, usually also on its website under “Wohnberechtigungsschein”",
-  "fw.wbs.leer": "Enter your federal state or postcode; then SoLo tells you where to get the application"
+  "fw.wbs.leer": "Enter your federal state or postcode; then SoLo tells you where to get the application",
+  "t.gsa.kindU18": "This Grundsicherung only exists from age 18. A child under 18 is counted in the help for the family.",
+  "t.wohngeld.kindGsa": "If only your adult child gets Grundsicherung from the Sozialamt, only the child is excluded from Wohngeld. For the others, Wohngeld is possible, calculated without the child. That is why we do not give an amount.",
+  "t.kiz.kindGsa": "If only your adult child gets Grundsicherung from the Sozialamt, this does not rule out the Kinderzuschlag from the start. The Familienkasse calculates without the child. That is why we do not give an amount.",
+  "t.rundfunk.kindGsa": "Your child's exemption does not apply to you.",
+  "t.ggeld.emWer": "If you yourself work in the workshop, the Sozialamt is usually responsible. If it is your adult child, the Jobcenter may be responsible for you. That is why we do not give an amount."
 }

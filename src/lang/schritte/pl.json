@@ -70,7 +70,7 @@
   "sf.q.euJahre": "Od kiedy mieszkasz w Niemczech?",
   "sf.q.pflege": "Czy ktoś w gospodarstwie domowym ma Pflegegrad (stopień niesamodzielności)?",
   "sf.q.bhPerson": "Czy ktoś w gospodarstwie domowym ma niepełnosprawność?",
-  "sf.h.bhPerson": "Dziecko od 18 lat: tylko jeśli niepełnosprawność istniała przed 25. urodzinami (ważne dla Kindergeld). W przeciwnym razie wybierz „osoba dorosła”.",
+  "sf.h.bhPerson": "Dziecko od 18 lat: tylko jeśli niepełnosprawność istniała przed 25. urodzinami (ważne dla Kindergeld). W przeciwnym razie wybierz „osoba dorosła”. Jeśli sam pracujesz w warsztacie, wybierz „osoba dorosła”.",
   "sf.q.gdb": "Jaki stopień niepełnosprawności (GdB) stwierdzono?",
   "sf.mehrere": "Możesz wybrać kilka odpowiedzi",
   "sf.oder": "lub",

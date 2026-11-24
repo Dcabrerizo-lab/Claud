@@ -624,7 +624,7 @@
   "lg.ausb": "Tababarka xirfadeed iyo jaamacadda",
   "c.leer": "Weli xog ma jirto",
   "warn.netto": "Qadarka akoonka ku jira wuxuu ka badan yahay brutto-ga. Had iyo jeer waa khalad qoraal: fadlan hubi.",
-  "bh.person.hint": "Ilmo 18 jir ah ama ka weyn: oo keliya haddii naafonimadu jirtay ka hor dhalashada 25-aad (muhiim u ah Kindergeld). Haddii kale dooro „qof weyn“.",
+  "bh.person.hint": "Ilmo 18 jir ah ama ka weyn: oo keliya haddii naafonimadu jirtay ka hor dhalashada 25-aad (muhiim u ah Kindergeld). Haddii kale dooro „qof weyn“. Haddii adigu aad ka shaqeyso goob-shaqo, dooro „qof weyn“.",
   "bh.gdb.hint": "Wuxuu ku qoran yahay go'aanka (Bescheid) Versorgungsamt ama ZBFS ama Schwerbehindertenausweis.",
   "geb.label": "Sannadkee ayuu dhashay qofka ugu weyn ee waaweyn?",
   "warn.geb": "Fadlan geli sannad dhalasho oo 4 god ah, tusaale ahaan 1962.",
@@ -710,7 +710,7 @@
   "ek.betrag.hint.unt": "Masruuf qofka weyn laftiisa, ee aan carruurta ahayn: tusaale Trennungsunterhalt (masruufka kala tagga), masruufka furriinka kadib ama masruuf waalidka uga yimaada dhallinyarada waaweyn. Qor qadarka dhab ahaan la bixiyo.",
   "t.schaetz.mind": "Qiyaas guud: ugu yaraan {a} bishii.",
   "t.gsa.essen": "Intaas waxaa dheer baahi dheeri ah (Mehrbedarf) oo cuntada qadada ee Werkstatt-ka ah.",
-  "t.gsa.eltern": "Qofka la nool waalidiinta wuxuu Grundsicherung u helaa naftiisa oo keliya. Dakhliga waalidiinta lama xisaabiyo (oo keliya laga bilaabo 100.000 € sannadkii). Intaas waxaa dheer qayb ka mid ah kharashka hoyga.",
+  "t.gsa.eltern": "Qofka la nool waalidiinta wuxuu Grundsicherung u heli karaa naftiisa oo keliya. Dakhliga waalidiinta lama xisaabiyo (oo keliya haddii mid ka mid ah waalidiinta uu sannadkii haysto in ka badan 100.000 €). Intaas waxaa dheer qayb ka mid ah kharashka hoyga.",
   "t.gsa.heim": "Hoyga wadajirka ah (Wohnheim), Grundsicherung waxay bixisaa Regelsatz (qadarka caadiga ah) iyo kharashka hoyga. Sozialamt ayaa kharashka hoyga la xisaabiya Wohnheim-ka.",
   "t.wohngeld.eltern": "Qofka la nool waalidiinta wuxuu ka mid yahay qoyskooda. Markaas Wohngeld waxaa u codsada waalidiinta dhammaan. Adiga keligaa, inta badan Grundsicherung ayaa ku habboon.",
   "t.wohngeld.heim": "Wohnheim-ka, Grundsicherung ayaa mudnaanta leh.",
@@ -1678,5 +1678,10 @@
   "fw.gsa": "Sozialamt magaalada ama degmada; qaar badan waxay leeyihiin foom bogga internetka. Laakiin codsi aan rasmi ahayn sidoo kale waa ansax, warqad ayaa ku filan",
   "fw.wbs.BY": "Bayern: foomka WBS I ee Staatsministerium (midig hoostiisa „Formulare“) ama codsi online; München waxay leedahay hab gaar ah (SOWON)",
   "fw.wbs.sonst": "Gobolkan foom mideysan ma leh. Waxaad ka helaysaa Wohnungsamt (meelaha yaryar Bauamt ama Bürgerbüro) magaaladaada ama degmadaada, badanaa bogga internetka hoostiisa „Wohnberechtigungsschein“",
-  "fw.wbs.leer": "Geli gobolkaaga ama koodhka boostada; markaas SoLo ayaa kuu sheegaya halka codsiga laga helo"
+  "fw.wbs.leer": "Geli gobolkaaga ama koodhka boostada; markaas SoLo ayaa kuu sheegaya halka codsiga laga helo",
+  "t.gsa.kindU18": "Grundsicherung-kan waxaa jira oo keliya laga bilaabo 18 sano. Ilmo ka yar 18 waxaa lagu xisaabiyaa caawimaadyada qoyska.",
+  "t.wohngeld.kindGsa": "Haddii ilmahaaga qaangaarka ah oo keliya uu Grundsicherung ka helo Sozialamt, ilmaha oo keliya ayaa laga reebay Wohngeld. Kuwa kale Wohngeld waa suurtagal, iyadoo ilmaha aan la tirin. Sidaas darteed lacag ma sheegno.",
+  "t.kiz.kindGsa": "Haddii ilmahaaga qaangaarka ah oo keliya uu Grundsicherung ka helo Sozialamt, taasi bilowga kama reebayso Kinderzuschlag. Familienkasse waxay xisaabisaa iyadoo ilmaha aan la tirin. Sidaas darteed lacag ma sheegno.",
+  "t.rundfunk.kindGsa": "Dhaafidda ilmahaaga adiga kuma khuseyso.",
+  "t.ggeld.emWer": "Haddii adigu aad ka shaqeyso goobta shaqada, badanaa Sozialamt ayaa mas'uul ah. Haddii uu yahay ilmahaaga qaangaarka ah, Jobcenter ayaa laga yaabaa inuu adiga kuu mas'uul yahay. Sidaas darteed lacag ma sheegno."
 }

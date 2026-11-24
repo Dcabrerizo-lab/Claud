@@ -624,7 +624,7 @@
   "lg.ausb": "Formare profesională și studii",
   "c.leer": "Nicio informație încă",
   "warn.netto": "Suma netă este mai mare decât cea brută. Aproape mereu este o greșeală de tastare: verifică.",
-  "bh.person.hint": "Copil de peste 18 ani: doar dacă dizabilitatea exista înainte de 25 de ani (important pentru Kindergeld). Altfel alege „o persoană adultă”.",
+  "bh.person.hint": "Copil de peste 18 ani: doar dacă dizabilitatea exista înainte de 25 de ani (important pentru Kindergeld). Altfel alege „o persoană adultă”. Dacă lucrezi tu însuți într-un atelier, alege „o persoană adultă”.",
   "bh.gdb.hint": "Apare în decizia Versorgungsamt sau ZBFS ori în Schwerbehindertenausweis.",
   "geb.label": "În ce an s-a născut cea mai în vârstă persoană adultă?",
   "warn.geb": "Introdu un an de naștere cu 4 cifre, de exemplu 1962.",
@@ -710,7 +710,7 @@
   "ek.betrag.hint.unt": "Întreținere pentru adultul însuși, nu pentru copii: de exemplu Trennungsunterhalt (întreținere pe durata separării), întreținere după divorț sau întreținere de la părinți pentru tineri adulți. Trece suma plătită efectiv.",
   "t.schaetz.mind": "Estimare aproximativă: cel puțin {a} pe lună.",
   "t.gsa.essen": "Se adaugă un necesar suplimentar pentru prânzul la atelier.",
-  "t.gsa.eltern": "Cine locuiește cu părinții primește Grundsicherung doar pentru sine. Venitul părinților nu contează (abia de la 100.000 € pe an). Se adaugă o parte din costurile locuinței.",
+  "t.gsa.eltern": "Cine locuiește cu părinții poate primi Grundsicherung doar pentru sine. Venitul părinților nu contează (abia dacă un părinte are mai mult de 100.000 € pe an). Se adaugă o parte din costurile locuinței.",
   "t.gsa.heim": "În cămin, Grundsicherung plătește suma standard și costurile locuinței. Sozialamt decontează costurile cu căminul.",
   "t.wohngeld.eltern": "Cine locuiește cu părinții face parte din gospodăria lor. Atunci părinții cer Wohngeld pentru toți. Pentru tine singur, de obicei potrivită este Grundsicherung.",
   "t.wohngeld.heim": "În cămin, Grundsicherung are prioritate.",
@@ -1678,5 +1678,10 @@
   "fw.gsa": "La Sozialamt din oraș sau district; multe au propriul formular pe site. Dar și o cerere informală e valabilă, o scrisoare ajunge",
   "fw.wbs.BY": "Bavaria: formularul WBS I al Staatsministerium (în dreapta, la „Formulare”) sau cerere online; la München există o procedură proprie (SOWON)",
   "fw.wbs.sonst": "În acest land nu există un formular unic. Îl primești de la Wohnungsamt (în localități mici de la Bauamt sau Bürgerbüro) din orașul sau comuna ta, de obicei și pe site la „Wohnberechtigungsschein”",
-  "fw.wbs.leer": "Spune landul sau codul poștal; atunci SoLo îți spune unde găsești cererea"
+  "fw.wbs.leer": "Spune landul sau codul poștal; atunci SoLo îți spune unde găsești cererea",
+  "t.gsa.kindU18": "Această Grundsicherung există abia de la 18 ani. Un copil sub 18 ani este socotit la ajutoarele pentru familie.",
+  "t.wohngeld.kindGsa": "Dacă doar copilul tău adult primește Grundsicherung de la Sozialamt, doar copilul este exclus de la Wohngeld. Pentru ceilalți, Wohngeld este posibil, calculat fără copil. De aceea nu dăm o sumă.",
+  "t.kiz.kindGsa": "Dacă doar copilul tău adult primește Grundsicherung de la Sozialamt, asta nu exclude de la început Kinderzuschlag. Familienkasse calculează fără copil. De aceea nu dăm o sumă.",
+  "t.rundfunk.kindGsa": "Scutirea copilului tău nu se aplică și ție.",
+  "t.ggeld.emWer": "Dacă lucrezi tu însuți în atelier, de obicei răspunde Sozialamt. Dacă este copilul tău adult, pentru tine poate răspunde Jobcenter. De aceea nu dăm o sumă."
 }

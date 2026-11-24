@@ -624,7 +624,7 @@
   "lg.ausb": "Ausbildung und Studium",
   "c.leer": "Noch keine Angaben",
   "warn.netto": "Der Betrag auf dem Konto ist höher als das Brutto. Das ist fast immer ein Tippfehler: bitte prüfen.",
-  "bh.person.hint": "Kind ab 18: nur wenn die Behinderung schon vor dem 25. Geburtstag bestand (wichtig für das Kindergeld). Sonst „eine erwachsene Person“ wählen.",
+  "bh.person.hint": "Kind ab 18: nur wenn die Behinderung schon vor dem 25. Geburtstag bestand (wichtig für das Kindergeld). Sonst „eine erwachsene Person“ wählen. Arbeitest du selbst in einer Werkstatt, wähle „eine erwachsene Person“.",
   "bh.gdb.hint": "Steht im Bescheid des Versorgungsamts bzw. ZBFS oder im Schwerbehindertenausweis.",
   "geb.label": "In welchem Jahr ist die älteste erwachsene Person geboren?",
   "warn.geb": "Bitte ein Geburtsjahr mit 4 Ziffern eintragen, zum Beispiel 1962.",
@@ -710,7 +710,7 @@
   "ek.betrag.hint.unt": "Unterhalt für die erwachsene Person selbst, nicht für die Kinder: zum Beispiel Trennungsunterhalt, Unterhalt nach der Scheidung oder Unterhalt von den Eltern für junge Erwachsene. Den Betrag eintragen, der wirklich gezahlt wird.",
   "t.schaetz.mind": "Grob geschätzt: mindestens {a} im Monat.",
   "t.gsa.essen": "Dazu kommt ein Mehrbedarf für das Mittagessen in der Werkstatt.",
-  "t.gsa.eltern": "Wer bei den Eltern wohnt, bekommt die Grundsicherung für sich allein. Das Einkommen der Eltern zählt nicht (erst ab 100.000 € im Jahr). Dazu kommt ein Anteil an den Wohnkosten.",
+  "t.gsa.eltern": "Wer bei den Eltern wohnt, kann die Grundsicherung für sich allein bekommen. Das Einkommen der Eltern zählt nicht (erst wenn ein Elternteil mehr als 100.000 € im Jahr hat). Dazu kommt ein Anteil an den Wohnkosten.",
   "t.gsa.heim": "Im Wohnheim zahlt die Grundsicherung den Regelsatz und die Wohnkosten. Das Sozialamt rechnet die Wohnkosten mit dem Wohnheim ab.",
   "t.wohngeld.eltern": "Wer bei den Eltern wohnt, gehört zu deren Haushalt. Wohngeld beantragen dann die Eltern für alle. Für dich allein ist meist die Grundsicherung richtig.",
   "t.wohngeld.heim": "Im Wohnheim geht die Grundsicherung vor.",
@@ -1678,5 +1678,10 @@
   "fw.gsa": "Beim Sozialamt der Stadt oder des Landkreises; viele Sozialämter haben einen eigenen Vordruck auf ihrer Internetseite. Der Antrag gilt aber auch formlos, ein Brief reicht",
   "fw.wbs.BY": "Bayern: Vordruck WBS I des Staatsministeriums (rechts unter „Formulare“) oder Onlineantrag; in München gilt ein eigenes Verfahren (SOWON)",
   "fw.wbs.sonst": "In diesem Land gibt es keinen einheitlichen Landesvordruck. Du bekommst ihn beim Wohnungsamt (in kleineren Orten beim Bauamt oder Bürgerbüro) deiner Stadt oder Gemeinde, meist auch auf deren Internetseite unter „Wohnberechtigungsschein“",
-  "fw.wbs.leer": "Gib dein Bundesland oder deine Postleitzahl an; dann sagt SoLo, wo es den Antrag gibt"
+  "fw.wbs.leer": "Gib dein Bundesland oder deine Postleitzahl an; dann sagt SoLo, wo es den Antrag gibt",
+  "t.gsa.kindU18": "Diese Grundsicherung gibt es erst ab 18 Jahren. Ein Kind unter 18 zählt bei den Hilfen für die Familie mit.",
+  "t.wohngeld.kindGsa": "Bekommt nur dein erwachsenes Kind Grundsicherung vom Sozialamt, ist nur das Kind vom Wohngeld ausgeschlossen. Für die anderen ist Wohngeld möglich, gerechnet ohne das Kind. Darum nennen wir keinen Betrag.",
+  "t.kiz.kindGsa": "Bekommt nur dein erwachsenes Kind Grundsicherung vom Sozialamt, schließt das den Kinderzuschlag nicht von vornherein aus. Die Familienkasse rechnet ohne das Kind. Darum nennen wir keinen Betrag.",
+  "t.rundfunk.kindGsa": "Die Befreiung deines Kindes gilt nicht für dich.",
+  "t.ggeld.emWer": "Arbeitest du selbst in der Werkstatt, ist meist das Sozialamt zuständig. Ist es dein erwachsenes Kind, kann für dich das Jobcenter zuständig sein. Darum nennen wir keinen Betrag."
 }

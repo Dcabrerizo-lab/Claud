@@ -109,8 +109,12 @@ require(need(path.join(MODS, 'esbuild'))).buildSync({
 // Inline-Ereignisattribute wären ebenfalls blockiert: onsubmit="return false" wird zu data-kein-senden (src/app.js verhindert das Absenden).
 fs.mkdirSync(path.join(WWW, 'js'), { recursive: true });
 let skriptNr = 0;
+// Nur Leerraum und Kommentare entfernen (keine Umbenennung, keine Umformung): die Blöcke teilen sich globale Namen, deshalb nur
+// minifyWhitespace. Spart beim Start Platz (Startgrenze 3 MB, test/app-test.js „sprachladen“) ohne Verhaltensänderung.
+const esbuildApp = require(need(path.join(MODS, 'esbuild')));
 html = html.replace(/<script>([\s\S]*?)<\/script>/g, (m, code) => {
   const name = 'js/s' + (++skriptNr) + '.js';
+  code = esbuildApp.transformSync(code, { minifyWhitespace: true, legalComments: 'none', target: 'es2019', charset: 'utf8' }).code;
   fs.writeFileSync(path.join(WWW, name), code);
   return '<script src="' + name + '"></script>';
 });

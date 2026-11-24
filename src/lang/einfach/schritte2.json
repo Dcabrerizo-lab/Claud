@@ -62,7 +62,7 @@
   "sf.q.euJahre": "=",
   "sf.q.pflege": "=",
   "sf.q.bhPerson": "=",
-  "sf.h.bhPerson": "Ist das Kind schon 18 oder älter? Dann nur, wenn die Behinderung schon vor dem 25. Geburtstag da war. Das ist wichtig für das Kindergeld. Sonst wähle „eine erwachsene Person“.",
+  "sf.h.bhPerson": "Ist das Kind schon 18 oder älter? Dann nur, wenn die Behinderung schon vor dem 25. Geburtstag da war. Das ist wichtig für das Kindergeld. Sonst wähle „eine erwachsene Person“. Du arbeitest selbst in einer Werkstatt? Dann wähle „eine erwachsene Person“.",
   "sf.q.gdb": "=",
   "sf.mehrere": "Du kannst mehr als eine Antwort wählen.",
   "sf.oder": "=",
