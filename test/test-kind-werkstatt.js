@@ -81,6 +81,14 @@ ck('Kind mit eigener Grundsicherung: Wohngeld höchstens „möglich“, Hinweis
 ck('Kind mit eigener Grundsicherung: Kinderzuschlag nicht „nein“ wegen Ausschluss', m.kiz.hl !== 'ausschluss', m.kiz);
 ck('Kind mit eigener Grundsicherung: Kinderzuschlag höchstens „möglich“', m.kiz.level !== 'ja', m.kiz);
 ck('Kind mit eigener Grundsicherung: Rundfunk nicht „bekommst du“, Hinweis', m.rundfunk.level !== 'ja' && hat(m.rundfunk, 'rundfunk.kindGsa'), m.rundfunk);
+// Unabhängige Prüfung 24.11.2026: Bildung und Teilhabe nicht „bekommst du“, wenn nur das erwachsene Kind Grundsicherung bekommt (§ 42 Nr. 3
+// SGB XII: nur für das Kind selbst; Geschwister über § 28 SGB II, § 6b BKGG), höchstens „möglich“
+ck('[kind-werkstatt] Kind mit eigener Grundsicherung: Bildung und Teilhabe nicht „bekommst du“', m.but.level !== 'ja' && !hat(m.but, 'but.bezug'), m.but);
+// Einziges Kind ist das Kind mit eigener Grundsicherung: kein Kinderzuschlag (DA-KiZ B.2 Abs. 2 Satz 8), kein Bildungspaket (kein Schüler)
+m = run({ adults: 1, young: 1, bhPerson: 'erwVor25', wfbm: true, netto: 1700, brutto: 2300, art1: 'lohn', miete: 900, vermoegen: 0, bezug: { sozialamt: true } });
+ck('Einziges Kind mit eigener Grundsicherung: Kinderzuschlag „nein“', m.kiz.level === 'nein', m.kiz);
+ck('Einziges Kind in der Werkstatt: Bildung und Teilhabe „nein“', m.but.level === 'nein' && hat(m.but, 'but.azubi'), m.but);
+ck('Einziges Kind mit eigener Grundsicherung: Wohngeld für den Elternteil nicht „nein“ wegen Ausschluss', m.wohngeld.hl !== 'ausschluss', m.wohngeld);
 // Gegenprobe: eigener Bezug vom Sozialamt (ohne Kind in der Werkstatt) bleibt Ausschluss bzw. Befreiung
 m = run({ adults: 1, kids: 1, netto: 300, brutto: 300, art1: 'minijob', bezug: { sozialamt: true } });
 ck('Eigener Bezug vom Sozialamt: Wohngeld weiter „nein“ (Ausschluss)', m.wohngeld.level === 'nein' && hat(m.wohngeld, 'wohngeld.ausschluss'), m.wohngeld);

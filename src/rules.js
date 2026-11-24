@@ -1174,6 +1174,9 @@ const Rules = (function () {
   // ein erwerbsfähiger Elternteil oder ein Kind ab 15. Altersrentner (Regelaltersgrenze, auch vorgezogene Altersrente, § 7 Abs. 4 SGB II)
   // und voll Erwerbsgeminderte zählen nicht.
   function kinderzuschlag(h) {
+    // Einziges Kind ist das erwachsene Kind mit eigener Grundsicherung vom Sozialamt: für dieses Kind gibt es keinen Kinderzuschlag
+    // (DA-KiZ vom 20.02.2026, B.2 Abs. 2 Satz 8, https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf, Abruf 24.11.2026): weiter „nein“.
+    if (sozialamtKind(h) && h.children === 1) return mk('kiz', 'nein', 'ausschluss', [['kiz.ausschluss']]);
     const r = kinderzuschlag0(h);
     return sozialamtKind(h) ? ohneKindBetrag(r, 'kiz.kindGsa') : r;
   }
@@ -1467,7 +1470,13 @@ const Rules = (function () {
     // (https://www.gesetze-im-internet.de/sgb_8/__90.html, .../__22.html, Abruf 20.11.2026)
     const betreuung = (h.kidsU6 > 0 ? [['but.kita']] : []).concat(h.kids > h.kidsU6 ? [['but.hort']] : []);
     const inhalt = h.young === 0 && h.kids > 0 && h.kidsU6 === h.kids ? ['but.inhaltKlein', { teil: eur(R.but.teilhabeMonat) }] : ['but.inhalt', { schul: eur(R.but.schulbedarf), teil: eur(R.but.teilhabeMonat) }];
-    if (h.bezug.grundsicherungsgeld || h.bezug.sozialamt || h.bezug.kiz || h.bezug.wohngeld) {
+    // Einziges Kind ist das erwachsene Kind in der Werkstatt: kein Schüler im Sinn von § 28 Abs. 1 Satz 2 SGB II, § 34 Abs. 1 SGB XII
+    if (h.children === 1 && h.young === 1 && kindNurEM(h)) return mk(id, 'nein', 'vorausFehlt', [['but.azubi']]);
+    // Grundsicherung vom Sozialamt nur des erwachsenen Kindes (sozialamtKind): Sie umfasst Bildung und Teilhabe nur für das Kind selbst
+    // (§ 42 Nr. 3 SGB XII), nicht für Geschwister. Für diese hängt der Anspruch an Grundsicherungsgeld, Kinderzuschlag oder Wohngeld
+    // (§ 28 SGB II, § 6b Abs. 1 BKGG; gesetze-im-internet.de/sgb_12/__42.html, bkgg_1996/__6b.html, Abruf 24.11.2026): kein „bekommst du“,
+    // sondern weiter unten nach den drei Karten (dort höchstens „möglich“). Bis 24.11.2026: „bekommst du“.
+    if (h.bezug.grundsicherungsgeld || sozialamtEigen(h) || h.bezug.kiz || h.bezug.wohngeld) {
       return mk(id, 'ja', 'ja', [['but.bezug'], inhalt].concat(betreuung));
     }
     // § 3 Abs. 4 AsylbLG: Bildung und Teilhabe auch mit Asylbewerberleistungen (entsprechend §§ 34, 34a, 34b SGB XII), nach 36 Monaten

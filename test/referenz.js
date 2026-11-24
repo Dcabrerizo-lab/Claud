@@ -326,6 +326,8 @@ function kinderzuschlag(h) {
   const b = h.bezug;
   if (h.kids === 0) return { level: 'nein' };
   // Nur das erwachsene Kind bekommt Grundsicherung vom Sozialamt: kein Ausschluss der Eltern, höchstens „möglich“
+  // Einziges Kind: für das Kind mit eigener Grundsicherung gibt es keinen Kinderzuschlag (DA-KiZ 20.02.2026 B.2 Abs. 2 Satz 8) -> „nein“
+  if (b.sozialamt && kindNurEMRef(h) && h.kids === 1) return { level: 'nein' };
   if (b.sozialamt && kindNurEMRef(h)) { const r = kinderzuschlag(haushalt({ ...h.e, bezug: { ...h.e.bezug, sozialamt: false } })); return { level: r.level === 'ja' ? 'vielleicht' : r.level }; }
   if (b.grundsicherungsgeld || b.sozialamt) return { level: 'nein' };
   if (b.kiz) return { level: 'na' };
