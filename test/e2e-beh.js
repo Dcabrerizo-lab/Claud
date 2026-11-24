@@ -47,8 +47,8 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
   c = await card('Eingliederungshilfe'); ok('Eingliederungshilfe möglich', c && c.pill === 'vielleicht');
   ok('Kein Wert "undefined" auf der Seite', !(await p.evaluate(() => /undefined|NaN|\{\w+\}/.test(document.getElementById('cards').textContent))));
 
-  // Fall 2: blind
-  await sel('blind', 'blind');
+  // Fall 2: blind (Bundesland Bayern: ohne Bundesland nennt die App seit der Vollprüfung 24.11.2026 nur eine Spanne)
+  await sel('bundesland', 'BY'); await sel('blind', 'blind');
   c = await card('Landesblindengeld'); ok('Blindengeld 809 €', c && c.pill === 'ja' && /809 €/.test(c.text), JSON.stringify(c));
   await sel('pflegegrad', '2'); c = await card('Landesblindengeld'); ok('Anrechnung 159,62 € bei Pflegegrad 2 (ZBFS)', /159,62 €/.test(c.text) && /649,38 €/.test(c.text), c.text);
   await sel('pflegegrad', '3'); c = await card('Landesblindengeld'); ok('Pflegegrad 3: 33 % von 599 € = 197,67 € (Art. 4 BayBlindG)', /197,67 €/.test(c.text), c.text);
