@@ -14,7 +14,7 @@ const lies = (f) => JSON.parse(fs.readFileSync(f, 'utf8'));
 // Gewollt fehlende Übersetzungen: die App zeigt dort Deutsch (lang="de" dir="ltr") mit Hinweis „nur auf Deutsch“.
 // Pflege in Somali und Paschtu: Entscheidung David 21.11.2026 – erst nach Prüfung durch Muttersprachler;
 // die Entwürfe liegen in docs/entwuerfe/sprachen/pflege-wartet/ und kommen nicht in die App.
-const FALLBACK_DE = { pflege: ['so', 'ps'] };
+const FALLBACK_DE = { pflege: ['so', 'ps'], senioren: ['so', 'ps'] };
 let fehler = 0, geprueft = 0;
 const fail = (t) => { fehler++; console.log('FAIL ' + t); };
 

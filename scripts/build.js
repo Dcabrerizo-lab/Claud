@@ -22,7 +22,7 @@ const VARIANTEN = {
   solo: { name: 'SoLo', kurzname: 'SoLo', appId: 'com.Sozialleistungslotse', datei: 'sozialleistungslotse.html', i18n: 'i18n.js', sprachOrdner: [], skripte: [], teile: null, ohne: [] },
   pflege: {
     name: 'SoLo Pflege & Rente', kurzname: 'SoLo Pflege', titel: 'SoLo <span class="sub">Pflege &amp; Rente</span>', appId: 'com.Sozialleistungslotse.pflege', datei: 'solo-pflege.html', i18n: 'i18n-pflege.js',
-    sprachOrdner: ['sen-ui', 'senioren', 'vorlesen', 'sie'], skripte: ['senioren.js', 'vorlesen.js'], teile: 'pflege.html',
+    sprachOrdner: ['sen-ui', 'senioren', 'vorlesen', 'sen-ux', 'sie'], skripte: ['senioren.js', 'vorlesen.js'], teile: 'pflege.html',
     // Teile, die es in SoLo Pflege nicht gibt (Startgröße unter 3 MB): Module und ihre Texte; src/app.js prüft window.Ausziehen/window.Haushalt
     ohne: ['ausziehen', 'haushalt']
   }

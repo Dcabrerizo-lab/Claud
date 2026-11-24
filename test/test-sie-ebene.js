@@ -61,7 +61,7 @@ SPRACHEN.forEach((l) => {
   const o = lies(l);
   Object.entries(o).forEach(([k, t]) => {
     ok(`${l} ${k}: Schlüssel in der Grundfassung`, k in GRUND.de);
-    ok(`${l} ${k}: kein Schlüssel der neuen Namensräume (sen-ui, senioren, vorlesen)`, !neu.has(k));
+    ok(`${l} ${k}: kein Schlüssel der neuen Namensräume der Variante (sen-ui, senioren, vorlesen, sen-ux …)`, !neu.has(k));
     const basis = l === 'de' ? GRUND.de[k] : l === 'einfach' ? (GRUND_EINF[k] !== undefined ? GRUND_EINF[k] : GRUND.de[k]) : GRUND[l][k];
     ok(`${l} ${k}: Grundtext vorhanden`, typeof basis === 'string', basis);
     ok(`${l} ${k}: Text nicht leer`, typeof t === 'string' && t.trim() !== '');

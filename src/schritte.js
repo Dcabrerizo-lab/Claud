@@ -146,7 +146,7 @@ var Schritte = (function () {
   function opts(f, s) { return typeof f.opts === 'function' ? f.opts(s) : f.opts; }
   function label(o) { return typeof o[1] === 'function' ? o[1]() : /^[a-zA-Z]/.test(o[1]) && /\./.test(o[1]) ? t(o[1]) : o[1]; }
   function felder(f, s) { return f.felder.filter(function (x) { return !x[2] || x[2](s); }); }
-  function feldWert(f, s, k) { return f.bezug ? !!(s.bezug && s.bezug[k]) : !!s[k]; }
+  function feldWert(f, s, k) { if (f.get) return !!f.get(s, k); return f.bezug ? !!(s.bezug && s.bezug[k]) : !!s[k]; } // f.get/f.set: eigene Ablage (Sammelfrage der Pflege-Variante)
 
   // ---------- Werte setzen (wie die Bedienelemente des Formulars in app.js bind()) ----------
   function setze(f, v) {
@@ -212,7 +212,10 @@ var Schritte = (function () {
         '<p class="es-link sf-kurz">' + knopf('linkbtn', '<span data-t="einfach.btn">' + esc(t('einfach.btn')) + '</span>', ' id="einfachBtn" aria-pressed="false"') + '</p>';
     }
     // Startwahl ohne Angaben: nichts zu löschen (UX-Audit A, Aufgabe 11); die App blendet den Knopf ein, sobald es Angaben gibt (render in app.js)
-    return h + knopf('linkbtn sf-loeschen', esc(t('l.link')), ' id="clearLink"' + (!weg && !ctx.begonnen() ? ' hidden' : '')) + '</div>';
+    h += knopf('linkbtn sf-loeschen', esc(t('l.link')), ' id="clearLink"' + (!weg && !ctx.begonnen() ? ' hidden' : ''));
+    // ctx.leisteZu (Pflege-Variante): Wegwahl, Kurzer Check und „Angaben löschen“ zugeklappt unter „Weitere Möglichkeiten“ (weniger auf einmal)
+    if (ctx.leisteZu && weg) h = h.replace('<div class="sf-leiste" id="sfLeiste">', '<div class="sf-leiste sf-leiste-zu" id="sfLeiste"><details class="mehr sf-mehr"><summary>' + esc(t('sux.mehr')) + '</summary><div class="sf-mehr-innen">') + '</div></details>';
+    return h + '</div>';
   }
   function leisteEinsetzen() {
     var k = box.querySelector('.sf-kopf');
@@ -325,7 +328,7 @@ var Schritte = (function () {
       box.querySelectorAll('[data-k]').forEach(function (b) {
         b.addEventListener('click', function () {
           var k = b.getAttribute('data-k'), s2 = S(), an;
-          if (f.bezug) { s2.bezug = s2.bezug || {}; an = s2.bezug[k] = !s2.bezug[k]; } else an = s2[k] = !s2[k];
+          if (f.set) { an = !feldWert(f, s2, k); f.set(s2, k, an); } else if (f.bezug) { s2.bezug = s2.bezug || {}; an = s2.bezug[k] = !s2.bezug[k]; } else an = s2[k] = !s2[k];
           b.classList.toggle('an', an); b.setAttribute('aria-checked', String(an));
           var n = q('#sfNichts'); n.classList.remove('an'); n.setAttribute('aria-checked', 'false');
           ja[f.id] = true; ctx.geaendert(f.id);
@@ -334,7 +337,7 @@ var Schritte = (function () {
       q('#sfWeiter').addEventListener('click', function () { ja[f.id] = true; ctx.speichern(); weiter(f.id); });
       q('#sfNichts').addEventListener('click', function () {
         var s2 = S();
-        f.felder.forEach(function (x) { if (f.bezug) { s2.bezug = s2.bezug || {}; s2.bezug[x[0]] = false; } else s2[x[0]] = false; });
+        f.felder.forEach(function (x) { if (f.set) f.set(s2, x[0], false); else if (f.bezug) { s2.bezug = s2.bezug || {}; s2.bezug[x[0]] = false; } else s2[x[0]] = false; });
         box.querySelectorAll('[data-k]').forEach(function (x) { x.classList.remove('an'); x.setAttribute('aria-checked', 'false'); });
         var n = q('#sfNichts'); n.classList.add('an'); n.setAttribute('aria-checked', 'true');
         ja[f.id] = true; ctx.geaendert(f.id); setTimeout(function () { weiter(f.id); }, VERZ);
@@ -363,6 +366,9 @@ var Schritte = (function () {
           var grenze = f.id === 'vermoegen' || f.id === 'autoWert' ? 1000000 : 15000;
           if (v > grenze && warnOk !== f.id + ':' + v) { warnOk = f.id + ':' + v; melde(t('sf.warn.hoch', { v: ctx.euro(v) }), false); return; }
         }
+        // Zusätzliche Plausibilitätshinweise (ctx.plausibel, Pflege-Variante): freundlich, einmal; beim zweiten „Weiter“ gilt die Eingabe
+        var pl = ctx.plausibel ? ctx.plausibel(f, v, S()) : '';
+        if (pl && warnOk !== 'p:' + f.id + ':' + v) { warnOk = 'p:' + f.id + ':' + v; melde(pl, false); return; }
         setze(f, v); weiter(f.id);
       };
       q('#sfWeiter').addEventListener('click', ok);
@@ -459,7 +465,8 @@ var Schritte = (function () {
   return {
     FRAGEN: FRAGEN,
     // ctx: t, state, begonnen(), geaendert(id), speichern(), app(), formKopf(), ergebnisKopf(), euro(v), parse(s), roman(n), plz(p), plzDa(), laender(), kurzAn(), wegSpeichern(w)
-    init: function (c, el) { ctx = c; box = el; if (c.verzoegerung != null) VERZ = c.verzoegerung; },
+    // c.fragen(liste): eigene Fragenliste einer App-Variante (z. B. kürzerer Pfad in „SoLo Pflege“); ohne c.fragen gilt FRAGEN unverändert
+    init: function (c, el) { ctx = c; box = el; if (c.verzoegerung != null) VERZ = c.verzoegerung; if (typeof c.fragen === 'function') FRAGEN = c.fragen(FRAGEN.slice()); },
     // gespeicherte Wahl des Weges (pro Gerät); ohne Wahl: im Beratungsmodus gleich „Alles auf einer Seite“
     wegLaden: function (w, beratung) { weg = w === 'schritt' || w === 'alles' ? w : (beratung ? 'alles' : ''); render(false); },
     weg: function () { return weg; },
