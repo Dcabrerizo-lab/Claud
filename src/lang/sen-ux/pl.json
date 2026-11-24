@@ -45,6 +45,6 @@
   "l.einsOhne": "Usuń moje dane",
   "l.einsKurz": "Dane, terminy i zaznaczenia w tej aplikacji. Inne zapisane sprawy pozostają.",
   "l.kurzZurueck": "Potem przez pół minuty można jeszcze cofnąć usunięcie.",
-  "sux.brief.t": "Sprawdzenie decyzji kasy opiekuńczej (Pflegekasse), ubezpieczenia emerytalnego lub urzędu i napisanie sprzeciwu.",
-  "sux.briefA.t": "Sprawdzenie pism z kasy opiekuńczej (Pflegekasse) lub urzędu dla osoby, którą Pan/Pani się opiekuje, i napisanie sprzeciwu."
+  "sux.brief.t": "Sprawdzenie decyzji kasy ubezpieczenia pielęgnacyjnego (Pflegekasse), ubezpieczenia emerytalnego lub urzędu i napisanie sprzeciwu.",
+  "sux.briefA.t": "Sprawdzenie pism z kasy ubezpieczenia pielęgnacyjnego (Pflegekasse) lub urzędu do osoby, którą się Pan/Pani opiekuje, i napisanie sprzeciwu."
 }
