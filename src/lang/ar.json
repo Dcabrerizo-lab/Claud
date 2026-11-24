@@ -1056,7 +1056,7 @@
   "t.zuk.ueberbruecken": "إلى أن تصل الدفعة الأولى، يمكن أن يسدّ Grundsicherungsgeld الفترة. قدّم الطلبين فورًا.",
   "z.zuk.alg": "قدّم أولًا طلب Arbeitslosengeld: فهو مقدَّم على Grundsicherungsgeld ويُحتسب دخلًا في Grundsicherungsgeld وWohngeld وKinderzuschlag. تُظهر البطاقات ما الذي يتغير عندها.",
   "z.zuk.kg": "إعانة Krankengeld مقدَّمة على Grundsicherungsgeld وتُحتسب دخلًا في Grundsicherungsgeld وWohngeld وKinderzuschlag. تُظهر البطاقات ما الذي يتغير عندها.",
-  "z.zuk.eg": "قدّم طلب Elterngeld في الوقت المناسب بعد الولادة: ما يزيد على 300 € يُحتسب دخلًا في Grundsicherungsgeld وWohngeld وKinderzuschlag. تُظهر البطاقات ما الذي يتغير عندها.",
+  "z.zuk.eg": "قدّم طلب Elterngeld في الوقت المناسب بعد الولادة. يُحتسب دخلًا: في Wohngeld الجزء الذي يزيد على 300 € (ElterngeldPlus ما يزيد على 150 €). في Grundsicherungsgeld وKinderzuschlag يبقى معفى فقط بقدر ما كنت تكسب قبل الولادة، بحد أقصى 300 € (ElterngeldPlus 150 €). تُظهر البطاقات ما الذي يتغير عندها.",
   "t.kg.antraglos": "جديد منذ 2027: للطفل المولود حديثًا يمكن لـ Familienkasse أن تدفع Kindergeld دون طلب، إذا توفرت لديها البيانات من Bundeszentralamt für Steuern. إذا لم تتواصل معك Familienkasse بعد الولادة، فقدّم الطلب بنفسك.",
   "t.wg.frueh": "نصيحة: يُصرف Wohngeld فقط ابتداءً من شهر تقديم الطلب. لذلك قدّم الطلب مبكرًا.",
   "z.grenzen": "محسوب تقريبيًا أو غير محسوب: الحد الأعلى الدقيق للإيجار في مدينتك، والدخل المتقلب بشدة، والنفقة من الأقارب، والحالات الخاصة في قانون الإقامة. إذا انطبق شيء من ذلك، فاطلب الاستشارة، مثلًا مجانًا لدى خدمة الاستشارة الاجتماعية في المدينة أو لدى منظمات الرعاية.",

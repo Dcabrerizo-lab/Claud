@@ -78,7 +78,7 @@ const M = [
   ['Asyl: Kindergeld sicher statt möglich', "if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['kindergeld.asyl']]);", ''],
   ['Landespflegegeld: noch 1.000 € statt 500 €', "lpg: { betrag: 500, stand: '2026' }", "lpg: { betrag: 1000, stand: '2026' }"],
   ['Landespflegegeld auch außerhalb Bayerns', "if (h.land && h.land !== 'BY') return mk(id, 'nein', 'land', [['lpg.land']]);", ''],
-  ['Familiengeld-Hinweis auch außerhalb Bayerns', "const bay = (!h.land || h.land === 'BY') && h.kidsU6 > 0 && h.heute < 2028;", 'const bay = h.kidsU6 > 0;'],
+  ['Familiengeld-Hinweis auch außerhalb Bayerns', "const bay = (!h.land || h.land === 'BY') && h.kidsU6 > (h.babyDa || 0) && h.heute < 2028;", 'const bay = h.kidsU6 > (h.babyDa || 0);'],
   ['Landesblindengeld außerhalb Bayerns wieder „schon vorhanden“', "if (h.blind !== 'blind') return mk(id, 'vielleicht', 'vielleicht', [['blindengeld.hochLand']]);", "return mk(id, 'na', 'land', [['land.blindengeld']]);"],
   ['Minijob-Grenze 2027 nicht umgestellt', 'minijob: heute >= 2027 ? R.minijob2027 : R.minijob,', 'minijob: R.minijob,'],
   ['Kinderkrankentage 2027 nicht umgestellt', 'const T = h.heute >= 2027 ? R.kkg[2027] : R.kkg[2026];', 'const T = R.kkg[2026];'],

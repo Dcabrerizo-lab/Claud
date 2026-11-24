@@ -271,7 +271,10 @@ function grundsicherungsgeld(h) {
   // Dann auch kein Bedarf und kein Betrag: beide enthielten das Kind, das Jobcenter rechnet meist ohne es (§ 5 Abs. 2 Satz 2, § 19 Abs. 1 Satz 2 SGB II)
   if (kindNurEMRef(h) && level !== 'nein') return { level: 'vielleicht' };
   // Angezeigter Betrag mit 25 € Sofortzuschlag je Kind (§ 72 SGB II, Fassung ab 1.7.2026, Abruf 24.11.2026); kein Bedarf, nur zusätzlich
-  return { level: level === 'ja' && h.erwachsene === 1 && nurRenteAb60(h) ? 'vielleicht' : level, bedarf, luecke: luecke + 25 * h.kids };
+  // Sofortzuschlag nicht, wenn die Kinder ihren Bedarf (Regelbedarf + Kopfteil Miete) schon mit eigenem Einkommen ohne Kindergeld decken
+  const kindEigen = h.unterhalt + h.waisen + h.uvg + Math.max(0, h.kindEink - h.mini);
+  const sofort = h.kids > 0 && kindEigen >= h.regelKinder + h.miete * h.kids / h.personen ? 0 : 25 * h.kids;
+  return { level: level === 'ja' && h.erwachsene === 1 && nurRenteAb60(h) ? 'vielleicht' : level, bedarf, luecke: luecke + sofort };
 }
 
 // ---------- Wohngeld (WoGG) ----------
@@ -654,7 +657,7 @@ function bafoeg0(e) {
   if (a === 'kindBetrieb') return { level: 'nein' };
   if (a === 'ich' && e.babBetrieb) return { level: 'nein' }; // § 2 Abs. 1 BAföG: betriebliche Ausbildung -> BAB
   if (a === 'kind') {
-    if (h.kids === 0) return { level: 'nein' };
+    if (h.kids - babyKinder(e) === 0) return { level: 'nein' }; // das Baby ist kein Kind in Ausbildung
     const frei = (h.erwachsene === 2 ? 2540 : 1690) + Math.max(0, h.kids - 1) * 770;
     // § 25 Abs. 4 BAföG: vom Einkommen über dem Freibetrag 50 % frei, je weiteres Kind mit Freibetrag 5 % mehr; „nein“ erst, wenn der Rest
     // den höchsten Bedarf (475 + 380 + 185 + 48 = 1.088 €, §§ 13, 13a Abs. 2) übersteigt

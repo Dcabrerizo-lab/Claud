@@ -1056,7 +1056,7 @@
   "t.zuk.ueberbruecken": "Until the first payment arrives, Grundsicherungsgeld can bridge the gap. Submit both applications right away.",
   "z.zuk.alg": "Apply for Arbeitslosengeld first: it takes priority over Grundsicherungsgeld and counts as income for Grundsicherungsgeld, Wohngeld and Kinderzuschlag. The cards show what changes then.",
   "z.zuk.kg": "Krankengeld takes priority over Grundsicherungsgeld and counts as income for Grundsicherungsgeld, Wohngeld and Kinderzuschlag. The cards show what changes then.",
-  "z.zuk.eg": "Apply for Elterngeld in time after the birth: above 300 € it counts as income for Grundsicherungsgeld, Wohngeld and Kinderzuschlag. The cards show what changes then.",
+  "z.zuk.eg": "Apply for Elterngeld in time after the birth. It counts as income: for Wohngeld the part above 300 € (ElterngeldPlus above 150 €). For Grundsicherungsgeld and Kinderzuschlag, only as much as you earned before the birth stays free, at most 300 € (ElterngeldPlus 150 €). The cards show what changes then.",
   "t.kg.antraglos": "New since 2027: for a newborn child, the Familienkasse can pay Kindergeld without an application if it has the data from the Bundeszentralamt für Steuern. If the Familienkasse does not contact you after the birth, apply yourself.",
   "t.wg.frueh": "Tip: Wohngeld is only paid from the month of the application. So apply early.",
   "z.grenzen": "Calculated roughly or not at all: the exact rent limit of your city, strongly fluctuating income, maintenance from relatives and special cases of residence law. If any of this applies, get advice, for example free of charge from a social counselling service of your city or a welfare organisation.",

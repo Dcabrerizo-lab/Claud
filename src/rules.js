@@ -167,7 +167,7 @@ const Rules = (function () {
     // Beitragsbemessung (z. B. Beitragsbemessungsgrenzen) bleiben außer Betracht (§ 2f Abs. 1 bis 3 BEEG,
     // https://www.gesetze-im-internet.de/beeg/__2f.html, Abruf 21.11.2026). Steuern nach § 2e BEEG (https://www.gesetze-im-internet.de/beeg/__2e.html,
     // Abruf 21.11.2026) mit der Steuerklasse aus der Zeit vor der Geburt; siehe egNettoAmtlich. (svPausch steht am Ende von eg.)
-    eg: { pausch: 1230 / 12, bonus: 0.1, bonusMin: 75, min: 300, max: 1800, satz: 0.67, satzHoch: 0.65, grenzeUnten: 1000, grenzeOben: 1200, monate: 12, partner: 2, einkommenGrenze: 175000, zveAnteil: 0.8, deckel: 2770, mehrling: 300, svPausch: 0.09 + 0.10 + 0.02 },
+    eg: { pausch: 1230 / 12, bonus: 0.1, bonusMin: 75, min: 300, max: 1800, satz: 0.67, satzHoch: 0.65, grenzeUnten: 1000, grenzeOben: 1200, monate: 12, partner: 2, einkommenGrenze: 175000, deckel: 2770, mehrling: 300, svPausch: 0.09 + 0.10 + 0.02 },
     // Hilfe zur Pflege (§§ 61 ff., 85 SGB XII): Einkommensgrenze 2 × RS1 + Wohnkosten + 70 % RS1 je weiterer Person; Vermögen 10.000 € je Erwachsenem
     hzp: { grund: 2, familie: 0.7 },
     // Blindenhilfe (§ 72 SGB XII): gleiche Einkommensgrenze wie Hilfe zur Pflege (§ 85); vom Einkommen über der Grenze
@@ -891,7 +891,7 @@ const Rules = (function () {
       // Werkstatt-Haken bei „eine erwachsene Person“ ohne Werkstattlohn: die Person selbst oder ein Kind ab 25 (§ 7 Abs. 3 Nr. 4 SGB II)
       emWer: !inp.erwerbsgemindert && inp.emStd !== 'unter3' && !pers.some((x) => x[0] === 'wfbm') && !!inp.wfbm && !inp.wfbmSelbst && inp.bhPerson === 'erwNach25',
       behinderung: !!inp.behinderung || String(inp.gdb) === '100',
-      kinder12,
+      kinder12, babyDa,
       // Alter der Kinder bekannt: ausdrücklich angegeben (Frage „14 bis 17“ beantwortet) oder alle Kinder unter 6
       kidsAlter: !!inp.kidsAlter || (kids > 0 && kidsU6 === kids),
       kindKrank: !!inp.kindKrank, // ein Kind ist gerade krank, ein Elternteil kann deshalb nicht arbeiten
@@ -1075,7 +1075,9 @@ const Rules = (function () {
     if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['kindergeld.asyl']]);
     // Familiengeld/Krippengeld (Art. 9a BayFamGG, GVBl. 2025 S. 570; Art. 29 Abs. 2 BayKiBiG n. F., GVBl. 2026 S. 401): nur Kinder, die bis
     // 31.12.2024 geboren sind, bis zum 3. Geburtstag. Darum nur mit Kind unter 6 und nur bis Ende 2027 (Vollprüfung familie B12).
-    const bay = (!h.land || h.land === 'BY') && h.kidsU6 > 0 && h.heute < 2028;
+    // Das Baby (jünger als 14 Monate, also ab 2025 geboren) bekommt sicher kein Familiengeld: nur mit einem weiteren Kind unter 6
+    // (Gegenprüfung 25.11.2026, Nr. 8)
+    const bay = (!h.land || h.land === 'BY') && h.kidsU6 > (h.babyDa || 0) && h.heute < 2028;
     const tx = [['kindergeld.ja', { kg: eur(R.kindergeld) }], ['kindergeld.mehr']].concat(bay ? [['kindergeld.familiengeld', { betrag: eur(R.famgeld.betrag), ab3: eur(R.famgeld.ab3), krippe: eur(R.famgeld.krippe) }]] : []);
     // § 62 Abs. 1a EStG (https://www.gesetze-im-internet.de/estg/__62.html, Abruf 24.11.2026): EU-Bürger ohne Arbeit in den ersten 3 Monaten
     // nicht, danach nur mit Freizügigkeitsrecht nach § 2 Abs. 2 oder 3 FreizügG/EU, nicht allein zur Arbeitsuche: höchstens „möglich“
@@ -1570,7 +1572,12 @@ const Rules = (function () {
     const puffer2b = h.azubi2b === 'evtl' && h.erwerb ? Math.max(0, elternEinkSGB2(h) - elternEinkSGB2({ ...h, azubi2b: 'ja' })) : 0;
     let r;
     // Sofortzuschlag (§ 72 SGB II) je Kind bzw. jungem Erwachsenen im Haushalt: nur im angezeigten Betrag (Vollprüfung familie B4)
-    const sofort = h.children * R.sofortzuschlag;
+    // Nicht für Kinder, die ihren Bedarf mit eigenem Einkommen (Unterhalt, Unterhaltsvorschuss, Lohn) schon ohne Kindergeld decken: Sie haben
+    // keinen Anspruch, und er scheitert nicht nur am Kindergeld (§ 72 Abs. 1 SGB II; Gegenprüfung 25.11.2026, Nr. 4). Die App kennt nur die
+    // Summe aller Kinder: deckt sie den Bedarf aller Kinder, kein Sofortzuschlag (vorsichtige Seite).
+    const kindEigen = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - h.minijob);
+    const kindDeckt = h.children > 0 && kindEigen >= (h.regel - h.regelElt) + h.miete * h.children / h.persons;
+    const sofort = kindDeckt ? 0 : h.children * R.sofortzuschlag;
     const sofortTx = sofort > 0 ? [['ggeld.sofort', { sz: eur(R.sofortzuschlag) }]] : [];
     if (luecke >= R.grundsicherung.sicherAb) r = mk(id, 'ja', 'ja', bedarfTx('ja', bedarf).concat([['schaetz.eins', { a: eur(r10(luecke + sofort)) }]], sofortTx, behTx));
     else if (luecke > -(R.grundsicherung.knappPuffer + mb.offen + (h.mehrAEhoch || 0) - (h.mehrAE || 0) + (h.egFreiOffen || 0) + pufferAlter + pufferUnt + puffer2b)) r = mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(behTx));
@@ -2022,7 +2029,8 @@ const Rules = (function () {
     // Vollprüfung 24.11.2026, Befunde B-02 / Fable 6
     if (h.ausbildung === 'ich' && h.babBetrieb) return mk(id, 'nein', 'vorausFehlt', [['bafoeg.betrieb']]);
     if (h.ausbildung === 'kind') {
-      if (h.children === 0) return mk(id, 'nein', 'vorausFehlt', [['bafoeg.keinKind']]);
+      // Das mitgezählte Baby ist kein Kind in Ausbildung (Gegenprüfung 25.11.2026, Nr. 9); als Geschwister zählt es beim Freibetrag mit
+      if (h.children - (h.babyDa || 0) === 0) return mk(id, 'nein', 'vorausFehlt', [['bafoeg.keinKind']]);
       const fb = (h.adults === 2 ? R.bafoeg.freiPaar : R.bafoeg.freiAllein) + Math.max(0, h.children - 1) * R.bafoeg.jeKind;
       const p = { fb: eur(fb) };
       const e21 = bafEink21(h);
@@ -2266,11 +2274,12 @@ const Rules = (function () {
     if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['eg.asyl']]);
     // Einkommensgrenze § 1 Abs. 8 BEEG (https://www.gesetze-im-internet.de/beeg/__1.html, Abruf 24.11.2026): zu versteuerndes Einkommen im
     // letzten Jahr vor der Geburt über 175.000 € (Paar: beide zusammen) -> kein Elterngeld. Die App kennt nur das heutige Brutto aus Arbeit
-    // (Selbstständige: Gewinn). Das zu versteuernde Einkommen liegt sicher über 80 % des Bruttos (Werbungskosten, Vorsorgeaufwendungen bis
-    // zu den Beitragsbemessungsgrenzen): über 175.000 € / 0,8 im Jahr „eher nicht“, über 175.000 € höchstens „möglich“ (Vollprüfung familie B5).
+    // (Selbstständige: Gewinn). Über 175.000 € Brutto im Jahr höchstens „möglich“ mit der Grenze vorn (Vollprüfung familie B5). Kein „eher
+    // nicht“: Vom zu versteuernden Einkommen gehen außer Werbungskosten und Vorsorgeaufwendungen auch Kinderfreibeträge, Kinderbetreuungskosten,
+    // Kirchensteuer u. a. ab (§ 2 Abs. 5 EStG; Paar 2 × 110.000 € mit Kind etwa 174.600 €), und es zählt das Jahr vor der Geburt, nicht das
+    // heutige Brutto (Gegenprüfung 25.11.2026, Nr. 1; bis dahin „eher nicht“ ab 175.000 € / 0,8).
     const jahrArbeit = 12 * (h.pers || []).reduce((a, x) => a + (x[0] === 'lohn' ? x[1] : 0), 0);
     const grenzeTx = ['eg.grenze', { grenze: eur(R.eg.einkommenGrenze) }];
-    if (jahrArbeit * R.eg.zveAnteil > R.eg.einkommenGrenze) return mk(id, 'nein', 'einkoHoch', [grenzeTx]);
     const r = elterngeld0(h);
     if (!(jahrArbeit > R.eg.einkommenGrenze) || (r.level !== 'ja' && r.level !== 'vielleicht')) return r;
     return mk(id, 'vielleicht', r.level === 'ja' ? 'vielleicht' : r.hl, [grenzeTx].concat(r.tx.filter((t) => t[0] !== 'eg.grenze')));
@@ -3140,6 +3149,8 @@ const Rules = (function () {
     einmalHinweise(h, results);
     kartenHinweise(h, results);
     besondere(h, results);
+    // „Darin sind … Sofortzuschlag“ nur zusammen mit einem Betrag (Vorrang, Wechselmodell u. a. entfernen ihn; Gegenprüfung 25.11.2026, Nr. 5)
+    results.forEach((r) => { if (r.id === 'ggeld' && !r.tx.some((t) => /^(schaetz|zuk\.betrag)/.test(t[0]))) r.tx = r.tx.filter((t) => t[0] !== 'ggeld.sofort'); });
     const sorted = results.slice().sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);
     const zus = zusammenspiel(h, results);
     // Hinweis zur vorrangigen Leistung vor den allgemeinen Hinweisen (nicht eingerechnet, Verfahren, Stichtag)

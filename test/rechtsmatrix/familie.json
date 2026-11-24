@@ -2511,7 +2511,7 @@
  },
  {
   "id": "eg-07",
-  "beschreibung": "Paar mit 25.000 € brutto im Monat (300.000 €/Jahr): zu versteuerndes Einkommen sicher über 175.000 € -> kein Elterngeld",
+  "beschreibung": "Paar mit 25.000 € brutto im Monat (300.000 €/Jahr): zu versteuerndes Einkommen sicher über 175.000 € -> kein Elterngeld – korrigiert 25.11.2026 (Gegenprüfung Nr. 1): höchstens „möglich“, weil zu versteuerndes Einkommen und Vorjahr nicht bekannt",
   "h": {
    "adults": 2,
    "kids": 0,
@@ -2559,7 +2559,10 @@
   },
   "erwartet": {
    "elterngeld": {
-    "status": "nein"
+    "status": "vielleicht",
+    "texteEnthalten": [
+     "eg.grenze"
+    ]
    }
   },
   "quelle": "https://www.gesetze-im-internet.de/beeg/__2.html, __2a.html, __2c.html, __4a.html, __1.html (Abs. 8: 175.000 €), __10.html (§ 1 Abs. 8)",
@@ -5985,5 +5988,250 @@
   },
   "quelle": "§ 10 Abs. 5 Satz 2, 3 BEEG (buzer.de/10_BEEG.htm, Abruf 24.11.2026); § 72 SGB II. Bedarf 563 + 357 + 700 + 202,68 = 1.822,68; Einkommen 200 − 150 − 30 + 259 = 279; Lücke 1.543,68 + 25 = 1.568,68",
   "quelleTest": "Korrektur familie 24.11.2026"
+ },
+ {
+  "id": "gp-01",
+  "beschreibung": "Paar 2 × 110.000 € brutto im Jahr mit Kind, Baby kommt: zu versteuerndes Einkommen kann unter 175.000 € liegen: Elterngeld „möglich“, nicht „eher nicht“",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "lohn",
+   "brutto": 18334,
+   "brutto2": 9167,
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "baby": "bald",
+   "egVor": 5000
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "vielleicht",
+    "texteEnthalten": [
+     "eg.grenze"
+    ]
+   }
+  },
+  "quelle": "§ 1 Abs. 8 BEEG; § 2 Abs. 5 EStG",
+  "quelleTest": "Gegenprüfung 25.11.2026"
+ },
+ {
+  "id": "gp-02",
+  "beschreibung": "AE, Kind 6-13, kein Einkommen, Miete 700, Unterhalt 800 € (deckt den Bedarf des Kindes 390 + 350): kein Sofortzuschlag, kein Text",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "unterhalt": 800,
+   "ohneWege": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "texteNicht": [
+     "ggeld.sofort"
+    ]
+   }
+  },
+  "quelle": "§ 72 Abs. 1 SGB II",
+  "quelleTest": "Gegenprüfung 25.11.2026"
+ },
+ {
+  "id": "gp-03",
+  "beschreibung": "AE, Kind 6-13, kein Einkommen, Miete 700, Unterhalt 300: Sofortzuschlag bleibt (Text vorhanden)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "unterhalt": 300,
+   "ohneWege": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "texteEnthalten": [
+     "ggeld.sofort"
+    ]
+   }
+  },
+  "quelle": "§ 72 Abs. 1 SGB II",
+  "quelleTest": "Gegenprüfung 25.11.2026"
+ },
+ {
+  "id": "gp-04",
+  "beschreibung": "Wechselmodell, AE, Kind unter 6, kein Einkommen: Betrag nur „bis“, Sofortzuschlag-Text bleibt nur mit Betrag",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "uvgWechsel": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht",
+    "texteEnthalten": [
+     "ggeld.wechsel"
+    ]
+   }
+  },
+  "quelle": "§ 72 SGB II; BSG B 4 AS 50/07 R",
+  "quelleTest": "Gegenprüfung 25.11.2026"
+ },
+ {
+  "id": "gp-05",
+  "beschreibung": "Bayern, nur das Baby (da) als Kind unter 6: kein Familiengeld-Hinweis (ab 2025 geboren)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": 1450,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "baby": "da",
+   "egKinder": 1
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja",
+    "texteNicht": [
+     "kindergeld.familiengeld"
+    ]
+   }
+  },
+  "quelle": "Art. 9a BayFamGG",
+  "quelleTest": "Gegenprüfung 25.11.2026"
+ },
+ {
+  "id": "gp-06",
+  "beschreibung": "Bayern, Baby (da) und ein weiteres Kind unter 6: Familiengeld-Hinweis",
+  "h": {
+   "adults": 1,
+   "kids": 2,
+   "kidsU6": 2,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": 1450,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "baby": "da",
+   "egKinder": 1
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja",
+    "texteEnthalten": [
+     "kindergeld.familiengeld"
+    ]
+   }
+  },
+  "quelle": "Art. 9a BayFamGG",
+  "quelleTest": "Gegenprüfung 25.11.2026"
+ },
+ {
+  "id": "gp-07",
+  "beschreibung": "„Kind in Ausbildung“ angegeben, einziges Kind ist das Baby: BAföG „eher nicht“ (kein Kind in Ausbildung)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": 1450,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "baby": "da",
+   "egKinder": 1,
+   "ausbildung": "kind"
+  },
+  "erwartet": {
+   "bafoeg": {
+    "status": "nein",
+    "texteEnthalten": [
+     "bafoeg.keinKind"
+    ]
+   }
+  },
+  "quelle": "§ 2 BAföG",
+  "quelleTest": "Gegenprüfung 25.11.2026"
  }
 ]
