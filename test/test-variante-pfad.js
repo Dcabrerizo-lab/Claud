@@ -4,7 +4,7 @@
 //    ist gleich dem Ergebnis mit allen Angaben (Karten der Variante: Stufe und Texte).
 // 2. Typische Rentnerin allein: höchstens 15 Fragen. Sammelfrage „Trifft etwas davon zu?“ öffnet die Folgefrage, „Nichts davon“ nicht.
 // 3. Plausibilitätshinweis (netto 0 bei brutto > 0) erscheint einmal, beim zweiten „Weiter“ geht es weiter.
-// 4. Startkarte „Lieber mit jemandem sprechen?“, Brief prüfen mit Rentenversicherung/Versorgungsamt/Krankenkasse, Löschen ohne Schulden-Liste,
+// 4. Telefon-Karte „Lieber mit jemandem sprechen?“ (Folgeseite), Brief prüfen mit Rentenversicherung/Versorgungsamt/Krankenkasse, Löschen ohne Schulden-Liste,
 //    „Für Fachkräfte“ am Ende der Einstellungen, Rückgängig 30 s.
 // Aufruf: node test/test-variante-pfad.js
 'use strict';
@@ -113,7 +113,11 @@ const warte = (ms) => new Promise((r) => setTimeout(r, ms || 5));
 
   // Weitere Punkte
   d.querySelector('#appnav button[data-ansicht="start"]').click(); await warte(20);
-  check('Start: Karte „Lieber mit jemandem sprechen?“ mit Bürgertelefon', !!$('varSprechen') && /tel:\+4930340606602/.test($('varSprechen').innerHTML) && $('varSprechenH').textContent === de['sux.sprechen.h']);
+  // Startseite zeigt nur die zwei Einstiege (Wunsch David, 24.11.2026); die Telefon-Karte steht auf beiden Folgeseiten
+  check('Start: keine Telefon-Karte mehr (nur zwei Einstiege)', !d.querySelector('#v-start #varSprechen'));
+  $('goSelbst').click(); await warte(20);
+  check('„Selbst“: Karte „Lieber mit jemandem sprechen?“ mit Bürgertelefon', !!$('varSprechen') && /tel:\+4930340606602/.test($('varSprechen').innerHTML) && $('varSprechenH').textContent === de['sux.sprechen.h']);
+  d.querySelector('#appnav button[data-ansicht="start"]').click(); await warte(20);
   check('Start: Lupe mit Wort „Suchen“', ($('suLupeStart').textContent || '').trim() === de['su.suchen']);
   $('goBriefe').click(); await warte(20);
   check('Brief prüfen: Rentenversicherung, Versorgungsamt, Krankenkasse', ['brief-rv', 'brief-va', 'brief-kk'].every((id) => !!$(id)) && $('brief-rv').textContent.includes(de['sux.briefe.rv']));
