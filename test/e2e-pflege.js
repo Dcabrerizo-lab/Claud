@@ -163,7 +163,10 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   await p.click('#paStart'); await p.waitForSelector('#pa-jahre', { state: 'visible', timeout: 15000 }); await p.fill('#pa-jahre', '1');
   ok('Unter 2 Jahren: Monate werden gefragt', await p.isVisible('#pa-monate'));
   await p.fill('#pa-monate', '10'); await p.click('text=Weiter ➜');
-  await tippe('Nein'); await tippe('Nein'); await tippe('Nein'); await tippe('Ja');
+  // Kinder bis 18 Monate: Bereiche 1, 2 und 6 werden nicht bewertet, aus Bereich 1 nur die Gebrauchsunfähigkeit beider Arme und Beine
+  // (Begutachtungs-Richtlinien Kap. 5, § 15 Abs. 4 und 7 SGB XI; seit 24.11.2026). Reihenfolge: Arme/Beine, Bereich 3, Bereich 4
+  ok('Kind 10 Monate: zuerst Frage nach beiden Armen und Beinen (Bereich 1 und 2 entfallen)', /Arme und beide Beine/.test(await frage()), await frage());
+  await tippe('Nein'); await tippe('Nein'); await tippe('Ja');
   ok('Kind 10 Monate: Frage zum Füttern statt Waschen', /Füttern/.test(await frage()), await frage());
   ok('Kind: Erklärungen erwähnen den Vergleich mit gesunden Kindern', true);
   // Fremde Sprache: Hinweis „nur auf Deutsch“
