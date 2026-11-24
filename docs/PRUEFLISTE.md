@@ -59,6 +59,9 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Unterkunftskosten über dem Eineinhalbfachen der angemessenen Grenze auch im ersten Jahr nicht anerkannt (§ 22 Abs. 1 Satz 6 SGB II, § 35 Abs. 1 Satz 7 SGB XII): Betrag mit höchstens 1,5 × Orientierungsgrenze gerechnet (Abruf 24.11.2026) | ✓ | `rechtsmatrix-grusi` |
 | Ausschluss: Asylbewerberleistungen (§ 7 Abs. 1 Satz 2 Nr. 3) | ✓ | `asyl-ausschluss` |
 | Unterhaltsvorschuss als Einkommen des Kindes (§ 11 Abs. 1 Satz 1, § 9 Abs. 2 SGB II; vorrangig § 12a): sicher erwarteter UVG mindert die Lücke (allein, Kind unter 6, 1.800 € Lohn: 640 -> 410 €); möglicher, nicht sicherer UVG (zweite Person ohne Angabe, anderer Elternteil bei mehreren Kindern) -> höchstens „möglich“ (Befund G2, Rechenplan; abgerufen 21.11.2026) | ✓ | `rechenbefunde-g2` |
+| Sofortzuschlag 25 € je Kind bzw. jungem Erwachsenen (Regelbedarfsstufe 3 bis 6) im angezeigten Betrag, nicht im Vergleich der zwei Wege und nicht in der Hilfebedürftigkeit beim Kinderzuschlag (§ 72 SGB II, Fassung ab 1.7.2026, Abruf 24.11.2026) | ✓ | `rechtsmatrix-familie` |
+| Wechselmodell: Mehrbedarf für Alleinerziehende vorsichtig zur Hälfte (BSG 3.3.2009, B 4 AS 50/07 R), Kind nur zeitweise in der Bedarfsgemeinschaft: höchstens „möglich“, Betrag als obere Grenze (Abruf DA-KiZ 24.11.2026) | ◐ (Betreuungstage werden nicht abgefragt) | `rechtsmatrix-familie` |
+| Elterngeld als Einkommen: frei höchstens 300 €, nur bis zum Einkommen vor der Geburt, ElterngeldPlus die Hälfte (§ 10 Abs. 5 BEEG); Basis oder Plus unbekannt: vorsichtig 150 €, für „eher nicht“ 300 € | ◐ (Basis oder Plus wird nicht abgefragt) | `rechtsmatrix-familie` |
 
 ## Grundsicherung im Alter und bei Erwerbsminderung (SGB XII)
 <!-- karten: gsa -->
@@ -156,6 +159,9 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Unterhalt für einen Elternteil selbst: zählt für das Mindesteinkommen (§ 6a Abs. 1 Nr. 2 BKGG: Einkommen nach § 11 Abs. 1 Satz 1 und 2 SGB II, nur Wohngeld, Kindergeld, Kinderzuschlag ausgenommen); mindert als „anderes Einkommen“ in voller Höhe, die Überschreitung gilt zuerst als Erwerbseinkommen (§ 6a Abs. 6 BKGG) | ✓ | `unt-kiz` |
 | Geschätztes Arbeitslosengeld, Krankengeld oder Elterngeld als künftiges Einkommen der Eltern, zweite Rechnung | ✓ | `zuk-einkommen` |
 | Unterhaltsvorschuss mindert den Kinderzuschlag zu 45 % (§ 6a Abs. 3 Satz 1 und 3 BKGG; Satz 4: wer ihn nicht geltend macht, riskiert den KiZ; abgerufen 21.11.2026): allein, Kind unter 6, 1.800 € Lohn: 300 -> 190 €; möglicher UVG (zweite Person ohne Angabe usw.) -> „wahrscheinlich“ nur, wenn es auch damit mindestens 60 € sind (Befund K1) | ✓ | `rechenbefunde-k1` |
+| Mindesteinkommen: Unterhalt für den Elternteil und das Kind zählen zusammen, reiner Kindesunterhalt nicht; Selbstständige: Einnahmen vor Ausgaben, mit Gewinn darunter „möglich“ (DA-KiZ Stand 20.02.2026 C.1 Abs. 2, Abruf 24.11.2026) | ◐ (Einnahmen Selbstständiger werden nicht abgefragt) | `rechtsmatrix-familie` |
+| Lohn eines einzigen Kindes ab 14: 603 € und zusätzlich 30 %/10 % Freibetrag ohne die erste Stufe (DA-KiZ C.2.2.1 Abs. 3 Satz 9-11) | ✓ | `rechtsmatrix-familie` |
+| Wechselmodell: nur der Elternteil mit Kindergeld, Kind ggf. anteilig (DA-KiZ C.3.1.1 Abs. 2): höchstens „möglich“; Unterhaltsvorschuss zuerst beantragen (§ 6a Abs. 3 Satz 4 BKGG, Hinweis im Zusammenspiel) | ◐ | `rechtsmatrix-familie` |
 
 ## Kindergeld (EStG, BKGG)
 <!-- karten: kindergeld -->
@@ -166,8 +172,11 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | 259 € je Kind und Monat (2026); bis 18, bis 25 in Ausbildung oder Studium (§ 32 Abs. 4 Nr. 2) | ✓ | `kg-betrag` |
 | Bis 21 ohne Arbeit und bei der Agentur für Arbeit arbeitsuchend gemeldet (§ 32 Abs. 4 Satz 1 Nr. 1 EStG, gesetze-im-internet.de, abgerufen 21.11.2026; Text t.kindergeld.mehr), bis 25 Freiwilligendienst, Ausbildungsplatzsuche, Übergangszeit bis 4 Monate; nach erster Ausbildung höchstens 20 Stunden Arbeit (§ 32 Abs. 4) | ◐ | `kg-mehr` |
 | Ausländer: nur mit bestimmten Aufenthaltstiteln (§ 62 Abs. 2) | ◐ | `kg-asyl` |
-| Bayern: Familiengeld (250 €, ab dem 3. Kind 300 €, 13. bis 36. Lebensmonat) und Krippengeld (bis 100 €) nur noch für Kinder, die bis Ende 2024 geboren sind | ◐ (Geburtsdatum der Kinder wird nicht abgefragt, daher Hinweis) | `kg-familiengeld` |
+| Bayern: Familiengeld (250 €, ab dem 3. Kind 300 €, 13. bis 36. Lebensmonat) und Krippengeld (bis 100 €) nur noch für Kinder, die bis Ende 2024 geboren sind; Hinweis nur mit Kind unter 6 und nur bis Ende 2027 (Vollprüfung 24.11.2026) | ◐ (Geburtsdatum der Kinder wird nicht abgefragt, daher Hinweis) | `kg-familiengeld` |
 | Bayern: angekündigtes Kinderstartgeld | ○ (nach neueren Berichten nicht eingeführt; ohne amtliche Bestätigung nicht erwähnt) | |
+| EU-Bürger ohne Arbeit, unter 5 Jahren: nach 3 Monaten nur mit Freizügigkeitsrecht, nicht allein zur Arbeitsuche: „möglich“ (§ 62 Abs. 1a EStG, Abruf 24.11.2026) | ◐ | `rechtsmatrix-familie` |
+| Drittstaatsangehörige: Hinweis auf den nötigen Aufenthaltstitel bei Kindergeld und Elterngeld (§ 62 Abs. 2 EStG, § 1 Abs. 7 BEEG) | ◐ | `rechtsmatrix-familie` |
+| Baby ist da (unter 14 Monate): zählt als Kind unter 6, auch wenn es bei „Kinder“ fehlt; Baby kommt bald: Hinweis „nach der Geburt beantragen“; volljähriges Kind mit Behinderung: Verweis auf die eigene Karte | ✓ | `rechtsmatrix-familie` |
 
 ## Kindergeld für erwachsene Kinder mit Behinderung (§ 32 Abs. 4 Satz 1 Nr. 3 EStG)
 <!-- karten: kgBeh -->
@@ -190,6 +199,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Junge Erwachsene nur in der Schule, nicht mit Ausbildungsvergütung | ✓ | `but-azubi` |
 | Kita und Tagespflege ohne Kostenbeitrag bei Grundsicherung, Wohngeld, Kinderzuschlag, Asylbewerberleistungen (§ 90 Abs. 4 SGB VIII) | ✓ | `but-kita` |
 | Hort für Schulkinder ebenso ohne Kostenbeitrag, auf Antrag beim Jugendamt; nicht Mittagsbetreuung/Offener Ganztag der Schule (§ 90 Abs. 4, § 22 Abs. 1 SGB VIII, Abruf 20.11.2026) | ✓ | `but-hort` |
+| Nur junge Erwachsene (18 bis 24): nur Schülerinnen und Schüler ohne Ausbildungsvergütung, 15 € Teilhabe nur bis 18 (§ 28 Abs. 1 Satz 2, Abs. 7 SGB II): höchstens „möglich“; Schülerjob schließt nicht aus (Abruf 24.11.2026) | ◐ (Schule oder Studium wird nicht abgefragt) | `rechtsmatrix-familie` |
 
 ## Unterhaltsvorschuss (UVG)
 <!-- karten: uvg -->
@@ -216,6 +226,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Änderungen sofort melden, sonst Rückzahlung (§§ 5, 6); verheiratet und dauernd getrennt, auch bei mindestens 6 Monaten Klinik, Heim oder Haft des Ehepartners (§ 1 Abs. 2) – Hinweise | ✓ | `uvg-hinweise` |
 | Nur volljährige Kinder: kein Unterhaltsvorschuss, Hinweis auf Unterhalt, Beratung des Jugendamts bis 21 (§ 18 Abs. 4 SGB VIII), BAföG/Berufsausbildungsbeihilfe; Kind im Heim oder in Pflegefamilie: kein Anspruch (Hinweis) | ✓ | `uvg-volljaehrig` |
 | Unterhaltsvorschuss zählt als Einkommen der Kinder bei Grundsicherungsgeld (voll, bis zum Bedarf), Kinderzuschlag (45 %) und Wohngeld, auch bei neuer Partnerschaft ohne Trauschein | ✓ | `uvg-einkommen`, `gg-unterhalt` |
+| Kind von 14 bis 17 ist immer 12 oder älter: 600-€-Grenze (§ 1 Abs. 1a UVG) auch ohne den Haken „Ein Kind ist 12 oder älter“ (Abruf 24.11.2026) | ✓ | `rechtsmatrix-familie` |
 
 ## BAföG
 <!-- karten: bafoeg -->
@@ -445,6 +456,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Teilzeit nach der Geburt: Prozentsatz nach dem Einkommen vorher auf den Unterschied, Einkommen vorher höchstens 2.770 € (§ 2 Abs. 3), mindestens 300 € (§ 2 Abs. 4); ElterngeldPlus höchstens die Hälfte des Basiselterngelds ohne Einkommen, Mindestbetrag und Mindest-Geschwisterbonus halbiert (§ 4a Abs. 2) (Abruf 21.11.2026) | ✓ | `eg-teilzeit` |
 | Teilzeit: Hinweis auf höchstens 32 Wochenstunden (§ 1 Abs. 6 Nr. 1); schon laufendes Elterngeld bei Mehrlingen: Freibetrag beim Wohngeld 300 € je Kind der Geburt (§ 10 Abs. 4), bei Grundsicherung, Sozialhilfe und Kinderzuschlag nicht vervielfacht und nur über Mindestbetrag plus Mehrlingszuschlag (§ 10 Abs. 5; Richtlinien zum BEEG 07/2026 Nr. 10.4, 10.5.2) (Abruf 21.11.2026) | ✓ | `eg-mehrlinge-frei` |
 | Elterngeld-Netto nach §§ 2e, 2f BEEG aus dem eingegebenen Netto: Brutto zurückgerechnet, echte Beiträge durch die Pauschale 21 % (9 + 10 + 2 %) ersetzt (2.000 € netto, kinderlos: 2.021,78 € -> 1.248 € statt 1.233 €); Minijob und Übergangsbereich unverändert; Pauschbetrag § 2c bleibt 1.230 €/12 (abgerufen 21.11.2026; Befund E2) | ◐ | `rechenbefunde-e2` |
+| Einkommensgrenze: Brutto aus Arbeit über 175.000 € / 0,8 im Jahr „eher nicht“, über 175.000 € höchstens „möglich“ (§ 1 Abs. 8 BEEG, Abruf 24.11.2026) | ◐ (zu versteuerndes Einkommen des Vorjahres wird nicht abgefragt) | `rechtsmatrix-familie` |
+| Paare: gleichzeitiges Basiselterngeld nur 1 Monat in den ersten 12 Lebensmonaten (§ 4 Abs. 6), Partnerschaftsbonus 2 bis 4 Monate bei 24 bis 32 Wochenstunden (§ 4b) (Abruf 24.11.2026) | ✓ | `rechtsmatrix-familie` |
 
 ## Mutterschaftsgeld (MuSchG, § 24i SGB V)
 <!-- karten: mutter -->
@@ -456,8 +469,10 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Nicht gesetzlich versichert oder Minijob ohne eigene Versicherung: Bundesamt für Soziale Sicherung einmalig höchstens 210 € | ◐ (Versicherungsart wird nicht abgefragt, daher Hinweis) | `mu-lohn` |
 | Arbeitslosengeld: Mutterschaftsgeld in Höhe des Arbeitslosengeldes | ✓ | `mu-alg` |
 | Schutzfrist 6 Wochen vor, 8 (12) Wochen nach der Geburt | ✓ | `mu-lohn` |
-| Ohne Arbeit oder Arbeitslosengeld kein Mutterschaftsgeld, Hinweis auf Mehrbedarf und Erstausstattung | ✓ | `mu-ohne` |
+| Ohne Arbeit, Arbeitslosengeld oder Krankengeld kein Mutterschaftsgeld, Hinweis auf Mehrbedarf und Erstausstattung | ✓ | `mu-ohne` |
 | Bei zwei Erwachsenen unbekannt, wer schwanger ist: nur „möglich“ | ✓ | `mu-ohne` |
+| Krankengeld: Mutterschaftsgeld, meist in Höhe des Krankengeldes; Selbstständige nur gesetzlich versichert mit Krankengeld-Anspruch, ohne Arbeitgeberzuschuss: „möglich“ (§ 24i Abs. 1, 2 SGB V, Abruf 24.11.2026) | ✓ | `rechtsmatrix-familie` |
+| Schutzfrist nach einer Fehlgeburt ab der 13. Woche: 2, 6 oder 8 Wochen (§ 3 Abs. 5 MuSchG, seit 1.6.2025, Abruf 24.11.2026) | ✓ | `rechtsmatrix-familie` |
 
 ## Kinderkrankengeld (§ 45 SGB V)
 <!-- karten: kkg -->

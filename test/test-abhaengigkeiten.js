@@ -47,6 +47,8 @@ function zufall() {
     ausbildung: pick(['', '', '', 'ich', 'kind', 'kindBetrieb']), aufenthalt: '', babBetrieb: rnd() < 0.5, babWohnt: rnd() < 0.5,
     bhSelbst: rnd() < 0.5, wfbm: rnd() < 0.1, kindKrank: rnd() < 0.2,
     baby: pick(['', '', '', 'da', 'bald']), egVor: pick(['', 0, 900, 2000]),
+    // Haken „Ein Kind ist 12 oder älter“ (Grenze 600 € beim Unterhaltsvorschuss, § 1 Abs. 1a UVG; Vollprüfung familie B22)
+    kinder12: kids > 0 && rnd() < 0.3,
     wohnart: rnd() < 0.1 ? 'eigentum' : '', hhAndere: pick(['', '', '', 'wg', 'verwandte']), autoWert: pick(['', '', 7000, 20000]), autoBraucht: rnd() < 0.3,
     euArbeit: pick(['', 'ja', 'nein']), euJahre: pick(['', 'unter5', 'ab5']),
     arbeitSit: pick(['', '', '', 'arbeitslos', 'krank']), algZeit: rnd() < 0.7, krankWochen: pick(['', 'unter6', 'laeuft', 'ende']), lohnVorher: pick(['', 1500, 2800, 4500]),
@@ -105,6 +107,16 @@ const ausschlussVerstoss = {};
 const FEST = [
   { adults: 1, kids: 0, kidsU6: 0, young: 0, art1: 'lohn', art2: '', brutto: 3800, brutto2: '', netto: 2500, miete: 600, mietstufe: '3', vermoegen: 0, gebJahr: 1980,
     heute: HEUTE, unterhaltFehlt: false, unterhalt: '', pflegegrad: '', bhPerson: 'ich', gdb: '80', blind: '', mzG: false, ausbildung: '', aufenthalt: '',
+    babBetrieb: false, babWohnt: false, bhSelbst: false, wfbm: false, kindKrank: false, baby: '', egVor: '', wohnart: '', hhAndere: '', autoWert: '',
+    autoBraucht: false, euArbeit: '', euJahre: '', arbeitSit: '', algZeit: false, krankWochen: '', lohnVorher: '', bundesland: 'BY', bezug: {} },
+  // Bildung und Teilhabe folgt dem Wohngeld; Pflegegrad mit GdB 60 gibt dort den Freibetrag nach § 17 Nr. 1 WoGG (knapp an der Grenze)
+  { adults: 1, kids: 1, kidsU6: 1, young: 0, art1: 'lohn', art2: '', brutto: 2500, brutto2: '', netto: 1800, miete: 900, mietstufe: '3', vermoegen: 0, gebJahr: 1980,
+    heute: HEUTE, unterhaltFehlt: false, unterhalt: '', pflegegrad: '', bhPerson: 'ich', gdb: '60', blind: '', mzG: false, ausbildung: '', aufenthalt: '',
+    babBetrieb: false, babWohnt: false, bhSelbst: false, wfbm: false, kindKrank: false, baby: '', egVor: '', wohnart: '', hhAndere: '', autoWert: '',
+    autoBraucht: false, euArbeit: '', euJahre: '', arbeitSit: '', algZeit: false, krankWochen: '', lohnVorher: '', bundesland: 'BY', bezug: {} },
+  // Wohngeld und Ausbildung im Betrieb (§ 20 Abs. 2 WoGG: Ausschluss nur, wenn BAföG oder BAB dem Grunde nach zusteht)
+  { adults: 1, kids: 0, kidsU6: 0, young: 0, art1: 'lohn', art2: '', brutto: 900, brutto2: '', netto: 700, miete: 500, mietstufe: '3', vermoegen: 0, gebJahr: 2003,
+    heute: HEUTE, unterhaltFehlt: false, unterhalt: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', mzG: false, ausbildung: 'ich', aufenthalt: '',
     babBetrieb: false, babWohnt: false, bhSelbst: false, wfbm: false, kindKrank: false, baby: '', egVor: '', wohnart: '', hhAndere: '', autoWert: '',
     autoBraucht: false, euArbeit: '', euJahre: '', arbeitSit: '', algZeit: false, krankWochen: '', lohnVorher: '', bundesland: 'BY', bezug: {} }
 ];
