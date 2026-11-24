@@ -130,7 +130,8 @@ ck('ALG I: 57 Jahre mit 48 Monaten → 18 Monate (ab 55 und 36 Monaten)', T({ ..
 ck('ALG I: 30 Jahre, 20 Monate → 10 Monate, ohne Kind 60 %', T({ ...a1, adults: 1, kids: 0, gebJahr: 1996, algMonate: 20 }, 'alg1', 'alg1.dauer').m === 10 && T({ ...a1, adults: 1, kids: 0, gebJahr: 1996, algMonate: 20 }, 'alg1', 'alg1.ja').p === 60);
 ck('ALG I: über der Beitragsbemessungsgrenze gedeckelt (8.450 €)', T({ ...a1, lohnVorher: 12000 }, 'alg1', 'schaetz.spanne').b === E(Math.round(8450 * 0.72 * 0.67 / 10) * 10));
 ck('ALG I: ohne 12 Monate Versicherung nur möglich', L({ ...a1, algZeit: false }, 'alg1') === 'vielleicht');
-ck('ALG I: im Rentenalter nicht', L({ ...a1, gebJahr: 1955 }, 'alg1') === 'nein');
+ck('ALG I: im Rentenalter nicht (Einzelperson)', L({ ...a1, adults: 1, gebJahr: 1955 }, 'alg1') === 'nein');
+ck('ALG I: Paar, älteste Person im Rentenalter → nur möglich (jüngere kann arbeitslos sein)', L({ ...a1, gebJahr: 1955 }, 'alg1') === 'vielleicht');
 ck('ALG I: wer es schon bekommt → schon vorhanden', L({ ...a1, art1: 'alg', brutto: 1900, netto: 1900 }, 'alg1') === 'na');
 ck('ALG I: Krankengeld läuft aus → Nahtlosigkeit möglich (§ 145 SGB III)', L({ arbeitSit: 'krank', krankWochen: 'ende' }, 'alg1') === 'vielleicht' && K({ arbeitSit: 'krank', krankWochen: 'ende' }, 'alg1')[0] === 'alg1.nahtlos');
 // § 47 SGB V: 70 % brutto, höchstens 90 % netto; abzüglich Beiträge 12,5 %. 3.000 € brutto: netto 60-72 % → 1.620/1.944 x 0,9

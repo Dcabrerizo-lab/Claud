@@ -321,6 +321,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 |---|---|---|
 | Altersrente für schwerbehinderte Menschen, Jahrgänge 1960, 1963, 1964 wie DRV Knappschaft-Bahn-See 20.04.2026 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-srente` |
 | Erwerbsminderungsrente: unter 3 Stunden voll, 3 bis unter 6 Stunden teilweise; Wartezeit 5 Jahre (§ 43) | ✓ | `rente-em` |
+| Paar, älteste Person über der Regelaltersgrenze: Erwerbsminderungsrente, Arbeitslosengeld und Altersrente für schwerbehinderte Menschen nicht „nein“, sondern höchstens „möglich“, weil die jüngere Person die Grenze noch nicht erreicht haben kann (§ 43 Abs. 1, 2, §§ 35, 235, 37, 236a SGB VI; § 136 Abs. 2 SGB III; Abruf 24.11.2026) | ✓ | `alter-paar` |
 | Werkstatt: volle Erwerbsminderung, Rente nach 20 Jahren (§ 43 Abs. 6) | ✓ | `rente-wfbm` |
 | Altersrente für schwerbehinderte Menschen (§§ 37, 236a), Altersgrenzen je Jahrgang | ✓ | `rente-sb` |
 

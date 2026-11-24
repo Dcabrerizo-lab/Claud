@@ -569,7 +569,8 @@ function arbeitslosengeld(e) {
   if (bekommt) return { level: 'na' };
   if (e.arbeitSit === 'krank' && e.krankWochen === 'ende') return { level: 'vielleicht' };
   if (e.arbeitSit !== 'arbeitslos') return { level: 'nein' };
-  if (h.rente) return { level: 'nein' };
+  // Paar: Das Geburtsjahr gilt der ältesten Person; die jüngere kann die Regelaltersgrenze noch nicht erreicht haben (§ 136 Abs. 2 SGB III)
+  if (h.rente) return { level: h.erwachsene === 2 ? 'vielleicht' : 'nein' };
   // Selbstständige nur mit freiwilliger Arbeitslosenversicherung (§ 28a SGB III)
   if (e.art1 === 'selbst' || (h.erwachsene === 2 && e.art2 === 'selbst')) return { level: 'vielleicht' };
   if (!e.algZeit) return { level: 'vielleicht' };
