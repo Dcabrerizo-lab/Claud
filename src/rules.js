@@ -1303,13 +1303,19 @@ const Rules = (function () {
   }
   function ggeldRechnung(h) {
     const id = 'ggeld';
-    // Paar mit Kindern, eine Person im Rentenalter oder voll erwerbsgemindert: Die andere Person kann erwerbsfähig sein und gehört
-    // dann mit den Kindern zum Jobcenter (gemischte Bedarfsgemeinschaft, § 7 Abs. 2 und 3 SGB II); ohne Kinder nur als Hinweis
+    // Paar, eine Person im Rentenalter oder voll erwerbsgemindert: gemischte Bedarfsgemeinschaft (siehe unten)
     if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);
     if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);
     if (h.alter || h.erwerbsgemindert) {
-      if (h.adults === 2 && h.children > 0 && !h.bezug.grundsicherungsgeld) return mk(id, 'vielleicht', 'vielleicht', [['ggeld.gemischt']]);
-      return mk(id, 'nein', 'andereStelle', [['ggeld.sozialamtZustaendig']].concat(h.adults === 2 ? [['ggeld.gemischt']] : []));
+      // Paar: Die App kennt nur das Alter der ältesten Person bzw. weiß nur, dass EINE Person voll erwerbsgemindert ist. Die andere
+      // Person kann erwerbsfähig sein und ist dann selbst beim Jobcenter leistungsberechtigt (§ 7 Abs. 1 Satz 1, Abs. 3 Nr. 3 SGB II);
+      // die ältere bzw. erwerbsgeminderte Person bekommt Grundsicherung nach § 41 SGB XII (§ 7 Abs. 4, § 7a, § 5 Abs. 2 SGB II).
+      // Deshalb bei Paaren nie „nein“, auch ohne Kinder; bei laufendem Bezug „schon vorhanden“.
+      if (h.adults === 2) {
+        if (h.bezug.grundsicherungsgeld) return mk(id, 'na', 'na', [['ggeld.na'], ['ggeld.gemischt']]);
+        return mk(id, 'vielleicht', 'vielleicht', [['ggeld.gemischt']]);
+      }
+      return mk(id, 'nein', 'andereStelle', [['ggeld.sozialamtZustaendig']]);
     }
     if (h.bezug.grundsicherungsgeld) return mk(id, 'na', 'na', [['ggeld.na']]);
     if (h.bezug.sozialamt) return mk(id, 'nein', 'ausschluss', [['ggeld.sozialamt']]);
@@ -1828,8 +1834,20 @@ const Rules = (function () {
   // Erwerbsminderungsrente (§ 43 SGB VI; Quelle: Deutsche Rentenversicherung)
   function erwerbsminderungsrente(h) {
     const id = 'emrente';
-    if (h.alter) return mk(id, 'nein', 'vorausFehlt', [['emrente.alter']]);
+    // Das Geburtsjahr gilt der ältesten erwachsenen Person. Bei einem Paar kann die jüngere Person die Regelaltersgrenze noch nicht
+    // erreicht haben und erwerbsgemindert sein (die Frage nach der Erwerbsminderung gilt „einer erwachsenen Person“): dann nicht
+    // verneinen, sondern höchstens „vielleicht“ (§ 43 Abs. 1 und 2 SGB VI: Rente bis zur Regelaltersgrenze; §§ 35, 235 SGB VI).
+    const altPaar = h.alter && h.adults === 2;
+    if (h.alter && !altPaar) return mk(id, 'nein', 'vorausFehlt', [['emrente.alter']]);
     if (h.bezug.emrente) return mk(id, 'na', 'na', [['emrente.na']]);
+    if (altPaar) {
+      // Auch bei „vielleicht“ den Hinweis auf die Regelaltersgrenze zeigen: Ist die ältere Person betroffen, gibt es die Rente nicht
+      const r = emrenteJung(h, id);
+      return r.level === 'ja' || r.level === 'vielleicht' ? mk(id, 'vielleicht', 'vielleicht', r.tx.concat([['emrente.alter']])) : r;
+    }
+    return emrenteJung(h, id);
+  }
+  function emrenteJung(h, id) {
     // Werkstatt: gilt als voll erwerbsgemindert; Rente nach 20 Jahren Wartezeit (§ 43 Abs. 6 SGB VI), sonst wie üblich
     if (!h.emStd && h.wfbm) return h.wfbmJahre >= 20 ? mk(id, 'ja', 'ja', [['emrente.wfbm20']]) : mk(id, 'vielleicht', 'vielleicht', [['emrente.werkstatt']]);
     if (!h.emStd && h.arbeitSit === 'krank' && h.krankWochen && h.krankWochen !== 'unter6') return mk(id, 'vielleicht', 'vielleicht', [['emrente.unklar']]);
@@ -1860,7 +1878,10 @@ const Rules = (function () {
     // Krankengeld läuft aus: Arbeitslosengeld trotz eingeschränkter Leistungsfähigkeit (Nahtlosigkeit, § 145 SGB III)
     if (h.arbeitSit === 'krank' && h.krankWochen === 'ende') return mk(id, 'vielleicht', 'vielleicht', [['alg1.nahtlos'], melden]);
     if (h.arbeitSit !== 'arbeitslos') return mk(id, 'nein', 'vorausFehlt', [['alg1.keine']]);
-    if (h.alter) return mk(id, 'nein', 'vorausFehlt', [['alg1.alter']]);
+    // Bei einem Paar gilt das Geburtsjahr der ältesten Person; die jüngere kann arbeitslos sein und die Grenze noch nicht erreicht haben
+    // (§ 136 Abs. 2 SGB III: kein Anspruch erst ab der Regelaltersgrenze) – dann nicht verneinen.
+    if (h.alter && h.adults !== 2) return mk(id, 'nein', 'vorausFehlt', [['alg1.alter']]);
+    if (h.alter) return mk(id, 'vielleicht', 'vielleicht', [['alg1.zeit'], ['alg1.alter'], melden]);
     // Selbstständige: Arbeitslosengeld nur mit freiwilliger Arbeitslosenversicherung (§ 28a SGB III)
     if (h.selbst) return mk(id, 'vielleicht', 'vielleicht', [['alg1.selbst'], melden]);
     if (!h.algZeit) return mk(id, 'vielleicht', 'vielleicht', [['alg1.zeit'], melden]);
@@ -1868,7 +1889,9 @@ const Rules = (function () {
     if (h.lohnVorher > 0 && h.lohnVorher <= h.minijob) return mk(id, 'vielleicht', 'vielleicht', [['alg1.minijob', { mini: eur(h.minijob) }], melden]);
     const p = h.children > 0 ? R.alg.satzKind : R.alg.satz;
     const tx = [['alg1.ja', { p: Math.round(p * 100) }]];
-    if (h.algMonate) {
+    // Paar: Das Alter gilt der ältesten Person; die arbeitslose Person kann jünger sein und eine kürzere Dauer haben
+    // (§ 147 Abs. 2 SGB III, Dauer hängt vom eigenen Alter ab) – dann keine konkrete Dauer zusagen
+    if (h.algMonate && h.adults !== 2) {
       const row = R.alg.dauer.find((r) => h.algMonate >= r[0] && h.alterJahre >= r[1]);
       tx.push(['alg1.dauer', { m: row[2] }]);
     } else tx.push(['alg1.dauerMin']);
@@ -2095,10 +2118,13 @@ const Rules = (function () {
   // Altersrente für schwerbehinderte Menschen (§§ 37, 236a SGB VI)
   function schwerbRente(h) {
     const id = 'srente';
-    if (h.alter) return mk(id, 'nein', 'vorausFehlt', [['srente.alter']]);
+    // Paar: Das Geburtsjahr gilt der ältesten Person; die jüngere kann noch unter der Regelaltersgrenze sein (Geburtsjahr unbekannt)
+    if (h.alter && h.adults !== 2) return mk(id, 'nein', 'vorausFehlt', [['srente.alter']]);
     if (!(gdbNum(h) >= 50) && !h.gdbAntrag) return keinBeh(id);
+    if (h.alter) return mk(id, 'vielleicht', 'vielleicht', [['srente.allg', { abschlag: R.srente.abschlag }], ['srente.alter']]);
     const j = h.gebJahr;
-    if (!(j >= 1900 && j <= 2010)) return mk(id, 'vielleicht', 'vielleicht', [['srente.allg', { abschlag: R.srente.abschlag }]]);
+    // Paar: Das Geburtsjahr gilt der ältesten Person, die Person mit Behinderung kann jünger sein (spätere Altersgrenze) – allgemeiner Hinweis
+    if (!(j >= 1900 && j <= 2010) || h.adults === 2) return mk(id, 'vielleicht', 'vielleicht', [['srente.allg', { abschlag: R.srente.abschlag }]]);
     const frei = j <= 1951 ? R.srente.bis1951 : j >= 1964 ? R.srente.frei : R.srente.frei - 2 + R.rag[j] / 12;
     const jm = (x) => { const y = Math.floor(x + 1e-9); return [y, Math.round((x - y) * 12)]; };
     const [fj, fm] = jm(frei), [gj, gm] = jm(frei - R.srente.frueher);
@@ -2243,7 +2269,9 @@ const Rules = (function () {
   // Budget für Arbeit (§ 61 SGB IX)
   function budgetArbeit(h) {
     const id = 'arbeit';
-    if (!h.wfbm || h.alter) return mk(id, 'nein', 'vorausFehlt', [['arbeit.keine']]);
+    // Werkstatt-Leistungen in der Regel längstens bis zur Regelaltersgrenze (§ 58 Abs. 1 Satz 3 SGB IX, Abruf 24.11.2026). Paar: Das
+    // Geburtsjahr gilt der ältesten Person; die jüngere kann in der Werkstatt arbeiten -> nicht wegen des Alters verneinen.
+    if (!h.wfbm || (h.alter && h.adults !== 2)) return mk(id, 'nein', 'vorausFehlt', [['arbeit.keine']]);
     return mk(id, 'vielleicht', 'vielleicht', [['arbeit.ja', { prozent: R.beh.budgetProzent }]]);
   }
 

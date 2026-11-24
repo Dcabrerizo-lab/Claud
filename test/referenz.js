@@ -172,7 +172,9 @@ function kappe(e, id, level) {
 }
 function grundsicherungsgeld(h) {
   if (euAus(h)) return { level: 'nein' };
-  if (h.rente || h.em) return { level: h.erwachsene === 2 && h.kids > 0 && !h.bezug.grundsicherungsgeld ? 'vielleicht' : 'nein' };
+  // Paar mit einer Person im Rentenalter bzw. voll erwerbsgemindert: die andere kann erwerbsfähig und selbst leistungsberechtigt sein
+  // (§ 7 Abs. 1 Satz 1, Abs. 3 Nr. 3 SGB II; gemischte Bedarfsgemeinschaft) – nie „nein“, auch ohne Kinder; laufender Bezug: „na“
+  if (h.rente || h.em) return { level: h.erwachsene === 2 ? (h.bezug.grundsicherungsgeld ? 'na' : 'vielleicht') : 'nein' };
   const b = h.bezug;
   if (b.grundsicherungsgeld) return { level: 'na' };
   if (b.sozialamt) return { level: 'nein' };
@@ -569,7 +571,8 @@ function arbeitslosengeld(e) {
   if (bekommt) return { level: 'na' };
   if (e.arbeitSit === 'krank' && e.krankWochen === 'ende') return { level: 'vielleicht' };
   if (e.arbeitSit !== 'arbeitslos') return { level: 'nein' };
-  if (h.rente) return { level: 'nein' };
+  // Paar: Das Geburtsjahr gilt der ältesten Person; die jüngere kann die Regelaltersgrenze noch nicht erreicht haben (§ 136 Abs. 2 SGB III)
+  if (h.rente) return { level: h.erwachsene === 2 ? 'vielleicht' : 'nein' };
   // Selbstständige nur mit freiwilliger Arbeitslosenversicherung (§ 28a SGB III)
   if (e.art1 === 'selbst' || (h.erwachsene === 2 && e.art2 === 'selbst')) return { level: 'vielleicht' };
   if (!e.algZeit) return { level: 'vielleicht' };
@@ -581,7 +584,8 @@ function arbeitslosengeld(e) {
   const m = [12, 16, 20, 24, 30, 36, 48].indexOf(Number(e.algMonate)) >= 0 ? Number(e.algMonate) : 0;
   // § 147 Abs. 2: Versicherungsmonate -> Anspruchsdauer, ab bestimmten Altersgrenzen länger
   let dauer = null;
-  if (m) dauer = m >= 48 && alter >= 58 ? 24 : m >= 36 && alter >= 55 ? 18 : m >= 30 && alter >= 50 ? 15 : m >= 24 ? 12 : m >= 20 ? 10 : m >= 16 ? 8 : 6;
+  // Paar: Alter gilt der ältesten Person, die Dauer hängt vom Alter der arbeitslosen Person ab -> keine konkrete Dauer
+  if (m && h.erwachsene !== 2) dauer = m >= 48 && alter >= 58 ? 24 : m >= 36 && alter >= 55 ? 18 : m >= 30 && alter >= 50 ? 15 : m >= 24 ? 12 : m >= 20 ? 10 : m >= 16 ? 8 : 6;
   const lohn = Math.min(zahl(e.lohnVorher), 8450);
   // Netto bei kleinem Brutto höher; oben mindestens das Leistungsentgelt in Steuerklasse III (§ 153 SGB III: 20 % SV-Pauschale + Lohnsteuer)
   const oben = Math.max(lohn <= 2000 ? 0.8 : 0.72, lohn > 0 ? (0.8 * lohn - lstIII(lohn, e)) / lohn : 0);
