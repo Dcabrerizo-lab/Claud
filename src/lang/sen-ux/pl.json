@@ -44,5 +44,7 @@
   "clear.teil.mehr": "Ocena stopnia opieki i zaznaczenia na listach kontrolnych",
   "l.einsOhne": "Usuń moje dane",
   "l.einsKurz": "Dane, terminy i zaznaczenia w tej aplikacji. Inne zapisane sprawy pozostają.",
-  "l.kurzZurueck": "Potem przez pół minuty można jeszcze cofnąć usunięcie."
+  "l.kurzZurueck": "Potem przez pół minuty można jeszcze cofnąć usunięcie.",
+  "sux.brief.t": "Sprawdzenie decyzji kasy opiekuńczej (Pflegekasse), ubezpieczenia emerytalnego lub urzędu i napisanie sprzeciwu.",
+  "sux.briefA.t": "Sprawdzenie pism z kasy opiekuńczej (Pflegekasse) lub urzędu dla osoby, którą Pan/Pani się opiekuje, i napisanie sprzeciwu."
 }

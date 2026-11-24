@@ -44,5 +44,7 @@
   "clear.teil.mehr": "Pflegegrad-Einschätzung und Haken in den Checklisten",
   "l.einsOhne": "Meine Angaben löschen",
   "l.einsKurz": "Ihre Angaben, Fristen und Haken in dieser App. Andere gespeicherte Vorgänge bleiben.",
-  "l.kurzZurueck": "Danach können Sie es noch eine halbe Minute lang rückgängig machen."
+  "l.kurzZurueck": "Danach können Sie es noch eine halbe Minute lang rückgängig machen.",
+  "sux.brief.t": "Bescheid von Pflegekasse, Rentenversicherung oder Amt prüfen und Widerspruch schreiben.",
+  "sux.briefA.t": "Post von Pflegekasse oder Amt für die gepflegte Person prüfen und Widerspruch schreiben."
 }

@@ -44,5 +44,7 @@
   "clear.teil.mehr": "Evaluarea gradului de îngrijire și bifele din liste",
   "l.einsOhne": "Ștergerea datelor mele",
   "l.einsKurz": "Datele, termenele și bifele dumneavoastră din această aplicație. Alte cazuri salvate rămân.",
-  "l.kurzZurueck": "După aceea mai puteți anula timp de jumătate de minut."
+  "l.kurzZurueck": "După aceea mai puteți anula timp de jumătate de minut.",
+  "sux.brief.t": "Verificați decizia casei de îngrijire (Pflegekasse), a asigurării de pensii sau a unei autorități și scrieți o contestație.",
+  "sux.briefA.t": "Verificați scrisorile de la casa de îngrijire (Pflegekasse) sau de la o autoritate pentru persoana îngrijită și scrieți o contestație."
 }

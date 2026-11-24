@@ -5163,15 +5163,14 @@
     if (varBereit) return; varBereit = true;
     document.documentElement.classList.add('var-pflege');
     if (window.VORLESEN && typeof window.VORLESEN.uebersetzer === 'function') window.VORLESEN.uebersetzer(t); // Vorlesen in der App-Sprache, auch Einfache Sprache
-    ['goLeistungen', 'goGeld', 'goAusziehen'].forEach(function (id) { if ($(id)) $(id).classList.add('var-aus'); });
-    // Kachel „Geld im Alter“ in derselben Form wie die anderen Startkacheln, nach „Pflege“
-    var g = document.createElement('button'); g.type = 'button'; g.className = 'sk sk-geld'; g.id = 'goGeldAlter';
-    g.innerHTML = '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M6 7l9.6-2.9A1 1 0 0 1 17 5v2"/><path d="M21 11h-4.5a2 2 0 0 0 0 4H21"/><circle cx="16.6" cy="13" r=".6"/></svg></span><span class="sk-txt"><b data-t="sv.geld"></b><span data-t="sv.geld.t"></span></span>';
-    $('goPflege').parentNode.insertBefore(g, $('goPflege').nextSibling);
-    g.addEventListener('click', function () { senOeffnen('geld'); });
+    // Startseite (Wunsch David 24.11.2026): nur die zwei Einstiege. Alle übrigen Startkacheln (Leistungen, Pflege, Brief, Geld, Ausziehen) und die
+    // Datenschutz-Zeile entfallen; ihre Ziele stehen auf den Seiten „Ich brauche selbst Hilfe“ und „Ich pflege einen Angehörigen“ (senRender),
+    // „Sicherheit und Daten“ in den Einstellungen. Die Knöpfe bleiben im Dokument (versteckt), weil andere Teile sie per click() nutzen (goBriefe).
+    ['goLeistungen', 'goPflege', 'goBriefe', 'goGeld', 'goAusziehen', 'startSicher'].forEach(function (id) { if ($(id)) $(id).classList.add('var-aus'); });
+    var raster = $('goPflege') && $('goPflege').closest('.start-raster'); if (raster) raster.classList.add('var-aus');
     $('goSelbst').addEventListener('click', function () { senOeffnen('selbst'); });
     $('goAngeh').addEventListener('click', function () { senOeffnen('angeh'); });
-    [g, $('goSelbst'), $('goAngeh')].forEach(function (b) { b.querySelectorAll('[data-t]').forEach(function (e) { e.textContent = t(e.getAttribute('data-t')); }); });
+    [$('goSelbst'), $('goAngeh')].forEach(function (b) { b.querySelectorAll('[data-t]').forEach(function (e) { e.textContent = t(e.getAttribute('data-t')); }); });
     // Formular „Alles auf einer Seite“: Felder zu weggefallenen Leistungen ausblenden (Klasse statt hidden: die App schaltet hidden selbst)
     VAR_FELDER_AUS.forEach(function (id) { var e = $(id); var f = e && (e.closest('.field') || e.closest('label')); if (f) f.classList.add('var-aus'); });
     VAR_FIELDSETS_AUS.forEach(function (id) { var e = $(id); var f = e && e.closest('fieldset'); if (f) f.classList.add('var-aus'); });
@@ -5180,24 +5179,23 @@
     if (fach && fach.closest('li')) { var li = fach.closest('li'); li.parentNode.appendChild(li); }
     // Lupe auf der Startseite mit Wort „Suchen“ (Symbole beschriften, Punkt 21)
     if ($('suLupeStart') && !$('suLupeStart').querySelector('.var-lupe-t')) { var lt = document.createElement('span'); lt.className = 'var-lupe-t'; lt.setAttribute('data-t', 'su.suchen'); lt.textContent = t('su.suchen'); $('suLupeStart').appendChild(lt); }
-    varSprechen();
     // Telefonnummern zum Antippen (tel:-Links), auch in später gezeichneten Seiten
     var tm = null;
     if (window.MutationObserver) new MutationObserver(function () { if (!tm) tm = setTimeout(function () { tm = null; varTelefon($('inhalt')); }, 0); }).observe($('inhalt'), { childList: true, subtree: true, characterData: true });
   }
-  // Startseite: Karte „Lieber mit jemandem sprechen?“ (Senioren-Prüfung Punkt 18) unter den Kacheln: Pflegeberatung, Pflegestützpunkt,
+  // Karte „Lieber mit jemandem sprechen?“ (Senioren-Prüfung Punkt 18): früher auf der Startseite, jetzt oben auf den Seiten „Ich brauche selbst Hilfe“
+  // und „Ich pflege einen Angehörigen“ (Startseite nur mit den zwei Einstiegen, Wunsch David 24.11.2026). Pflegeberatung, Pflegestützpunkt,
   // Bürgertelefon (Nummer aus src/senioren.js, geprüft am 24.11.2026) und Weg zur Seite „Hilfe am Telefon“
-  function varSprechen() {
-    var raster = $('goPflege') && $('goPflege').closest('.start-raster'); if (!raster || $('varSprechen')) return;
+  function varSprechen(box) {
     var k = document.createElement('section'); k.className = 'var-sprechen'; k.id = 'varSprechen'; k.setAttribute('aria-labelledby', 'varSprechenH');
     var h = document.createElement('h3'); h.id = 'varSprechenH'; h.setAttribute('data-t', 'sux.sprechen.h'); k.appendChild(h);
     var p = document.createElement('p'); p.setAttribute('data-t', 'sux.sprechen.t'); k.appendChild(p);
     var bt = document.createElement('div'); bt.className = 'btns';
     var tel = window.SENIOREN && window.SENIOREN.BMG_TEL;
     if (tel) { var a = document.createElement('a'); a.className = 'btn var-tel'; a.href = 'tel:' + tel.tel; a.innerHTML = '<svg class="knopf-sym" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg><span><b data-t="sux.tel.bmg"></b> <span class="var-tel-nr no-tel" dir="ltr"></span></span>'; a.querySelector('.var-tel-nr').textContent = tel.anzeige; bt.appendChild(a); }
-    var mehr = nhKnopf('btn ghost', '<span data-t="sux.sprechen.mehr"></span>', null, function () { senStapel = []; senSeite = 'angHilfe'; if (aktAnsicht === 'sen') senRender(true); else oeffneVon('sen', true); });
-    bt.appendChild(mehr); k.appendChild(bt);
-    raster.parentNode.insertBefore(k, raster.nextSibling);
+    var mehr = nhKnopf('btn ghost', '<span data-t="sux.sprechen.mehr"></span>', null, function () { senWeiter('angHilfe'); });
+    mehr.id = 'varSprechenMehr'; bt.appendChild(mehr); k.appendChild(bt);
+    box.appendChild(k);
     k.querySelectorAll('[data-t]').forEach(function (e) { e.textContent = t(e.getAttribute('data-t')); });
   }
   // Deutsche Telefonnummer im Text (0… oder +49…, mind. 8 Ziffern, Leerzeichen, Schrägstrich oder Bindestrich erlaubt).
@@ -5296,16 +5294,19 @@
     };
     var assistent = typeof PflegeAssistent !== 'undefined';
     var check = function () { oeffneVon('leistungen', true); };
+    var brief = function () { $('goBriefe').click(); }; // Brief prüfen (Startkachel ist in der Variante versteckt, der Knopf bleibt im Dokument)
     if (senSeite === 'selbst') {
       frage('sv.selbst.frage');
       liste([['check', 'sv.k.check', 'sv.k.check.t', function () { senWeiter('was'); }], ['schaetzen', 'pu.schaetzen', 'pu.schaetzen.t', function () { paOeffnen(); }, assistent],
         ['antrag', 'sv.k.antrag', 'sv.k.antrag.t', function () { senWeiter('antrag'); }], ['pflege', 'sv.k.pflege', 'sv.k.pflege.t', function () { puOeffnen('pg'); }],
-        ['geld', 'sv.geld', 'sv.geld.t', function () { senWeiter('geld'); }]]);
+        ['geld', 'sv.geld', 'sv.geld.t', function () { senWeiter('geld'); }], ['brief', 'home.brief', 'sux.brief.t', brief]]);
+      varSprechen(box);
     } else if (senSeite === 'angeh') {
       frage('sv.angeh.frage');
       liste([['hilfen', 'sv.hilfen', 'sv.hilfen.t', function () { senWeiter('hilfen'); }], ['schaetzen', 'sv.k.schaetzenA', 'sv.k.schaetzenA.t', function () { paOeffnen(); }, assistent],
         ['antrag', 'sv.k.antrag', 'sv.k.antragA.t', function () { senWeiter('antrag'); }], ['pflege', 'sv.k.pflegeA', 'sv.k.pflegeA.t', function () { puOeffnen('pg'); }],
-        ['check', 'sv.k.checkA', 'sv.k.checkA.t', check]]);
+        ['check', 'sv.k.checkA', 'sv.k.checkA.t', check], ['brief', 'home.brief', 'sux.briefA.t', brief]]);
+      varSprechen(box);
     } else if (senSeite === 'geld') {
       frage('sv.geld.frage');
       liste([['check', 'sv.k.geldcheck', 'sv.k.geldcheck.t', check], ['brief', 'home.brief', 'home.brief.t', function () { $('goBriefe').click(); }]]);

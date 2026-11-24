@@ -54,15 +54,17 @@ const warte = (ms) => new Promise((r) => setTimeout(r, ms || 5));
   check('Erster Start: große Schrift an', d.documentElement.classList.contains('big') && $('bigBtn').getAttribute('aria-checked') === 'true');
   check('Titel „SoLo Pflege & Rente“', /SoLo\s*Pflege & Rente/.test(d.querySelector('h1 .titel').textContent));
   check('Startseite: zwei große Einstiege', sichtbar($('goSelbst')) && sichtbar($('goAngeh')) && $('goSelbst').textContent.includes(de['sv.selbst']) && $('goAngeh').textContent.includes(de['sv.angeh']));
-  check('Startseite: Pflege, Geld im Alter, Brief sichtbar', sichtbar($('goPflege')) && sichtbar($('goGeldAlter')) && sichtbar($('goBriefe')) && $('goGeldAlter').textContent.includes(de['sv.geld']));
-  check('Startseite: Leistungs-Kachel, Geld und Schulden, Ich ziehe aus ausgeblendet', !sichtbar($('goLeistungen')) && !sichtbar($('goGeld')) && !sichtbar($('goAusziehen')));
-  check('Geld im Alter steht direkt nach Pflege', $('goPflege').nextElementSibling === $('goGeldAlter'));
+  // Wunsch David 24.11.2026: Startseite nur mit den zwei Einstiegen (alle übrigen Ziele über die Unterseiten, siehe unten „Inventur“)
+  const startKnoepfe = [...$('v-start').querySelectorAll('button, a')].filter((b) => sichtbar(b) && !b.closest('#firstNotice')).map((b) => b.id); // Erststart-Hinweis (rechtlich nötig, nur beim ersten Start) ausgenommen
+  check('Startseite: nur die zwei Einstiege (keine Kacheln, keine Telefon-Karte, keine Datenschutz-Zeile)', startKnoepfe.join() === 'goSelbst,goAngeh' && !$('varSprechen') && !$('goGeldAlter'), startKnoepfe);
+  check('Startseite: alle alten Kacheln ausgeblendet', ['goLeistungen', 'goPflege', 'goBriefe', 'goGeld', 'goAusziehen', 'startSicher'].every((id) => !sichtbar($(id))));
 
   // Ansicht „sen“
   $('goSelbst').click();
   check('Ich brauche selbst Hilfe: eigene Seite', ansicht() === 'sen' && $('h-sen').textContent === de['sv.selbst']);
   const knoepfe = () => [...$('senInhalt').querySelectorAll('.weg-liste .weg')].filter((b) => !b.hidden).map((b) => b.id);
-  check('Selbst: Check, Einschätzen, Antrag, Pflegekasse, Geld', knoepfe().join() === 'sen-selbst-check,sen-selbst-schaetzen,sen-selbst-antrag,sen-selbst-pflege,sen-selbst-geld', knoepfe());
+  check('Selbst: Check, Einschätzen, Antrag, Pflegekasse, Geld, Brief', knoepfe().join() === 'sen-selbst-check,sen-selbst-schaetzen,sen-selbst-antrag,sen-selbst-pflege,sen-selbst-geld,sen-selbst-brief', knoepfe());
+  check('Selbst: Karte „Lieber mit jemandem sprechen?“ mit Bürgertelefon', !!$('senInhalt').querySelector('#varSprechen a.var-tel[href^="tel:"]') && !!$('varSprechenMehr'));
   check('Ausdrucken sichtbar', !!$('senInhalt').querySelector('.sen-druck button'));
   $('senInhalt').querySelector('.sen-druck button').click();
   check('Ausdrucken öffnet den Druck (Browser)', w.__gedruckt === true);
@@ -83,6 +85,14 @@ const warte = (ms) => new Promise((r) => setTimeout(r, ms || 5));
   check('Zurück: Startseite', ansicht() === 'start');
   $('goAngeh').click();
   check('Ich pflege einen Angehörigen: zuerst Hilfen für Angehörige', ansicht() === 'sen' && knoepfe()[0] === 'sen-angeh-hilfen');
+  check('Angehörige: Hilfen, Einschätzen, Antrag, Pflegekasse, Check, Brief', knoepfe().join() === 'sen-angeh-hilfen,sen-angeh-schaetzen,sen-angeh-antrag,sen-angeh-pflege,sen-angeh-check,sen-angeh-brief', knoepfe());
+  check('Angehörige: Karte „Lieber mit jemandem sprechen?“ mit Bürgertelefon', !!$('senInhalt').querySelector('#varSprechen a.var-tel[href^="tel:"]'));
+  $('varSprechenMehr').click(); await warte(20);
+  check('„Mehr Wege zur Beratung“ öffnet „Hilfe am Telefon“, Zurück führt zu den Angehörigen', $('h-sen').textContent === de['sen.ang.hilfe.h'] && (zur().click(), $('h-sen').textContent === de['sv.angeh']));
+  $('sen-angeh-brief').click(); await warte(20);
+  check('Angehörige: Brief prüfen öffnet die Briefe', ansicht() === 'briefe');
+  d.querySelector('#appnav button[data-ansicht="start"]').click(); await warte(20);
+  $('goAngeh').click(); await warte(20);
   $('sen-angeh-hilfen').click();
   check('Hilfen für Angehörige: oben „Die 3 wichtigsten Schritte“, darunter vier Gruppen', $('h-sen').textContent === de['sv.hilfen'] && !$('senInhalt').querySelector('.sen-platzhalter') &&
     $('senInhalt').querySelectorAll('.sen-top3 .sen-schritte > li').length === 3 && $('senInhalt').querySelectorAll('.sen-inhalt [data-sen-ziel^="sen-ang-"]').length === 4);
@@ -90,7 +100,9 @@ const warte = (ms) => new Promise((r) => setTimeout(r, ms || 5));
   $('senInhalt').querySelector('[data-sen-ziel="sen-ang-hilfe"]').click(); await warte(20);
   check('Gruppe „Hilfe am Telefon“: Bürgertelefon als Knopf mit tel:-Link', $('h-sen').textContent === de['sen.ang.hilfe.h'] && !!$('senInhalt').querySelector('a.sen-tel-knopf[href^="tel:"]'));
   zur().click(); await warte(); zur().click(); await warte(); zur().click(); await warte();
-  $('goGeldAlter').click();
+  check('Zurück aus den Angehörigen-Seiten: Startseite', ansicht() === 'start');
+  $('goSelbst').click(); await warte(20);
+  $('sen-selbst-geld').click(); await warte(20);
   check('Geld im Alter: Check, Brief und Schuldnerberatung', knoepfe().join() === 'sen-geld-check,sen-geld-brief' && !!$('sen-sb') && /meine-schulden\.de/.test($('sen-sb').href));
   $('sen-geld-check').click();
   check('Check aus „Geld im Alter“ öffnet die Leistungen', ansicht() === 'leistungen');

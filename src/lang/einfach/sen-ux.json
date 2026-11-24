@@ -39,5 +39,7 @@
   "sux.grp.pflege": "=",
   "sux.grp.geld": "=",
   "sux.grp.ausweis": "=",
-  "sux.grp.kosten": "="
+  "sux.grp.kosten": "=",
+  "sux.brief.t": "Sie haben Post von der Pflege-Kasse, von der Rente oder vom Amt? Hier prüfen Sie den Brief. Sie können auch Widerspruch schreiben.",
+  "sux.briefA.t": "Post von der Pflege-Kasse oder vom Amt für die Person, die Sie pflegen? Hier prüfen Sie den Brief. Sie können auch Widerspruch schreiben."
 }

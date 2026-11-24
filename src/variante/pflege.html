@@ -107,7 +107,6 @@
   .var-einstiege .var-selbst { --c: #2f5288; }
   .var-einstiege .var-angeh { --c: #0b5a4c; }
   .var-pflege #goPflege { --c: #5b3d8a; }
-  .var-pflege #goGeldAlter { --c: #2f5f2c; }
   .var-pflege #goBriefe { --c: #8a3b16; }
   .var-pflege .sen-weiter { background: var(--accent); color: #fff; border-color: var(--accent); }
   /* Punkt 17: Telefon-Knopf in voller Breite mit Hörer und Nummer darunter */
@@ -115,7 +114,9 @@
   .sen-tel-sym svg, .var-tel .knopf-sym { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; flex: none; }
   .sen-tel-txt { display: grid; gap: 2px; text-align: start; }
   .sen-tel-nr, .var-tel-nr { font-weight: 400; }
-  .var-tel > span { display: grid; text-align: start; }
+  .var-tel > span { display: grid; text-align: start; min-width: 0; }
+  .var-pflege a.var-tel { border-radius: 16px; }
+  .var-tel-nr { white-space: nowrap; }
   /* Punkt 18: Karte „Lieber mit jemandem sprechen?“ */
   .var-sprechen { margin: 18px 0 10px; padding: 14px 16px; border: 2px solid var(--line); border-radius: 16px; background: var(--surface); }
   .var-sprechen h3 { margin: 0 0 6px; font-size: 1.2rem; }
