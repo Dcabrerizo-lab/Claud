@@ -1056,7 +1056,7 @@
   "t.zuk.ueberbruecken": "تا رسیدن اولین پرداخت، Grundsicherungsgeld می‌تواند این فاصله را پر کند. هر دو درخواست را فوراً بدهید.",
   "z.zuk.alg": "اول Arbeitslosengeld را درخواست کنید: این کمک بر Grundsicherungsgeld مقدم است و در Grundsicherungsgeld، Wohngeld و Kinderzuschlag به‌عنوان درآمد حساب می‌شود. کارت‌ها نشان می‌دهند پس از آن چه تغییر می‌کند.",
   "z.zuk.kg": "Krankengeld بر Grundsicherungsgeld مقدم است و در Grundsicherungsgeld، Wohngeld و Kinderzuschlag به‌عنوان درآمد حساب می‌شود. کارت‌ها نشان می‌دهند پس از آن چه تغییر می‌کند.",
-  "z.zuk.eg": "Elterngeld را پس از تولد به‌موقع درخواست کنید: مبلغ بالاتر از 300 € در Grundsicherungsgeld، Wohngeld و Kinderzuschlag به‌عنوان درآمد حساب می‌شود. کارت‌ها نشان می‌دهند پس از آن چه تغییر می‌کند.",
+  "z.zuk.eg": "Elterngeld را پس از تولد به‌موقع درخواست کنید. به‌عنوان درآمد حساب می‌شود: در Wohngeld بخش بالاتر از 300 € (ElterngeldPlus بالاتر از 150 €). در Grundsicherungsgeld و Kinderzuschlag فقط به اندازه درآمد شما پیش از تولد، حداکثر 300 € (ElterngeldPlus 150 €) معاف می‌ماند. کارت‌ها نشان می‌دهند پس از آن چه تغییر می‌کند.",
   "t.kg.antraglos": "جدید از 2027: برای نوزاد، Familienkasse می‌تواند Kindergeld را بدون درخواست هم بپردازد، اگر اطلاعات را از Bundeszentralamt für Steuern داشته باشد. اگر پس از تولد از Familienkasse خبری نشد، خودتان درخواست بدهید.",
   "t.wg.frueh": "نکته: Wohngeld فقط از ماه درخواست پرداخت می‌شود. پس زود درخواست دهید.",
   "z.grenzen": "به‌طور تقریبی یا اصلاً حساب نشده: سقف دقیق اجاره در شهر شما، درآمد بسیار متغیر، نفقه از بستگان و موارد خاص در قانون اقامت. اگر یکی از این‌ها به شما مربوط است، مشاوره بگیرید، مثلاً رایگان در یک مرکز مشاوره اجتماعی شهر یا انجمن‌های خیریه.",

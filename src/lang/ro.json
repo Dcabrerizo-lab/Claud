@@ -1056,7 +1056,7 @@
   "t.zuk.ueberbruecken": "Până vine prima plată, Grundsicherungsgeld poate acoperi perioada. Depune imediat ambele cereri.",
   "z.zuk.alg": "Cere mai întâi Arbeitslosengeld: are prioritate față de Grundsicherungsgeld și contează ca venit la Grundsicherungsgeld, Wohngeld și Kinderzuschlag. Cardurile arată ce se schimbă atunci.",
   "z.zuk.kg": "Krankengeld are prioritate față de Grundsicherungsgeld și contează ca venit la Grundsicherungsgeld, Wohngeld și Kinderzuschlag. Cardurile arată ce se schimbă atunci.",
-  "z.zuk.eg": "Cere la timp Elterngeld după naștere: peste 300 € contează ca venit la Grundsicherungsgeld, Wohngeld și Kinderzuschlag. Cardurile arată ce se schimbă atunci.",
+  "z.zuk.eg": "Cere la timp Elterngeld după naștere. Contează ca venit: la Wohngeld partea de peste 300 € (ElterngeldPlus peste 150 €). La Grundsicherungsgeld și Kinderzuschlag rămâne liber doar cât ai câștigat înainte de naștere, cel mult 300 € (ElterngeldPlus 150 €). Cardurile arată ce se schimbă atunci.",
   "t.kg.antraglos": "Nou din 2027: pentru un copil nou-născut, Familienkasse poate plăti Kindergeld și fără cerere, dacă are datele de la Bundeszentralamt für Steuern. Dacă Familienkasse nu te contactează după naștere, depune singur cererea.",
   "t.wg.frueh": "Sfat: Wohngeld se acordă abia din luna cererii. De aceea depune cererea din timp.",
   "z.grenzen": "Calculat aproximativ sau deloc: limita exactă a chiriei în orașul tău, venitul foarte variabil, întreținerea de la rude și cazurile speciale ale dreptului de ședere. Dacă ceva din acestea te privește, cere sfatul, de exemplu gratuit la un serviciu de consiliere socială al orașului sau al organizațiilor de caritate.",

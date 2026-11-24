@@ -1056,7 +1056,7 @@
   "t.zuk.ueberbruecken": "تر هغه چې لومړۍ ورکړه راشي، Grundsicherungsgeld کولای شي دا وخت پوره کړي. دواړه غوښتنلیکونه سمدستي ورکړئ.",
   "z.zuk.alg": "لومړی د Arbeitslosengeld غوښتنلیک ورکړئ: دا له Grundsicherungsgeld څخه لومړیتوب لري او په Grundsicherungsgeld، Wohngeld او Kinderzuschlag کې د عاید په توګه حسابېږي. کارتونه ښيي چې بیا څه بدلېږي.",
   "z.zuk.kg": "Krankengeld له Grundsicherungsgeld څخه لومړیتوب لري او په Grundsicherungsgeld، Wohngeld او Kinderzuschlag کې د عاید په توګه حسابېږي. کارتونه ښيي چې بیا څه بدلېږي.",
-  "z.zuk.eg": "له زېږون وروسته په وخت د Elterngeld غوښتنلیک ورکړئ: له 300 € څخه پورته دا په Grundsicherungsgeld، Wohngeld او Kinderzuschlag کې د عاید په توګه حسابېږي. کارتونه ښيي چې بیا څه بدلېږي.",
+  "z.zuk.eg": "له زېږون وروسته په وخت د Elterngeld غوښتنلیک ورکړئ. دا د عاید په توګه حسابېږي: په Wohngeld کې له 300 € څخه پورته برخه (ElterngeldPlus له 150 € پورته). په Grundsicherungsgeld او Kinderzuschlag کې یوازې هغومره معاف پاتې کېږي څومره چې تاسو له زېږون مخکې ګټل، تر ټولو ډېر 300 € (ElterngeldPlus 150 €). کارتونه ښيي چې بیا څه بدلېږي.",
   "t.kg.antraglos": "له 2027 راهیسې نوی: د نوي زېږېدلي ماشوم لپاره Familienkasse کولای شي Kindergeld پرته له غوښتنلیک هم ورکړي، که د Bundeszentralamt für Steuern معلومات ورسره وي. که له زېږون وروسته Familienkasse درسره اړیکه ونه نیوله، پخپله غوښتنلیک ورکړئ.",
   "t.wg.frueh": "لارښوونه: Wohngeld یوازې د غوښتنې له میاشتې ورکول کېږي. نو ژر غوښتنه وکړئ.",
   "z.grenzen": "نږدې یا هېڅ نه دي حساب شوي: ستاسو د ښار دقیق د کرایې لوړ حد، ډېر بدلېدونکی عاید، د خپلوانو نفقه او د اقامې د حق ځانګړې قضیې. که له دې څخه څه صدق کوي، مشوره واخلئ، د بېلګې په توګه وړیا د ښار یا خیریه ټولنو (Wohlfahrtsverbände) په ټولنیزه مشوره کې.",

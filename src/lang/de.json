@@ -1056,7 +1056,7 @@
   "t.zuk.ueberbruecken": "Bis die erste Zahlung kommt, kann Grundsicherungsgeld die Zeit überbrücken. Stelle beide Anträge gleich.",
   "z.zuk.alg": "Arbeitslosengeld zuerst beantragen: Es geht dem Grundsicherungsgeld vor und zählt beim Grundsicherungsgeld, Wohngeld und Kinderzuschlag als Einkommen. Die Karten zeigen, was sich dann ändert.",
   "z.zuk.kg": "Krankengeld geht dem Grundsicherungsgeld vor und zählt beim Grundsicherungsgeld, Wohngeld und Kinderzuschlag als Einkommen. Die Karten zeigen, was sich dann ändert.",
-  "z.zuk.eg": "Elterngeld nach der Geburt rechtzeitig beantragen: Über 300 € zählt es beim Grundsicherungsgeld, Wohngeld und Kinderzuschlag als Einkommen. Die Karten zeigen, was sich dann ändert.",
+  "z.zuk.eg": "Elterngeld nach der Geburt rechtzeitig beantragen. Es zählt als Einkommen: beim Wohngeld der Teil über 300 € (ElterngeldPlus über 150 €). Beim Grundsicherungsgeld und Kinderzuschlag bleibt nur so viel frei, wie du vor der Geburt verdient hast, höchstens 300 € (ElterngeldPlus 150 €). Die Karten zeigen, was sich dann ändert.",
   "t.kg.antraglos": "Neu seit 2027: Bei einem neugeborenen Kind kann die Familienkasse das Kindergeld auch ohne Antrag zahlen, wenn ihr die Daten vom Bundeszentralamt für Steuern vorliegen. Meldet sich die Familienkasse nach der Geburt nicht, stelle den Antrag selbst.",
   "t.wg.frueh": "Tipp: Wohngeld gibt es erst ab dem Monat des Antrags. Deshalb früh beantragen.",
   "z.grenzen": "Grob oder gar nicht gerechnet: die genaue Mietobergrenze deiner Stadt, stark schwankendes Einkommen, Unterhalt von Angehörigen und Sonderfälle beim Aufenthaltsrecht. Trifft etwas davon zu, lass dich beraten, zum Beispiel kostenlos bei einer Sozialberatung der Stadt oder der Wohlfahrtsverbände.",

@@ -19,13 +19,13 @@ wenn nicht anders genannt.
 | Unterhaltsvorschuss | 227 € / 299 € / 394 € | § 2 UVG i. V. m. Mindestunterhalt | gesetze-im-internet.de/uhvorschg/__2.html |
 | UVG ab 12 Jahren | nur ohne SGB-II-Bezug des Kindes oder mit eigenem Einkommen des Elternteils ab 600 €; Kind von 14 bis 17 ist immer 12 oder älter | § 1 Abs. 1a UVG | gesetze-im-internet.de/uhvorschg/__1.html |
 | Elterngeld | 65–100 %, 300–1.800 €; ElterngeldPlus halb; Geschwisterbonus 10 %, mind. 75 €; Mehrlingszuschlag 300 € | §§ 2, 2a, 4a BEEG | gesetze-im-internet.de/beeg/ |
-| Elterngeld Einkommensgrenze | zu versteuerndes Einkommen über 175.000 € (Paar zusammen) im letzten Jahr vor der Geburt: kein Anspruch. App: Brutto aus Arbeit × 12 × 0,8 > 175.000 € „eher nicht“, Brutto × 12 > 175.000 € höchstens „möglich“ | § 1 Abs. 8 BEEG | gesetze-im-internet.de/beeg/__1.html |
+| Elterngeld Einkommensgrenze | zu versteuerndes Einkommen über 175.000 € (Paar zusammen) im letzten Jahr vor der Geburt: kein Anspruch. App: Brutto aus Arbeit × 12 > 175.000 € höchstens „möglich“, kein „eher nicht“ (zvE nach § 2 Abs. 5 EStG mit Kinderfreibeträgen u. a. und Vorjahr unbekannt; Gegenprüfung 25.11.2026) | § 1 Abs. 8 BEEG | gesetze-im-internet.de/beeg/__1.html |
 | Elterngeld Paare | gleichzeitiges Basiselterngeld nur in 1 der ersten 12 Lebensmonate (Ausnahmen Mehrlinge, Frühgeburt, Behinderung, Geschwisterbonus); Partnerschaftsbonus 2–4 Monate ElterngeldPlus bei 24–32 Wochenstunden | § 4 Abs. 6, § 4b BEEG | gesetze-im-internet.de/beeg/__4.html, __4b.html |
 | Elterngeld als Einkommen | Wohngeld u. a.: 300 € frei, ElterngeldPlus 150 €, je Kind der Geburt; Grundsicherungsgeld, Sozialhilfe, Kinderzuschlag, AsylbLG: frei höchstens 300 € und nur bis zum Einkommen vor der Geburt (Elterngeld-Netto), ElterngeldPlus die Hälfte, nicht vervielfacht | § 10 Abs. 1, 3, 4, 5 BEEG | buzer.de/10_BEEG.htm (gesetze-im-internet.de nicht erreichbar) |
 | Mutterschaftsgeld | Krankenkasse höchstens 13 €/Tag + Arbeitgeberzuschuss; nicht gesetzlich versichert: BAS einmalig 210 €; mit Arbeitslosengeld oder Krankengeld bzw. als „anderes Mitglied“ (Selbstständige mit Krankengeld-Wahl) in Höhe des Krankengeldes | § 24i SGB V, §§ 19, 20 MuSchG | gesetze-im-internet.de/sgb_5/__24i.html |
 | Schutzfristen | 6 Wochen vor, 8 (12) nach der Geburt; nach Fehlgeburt ab 13. Woche 2, ab 17. Woche 6, ab 20. Woche 8 Wochen (verzichtbar) | § 3 MuSchG | gesetze-im-internet.de/muschg_2018/__3.html |
 | Bildung und Teilhabe | Schulbedarf 195 € im Jahr, Teilhabe 15 € im Monat (nur unter 18); junge Erwachsene bis 25 nur als Schülerinnen und Schüler ohne Ausbildungsvergütung | § 28 Abs. 1 Satz 2, Abs. 3, Abs. 7 SGB II | gesetze-im-internet.de/sgb_2/__28.html |
-| Sofortzuschlag | 25 € im Monat je Kind / jungem Erwachsenen mit Regelbedarfsstufe 3–6, auch wenn der Anspruch nur am Kindergeld scheitert; zusätzlich, kein Bedarf | § 72 SGB II (Fassung ab 1.7.2026) | gesetze-im-internet.de/sgb_2/__72.html |
+| Sofortzuschlag | 25 € im Monat je Kind / jungem Erwachsenen mit Regelbedarfsstufe 3–6, auch wenn der Anspruch nur am Kindergeld scheitert; nicht für Kinder, die ihren Bedarf selbst decken; zusätzlich, kein Bedarf | § 72 SGB II (Fassung ab 1.7.2026) | gesetze-im-internet.de/sgb_2/__72.html |
 | Mehrbedarf Alleinerziehende im Wechselmodell | bei etwa hälftiger Betreuung halber Mehrbedarf | § 21 Abs. 3 SGB II; BSG 3.3.2009, B 4 AS 50/07 R | – |
 | Familiengeld/Krippengeld Bayern | 250 € / 300 €, Krippengeld bis 100 €, nur für bis 31.12.2024 Geborene bis zum 3. Geburtstag (Hinweis in der App nur mit Kind unter 6 und bis Ende 2027) | Art. 9a BayFamGG (GVBl. 2025 S. 570); Art. 29 Abs. 2 BayKiBiG n. F. (GVBl. 2026 S. 401) | verkuendung-bayern.de |
 | Entlastungsbetrag | Steuerklasse II nur ohne weitere volljährige Person im Haushalt (App: bei Verwandten/WG Steuerklasse I) | § 24b Abs. 3 EStG | gesetze-im-internet.de/estg/__24b.html |
@@ -39,7 +39,7 @@ wenn nicht anders genannt.
 | AE, Baby da + Geschwister, Elterngeld 375 € ohne Einkommen vor der Geburt | kein Elterngeld-Freibetrag beim Grundsicherungsgeld; etwa 1.370 € | § 10 Abs. 5 BEEG |
 | Elterngeld 200 € (sicher ElterngeldPlus) | Wohngeld: 150 € frei; Grundsicherungsgeld: 150 € frei (Einkommen vor der Geburt ergibt sich aus dem Betrag über 150 €) | § 10 Abs. 3, 5 BEEG |
 | Elterngeld 600 €, Basis oder Plus unbekannt | Grundsicherungsgeld/KiZ vorsichtig 150 € frei, für „eher nicht“ und KiZ-Obergrenze 300 € | § 10 Abs. 5 BEEG |
-| Paar 25.000 € brutto im Monat, Baby kommt | Elterngeld „eher nicht“ | § 1 Abs. 8 BEEG |
+| Paar 25.000 € brutto im Monat, Baby kommt | Elterngeld höchstens „möglich“, Grenze vorn | § 1 Abs. 8 BEEG |
 | Paar 16.000 € brutto im Monat | Elterngeld höchstens „möglich“, Grenze vorn | § 1 Abs. 8 BEEG |
 | Selbstständige Schwangere | Mutterschaftsgeld „möglich“, Text ohne Arbeitgeber | § 24i Abs. 1, 2 SGB V |
 | Krankengeld, Baby bald | Mutterschaftsgeld „wahrscheinlich“ | § 24i Abs. 1, 2 SGB V |

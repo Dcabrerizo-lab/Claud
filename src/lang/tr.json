@@ -1056,7 +1056,7 @@
   "t.zuk.ueberbruecken": "İlk ödeme gelene kadar Grundsicherungsgeld aradaki zamanı atlatmana yardımcı olabilir. İki başvuruyu da hemen yap.",
   "z.zuk.alg": "Önce Arbeitslosengeld için başvur: Grundsicherungsgeld’den önce gelir ve Grundsicherungsgeld, Wohngeld ve Kinderzuschlag’da gelir sayılır. Kartlar o zaman neyin değişeceğini gösterir.",
   "z.zuk.kg": "Krankengeld, Grundsicherungsgeld’den önce gelir ve Grundsicherungsgeld, Wohngeld ve Kinderzuschlag’da gelir sayılır. Kartlar o zaman neyin değişeceğini gösterir.",
-  "z.zuk.eg": "Doğumdan sonra Elterngeld için zamanında başvur: 300 € üzeri Grundsicherungsgeld, Wohngeld ve Kinderzuschlag’da gelir sayılır. Kartlar o zaman neyin değişeceğini gösterir.",
+  "z.zuk.eg": "Doğumdan sonra Elterngeld için zamanında başvur. Gelir sayılır: Wohngeld'de 300 € üzerindeki kısım (ElterngeldPlus'ta 150 € üzeri). Grundsicherungsgeld ve Kinderzuschlag'da sadece doğumdan önce kazandığın kadarı, en fazla 300 € (ElterngeldPlus 150 €) muaf kalır. Kartlar o zaman neyin değişeceğini gösterir.",
   "t.kg.antraglos": "2027’den beri yeni: Yeni doğan bir çocuk için Familienkasse, Bundeszentralamt für Steuern’den bilgileri aldıysa Kindergeld’i başvurusuz da ödeyebilir. Doğumdan sonra Familienkasse’den haber gelmezse başvuruyu kendin yap.",
   "t.wg.frueh": "İpucu: Wohngeld yalnızca başvuru ayından itibaren verilir. Bu yüzden erken başvur.",
   "z.grenzen": "Kabaca veya hiç hesaplanmayanlar: şehrinin tam kira üst sınırı, çok dalgalanan gelir, akrabalardan nafaka ve oturum hukukundaki özel durumlar. Bunlardan biri geçerliyse danışmanlık al, örneğin belediyenin veya yardım kuruluşlarının ücretsiz sosyal danışmanlığında.",

@@ -1056,7 +1056,7 @@
   "t.zuk.ueberbruecken": "Do pierwszej wypłaty Grundsicherungsgeld może pomóc przetrwać ten czas. Złóż od razu oba wnioski.",
   "z.zuk.alg": "Najpierw złóż wniosek o Arbeitslosengeld: ma pierwszeństwo przed Grundsicherungsgeld i liczy się jako dochód przy Grundsicherungsgeld, Wohngeld i Kinderzuschlag. Karty pokazują, co się wtedy zmieni.",
   "z.zuk.kg": "Krankengeld ma pierwszeństwo przed Grundsicherungsgeld i liczy się jako dochód przy Grundsicherungsgeld, Wohngeld i Kinderzuschlag. Karty pokazują, co się wtedy zmieni.",
-  "z.zuk.eg": "Złóż wniosek o Elterngeld w porę po porodzie: powyżej 300 € liczy się jako dochód przy Grundsicherungsgeld, Wohngeld i Kinderzuschlag. Karty pokazują, co się wtedy zmieni.",
+  "z.zuk.eg": "Złóż wniosek o Elterngeld w porę po porodzie. Liczy się jako dochód: przy Wohngeld część powyżej 300 € (ElterngeldPlus powyżej 150 €). Przy Grundsicherungsgeld i Kinderzuschlag wolne pozostaje tylko tyle, ile zarabiałaś/zarabiałeś przed porodem, najwyżej 300 € (ElterngeldPlus 150 €). Karty pokazują, co się wtedy zmieni.",
   "t.kg.antraglos": "Nowość od 2027: na noworodka Familienkasse może wypłacać Kindergeld także bez wniosku, jeśli ma dane z Bundeszentralamt für Steuern. Jeśli Familienkasse nie odezwie się po urodzeniu, złóż wniosek samodzielnie.",
   "t.wg.frueh": "Wskazówka: Wohngeld przysługuje dopiero od miesiąca złożenia wniosku. Dlatego złóż go wcześnie.",
   "z.grenzen": "Policzone zgrubnie lub wcale: dokładna granica czynszu w twoim mieście, mocno zmienny dochód, alimenty od krewnych i szczególne przypadki prawa pobytowego. Jeśli coś z tego dotyczy ciebie, skorzystaj z porady, na przykład bezpłatnie w poradni socjalnej miasta lub organizacji charytatywnych.",
