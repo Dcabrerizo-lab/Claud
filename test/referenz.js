@@ -584,8 +584,9 @@ function arbeitslosengeld(e) {
   const m = [12, 16, 20, 24, 30, 36, 48].indexOf(Number(e.algMonate)) >= 0 ? Number(e.algMonate) : 0;
   // § 147 Abs. 2: Versicherungsmonate -> Anspruchsdauer, ab bestimmten Altersgrenzen länger
   let dauer = null;
-  // Paar: Alter gilt der ältesten Person, die Dauer hängt vom Alter der arbeitslosen Person ab -> keine konkrete Dauer
-  if (m && h.erwachsene !== 2) dauer = m >= 48 && alter >= 58 ? 24 : m >= 36 && alter >= 55 ? 18 : m >= 30 && alter >= 50 ? 15 : m >= 24 ? 12 : m >= 20 ? 10 : m >= 16 ? 8 : 6;
+  // Paar: Alter gilt der ältesten Person; ab 30 Versicherungsmonaten hängt die Dauer vom Alter der arbeitslosen Person ab -> keine
+  // konkrete Dauer. Unter 30 Monaten (6, 8, 10, 12 Monate) ist die Dauer vom Alter unabhängig und bleibt konkret.
+  if (m && (h.erwachsene !== 2 || m < 30)) dauer = m >= 48 && alter >= 58 ? 24 : m >= 36 && alter >= 55 ? 18 : m >= 30 && alter >= 50 ? 15 : m >= 24 ? 12 : m >= 20 ? 10 : m >= 16 ? 8 : 6;
   const lohn = Math.min(zahl(e.lohnVorher), 8450);
   // Netto bei kleinem Brutto höher; oben mindestens das Leistungsentgelt in Steuerklasse III (§ 153 SGB III: 20 % SV-Pauschale + Lohnsteuer)
   const oben = Math.max(lohn <= 2000 ? 0.8 : 0.72, lohn > 0 ? (0.8 * lohn - lstIII(lohn, e)) / lohn : 0);

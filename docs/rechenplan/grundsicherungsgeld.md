@@ -7,7 +7,7 @@ Erwachsene, Kinder nach Altersgruppe, junge Erwachsene, Einkommen je Person (Art
 
 ## Rechenschritte
 1. Asyl → nein (§ 7 Abs. 1 Satz 2 Nr. 3). EU-Ausschluss (§ 7 Abs. 1 Satz 2 Nr. 2, Rückausnahmen Arbeit/5 Jahre) → nein.
-2. Rentenalter oder voll erwerbsgemindert: Paar mit Kindern → möglich (gemischte Bedarfsgemeinschaft), sonst nein (Sozialamt zuständig, § 7 Abs. 4, § 8).
+2. Rentenalter oder voll erwerbsgemindert: Paar (mit oder ohne Kinder) → möglich (gemischte Bedarfsgemeinschaft; laufender Bezug: schon vorhanden), Einzelperson → nein (Sozialamt zuständig, § 7 Abs. 1 Satz 1 Nr. 1 und 2, § 7a, § 8; nicht dauerhaft voll erwerbsgemindert im Paar: Jobcenter, § 19 Abs. 1 Satz 2).
 3. Bezug Grundsicherungsgeld → na; Bezug Sozialamt → nein. BAföG-fähige eigene Ausbildung → nein (§ 7 Abs. 5).
 4. Vermögen über Schonvermögen je Person nach Alter (§ 12 Abs. 2: 5.000 € bis 30, 10.000 € ab 30, 12.500 € ab 40, 20.000 € ab 50; Kinder 5.000 €) → nein. Paar: Alter der zweiten Person unbekannt → über der kleinsten Grenze höchstens möglich.
 5. `ggeldRechnung0`:

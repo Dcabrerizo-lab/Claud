@@ -81,6 +81,13 @@ ck('Einzelperson über der Grenze: ggeld nein, Sozialamt zuständig (unveränder
 const algE = { arbeitSit: 'arbeitslos', algZeit: true, algMonate: 48, lohnVorher: 2400, netto: 0 };
 m = run({ ...algE, adults: 2, gebJahr: 1967 });
 ck('[alter-paar] Paar, älteste 59, 48 Monate versichert: keine Dauer von 24 Monaten zugesagt', !hat(m.alg1, 'alg1.dauer') && hat(m.alg1, 'alg1.dauerMin'), m.alg1.tx);
+m = run({ ...algE, adults: 2, gebJahr: 1967, algMonate: 30 });
+ck('[alter-paar] Paar, älteste 59, 30 Monate versichert: keine Dauer von 15 Monaten zugesagt', !hat(m.alg1, 'alg1.dauer') && hat(m.alg1, 'alg1.dauerMin'), m.alg1.tx);
+// Unter 30 Versicherungsmonaten hängt die Dauer nicht vom Alter ab (§ 147 Abs. 2 SGB III): auch beim Paar konkret
+m = run({ ...algE, adults: 2, gebJahr: 1967, algMonate: 24 });
+ck('[alter-paar] Paar, 24 Monate versichert: Dauer 12 Monate bleibt konkret (altersunabhängig)', m.alg1.tx.some((a) => a[0] === 'alg1.dauer' && a[1].m === 12) && !hat(m.alg1, 'alg1.dauerMin'), m.alg1.tx);
+m = run({ ...algE, adults: 2, gebJahr: 1996, algMonate: 12 });
+ck('Paar, 12 Monate versichert: Dauer 6 Monate konkret', m.alg1.tx.some((a) => a[0] === 'alg1.dauer' && a[1].m === 6), m.alg1.tx);
 m = run({ ...algE, adults: 1, gebJahr: 1967 });
 ck('Einzelperson 59, 48 Monate versichert: Dauer 24 Monate (unverändert)', m.alg1.tx.some((a) => a[0] === 'alg1.dauer' && a[1].m === 24), m.alg1.tx);
 m = run({ adults: 2, gebJahr: 1965, gdb: '50', netto: 1400 });

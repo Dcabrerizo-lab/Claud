@@ -1303,13 +1303,16 @@ const Rules = (function () {
   }
   function ggeldRechnung(h) {
     const id = 'ggeld';
-    // Paar, eine Person im Rentenalter oder voll erwerbsgemindert: gemischte Bedarfsgemeinschaft (siehe unten)
+    // Paar, eine Person über der Regelaltersgrenze oder voll erwerbsgemindert: gemischte Bedarfsgemeinschaft (siehe unten)
     if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);
     if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);
     if (h.alter || h.erwerbsgemindert) {
       // Paar: Die App kennt nur das Alter der ältesten Person bzw. weiß nur, dass EINE Person voll erwerbsgemindert ist. Die andere
       // Person kann erwerbsfähig sein und ist dann selbst beim Jobcenter leistungsberechtigt (§ 7 Abs. 1 Satz 1, Abs. 3 Nr. 3 SGB II);
-      // die ältere bzw. erwerbsgeminderte Person bekommt Grundsicherung nach § 41 SGB XII (§ 7 Abs. 4, § 7a, § 5 Abs. 2 SGB II).
+      // die ältere bzw. DAUERHAFT voll erwerbsgeminderte Person bekommt Grundsicherung nach § 41 Abs. 2, 3 SGB XII (§ 7 Abs. 1 Satz 1 Nr. 1,
+      // § 7a, § 5 Abs. 2 Satz 2 SGB II). Ist die volle Erwerbsminderung nicht dauerhaft, bekommt auch sie Grundsicherungsgeld vom Jobcenter
+      // (§ 19 Abs. 1 Satz 2 SGB II). Die App fragt die Dauerhaftigkeit nicht ab; der Text ggeld.gemischt nennt beide Fälle.
+      // Quellen: gesetze-im-internet.de/sgb_2/__7.html, __19.html, __5.html, sgb_12/__41.html (Abruf 24.11.2026).
       // Deshalb bei Paaren nie „nein“, auch ohne Kinder; bei laufendem Bezug „schon vorhanden“.
       if (h.adults === 2) {
         if (h.bezug.grundsicherungsgeld) return mk(id, 'na', 'na', [['ggeld.na'], ['ggeld.gemischt']]);
@@ -1890,8 +1893,11 @@ const Rules = (function () {
     const p = h.children > 0 ? R.alg.satzKind : R.alg.satz;
     const tx = [['alg1.ja', { p: Math.round(p * 100) }]];
     // Paar: Das Alter gilt der ältesten Person; die arbeitslose Person kann jünger sein und eine kürzere Dauer haben
-    // (§ 147 Abs. 2 SGB III, Dauer hängt vom eigenen Alter ab) – dann keine konkrete Dauer zusagen
-    if (h.algMonate && h.adults !== 2) {
+    // (§ 147 Abs. 2 SGB III, https://www.gesetze-im-internet.de/sgb_3/__147.html, Abruf 24.11.2026). Vom Alter hängt die Dauer erst ab
+    // 30 Versicherungsmonaten ab (15, 18, 24 Monate ab 50, 55, 58 Jahren); darunter (6, 8, 10, 12 Monate) gilt sie für jedes Alter.
+    // Deshalb beim Paar nur dann keine konkrete Dauer, wenn eine Zeile mit Altersgrenze in Frage kommt.
+    const algAlterOffen = h.adults === 2 && R.alg.dauer.some((r) => r[1] > 0 && h.algMonate >= r[0]);
+    if (h.algMonate && !algAlterOffen) {
       const row = R.alg.dauer.find((r) => h.algMonate >= r[0] && h.alterJahre >= r[1]);
       tx.push(['alg1.dauer', { m: row[2] }]);
     } else tx.push(['alg1.dauerMin']);
