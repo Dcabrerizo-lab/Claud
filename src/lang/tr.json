@@ -624,7 +624,7 @@
   "lg.ausb": "Meslek eğitimi ve öğrenim",
   "c.leer": "Henüz bilgi yok",
   "warn.netto": "Net tutar brüt tutardan yüksek. Bu neredeyse her zaman bir yazım hatasıdır: lütfen kontrol et.",
-  "bh.person.hint": "18 yaş üstü çocuk: yalnızca engellilik 25. yaş gününden önce başladıysa (Kindergeld için önemli). Aksi halde „bir yetişkin“ seç. Kendin bir atölyede çalışıyorsan, „yetişkin bir kişi“yi seç.",
+  "bh.person.hint": "18 yaş üstü çocuk: yalnızca engellilik 25. yaş gününden önce başladıysa (Kindergeld için önemli). Aksi halde „bir yetişkin“ seç. Kendin bir atölyede çalışıyorsan, „bir yetişkin“i seç.",
   "bh.gdb.hint": "Versorgungsamt veya ZBFS kararında ya da Schwerbehindertenausweis'ta yazar.",
   "geb.label": "En yaşlı yetişkin hangi yıl doğdu?",
   "warn.geb": "Lütfen 4 haneli bir doğum yılı gir, örneğin 1962.",
@@ -1681,7 +1681,7 @@
   "fw.wbs.leer": "Eyaletini veya posta kodunu gir; SoLo sana başvurunun nerede olduğunu söyler",
   "t.gsa.kindU18": "Bu Grundsicherung ancak 18 yaşından itibaren vardır. 18 yaşından küçük bir çocuk, aile için verilen yardımlarda hesaba katılır.",
   "t.wohngeld.kindGsa": "Sozialamt'tan Grundsicherung'u yalnızca yetişkin çocuğun alıyorsa, Wohngeld'den yalnızca çocuk hariç tutulur. Diğerleri için Wohngeld mümkündür, çocuk olmadan hesaplanır. Bu yüzden tutar vermiyoruz.",
-  "t.kiz.kindGsa": "Sozialamt'tan Grundsicherung'u yalnızca yetişkin çocuğun alıyorsa, bu Kinderzuschlag'ı baştan engellemez. Familienkasse çocuk olmadan hesaplar. Bu yüzden tutar vermiyoruz.",
+  "t.kiz.kindGsa": "Atölyedeki 18 yaş üstü çocuğun için Kinderzuschlag yoktur. Ama çocuk hanede sayılır. Bu yüzden tutar vermiyoruz.",
   "t.rundfunk.kindGsa": "Çocuğunun muafiyeti senin için geçerli değildir.",
   "t.ggeld.emWer": "Atölyede kendin çalışıyorsan, genellikle Sozialamt sorumludur. Yetişkin çocuğun ise, senin için Jobcenter sorumlu olabilir. Bu yüzden tutar vermiyoruz."
 }

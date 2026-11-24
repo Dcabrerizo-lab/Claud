@@ -1681,7 +1681,7 @@
   "fw.wbs.leer": "Enter your federal state or postcode; then SoLo tells you where to get the application",
   "t.gsa.kindU18": "This Grundsicherung only exists from age 18. A child under 18 is counted in the help for the family.",
   "t.wohngeld.kindGsa": "If only your adult child gets Grundsicherung from the Sozialamt, only the child is excluded from Wohngeld. For the others, Wohngeld is possible, calculated without the child. That is why we do not give an amount.",
-  "t.kiz.kindGsa": "If only your adult child gets Grundsicherung from the Sozialamt, this does not rule out the Kinderzuschlag from the start. The Familienkasse calculates without the child. That is why we do not give an amount.",
+  "t.kiz.kindGsa": "There is no Kinderzuschlag for your child aged 18 or over in the workshop. But the child still counts in the household. That is why we do not give an amount.",
   "t.rundfunk.kindGsa": "Your child's exemption does not apply to you.",
   "t.ggeld.emWer": "If you yourself work in the workshop, the Sozialamt is usually responsible. If it is your adult child, the Jobcenter may be responsible for you. That is why we do not give an amount."
 }

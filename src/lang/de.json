@@ -1681,7 +1681,7 @@
   "fw.wbs.leer": "Gib dein Bundesland oder deine Postleitzahl an; dann sagt SoLo, wo es den Antrag gibt",
   "t.gsa.kindU18": "Diese Grundsicherung gibt es erst ab 18 Jahren. Ein Kind unter 18 zählt bei den Hilfen für die Familie mit.",
   "t.wohngeld.kindGsa": "Bekommt nur dein erwachsenes Kind Grundsicherung vom Sozialamt, ist nur das Kind vom Wohngeld ausgeschlossen. Für die anderen ist Wohngeld möglich, gerechnet ohne das Kind. Darum nennen wir keinen Betrag.",
-  "t.kiz.kindGsa": "Bekommt nur dein erwachsenes Kind Grundsicherung vom Sozialamt, schließt das den Kinderzuschlag nicht von vornherein aus. Die Familienkasse rechnet ohne das Kind. Darum nennen wir keinen Betrag.",
+  "t.kiz.kindGsa": "Für dein Kind ab 18 in der Werkstatt gibt es keinen Kinderzuschlag, es zählt aber im Haushalt mit. Darum nennen wir keinen Betrag.",
   "t.rundfunk.kindGsa": "Die Befreiung deines Kindes gilt nicht für dich.",
   "t.ggeld.emWer": "Arbeitest du selbst in der Werkstatt, ist meist das Sozialamt zuständig. Ist es dein erwachsenes Kind, kann für dich das Jobcenter zuständig sein. Darum nennen wir keinen Betrag."
 }

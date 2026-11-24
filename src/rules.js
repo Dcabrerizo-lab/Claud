@@ -1176,9 +1176,12 @@ const Rules = (function () {
   function kinderzuschlag(h) {
     // Einziges Kind ist das erwachsene Kind mit eigener Grundsicherung vom Sozialamt: für dieses Kind gibt es keinen Kinderzuschlag
     // (DA-KiZ vom 20.02.2026, B.2 Abs. 2 Satz 8, https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf, Abruf 24.11.2026): weiter „nein“.
-    if (sozialamtKind(h) && h.children === 1) return mk('kiz', 'nein', 'ausschluss', [['kiz.ausschluss']]);
+    // Ebenso ohne laufenden Bezug: Für ein Kind ab 18 in der Werkstatt (bzw. voll erwerbsgemindert, nur das Kind) gibt es keinen Kinderzuschlag,
+    // es bleibt aber in der Bedarfsgemeinschaft (DA-KiZ B.2 Abs. 2 Satz 5 bis 8). Die Rechnung kann es nicht herausnehmen: höchstens „möglich“
+    // ohne Betrag; ist es das einzige Kind: „nein“. Bis 24.11.2026 rechnete die App ohne Bezug mit allen Kindern und Betrag.
+    if (kindOhneKiz(h) && h.children === 1) return mk('kiz', 'nein', 'ausschluss', [['kiz.ausschluss']]);
     const r = kinderzuschlag0(h);
-    return sozialamtKind(h) ? ohneKindBetrag(r, 'kiz.kindGsa') : r;
+    return kindOhneKiz(h) ? ohneKindBetrag(r, 'kiz.kindGsa') : r;
   }
   function kinderzuschlag0(h) {
     const id = 'kiz';
@@ -1382,6 +1385,7 @@ const Rules = (function () {
   const kindNurEM = (h) => !!h.erwerbsgemindert && !h.emEltern && (h.bhPerson === 'erwVor25' || h.bhPerson === 'erwNach25');
   // Bezug vom Sozialamt nur des erwachsenen Kindes: Begründung in docs/PRUEFLISTE.md (Marke kind-werkstatt)
   const sozialamtKind = (h) => !!h.bezug.sozialamt && kindNurEM(h);
+  const kindOhneKiz = (h) => sozialamtKind(h) || (kindNurEM(h) && h.bhPerson === 'erwVor25' && h.young > 0);
   const sozialamtEigen = (h) => !!h.bezug.sozialamt && !kindNurEM(h);
   const ohneKindBetrag = (r, key) => {
     if (r.level !== 'ja' && r.level !== 'vielleicht') return r;

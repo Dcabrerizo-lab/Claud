@@ -119,5 +119,23 @@ ck('Einkommen des Elternteils zu hoch: weiter „nein“', run({ adults: 1, youn
 const de = require('../src/lang/de.json');
 ck('gsa.eltern: „mehr als 100.000 €“ und „kann“', /mehr als 100\.000/.test(de['t.gsa.eltern']) && /kann/.test(de['t.gsa.eltern']) && !/erst ab 100/.test(de['t.gsa.eltern']), de['t.gsa.eltern']);
 
+// 15) Kind ab 18 in der Werkstatt OHNE laufenden Bezug vom Sozialamt: für dieses Kind kein Kinderzuschlag (DA-KiZ 20.02.2026 B.2 Abs. 2
+//     Satz 5 bis 8, https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf). Einziges Kind: „nein“; mit weiteren Kindern höchstens „möglich“
+//     ohne Betrag (die Rechnung kann das Kind nicht herausnehmen). Bis 24.11.2026: Betrag für alle Kinder.
+const kizBasis = { adults: 1, young: 1, bhPerson: 'erwVor25', wfbm: true, netto: 1700, brutto: 2300, art1: 'lohn', miete: 900, vermoegen: 0 };
+m = run(kizBasis);
+ck('[kind-werkstatt] Einziges Kind ab 18 in der Werkstatt (ohne Bezug): Kinderzuschlag „nein“', m.kiz.level === 'nein' && hat(m.kiz, 'kiz.ausschluss'), m.kiz);
+m = run({ ...kizBasis, kids: 2, kids14: 1, kidsAlter: true });
+ck('Kind ab 18 in der Werkstatt + 2 weitere Kinder: Kinderzuschlag höchstens „möglich“', m.kiz.level !== 'ja', m.kiz);
+ck('Kind ab 18 in der Werkstatt + weitere Kinder: kein Betrag', !m.kiz.tx.some((a) => a[0].indexOf('schaetz.') === 0) && typeof m.kiz.est !== 'number', m.kiz);
+ck('Kind ab 18 in der Werkstatt + weitere Kinder: Hinweis kiz.kindGsa (wenn nicht „nein“)', m.kiz.level === 'nein' || hat(m.kiz, 'kiz.kindGsa'), m.kiz);
+// Gegenprobe: Kind ab 18 OHNE Werkstatt-Haken (Behinderung, aber nicht erwerbsgemindert) bleibt KiZ-Kind wie bisher
+m = run({ adults: 1, young: 1, bhPerson: 'erwVor25', netto: 1700, brutto: 2300, art1: 'lohn', miete: 900, vermoegen: 0, kids: 2, kids14: 1, kidsAlter: true });
+ck('Kind ab 18 ohne Werkstatt: kein Hinweis kiz.kindGsa', !hat(m.kiz, 'kiz.kindGsa'), m.kiz);
+// Elternteil selbst in der Werkstatt (einfache Version, wfbmSelbst): unverändert, kein Kind-Hinweis
+m = run({ ...kizBasis, wfbmSelbst: true, kids: 1, kids14: 1, kidsAlter: true });
+ck('Elternteil selbst in der Werkstatt: kein Hinweis kiz.kindGsa', !hat(m.kiz, 'kiz.kindGsa'), m.kiz);
+ck('t.kiz.kindGsa nennt „keinen Kinderzuschlag“ für das Kind und „zählt … mit“', /keinen Kinderzuschlag/.test(de['t.kiz.kindGsa']) && /zählt/.test(de['t.kiz.kindGsa']), de['t.kiz.kindGsa']);
+
 console.log(fails ? fails + ' von ' + n + ' Prüfungen ROT' : 'Kind in der Werkstatt: ' + n + ' Prüfungen bestanden');
 process.exitCode = fails ? 1 : 0;
