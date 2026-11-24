@@ -190,7 +190,11 @@ const Pflege = (function () {
     const mod = {};
     for (const m of [1, 2, 3, 4, 6]) mod[m] = { summe: 0, kriterien: [] };
     for (const k of K) {
-      if (saeugling && k.m === 4) continue; // bei Kindern bis 18 Monate ersetzt 4.K die Kriterien 4.1 bis 4.13
+      // Kinder bis 18 Monate: nur die altersunabhängigen Module 3 und 5 zählen, statt Modul 4 nur 4.K; Module 1, 2 und 6 entfallen (aus Modul 1
+      // bleibt nur die Gebrauchsunfähigkeit beider Arme und Beine als besondere Bedarfskonstellation). Begutachtungs-Richtlinien (BRi) Kapitel 5,
+      // „Sonderregelungen bei pflegebedürftigen Kindern im Alter bis zu 18 Monaten“ und 5.5.1/5.5.2/5.5.6 (Fassung AOK-Download, Abruf 24.11.2026);
+      // § 15 Abs. 7 SGB XI. Bis 24.11.2026 zählten die Module 1, 2 und 6 mit (Vollprüfung B05).
+      if (saeugling && (k.m === 1 || k.m === 2 || k.m === 4 || k.m === 6)) continue;
       const p = einzel(k, st[k.id], g);
       mod[k.m].summe += p;
       mod[k.m].kriterien.push({ id: k.id, stufe: st[k.id] == null ? null : +st[k.id], punkte: p });
@@ -268,6 +272,8 @@ const Pflege = (function () {
     for (const m of [1, 2, 3, 4, 6]) {
       const mo = res.module[m];
       const liste = [{ gewinn: 0, schritte: 0, wege: [], bereich: mo.bereich }];
+      // Kinder bis 18 Monate: Module 1, 2, 4 (außer 4.K) und 6 zählen nicht (BRi) -> dort keine Hebel
+      if (res.saeugling && m !== 3) { proModul[m] = liste; continue; }
       for (let b = mo.bereich + 1; b <= 4; b++) {
         const noetig = ANLAGE2[m].bis[b - 1] + 1 - mo.summe;
         const f = stufenFuer(m, g, noetig);
@@ -390,7 +396,7 @@ const Pflege = (function () {
     if (!res.alterBekannt) s.push('Bitte das Alter der gepflegten Person eintragen. Bei Kindern gelten andere Regeln.');
     s.push(res.pg ? `Nach den Bewertungen im Gutachten ergeben sich ${fmt(res.gesamt)} von 100 Punkten. Das ist Pflegegrad ${res.pg}.` : `Nach den Bewertungen im Gutachten ergeben sich ${fmt(res.gesamt)} von 100 Punkten. Das reicht noch nicht für einen Pflegegrad (ab 12,5 Punkten).`);
     if (res.besonders) s.push('Wegen einer besonderen Bedarfskonstellation gilt Pflegegrad 5, auch mit weniger Punkten.');
-    if (res.saeugling) s.push('Bei Kindern bis 18 Monate ist der Pflegegrad eine Stufe höher, als die Punkte allein ergeben würden. Statt der Bewertungen zur Selbstversorgung zählt nur, ob es große Probleme beim Essen und Trinken gibt (§ 15 Abs. 7 SGB XI).');
+    if (res.saeugling) s.push('Bei Kindern bis 18 Monate zählen nur die Bereiche Verhalten und Umgang mit Krankheit und Therapie sowie die Frage, ob es große Probleme beim Essen und Trinken gibt. Der Pflegegrad ist dann eine Stufe höher, als die Punkte allein ergeben würden (§ 15 Abs. 7 SGB XI, Begutachtungs-Richtlinien).');
     else if (res.kind) s.push('Bei Kindern vergleicht der Gutachter mit gesunden Kindern im gleichen Alter. Bewertet wird nur, was über das Übliche in diesem Alter hinausgeht (§ 15 Abs. 6 SGB XI).');
     if (res.bescheid) s.push(res.bescheid.passt ? `Das passt zum Pflegegrad im Bescheid.` : res.bescheid.abweichung > 0 ? `Im Bescheid steht aber nur Pflegegrad ${res.bescheid.pg}. Bitte jede Bewertung mit dem Gutachten vergleichen: Passt alles, liegt ein Rechenfehler vor.` : `Im Bescheid steht Pflegegrad ${res.bescheid.pg}. Vermutlich fehlt hier noch eine Bewertung aus dem Gutachten.`);
     if (res.fehltBisNaechster != null && !res.besonders) s.push(`Bis Pflegegrad ${res.naechsterPg} fehlen ${fmt(res.fehltBisNaechster)} Punkte.${res.grenzfall ? ' Das ist knapp.' : ''}`);

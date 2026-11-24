@@ -49,7 +49,7 @@ setTimeout(() => {
   check('Pflegegrad 3: sechs wichtigste Leistungen offen', offen().join() === 'geld,dienst,kombi,entl,verh,tages', offen());
   check('[rot-d] Pflegegrad 3: erst „Wer pflegt?“ (Pflegegeld, Pflegedienst, gemischt), dann „Zusätzlich (kein Geld aufs Konto …)“', [...d.querySelectorAll('#pu-wer > .pu-l')].map((x) => x.id).join() === 'pu-l-geld,pu-l-dienst,pu-l-kombi' && /^Zusätzlich \(kein Geld aufs Konto/.test(d.querySelector('#pu-zusatz .pu-gruppe-h').textContent) && [...d.querySelectorAll('#pu-zusatz > .pu-l')].length === 3);
   check('[rot-d] Kombination: 6 Monate Bindung sichtbar; Pflicht-Beratung sichtbar unter Pflegegeld', /An die Aufteilung bist du 6 Monate gebunden/.test(d.querySelector('#pu-l-kombi .pu-wichtig').textContent) && /kann die Pflegekasse das Pflegegeld kürzen/.test(d.querySelector('#pu-l-geld .pu-wichtig').textContent));
-  check('Pflegegrad 3: Rest unter „Weitere“, zugeklappt', weitere().length === 8 && d.getElementById('pu-weitere').open === false && /Weitere Leistungen \(8\)/.test(t3));
+  check('Pflegegrad 3: Rest unter „Weitere“, zugeklappt', weitere().length === 9 && d.getElementById('pu-weitere').open === false && /Weitere Leistungen \(9\)/.test(t3)); // 9 seit 24.11.2026: Pflege im Heim
   check('Pflegegrad 3: Pflegegeld 599 € pro Monat', /599 €\s*pro Monat/.test(d.getElementById('pu-l-geld').textContent));
   check('Pflegegrad 3: Pflegedienst bis 1.497 € pro Monat', /bis 1\.497 €\s*pro Monat/.test(d.getElementById('pu-l-dienst').textContent));
   check('[pu-ansicht] Jahresbudget als „pro Jahr“ (3.539 €) markiert', /bis 3\.539 €\s*pro Jahr/.test(d.getElementById('pu-l-verh').textContent) && !!d.querySelector('#pu-l-verh .pu-jahr'));

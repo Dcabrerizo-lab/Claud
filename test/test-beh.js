@@ -68,17 +68,17 @@ check('Ausweis: Behinderung ohne GdB => Antrag möglich', lv({ bhPerson: 'minder
 check('Ausweis: nichts angegeben => nein', lv({}, 'ausweis') === 'nein');
 check('Ausweis: Haken GdB 100 => ja', lv({ behinderung: true }, 'ausweis') === 'ja');
 
-// --- Blindengeld ---
+// --- Blindengeld --- (Bayern ausdrücklich: ohne Bundesland nur Spanne, Vollprüfung F8 24.11.2026)
 check('Blindengeld: nichts => nein', lv({}, 'blindengeld') === 'nein');
-const bl = get({ blind: 'blind' }, 'blindengeld');
+const bl = get({ bundesland: 'BY', blind: 'blind' }, 'blindengeld');
 check('Blindengeld 809 €', bl.level === 'ja' && bl.tx[0][0] === 'blindengeld.blind' && bl.tx[0][1].betrag === '809 €' && bl.tx[0][1].stand === '7/2026', JSON.stringify(bl.tx[0]));
-const sb = get({ blind: 'hoch' }, 'blindengeld');
+const sb = get({ bundesland: 'BY', blind: 'hoch' }, 'blindengeld');
 check('Sehbehindertengeld 242,70 € (mit Cent)', sb.tx[0][0] === 'blindengeld.hoch' && sb.tx[0][1].betrag === '242,70 €', JSON.stringify(sb.tx[0]));
-check('Blindengeld Pflegegeld-Anrechnung 159,62 € nur ab Pflegegrad 2', get({ blind: 'blind', pflegegrad: '2' }, 'blindengeld').tx.some((x) => x[0] === 'blindengeld.pflege' && x[1].kuerz === '159,62 €') && !get({ blind: 'blind', pflegegrad: '1' }, 'blindengeld').tx.some((x) => x[0] === 'blindengeld.pflege'));
-check('Sehbehindertengeld PG2: Anrechnung 159,62 €, Rest 83,08 €', (()=>{const x=get({ blind: 'hoch', pflegegrad: '2' }, 'blindengeld').tx.find((y) => y[0] === 'blindengeld.pflege'); return x && x[1].kuerz === '159,62 €' && x[1].rest === '83,08 €';})());
-check('Blindengeld PG3: 33 % von 599 = 197,67 €, Rest 611,33 €; PG4 Sehbehinderung: 242,70 − 197,67 = 45,03 € (Art. 4 Abs. 1 Satz 2 BayBlindG: PG 3 bis 5 einheitlich 33 % des Pflegegeldes von PG 3)', (()=>{const x=get({ blind: 'blind', pflegegrad: '3' }, 'blindengeld').tx.find((y) => y[0] === 'blindengeld.pflege'); const z=get({ blind: 'hoch', pflegegrad: '4' }, 'blindengeld').tx.find((y) => y[0] === 'blindengeld.pflege'); return x[1].kuerz === '197,67 €' && x[1].rest === '611,33 €' && z[1].rest === '45,03 €';})());
+check('Blindengeld Pflegegeld-Anrechnung 159,62 € nur ab Pflegegrad 2', get({ bundesland: 'BY', blind: 'blind', pflegegrad: '2' }, 'blindengeld').tx.some((x) => x[0] === 'blindengeld.pflege' && x[1].kuerz === '159,62 €') && !get({ bundesland: 'BY', blind: 'blind', pflegegrad: '1' }, 'blindengeld').tx.some((x) => x[0] === 'blindengeld.pflege'));
+check('Sehbehindertengeld PG2: Anrechnung 159,62 €, Rest 83,08 €', (()=>{const x=get({ bundesland: 'BY', blind: 'hoch', pflegegrad: '2' }, 'blindengeld').tx.find((y) => y[0] === 'blindengeld.pflege'); return x && x[1].kuerz === '159,62 €' && x[1].rest === '83,08 €';})());
+check('Blindengeld PG3: 33 % von 599 = 197,67 €, Rest 611,33 €; PG4 Sehbehinderung: 242,70 − 197,67 = 45,03 € (Art. 4 Abs. 1 Satz 2 BayBlindG: PG 3 bis 5 einheitlich 33 % des Pflegegeldes von PG 3)', (()=>{const x=get({ bundesland: 'BY', blind: 'blind', pflegegrad: '3' }, 'blindengeld').tx.find((y) => y[0] === 'blindengeld.pflege'); const z=get({ bundesland: 'BY', blind: 'hoch', pflegegrad: '4' }, 'blindengeld').tx.find((y) => y[0] === 'blindengeld.pflege'); return x[1].kuerz === '197,67 €' && x[1].rest === '611,33 €' && z[1].rest === '45,03 €';})());
 check('Blindengeld 809 − 159,62 = 649,38 (Quelle: 649,38 €)', Math.abs(809 - 159.62 - 649.38) < 1e-9);
-check('Blindengeld: Landeshinweis immer dabei', txKeys({ blind: 'blind' }, 'blindengeld').slice(-1)[0] === 'blindengeld.land');
+check('Blindengeld: Landeshinweis immer dabei', txKeys({ bundesland: 'BY', blind: 'blind' }, 'blindengeld').slice(-1)[0] === 'blindengeld.land');
 
 // --- Pflege plus ---
 check('Pflege plus: kein Pflegegrad => nein', lv({}, 'pflegeplus') === 'nein');
@@ -202,7 +202,8 @@ for (let i = 0; i < 30000; i++) {
   const g = (id) => out.results.find((x) => x.id === id);
   if (g('kgBeh').level === 'ja' && !(o.bhPerson === 'erwVor25' && o.bhSelbst)) randBad++;
   if (g('blindengeld').level === 'ja' && !(o.blind === 'blind' || o.blind === 'hoch')) randBad++;
-  if (g('pausch').level === 'ja' && !(o.gdb && ['20', '30', '40', '50', '60', '70', '80', '90', '100', 'H'].includes(o.gdb)) && !o.behinderung) randBad++;
+  // Pflegegrad 4/5 zählt wie Merkzeichen H (§ 65 Abs. 2 Satz 2 EStDV), auch ohne GdB (seit 24.11.2026)
+  if (g('pausch').level === 'ja' && !(o.gdb && ['20', '30', '40', '50', '60', '70', '80', '90', '100', 'H'].includes(o.gdb)) && !o.behinderung && !['4', '5'].includes(o.pflegegrad)) randBad++;
   if (g('emrente').level === 'ja' && !(o.em5 && (o.emStd === 'unter3' || o.emStd === '3bis6') && !o.alter)) randBad++;
   if (g('bab').level !== 'nein' && !(o.ausbildung === 'ich' && o.babBetrieb && o.babWohnt)) randBad++;
   if (g('pflegeplus').level === 'ja' && !(['1', '2', '3', '4', '5'].includes(o.pflegegrad))) randBad++;

@@ -1,0 +1,12 @@
+{
+  "t.ausweis.ag": "Du hast aG? Dann musst du keine Kfz-Steuer zahlen. Für Bus und Bahn gibt es eine Wertmarke. Mit Grundsicherung ist sie kostenlos. Sonst kostet sie einen Betrag im Jahr.",
+  "t.ausweis.niedrigRente": "Mit einem GdB von 30 oder 40 gibt es keinen Schwerbehinderten-Ausweis. Die Gleichstellung hilft nur bei der Arbeit. Der Pauschbetrag in der Steuer kann trotzdem passen.",
+  "t.ausweis.schwerKind": "Ab einem Grad der Behinderung von 50 bekommt auch ein Kind den Schwerbehinderten-Ausweis. Damit gibt es Vorteile, zum Beispiel Ermäßigungen. Mit Merkzeichen auch für Bus und Bahn. Den Pauschbetrag des Kindes kannst du in deiner Steuererklärung nutzen.",
+  "t.blindengeld.ohneLand": "In Bayern sind es zum Beispiel {betrag} im Monat (Stand {stand}). Trag dein Bundesland ein. Dann ist das Ergebnis genauer.",
+  "t.gsa.emDauer": "Diese Grundsicherung gibt es nur, wenn die Erwerbsminderung auf Dauer ist. Das prüft die Rentenversicherung. Ist es nur für eine Zeit? Dann heißt die Hilfe: Hilfe zum Lebensunterhalt. Auch dann hilft das Sozialamt. Das Geld ist ähnlich hoch.",
+  "t.hzp.pg1": "Bei Pflegegrad 1 zahlt das Sozialamt nur wenig: Hilfsmittel für die Pflege, Umbau der Wohnung, Pflege-Apps und den Entlastungsbetrag. Das gibt es nur, wenn die Pflegekasse nicht zahlt und dein Geld nicht reicht.",
+  "t.lpg.ohneLand": "Landespflegegeld gibt es nur, wenn du in Bayern wohnst. Ab Pflegegrad 2 sind es {betrag} im Jahr. Trag dein Bundesland ein. Dann ist das Ergebnis genauer.",
+  "t.pausch.hilflos": "Du hast Pflegegrad 4 oder 5? Oder du bist blind (Bl) oder hast das Merkzeichen H? Dann gibt es in der Steuererklärung den höchsten Pauschbetrag: {betrag} im Jahr. Das wird vom Einkommen abgezogen. Zeig dafür den Bescheid über den Pflegegrad oder den Ausweis.",
+  "t.pflege.renteAlt": "Du bekommst schon die volle Altersrente und hast das Rentenalter erreicht? Dann zahlt die Pflegekasse keine Beiträge mehr für deine Rente. Mit einer Teilrente geht das wieder, zum Beispiel mit 99 % der Rente. Frag bei der Rentenversicherung.",
+  "t.pflege.wohnform": "Wohnt die Person in einem Wohnheim für Menschen mit Behinderung? Dann gibt es kein volles Pflegegeld. Die Pflegekasse zahlt dem Wohnheim einen Teil der Kosten: {quote} %, höchstens {max} im Monat. Ist die Person an manchen Tagen zu Hause, zum Beispiel am Wochenende? Dann gibt es für diese Tage Pflegegeld."
+}

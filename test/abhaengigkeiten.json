@@ -5,7 +5,8 @@
   "Ändert eine Code-Änderung eine Abhängigkeit, wird der Test rot: dann Rechtsgrundlage prüfen und diese Tabelle bewusst anpassen.",
   "EU-Ausschluss bei Hilfe zur Pflege, Blindenhilfe und BAföG sowie Krankengeld bei Rente ergänzt am 20.11.2026 (Ausschluss-Regeln mit „wenn“).",
   "Einkommensart „Asylbewerberleistungen“ (asylblg) ergänzt am 20.11.2026: Wohngeld nein, Rundfunk ja, Bildung und Teilhabe ja.",
-  "Aufenthalt „ausreisepflichtig ohne Duldung“ (ausreise) ergänzt am 20.11.2026: Regeln wie asyl, dazu Wohngeld und WBS nein."
+  "Aufenthalt „ausreisepflichtig ohne Duldung“ (ausreise) ergänzt am 20.11.2026: Regeln wie asyl, dazu Wohngeld und WBS nein.",
+  "Vollprüfung Pflege & Rente 24.11.2026: pausch + blind/pflegegrad, ausweis + alter, zuzahl + alter (Quellen je Karte)."
  ],
  "karten": {
   "kindergeld": {
@@ -157,12 +158,15 @@
   },
   "pausch": {
    "haengtAb": [
-    "behinderung"
+    "behinderung",
+    "blind",
+    "pflegegrad"
    ],
-   "quelle": "§ 33b EStG"
+   "quelle": "§ 33b EStG; 7.400 € bei Blindheit (§ 33b Abs. 3 Satz 3 EStG) und Pflegegrad 4/5 wie Merkzeichen H (§ 65 Abs. 2 Satz 2 EStDV), Fahrtkostenpauschale 4.500 € (§ 33 Abs. 2a EStG); seit 24.11.2026 (Vollprüfung B01/B02, https://www.gesetze-im-internet.de/estdv_1955/__65.html, Abruf 24.11.2026)"
   },
   "ausweis": {
    "haengtAb": [
+    "alter",
     "aufenthalt",
     "behinderung",
     "bhPerson",
@@ -170,7 +174,7 @@
     "pflegegrad",
     "wfbm"
    ],
-   "quelle": "§§ 2, 152 SGB IX; Aufenthalt „rechtmäßig“ § 2 Abs. 2 SGB IX (https://www.gesetze-im-internet.de/sgb_9_2018/__2.html, Abruf 20.11.2026)"
+   "quelle": "§§ 2, 152 SGB IX; Aufenthalt „rechtmäßig“ § 2 Abs. 2 SGB IX (https://www.gesetze-im-internet.de/sgb_9_2018/__2.html, Abruf 20.11.2026); alter: Gleichstellung (§ 2 Abs. 3 SGB IX) nur für den Arbeitsplatz, allein lebend über der Regelaltersgrenze „nein“ (seit 24.11.2026, Vollprüfung B15)"
   },
   "blindengeld": {
    "haengtAb": [
@@ -222,13 +226,14 @@
   },
   "zuzahl": {
    "haengtAb": [
+    "alter",
     "behinderung",
     "bhPerson",
     "blind",
     "pflegegrad",
     "wfbm"
    ],
-   "quelle": "§ 62 SGB V"
+   "quelle": "§ 62 SGB V; Belastungsgrenze gilt für alle gesetzlich Versicherten (§ 62 Abs. 1 SGB V, https://www.buzer.de/62_SGB_V.htm, Abruf 24.11.2026): „möglich“ auch ohne Behinderung, wenn Rente/Regelaltersgrenze oder Grundsicherung (seit 24.11.2026, Vollprüfung F7)"
   },
   "bab": {
    "haengtAb": [
