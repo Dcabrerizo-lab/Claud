@@ -78,6 +78,12 @@ erreichbar.forEach((k) => {
   ok(`de ${k}: keine Du-Anrede`, !S.hatDu(I18N.de[k]), I18N.de[k]);
   if (EINF[k] !== undefined) ok(`einfach ${k}: keine Du-Anrede`, !S.hatDu(EINF[k]), EINF[k]);
 });
+// Schlüssel der neuen Namensräume (sen-ui, senioren, vorlesen, sen-ux): auch die wirksame Einfache Sprache ohne Du
+// (Lücke gefunden: home.gruss war in sen-ui/de.json überschrieben, Einfache Sprache fiel auf „Schön, dass du da bist.“ zurück)
+S.neueNamensraeume().forEach((k) => {
+  if (typeof I18N.de[k] === 'string') ok(`de (neu) ${k}: keine Du-Anrede`, !S.hatDu(I18N.de[k]), I18N.de[k]);
+  if (EINF[k] !== undefined) ok(`einfach (neu) ${k}: keine Du-Anrede`, !S.hatDu(EINF[k]), EINF[k]);
+});
 
 // 3. Übersetzungen: keine eindeutigen Du-Formen in erreichbaren Texten
 Object.keys(DU).forEach((l) => {

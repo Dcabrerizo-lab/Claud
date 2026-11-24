@@ -538,5 +538,7 @@
   "z.gsaWg": "Grundsicherung im Alter și Wohngeld nu se primesc în același timp. Cereți verificarea amândurora și întrebați care cale vă aduce mai mult.",
   "z.keine": "După aceste date nicio prestație nu se potrivește sigur. Dacă se schimbă venitul, chiria sau gospodăria, verificați din nou. O consiliere socială poate indica alte ajutoare.",
   "z.stichtag": "Multe prestații se acordă abia din luna cererii. Depuneți cererea devreme, chiar și în formă liberă.",
-  "z.verfahren": "După cerere: împotriva unei decizii puteți face contestație (Widerspruch) în termen de o lună (§ 84 SGG). Dacă o decizie mai veche este greșită, ajută o cerere de reexaminare (Überprüfungsantrag) (§ 44 SGB X); retroactiv se plătesc bani doar pentru o perioadă limitată. Autoritățile trebuie să vă consilieze (§ 14 SGB I). O cerere depusă la autoritatea greșită este transmisă mai departe și rămâne valabilă (§ 16 SGB I)."
+  "z.verfahren": "După cerere: împotriva unei decizii puteți face contestație (Widerspruch) în termen de o lună (§ 84 SGG). Dacă o decizie mai veche este greșită, ajută o cerere de reexaminare (Überprüfungsantrag) (§ 44 SGB X); retroactiv se plătesc bani doar pentru o perioadă limitată. Autoritățile trebuie să vă consilieze (§ 14 SGB I). O cerere depusă la autoritatea greșită este transmisă mai departe și rămâne valabilă (§ 16 SGB I).",
+  "es.warn.hoch": "Este corect? {v} pe lună este mult. Dacă este corect, atingeți din nou Mai departe.",
+  "es.warn.niedrig": "Este corect? {v} pe lună este foarte puțin. Dacă este corect, atingeți din nou Mai departe."
 }

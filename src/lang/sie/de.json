@@ -465,5 +465,8 @@
   "z.grenzen": "Grob oder gar nicht gerechnet: die genaue Mietobergrenze Ihrer Stadt, stark schwankendes Einkommen, Unterhalt von Angehörigen und Sonderfälle beim Aufenthaltsrecht. Trifft etwas davon zu, lassen Sie sich beraten, zum Beispiel kostenlos bei einer Sozialberatung der Stadt oder der Wohlfahrtsverbände.",
   "z.gsaWg": "Grundsicherung im Alter und Wohngeld gibt es nicht gleichzeitig. Lassen Sie beides prüfen und fragen Sie, welcher Weg Ihnen mehr bringt.",
   "z.stichtag": "Viele Leistungen gibt es erst ab dem Monat des Antrags. Stellen Sie den Antrag früh, auch formlos.",
-  "z.verfahren": "Nach dem Antrag: Gegen einen Bescheid können Sie innerhalb eines Monats Widerspruch einlegen (§ 84 SGG). Ist ein älterer Bescheid falsch, hilft ein Überprüfungsantrag (§ 44 SGB X); rückwirkend gibt es dann Geld nur für eine begrenzte Zeit. Die Ämter müssen Sie beraten (§ 14 SGB I). Ein Antrag bei der falschen Stelle wird weitergeleitet und gilt trotzdem (§ 16 SGB I)."
+  "z.verfahren": "Nach dem Antrag: Gegen einen Bescheid können Sie innerhalb eines Monats Widerspruch einlegen (§ 84 SGG). Ist ein älterer Bescheid falsch, hilft ein Überprüfungsantrag (§ 44 SGB X); rückwirkend gibt es dann Geld nur für eine begrenzte Zeit. Die Ämter müssen Sie beraten (§ 14 SGB I). Ein Antrag bei der falschen Stelle wird weitergeleitet und gilt trotzdem (§ 16 SGB I).",
+  "z.keine": "Nach diesen Angaben passt keine Leistung sicher. Ändert sich etwas bei Einkommen, Miete oder Haushalt, prüfen Sie bitte noch einmal. Eine Sozialberatung kann weitere Hilfen nennen.",
+  "es.warn.hoch": "Stimmt das? {v} im Monat ist viel. Wenn es stimmt, tippen Sie noch einmal auf Weiter.",
+  "es.warn.niedrig": "Stimmt das? {v} im Monat ist sehr wenig. Wenn es stimmt, tippen Sie noch einmal auf Weiter."
 }

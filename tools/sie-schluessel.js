@@ -54,6 +54,11 @@ function hatImperativ(s) {
     const vorher = woerter[i - 1] || '';
     // klein geschriebener Imperativ nach „bitte“/„dann“/„und“/„oder“ (z. B. „Bitte prüfe …“, „dann frag …“)
     if (klein && /^(bitte|Bitte|dann|Dann|und|oder|Oder|sonst|Sonst|danach|Danach|zuerst|Zuerst|einfach)$/.test(vorher)) return true;
+    // klein geschriebener Imperativ direkt nach einem Komma (z. B. „Wenn es stimmt, tippe nochmal …“), nicht nach „ich“
+    if (klein && !MEHRDEUTIG.includes(gross) && vorher.toLowerCase() !== 'ich') {
+      const re = new RegExp(',\\s*' + w + '(?=[\\s.,!?;:]|$)');
+      if (re.test(s)) return true;
+    }
     if (klein) continue;
     // groß: nur am Satzanfang
     const pos = s.indexOf(w);
