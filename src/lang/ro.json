@@ -867,7 +867,7 @@
   "bhWeitere.0": "Niciuna",
   "t.mehr.teilhabe": "Aceasta include un necesar suplimentar de {betrag}: 35 % din suma standard, pentru că persoana primește din cauza dizabilității ajutor pentru școală, formare sau muncă.",
   "t.ggeld.mehrBeh": "Pentru un copil cu dizabilitate de la 15 ani se poate adăuga un necesar suplimentar (35 % la ajutor pentru școală sau formare, 17 % la mențiunea G). Spune asta la cerere.",
-  "t.ggeld.kindGsa": "Un copil adult care nu poate lucra permanent primește propria Grundsicherung de la Sozialamt, chiar dacă locuiește cu părinții.",
+  "t.ggeld.kindGsa": "Un copil adult care lucrează într-un atelier pentru persoane cu dizabilități (Werkstatt für behinderte Menschen) sau care nu poate lucra permanent poate primi propria Grundsicherung de la Sozialamt, chiar dacă locuiește cu părinții. Sozialamt ia atunci în calcul doar copilul. Jobcenter calculează pentru părinți, de obicei fără acest copil. De aceea nu indicăm aici nicio sumă. Cere verificarea ambelor.",
   "t.pflege.pauschbetrag": "Cine îngrijește această persoană acasă fără plată primește în declarația fiscală o sumă forfetară pentru îngrijire de {betrag} pe an.",
   "cb.schwanger": "Cineva din gospodărie este însărcinată (din săptămâna 13)",
   "cb.ernaehrung": "Cineva are nevoie din cauza unei boli de o alimentație scumpă (de ex. celiachie, fibroză chistică, boală renală gravă)",

@@ -2700,7 +2700,7 @@
       adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, gebJahr: es.geb === '' ? '' : Number(es.geb),
       einkommen: ein, wohnform: es.wohnen === 'eltern' ? 'eltern' : es.wohnen === 'heim' ? 'heim' : '',
       miete: es.wohnen === 'heim' ? '' : (es.miete === '' ? (es.wohnen === 'eltern' && es.mieteJa === 'nein' ? 0 : '') : Number(es.miete)),
-      wfbm: es.arbeit === 'werkstatt', wfbmEssen: es.essen === 'ja',
+      wfbm: es.arbeit === 'werkstatt', wfbmSelbst: es.arbeit === 'werkstatt', wfbmEssen: es.essen === 'ja',
       emStd: es.em === 'ja' ? 'unter3' : es.em === 'weiss' ? 'unklar' : '',
       // Behinderung schon in der Kindheit (vor dem 25. Geburtstag): Kindergeld für die Eltern (§ 32 Abs. 4 Nr. 3 EStG);
       // „kann sich nicht selbst unterhalten“: eigenes Einkommen unter dem Grundfreibetrag (12.348 € im Jahr)

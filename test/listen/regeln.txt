@@ -50,3 +50,4 @@ node test/test-senioren.js
 node test/test-variante-nativ.js
 node test/test-sie-ebene.js
 node test/test-alter-paar.js
+node test/test-kind-werkstatt.js

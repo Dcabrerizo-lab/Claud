@@ -867,7 +867,7 @@
   "bhWeitere.0": "Brak",
   "t.mehr.teilhabe": "Zawiera to dodatek (Mehrbedarf) {betrag}: 35 % stawki podstawowej (Regelsatz), bo osoba dostaje z powodu niepełnosprawności pomoc w szkole, nauce zawodu lub pracy.",
   "t.ggeld.mehrBeh": "Dla dziecka z niepełnosprawnością od 15 lat może dojść dodatek (35 % przy pomocy w szkole lub nauce zawodu, 17 % przy oznaczeniu G). Powiedz o tym we wniosku.",
-  "t.ggeld.kindGsa": "Dorosłe dziecko, które trwale nie może pracować, dostaje własną Grundsicherung w Sozialamt, nawet gdy mieszka z rodzicami.",
+  "t.ggeld.kindGsa": "Dorosłe dziecko, które pracuje w warsztacie dla osób z niepełnosprawnościami (Werkstatt für behinderte Menschen) albo trwale nie może pracować, może dostać własną Grundsicherung w Sozialamt, nawet gdy mieszka z rodzicami. Sozialamt liczy wtedy tylko dziecko. Jobcenter liczy dla rodziców, zwykle bez tego dziecka. Dlatego nie podajemy tu kwoty. Daj sprawdzić jedno i drugie.",
   "t.pflege.pauschbetrag": "Kto opiekuje się tą osobą w domu bez wynagrodzenia, dostaje w zeznaniu podatkowym ryczałt pielęgnacyjny {betrag} rocznie.",
   "cb.schwanger": "Ktoś w gospodarstwie jest w ciąży (od 13. tygodnia)",
   "cb.ernaehrung": "Ktoś z powodu choroby potrzebuje drogiej diety (np. celiakia, mukowiscydoza, ciężka choroba nerek)",

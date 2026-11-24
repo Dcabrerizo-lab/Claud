@@ -867,7 +867,7 @@
   "bhWeitere.0": "None",
   "t.mehr.teilhabe": "This includes an extra allowance of {betrag}: 35 % of the standard rate, because the person gets help for school, training or work due to the disability.",
   "t.ggeld.mehrBeh": "For a child with a disability aged 15 or over, an extra allowance may be added (35 % with help for school or training, 17 % with marker G). Mention it in the application.",
-  "t.ggeld.kindGsa": "An adult child who permanently cannot work gets their own Grundsicherung from the Sozialamt, even when living with the parents.",
+  "t.ggeld.kindGsa": "An adult child who works in a workshop for disabled people (Werkstatt für behinderte Menschen) or permanently cannot work can get their own Grundsicherung from the Sozialamt, even when living with the parents. The Sozialamt then only looks at the child. The Jobcenter calculates for the parents, usually without this child. That is why we do not show an amount here. Have both checked.",
   "t.pflege.pauschbetrag": "Whoever cares for this person at home without pay gets a care allowance of {betrag} a year in their tax return.",
   "cb.schwanger": "Someone in the household is pregnant (from week 13)",
   "cb.ernaehrung": "Someone needs an expensive diet due to illness (e.g. coeliac disease, cystic fibrosis, severe kidney disease)",

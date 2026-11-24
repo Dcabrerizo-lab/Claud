@@ -867,7 +867,7 @@
   "bhWeitere.0": "Yok",
   "t.mehr.teilhabe": "Buna {betrag} ek ihtiyaç dahildir: kişi engeli nedeniyle okul, eğitim veya iş için yardım aldığından standart tutarın %35'i.",
   "t.ggeld.mehrBeh": "15 yaşından itibaren engelli bir çocuk için ek ihtiyaç eklenebilir (okul veya eğitim yardımında %35, G işaretinde %17). Başvuruda söyle.",
-  "t.ggeld.kindGsa": "Kalıcı olarak çalışamayan yetişkin çocuk, ebeveynleriyle yaşasa bile Sozialamt'tan kendi Grundsicherung'unu alır.",
+  "t.ggeld.kindGsa": "Engelliler atölyesinde (Werkstatt für behinderte Menschen) çalışan veya kalıcı olarak çalışamayan yetişkin çocuk, ebeveynleriyle yaşasa bile Sozialamt'tan kendi Grundsicherung'unu alabilir. Sozialamt o zaman yalnızca çocuğu hesaba katar. Jobcenter ebeveynler için hesap yapar, çoğunlukla bu çocuk olmadan. Bu yüzden burada bir tutar belirtmiyoruz. İkisini de kontrol ettir.",
   "t.pflege.pauschbetrag": "Bu kişiye evde ücretsiz bakan kişi, vergi beyannamesinde yılda {betrag} bakım götürü indirimi alır.",
   "cb.schwanger": "Hanede biri hamile (13. haftadan itibaren)",
   "cb.ernaehrung": "Biri hastalık nedeniyle pahalı bir beslenmeye ihtiyaç duyuyor (ör. çölyak, kistik fibroz, ağır böbrek hastalığı)",
