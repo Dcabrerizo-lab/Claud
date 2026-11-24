@@ -857,7 +857,7 @@
   "es.tipp.grundrente": "If you have 33 years of pension contributions (also workshop years), part of your pension stays free, up to 281.50 €. It is in your pension decision.",
   "t.gsa.grundrente": "With at least 33 years of basic pension periods (work, also in a workshop, child-raising, care), part of the pension stays free: 100 € and 30 % of the rest, at most 281.50 € (§ 82a SGB XII). Then Grundsicherung may be possible even with a higher pension.",
   "t.kgBeh.hoch": "Own income is well above the basic tax allowance ({gfb} a year) and the disability allowance. Then the person can usually support themselves; Kindergeld is unlikely.",
-  "t.ggeld.gemischt": "If one person has reached retirement age or is fully unable to work, the Sozialamt is responsible for them. If the other person can work, they and the children belong to the Jobcenter (mixed household). Have both checked.",
+  "t.ggeld.gemischt": "If one person has reached retirement age or is fully unable to work, the Sozialamt is responsible for them (Grundsicherung). If the other person can work, they belong to the Jobcenter, and so do any children in the household (mixed household). Have both checked.",
   "t.krank.minijob": "A mini-job (up to {mini} a month) does not include health insurance through work. It gives no Krankengeld.",
   "t.alg1.minijob": "A mini-job (up to {mini} a month) is not unemployment-insured and does not count for unemployment benefit. Earlier jobs with higher pay can count.",
   "alt.hinweis": "Note: The rules in this version are as of {stand}. Only some of the changes for 2027 have been added. Check amounts with the responsible office. Please update the app.",

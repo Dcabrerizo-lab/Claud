@@ -857,7 +857,7 @@
   "es.tipp.grundrente": "Hast du 33 Jahre Renten-Beiträge? Auch Werkstatt-Jahre zählen. Dann bleibt ein Teil der Rente frei, bis 281,50 €. Das steht im Renten-Bescheid.",
   "t.gsa.grundrente": "Wer mindestens 33 Jahre Grundrentenzeiten hat (Arbeit, auch in einer Werkstatt, Kindererziehung, Pflege), bei dem bleibt ein Teil der Rente frei: 100 € und 30 % des Rests, höchstens 281,50 € (§ 82a SGB XII). Dann kann es Grundsicherung geben, auch wenn die Rente höher ist.",
   "t.kgBeh.hoch": "Das eigene Einkommen liegt deutlich über dem Grundfreibetrag ({gfb} im Jahr) und dem Pauschbetrag. Dann kann sich die Person in der Regel selbst unterhalten, Kindergeld gibt es eher nicht.",
-  "t.ggeld.gemischt": "Ist eine Person im Rentenalter oder voll erwerbsgemindert, ist für sie das Sozialamt zuständig. Kann die andere Person arbeiten, gehört sie mit den Kindern zum Jobcenter (gemischte Bedarfsgemeinschaft). Lass beides prüfen.",
+  "t.ggeld.gemischt": "Ist eine Person im Rentenalter oder voll erwerbsgemindert, ist für sie das Sozialamt zuständig (Grundsicherung). Kann die andere Person arbeiten, gehört sie zum Jobcenter, Kinder im Haushalt auch (gemischte Bedarfsgemeinschaft). Lass beides prüfen.",
   "t.krank.minijob": "Ein Minijob (bis {mini} im Monat) ist nicht krankenversichert über die Arbeit. Daraus gibt es kein Krankengeld.",
   "t.alg1.minijob": "Ein Minijob (bis {mini} im Monat) ist nicht arbeitslosenversichert und zählt nicht für das Arbeitslosengeld. Zählen können frühere Stellen mit höherem Lohn.",
   "alt.hinweis": "Achtung: Die Regeln dieser Version haben den Stand {stand}. Für 2027 ist nur ein Teil der Änderungen eingearbeitet. Prüfe Beträge bei der zuständigen Stelle. Bitte die App aktualisieren.",

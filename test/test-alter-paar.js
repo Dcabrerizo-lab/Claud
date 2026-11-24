@@ -62,5 +62,31 @@ ck('Einzelperson 46 + Werkstatt: Budget für Arbeit vielleicht (unverändert)', 
 m = run({ adults: 2, gebJahr: 1975, emStd: 'unter3', netto: 300 });
 ck('[alter-paar] Paar 51 + volle EM: gsa nicht wegen Alters ausgeschlossen', m.gsa.level !== 'nein' || !hat(m.gsa, 'gsa.voraus'), m.gsa);
 
+// 6) Grundsicherungsgeld (Jobcenter) bei gemischten Paaren (§ 7 Abs. 1 Satz 1, Abs. 3 Nr. 3, Abs. 4, § 7a SGB II; § 41 SGB XII):
+// die jüngere, erwerbsfähige Person kann selbst leistungsberechtigt sein – nie „nein“, auch ohne Kinder
+m = run({ adults: 2, gebJahr: 1956, einkommen: [{ art: 'rente', b: 900 }] });
+ck('[alter-paar] Paar 70/55 ohne Kinder: ggeld vielleicht (gemischt)', m.ggeld.level === 'vielleicht' && hat(m.ggeld, 'ggeld.gemischt'), m.ggeld);
+ck('Paar 70/55 ohne Kinder: gsa nicht „nein“', m.gsa.level !== 'nein', m.gsa);
+m = run({ adults: 2, gebJahr: 1975, emStd: 'unter3', einkommen: [{ art: 'rente', b: 300 }] });
+ck('[alter-paar] Paar 51 + volle EM ohne Kinder: ggeld vielleicht (gemischt)', m.ggeld.level === 'vielleicht' && hat(m.ggeld, 'ggeld.gemischt'), m.ggeld);
+m = run({ adults: 2, kids: 1, gebJahr: 1956, einkommen: [{ art: 'rente', b: 900 }] });
+ck('Paar 70/55 mit Kind: ggeld vielleicht (unverändert)', m.ggeld.level === 'vielleicht' && hat(m.ggeld, 'ggeld.gemischt'), m.ggeld);
+m = run({ adults: 2, gebJahr: 1956, einkommen: [{ art: 'rente', b: 900 }], bezug: { grundsicherungsgeld: true } });
+ck('[alter-paar] Paar 70/55 mit laufendem Bezug: ggeld schon vorhanden', m.ggeld.level === 'na' && hat(m.ggeld, 'ggeld.na'), m.ggeld);
+m = run({ adults: 1, gebJahr: 1950, einkommen: [{ art: 'rente', b: 900 }] });
+ck('Einzelperson über der Grenze: ggeld nein, Sozialamt zuständig (unverändert)', m.ggeld.level === 'nein' && hat(m.ggeld, 'ggeld.sozialamtZustaendig') && !hat(m.ggeld, 'ggeld.gemischt'), m.ggeld);
+
+// 7) Arbeitslosengeld-Dauer und Altersgrenzen der Schwerbehindertenrente hängen vom eigenen Alter ab (§ 147 Abs. 2 SGB III; §§ 37, 236a SGB VI):
+// bei Paaren gilt das Geburtsjahr der ältesten Person – keine konkrete Dauer bzw. Altersgrenze zusagen
+const algE = { arbeitSit: 'arbeitslos', algZeit: true, algMonate: 48, lohnVorher: 2400, netto: 0 };
+m = run({ ...algE, adults: 2, gebJahr: 1967 });
+ck('[alter-paar] Paar, älteste 59, 48 Monate versichert: keine Dauer von 24 Monaten zugesagt', !hat(m.alg1, 'alg1.dauer') && hat(m.alg1, 'alg1.dauerMin'), m.alg1.tx);
+m = run({ ...algE, adults: 1, gebJahr: 1967 });
+ck('Einzelperson 59, 48 Monate versichert: Dauer 24 Monate (unverändert)', m.alg1.tx.some((a) => a[0] === 'alg1.dauer' && a[1].m === 24), m.alg1.tx);
+m = run({ adults: 2, gebJahr: 1965, gdb: '50', netto: 1400 });
+ck('[alter-paar] Paar, älteste 61, GdB 50: srente allgemeiner Hinweis statt konkreter Altersgrenze', hat(m.srente, 'srente.allg') && !hat(m.srente, 'srente.alter2'), m.srente.tx);
+m = run({ adults: 1, gebJahr: 1965, gdb: '50', netto: 1400 });
+ck('Einzelperson 61, GdB 50: konkrete Altersgrenze (unverändert)', hat(m.srente, 'srente.alter2'), m.srente.tx);
+
 console.log(fails ? `${fails} von ${n} Prüfungen ROT` : `Alter bei Paaren: ${n} Prüfungen bestanden`);
 process.exit(fails ? 1 : 0);

@@ -1303,13 +1303,19 @@ const Rules = (function () {
   }
   function ggeldRechnung(h) {
     const id = 'ggeld';
-    // Paar mit Kindern, eine Person im Rentenalter oder voll erwerbsgemindert: Die andere Person kann erwerbsfähig sein und gehört
-    // dann mit den Kindern zum Jobcenter (gemischte Bedarfsgemeinschaft, § 7 Abs. 2 und 3 SGB II); ohne Kinder nur als Hinweis
+    // Paar, eine Person im Rentenalter oder voll erwerbsgemindert: gemischte Bedarfsgemeinschaft (siehe unten)
     if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);
     if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.eu']]);
     if (h.alter || h.erwerbsgemindert) {
-      if (h.adults === 2 && h.children > 0 && !h.bezug.grundsicherungsgeld) return mk(id, 'vielleicht', 'vielleicht', [['ggeld.gemischt']]);
-      return mk(id, 'nein', 'andereStelle', [['ggeld.sozialamtZustaendig']].concat(h.adults === 2 ? [['ggeld.gemischt']] : []));
+      // Paar: Die App kennt nur das Alter der ältesten Person bzw. weiß nur, dass EINE Person voll erwerbsgemindert ist. Die andere
+      // Person kann erwerbsfähig sein und ist dann selbst beim Jobcenter leistungsberechtigt (§ 7 Abs. 1 Satz 1, Abs. 3 Nr. 3 SGB II);
+      // die ältere bzw. erwerbsgeminderte Person bekommt Grundsicherung nach § 41 SGB XII (§ 7 Abs. 4, § 7a, § 5 Abs. 2 SGB II).
+      // Deshalb bei Paaren nie „nein“, auch ohne Kinder; bei laufendem Bezug „schon vorhanden“.
+      if (h.adults === 2) {
+        if (h.bezug.grundsicherungsgeld) return mk(id, 'na', 'na', [['ggeld.na'], ['ggeld.gemischt']]);
+        return mk(id, 'vielleicht', 'vielleicht', [['ggeld.gemischt']]);
+      }
+      return mk(id, 'nein', 'andereStelle', [['ggeld.sozialamtZustaendig']]);
     }
     if (h.bezug.grundsicherungsgeld) return mk(id, 'na', 'na', [['ggeld.na']]);
     if (h.bezug.sozialamt) return mk(id, 'nein', 'ausschluss', [['ggeld.sozialamt']]);
@@ -1883,7 +1889,9 @@ const Rules = (function () {
     if (h.lohnVorher > 0 && h.lohnVorher <= h.minijob) return mk(id, 'vielleicht', 'vielleicht', [['alg1.minijob', { mini: eur(h.minijob) }], melden]);
     const p = h.children > 0 ? R.alg.satzKind : R.alg.satz;
     const tx = [['alg1.ja', { p: Math.round(p * 100) }]];
-    if (h.algMonate) {
+    // Paar: Das Alter gilt der ältesten Person; die arbeitslose Person kann jünger sein und eine kürzere Dauer haben
+    // (§ 147 Abs. 2 SGB III, Dauer hängt vom eigenen Alter ab) – dann keine konkrete Dauer zusagen
+    if (h.algMonate && h.adults !== 2) {
       const row = R.alg.dauer.find((r) => h.algMonate >= r[0] && h.alterJahre >= r[1]);
       tx.push(['alg1.dauer', { m: row[2] }]);
     } else tx.push(['alg1.dauerMin']);
@@ -2115,7 +2123,8 @@ const Rules = (function () {
     if (!(gdbNum(h) >= 50) && !h.gdbAntrag) return keinBeh(id);
     if (h.alter) return mk(id, 'vielleicht', 'vielleicht', [['srente.allg', { abschlag: R.srente.abschlag }], ['srente.alter']]);
     const j = h.gebJahr;
-    if (!(j >= 1900 && j <= 2010)) return mk(id, 'vielleicht', 'vielleicht', [['srente.allg', { abschlag: R.srente.abschlag }]]);
+    // Paar: Das Geburtsjahr gilt der ältesten Person, die Person mit Behinderung kann jünger sein (spätere Altersgrenze) – allgemeiner Hinweis
+    if (!(j >= 1900 && j <= 2010) || h.adults === 2) return mk(id, 'vielleicht', 'vielleicht', [['srente.allg', { abschlag: R.srente.abschlag }]]);
     const frei = j <= 1951 ? R.srente.bis1951 : j >= 1964 ? R.srente.frei : R.srente.frei - 2 + R.rag[j] / 12;
     const jm = (x) => { const y = Math.floor(x + 1e-9); return [y, Math.round((x - y) * 12)]; };
     const [fj, fm] = jm(frei), [gj, gm] = jm(frei - R.srente.frueher);
