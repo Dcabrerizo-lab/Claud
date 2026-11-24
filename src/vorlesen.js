@@ -263,7 +263,13 @@ var VORLESEN = (function () {
     knopf.setAttribute('aria-pressed', laeuft ? 'true' : 'false');
     knopf.innerHTML = (laeuft ? SYM_STOPP : SYM_LESEN) + '<span>' + esc(txt(laeuft ? 'vl.stopp' : 'vl.lesen')) + '</span>';
     knopf.setAttribute('aria-label', laeuft ? txt('vl.stopp') : txt('vl.aria'));
-    tb.textContent = txt(tempo() === 'langsam' ? 'vl.tempo.langsam' : 'vl.tempo.normal');
+    // Als klar erkennbarer Schalter „Langsam vorlesen“ (Senioren-Prüfung Punkt 9), wenn die App den Text mitbringt (sux.vl.langsam);
+    // sonst wie bisher als Knopf mit „Tempo: normal / langsam“
+    var sl = txt('sux.vl.langsam');
+    if (sl && sl !== 'sux.vl.langsam') {
+      tb.setAttribute('role', 'switch'); tb.setAttribute('aria-checked', tempo() === 'langsam' ? 'true' : 'false'); tb.classList.add('vl-schalter');
+      tb.innerHTML = '<span class="vl-bahn" aria-hidden="true"></span><span>' + esc(sl) + '</span>';
+    } else tb.textContent = txt(tempo() === 'langsam' ? 'vl.tempo.langsam' : 'vl.tempo.normal');
   }
   function alleAktualisieren() {
     leisten = leisten.filter(function (L) { return L.el.isConnected; });

@@ -21,8 +21,9 @@
   var VAR_FIELDSETS_AUS = ['arbeitSit', 'ausbildung']; // ganze Abschnitte „Arbeit“ und „Ausbildung“
   var varBereit = false;
   var VAR_TEL = /(^|[^\d\w+])((?:\+49[\s-]?|0)\d{2,5}(?:[\s\/-]?\d{2,}){1,4})(?![\d,.]\d)/g;
-  var SEN_TITEL = { selbst: 'sv.selbst', angeh: 'sv.angeh', antrag: 'sv.antrag', geld: 'sv.geld', hilfen: 'sv.hilfen', was: 'sv.k.check' };
-  var SEN_INHALT = { antrag: 'sen-antrag', hilfen: 'sen-angehoerige', was: 'sen-selbst' }; // Seiten aus src/senioren.js
+  var SEN_TITEL = { selbst: 'sv.selbst', angeh: 'sv.angeh', antrag: 'sv.antrag', geld: 'sv.geld', hilfen: 'sv.hilfen', was: 'sv.k.check',
+    angEntl: 'sen.ang.entl.h', angArbeit: 'sen.ang.arbeit.h', angSchutz: 'sen.ang.schutz.h', angHilfe: 'sen.ang.hilfe.h' };
+  var SEN_INHALT = { antrag: 'sen-antrag', hilfen: 'sen-angehoerige', was: 'sen-selbst', angEntl: 'sen-ang-entl', angArbeit: 'sen-ang-arbeit', angSchutz: 'sen-ang-schutz', angHilfe: 'sen-ang-hilfe' }; // Seiten aus src/senioren.js
   var SEN_SYM = {
     check: '<path d="M9 11l2 2 4-4"/><rect x="4" y="3" width="16" height="18" rx="2"/>',
     schaetzen: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h5M8 16h3"/><path d="M13.5 16l1.8 1.8 3.2-3.6"/>',
@@ -33,6 +34,16 @@
     hilfen: '<circle cx="8" cy="7" r="3"/><path d="M2.5 20c.6-3.8 2.8-6 5.5-6s4.9 2.2 5.5 6"/><path d="M15 11l2 2 4-4"/>'
   };
   var senSeite = 'selbst', senStapel = []; // Ansicht „sen“: aktuelle Seite und Weg dorthin (Zurück)
+  // Kurzer Fragepfad (varFragen): Merker der zwei Sammelfragen „Trifft etwas davon zu?“ (z. B. kein deutscher Pass → Frage zum Aufenthalt).
+  // Die Merker steuern nur, welche Folgefragen erscheinen; die Angaben selbst stehen wie immer im Zustand (state).
+  var VAR_MERK = {};
+  // Brief prüfen: typische Absender der Zielgruppe (Senioren-Prüfung Punkt 10). Ohne eigene Prüfung führen sie zur allgemeinen Hilfe
+  // „Brief mit Frist“ (Frist finden, Widerspruch, kostenlose Hilfe); keine eigenen Rechtsaussagen.
+  var VAR_BRIEFE = [
+    ['rv', 'sux.briefe.rv', 'sux.briefe.rv.t', '<path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/>'],
+    ['va', 'sux.briefe.va', 'sux.briefe.va.t', '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="8.5" cy="12" r="2"/><path d="M13 10h5M13 14h3"/>'],
+    ['kk', 'sux.briefe.kk', 'sux.briefe.kk.t', '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M12 9v6M9 12h6"/>']
+  ];
   /*VAR-PFLEGE-ENDE oben*/
   var LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
   var MARK = { ja: '✓', vielleicht: '~', nein: '✕', na: '•' };
@@ -325,6 +336,7 @@
     var reset = function (keys) { keys.forEach(function (k) { if (typeof state[k] === 'boolean') { state[k] = false; $(k).checked = false; } else { state[k] = ''; $(k).value = ''; } }); };
     if (!state.bhPerson) reset(['gdb', 'blind', 'wfbm', 'bhSelbst']);
     if (state.bhPerson !== 'erwVor25') reset(['bhSelbst']);
+    if (VAR_PFLEGE && !varUnter67(state)) reset(['emStd']); // Pflege-Variante: ab 67 keine Frage zur Erwerbsminderung (kurzer Fragepfad)
     if (state.emStd !== 'unter3' && state.emStd !== '3bis6') reset(['em5']);
     if (!state.bhPerson) reset(['mzG', 'mzGl', 'teilhabe', 'bhWeitere']);
     if (!state.baby) reset(['egVor', 'egKinder', 'egNach']);
@@ -799,7 +811,7 @@
 
   // Was „Alle Angaben löschen“ löscht. Neue Teile hier ergänzen: Sprachschlüssel clear.teil.*
   // Ist ein gespeicherter Vorgang geöffnet, nennt der Text ihn: gelöscht wird nur in diesem Vorgang, andere bleiben.
-  var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'].concat(window.Haushalt ? ['clear.teil.haushalt'] : [], window.Ausziehen ? ['az.h'] : [], window.FristenOrdner ? ['fri.karte'] : [], window.Schulden ? ['sl.ordner'] : [], ['clear.teil.mehr']);
+  var LOESCH_TEILE = ['clear.teil.form', 'clear.teil.person'].concat(window.Haushalt ? ['clear.teil.haushalt'] : [], window.Ausziehen ? ['az.h'] : [], window.FristenOrdner ? ['fri.karte'] : [], window.Schulden && !VAR_PFLEGE ? ['sl.ordner'] : [], ['clear.teil.mehr']);
   function loeschWas() { return t('l.einsWas', { teile: LOESCH_TEILE.map(function (k) { return k === 'az.h' || k === 'sl.ordner' ? '„' + t(k) + '“' : t(k); }).join(', ') }); }
   function loeschEinsTitel(v) { return v && v.name ? t('l.eins', { name: v.name }) : t('l.einsOhne'); }
   // Einen Vorgang ganz löschen (Name und alle Angaben in Vorgaenge.DATEN); der letzte wird durch einen leeren ersetzt
@@ -823,7 +835,7 @@
   // Rückgängig-Leiste: bleibt etwa 10 Sekunden; solange der Fokus darin ist, verschwindet sie nicht
   var undoFn = null, undoTimer = null;
   function undoWeg() { clearTimeout(undoTimer); undoFn = null; $('undoBar').hidden = true; }
-  function undoUhr() { clearTimeout(undoTimer); undoTimer = setTimeout(function () { if (!$('undoBar').contains(document.activeElement)) undoWeg(); }, 10000); }
+  function undoUhr() { clearTimeout(undoTimer); undoTimer = setTimeout(function () { if (!$('undoBar').contains(document.activeElement)) undoWeg(); }, VAR_PFLEGE ? 30000 : 10000); } // Pflege-Variante: 30 s (WCAG 2.2.1, langsame Leser)
   function undoZeigen(text, fn) { undoFn = fn; $('undoText').textContent = text; $('undoBar').hidden = false; undoUhr(); }
   $('undoBtn').addEventListener('click', function () { var f = undoFn; undoWeg(); if (f) f(); });
   $('undoBar').addEventListener('focusout', undoUhr);
@@ -2980,7 +2992,8 @@
       laender: function () { return BUNDESLAENDER; }, kurzAn: function () { return esModus; },
       wegSpeichern: function (w) { if (w) Store.set('lotse.checkWeg', w); else Store.remove('lotse.checkWeg'); },
       frageAus: function (id) { return VAR_PFLEGE && VAR_FRAGEN_AUS.indexOf(id) >= 0; },
-      nachRender: function () { esKopf(); if (navBereit) Navigation.melde(); },
+      fragen: VAR_PFLEGE ? varFragen : null, plausibel: VAR_PFLEGE ? varPlausibel : null, leisteZu: VAR_PFLEGE, // Pflege-Variante: kurzer Fragepfad, Plausibilitätshinweise, Zusatz-Schalter zugeklappt
+      nachRender: function () { esKopf(); if (navBereit) Navigation.melde(); if (VAR_PFLEGE) varVorlesenCheck(); },
       verzoegerung: window.__SOLO_TEST__ ? 0 : 250
     }, $('schritte'));
     Store.get('lotse.checkWeg', function (v) { Schritte.wegLaden(v || (VAR_PFLEGE && !beratung ? 'schritt' : v), beratung); }); // Pflege-Variante: Frage für Frage als Standard
@@ -3704,6 +3717,7 @@
     // Eine Kachel für „anderer Brief“ und „Antragsformular“: erst einlesen (die App erkennt Formular oder Brief), darunter die Wahl von Hand
     ['ab', 'briefe.ab', 'briefe.ab.t', '<path d="M3 7h12v10H3z"/><path d="M3 7l6 5 6-5"/><path d="M17 5h4v14h-6"/><path d="M18 9h2M18 12h2"/>']
   ];
+  if (VAR_PFLEGE) BRIEFE.splice(5, 0, VAR_BRIEFE[0], VAR_BRIEFE[1], VAR_BRIEFE[2]); // Pflege-Variante: Rentenversicherung, Versorgungsamt, Krankenkasse nach der Pflegekasse
   // Unterkarten der Kachel „ab“ (weiße Karten, manuelle Wahl)
   var BRIEFE_UNTER = [
     ['an', 'briefe.andere', 'briefe.andere.t', '<path d="M4 6h16v12H4z"/><path d="M4 6l8 6 8-6"/><path d="M12 15.5v.5"/>'],
@@ -4673,7 +4687,7 @@
   Store.get('lotse.pflegecheck', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { pa.antworten = d.antworten || null; pa.schaetzung = d.schaetzung || null; } } catch (e) {} paAnzeigen(); });
 
   // Brief prüfen: Kachel öffnet den passenden Teil des Prüfpakets (Abschnitte aus erweiterungen/vorschau.html)
-  var BRIEF_TEIL = { jc: 'p-bescheid', sa: 'p-gsa', wg: 'p-wg', fk: 'p-kiz', pk: 'p-pflege', vm: 'p-nk', an: 'p-andere', af: 'scan', ab: 'abWahl' };
+  var BRIEF_TEIL = { jc: 'p-bescheid', sa: 'p-gsa', wg: 'p-wg', fk: 'p-kiz', pk: 'p-pflege', vm: 'p-nk', an: 'p-andere', af: 'scan', ab: 'abWahl', rv: 'p-andere', va: 'p-andere', kk: 'p-andere' }; // rv, va, kk nur in der Pflege-Variante
   var briefArt = null;
   function briefOeffnen(art) {
     var teil = BRIEF_TEIL[art];
@@ -5161,9 +5175,30 @@
     // Formular „Alles auf einer Seite“: Felder zu weggefallenen Leistungen ausblenden (Klasse statt hidden: die App schaltet hidden selbst)
     VAR_FELDER_AUS.forEach(function (id) { var e = $(id); var f = e && (e.closest('.field') || e.closest('label')); if (f) f.classList.add('var-aus'); });
     VAR_FIELDSETS_AUS.forEach(function (id) { var e = $(id); var f = e && e.closest('fieldset'); if (f) f.classList.add('var-aus'); });
+    // Einstellungen: „Für Fachkräfte“ ans Ende (Senioren-Prüfung Punkt 19: nicht aus Versehen einschalten)
+    var fach = document.querySelector('#einstListe [data-seite="fach"]');
+    if (fach && fach.closest('li')) { var li = fach.closest('li'); li.parentNode.appendChild(li); }
+    // Lupe auf der Startseite mit Wort „Suchen“ (Symbole beschriften, Punkt 21)
+    if ($('suLupeStart') && !$('suLupeStart').querySelector('.var-lupe-t')) { var lt = document.createElement('span'); lt.className = 'var-lupe-t'; lt.setAttribute('data-t', 'su.suchen'); lt.textContent = t('su.suchen'); $('suLupeStart').appendChild(lt); }
+    varSprechen();
     // Telefonnummern zum Antippen (tel:-Links), auch in später gezeichneten Seiten
     var tm = null;
     if (window.MutationObserver) new MutationObserver(function () { if (!tm) tm = setTimeout(function () { tm = null; varTelefon($('inhalt')); }, 0); }).observe($('inhalt'), { childList: true, subtree: true, characterData: true });
+  }
+  // Startseite: Karte „Lieber mit jemandem sprechen?“ (Senioren-Prüfung Punkt 18) unter den Kacheln: Pflegeberatung, Pflegestützpunkt,
+  // Bürgertelefon (Nummer aus src/senioren.js, geprüft am 24.11.2026) und Weg zur Seite „Hilfe am Telefon“
+  function varSprechen() {
+    var raster = $('goPflege') && $('goPflege').closest('.start-raster'); if (!raster || $('varSprechen')) return;
+    var k = document.createElement('section'); k.className = 'var-sprechen'; k.id = 'varSprechen'; k.setAttribute('aria-labelledby', 'varSprechenH');
+    var h = document.createElement('h3'); h.id = 'varSprechenH'; h.setAttribute('data-t', 'sux.sprechen.h'); k.appendChild(h);
+    var p = document.createElement('p'); p.setAttribute('data-t', 'sux.sprechen.t'); k.appendChild(p);
+    var bt = document.createElement('div'); bt.className = 'btns';
+    var tel = window.SENIOREN && window.SENIOREN.BMG_TEL;
+    if (tel) { var a = document.createElement('a'); a.className = 'btn var-tel'; a.href = 'tel:' + tel.tel; a.innerHTML = '<svg class="knopf-sym" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h4l2 5-3 2a11 11 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg><span><b data-t="sux.tel.bmg"></b> <span class="var-tel-nr no-tel" dir="ltr"></span></span>'; a.querySelector('.var-tel-nr').textContent = tel.anzeige; bt.appendChild(a); }
+    var mehr = nhKnopf('btn ghost', '<span data-t="sux.sprechen.mehr"></span>', null, function () { senStapel = []; senSeite = 'angHilfe'; if (aktAnsicht === 'sen') senRender(true); else oeffneVon('sen', true); });
+    bt.appendChild(mehr); k.appendChild(bt);
+    raster.parentNode.insertBefore(k, raster.nextSibling);
+    k.querySelectorAll('[data-t]').forEach(function (e) { e.textContent = t(e.getAttribute('data-t')); });
   }
   // Deutsche Telefonnummer im Text (0… oder +49…, mind. 8 Ziffern, Leerzeichen, Schrägstrich oder Bindestrich erlaubt).
   // Nicht: Postleitzahlen (5 Ziffern), Beträge, Datumsangaben, IBAN; nicht in Links, Knöpfen, Eingabefeldern.
@@ -5193,12 +5228,21 @@
     });
   }
   // Vorlesen-Leiste (src/vorlesen.js) unter die Überschrift der Seite statt ganz nach oben (vor Zurück-Knopf und Überschrift)
-  function varVorlesen(el) {
+  // Überall an derselben Stelle (Senioren-Prüfung Punkt 8): direkt unter der ersten Überschrift der Seite; gelesen wird die ganze Seite (wurzel)
+  function varVorlesen(el, h, wurzel) {
     if (!el || !window.VORLESEN || typeof window.VORLESEN.knopf !== 'function') return;
     try {
-      var l = window.VORLESEN.knopf(el), h = el.querySelector(':scope > h2');
-      if (l && h && h.nextSibling !== l) el.insertBefore(l, h.nextSibling);
+      h = h || el.querySelector(':scope > h2') || el.querySelector('h2');
+      var box = h ? h.parentNode : el, l = window.VORLESEN.knopf(box, { wurzel: wurzel || el });
+      if (l && h && h.nextSibling !== l) box.insertBefore(l, h.nextSibling);
     } catch (e) { /* Vorlesen ist eine Hilfe; Fehler darin dürfen die Seite nicht stören */ }
+  }
+  // Leistungs-Check Schritt für Schritt: nach jeder Frage neu unter die Frage (src/schritte.js zeichnet die Seite neu); im Ergebnis unter dessen Überschrift
+  function varVorlesenCheck() {
+    if (aktAnsicht !== 'leistungen') return;
+    var f = $('sfFrage');
+    if (f && !$('schritte').hidden) varVorlesen($('schritte'), f, $('schritte'));
+    else if ($('h-res') && !$('h-res').closest('[hidden]')) varVorlesen($('v-leistungen'), $('h-res'), $('h-res').parentNode);
   }
   // Erststart-Hinweis: auf der Startseite unter die zwei Einstiege (die sollen ohne Blättern sichtbar sein), sonst wie in SoLo oben
   function varHinweis(a) {
@@ -5211,7 +5255,9 @@
     varHinweis(a);
     if (a === 'sen') senRender(false);
     if (a === 'briefe') ['brief-jc', 'brief-fk'].forEach(function (id) { if ($(id)) $(id).classList.add('var-aus'); });
-    varVorlesen($('v-' + a));
+    if (a === 'start') varVorlesen($('v-start'), $('h-start'));
+    else if (a === 'leistungen') varVorlesenCheck();
+    else varVorlesen($('v-' + a));
   }
   function senOeffnen(seite) { senStapel = []; senSeite = seite; if (aktAnsicht === 'sen') senRender(true); else oeffneVon('sen', true); }
   function senWeiter(seite) { senStapel.push(senSeite); senSeite = seite; senRender(true); if (navBereit) Navigation.melde(); }
@@ -5225,7 +5271,9 @@
       // Ziele aus src/senioren.js: 'sen-antrag', 'pflege-einschaetzen', 'check', 'karte:<id>'
       navigiere: function (ziel) {
         ziel = String(ziel || '');
-        if (ziel === 'sen-antrag') senWeiter('antrag');
+        var gruppe = { 'sen-ang-entl': 'angEntl', 'sen-ang-arbeit': 'angArbeit', 'sen-ang-schutz': 'angSchutz', 'sen-ang-hilfe': 'angHilfe' }[ziel];
+        if (gruppe) senWeiter(gruppe);
+        else if (ziel === 'sen-antrag') senWeiter('antrag');
         else if (ziel === 'pflege-einschaetzen') paOeffnen();
         else if (ziel === 'check') oeffneVon('leistungen', true);
         else if (/^karte:/.test(ziel) && VAR_KARTEN.indexOf(ziel.slice(6)) >= 0) sucheGehe('l-' + ziel.slice(6));
@@ -5281,7 +5329,104 @@
     varVorlesen($('v-sen'));
     if (fokus) { window.scrollTo(0, 0); var h = $('h-sen'); h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
   }
+  // ----- Kurzer Fragepfad im Leistungs-Check (Senioren-Prüfung 24.11.2026, Punkt 1): statt etwa 25 meist 12–15 Fragen -----
+  // Grundsatz: Die Regeln (src/rules.js) bleiben gleich, es wird nichts geschätzt. Fragen, die für die Karten der Variante nichts ändern,
+  // fallen weg (VAR_FRAGEN_AUS). Seltene Fälle (kein deutscher Pass, Mitbewohner, Boiler, teure Ernährung, zweites Einkommen, Betriebsrente,
+  // 33 Jahre Beiträge, Auto, gezahlter Unterhalt) stehen gesammelt in zwei Fragen „Trifft etwas davon zu?“; nur bei einem Haken folgt die
+  // genaue Frage. Kreuzt niemand etwas an, gilt der Wert, den die Regeln auch für „nein / nicht angegeben“ nutzen (leer, 0, nein).
+  function varAlter(s) { var j = Number(s.gebJahr); return /^\d{4}$/.test(String(s.gebJahr)) ? new Date().getFullYear() - j : null; }
+  // Unter 67 (höchste Regelaltersgrenze, § 235 SGB VI) oder Alter unbekannt: Fragen zu Erwerbsminderung, Werkstatt und Arbeitslosengeld bleiben
+  function varUnter67(s) { var a = varAlter(s); return a == null || a < 67; }
+  function varRente(s) { return s.ek1Art === 'rente' || s.ek2Art === 'rente' || s.ek1bArt === 'rente' || s.ek2bArt === 'rente'; }
+  var VAR_EK_ALT = ['rente', 'lohn', 'selbst', 'unt', 'ohne'];                        // ab 67: Rente, Minijob/Lohn, selbstständig, Unterhalt, kein Einkommen
+  var VAR_EK_JUNG = ['rente', 'lohn', 'wfbm', 'alg', 'kg', 'unt', 'selbst', 'asylblg', 'ohne']; // unter 67 (Erwerbsminderung); Elterngeld nie
+  function varFragen(basis) {
+    var nach = {}; basis.forEach(function (f) { nach[f.id] = f; });
+    var kopie = function (id, neu) { return Object.assign({}, nach[id], neu); };
+    var mitWenn = function (id, bed) { var alt = nach[id].wenn; return kopie(id, { wenn: function (s) { return (!alt || alt(s)) && bed(s); } }); };
+    var merk = function (k, s, wert) { return !!VAR_MERK[k] || !!wert; };
+    var leeren = function (s, keys) { keys.forEach(function (k) { s[k] = typeof s[k] === 'boolean' ? false : ''; }); };
+    var ekFilter = function (id, erstes) {
+      var alt = nach[id].opts;
+      return kopie(id, { opts: function (s) { var l = varUnter67(s) ? VAR_EK_JUNG : VAR_EK_ALT; return (typeof alt === 'function' ? alt(s) : alt).filter(function (o) { return (erstes && o[0] === '') || l.indexOf(o[0]) >= 0; }); } });
+    };
+    // Sammelfrage 1 (nach dem Geburtsjahr): Lebenslage
+    var lage = { id: 'senLage', b: 'haus', art: 'mehr', q: 'sux.q.lage', h: 'sux.h.lage',
+      felder: [['pass', 'sux.g.pass'], ['eigentum', 'sux.g.eigentum'], ['mitbew', 'sux.g.mitbew'], ['warmwasser', 'sux.g.warmwasser'], ['ernaehrung', 'sux.g.ernaehrung']],
+      get: function (s, k) {
+        if (k === 'pass') return merk(k, s, s.aufenthalt);
+        if (k === 'eigentum') return s.wohnart === 'eigentum';
+        if (k === 'mitbew') return merk(k, s, s.hhAndere);
+        return !!s[k];
+      },
+      set: function (s, k, v) {
+        if (k === 'eigentum') { s.wohnart = v ? 'eigentum' : ''; return; }
+        if (k === 'warmwasser' || k === 'ernaehrung') { s[k] = !!v; return; }
+        VAR_MERK[k] = !!v;
+        if (!v && k === 'pass') leeren(s, ['aufenthalt', 'euArbeit', 'euJahre']);
+        if (!v && k === 'mitbew') leeren(s, ['hhAndere']);
+      } };
+    // Sammelfrage 2 (nach dem Einkommen): seltene Geldfragen
+    var geld = { id: 'senGeld', b: 'geld', art: 'mehr', q: 'sux.q.geld', h: 'sux.h.geld',
+      felder: [['zweitEk', 'sux.g.zweitEk'], ['zusatz', 'sux.g.zusatz', varRente], ['grundrente', 'sux.g.grundrente', varRente], ['auto', 'sux.g.auto'], ['unterhalt', 'sux.g.unterhalt']],
+      get: function (s, k) {
+        if (k === 'zweitEk') return merk(k, s, s.ek1bArt || s.ek2bArt);
+        if (k === 'zusatz') return merk(k, s, Number(s.zusatzRente) > 0);
+        if (k === 'grundrente') return !!s.grundrente33;
+        if (k === 'auto') return merk(k, s, Number(s.autoWert) > 0);
+        return merk(k, s, Number(s.uzBetrag) > 0);
+      },
+      set: function (s, k, v) {
+        if (k === 'grundrente') { s.grundrente33 = !!v; return; }
+        VAR_MERK[k] = !!v;
+        if (v) return;
+        if (k === 'zweitEk') leeren(s, ['ek1bArt', 'ek1bBetrag', 'ek2bArt', 'ek2bBetrag']);
+        if (k === 'zusatz') leeren(s, ['zusatzRente']);
+        if (k === 'auto') { s.autoWert = ''; s.autoBraucht = false; }
+        if (k === 'unterhalt') { s.uzBetrag = ''; s.uzAn = ''; s.uzTitel = false; }
+      } };
+    var weg = VAR_FRAGEN_AUS.concat(['wohnart', 'warmwasser', 'ernaehrung', 'grundrente33']);
+    var neu = {
+      adults: kopie('adults', { opts: [[1, 'sux.a.allein'], [2, 'sf.a.paar']] }),
+      aufenthalt: mitWenn('aufenthalt', function (s) { return merk('pass', s, s.aufenthalt); }),
+      hhAndere: mitWenn('hhAndere', function (s) { return merk('mitbew', s, s.hhAndere); }),
+      bhPerson: kopie('bhPerson', { opts: (typeof nach.bhPerson.opts === 'function' ? nach.bhPerson.opts(state) : nach.bhPerson.opts).filter(function (o) { return o[0] !== 'minder'; }) }),
+      bhMehr: kopie('bhMehr', { felder: nach.bhMehr.felder.map(function (x) { var alt = x[2]; return ['wfbm', 'teilhabe', 'bhSelbst'].indexOf(x[0]) < 0 ? x : [x[0], x[1], function (s) { return varUnter67(s) && (!alt || alt(s)); }]; }) }),
+      bhWeitere: mitWenn('bhWeitere', function (s) { return s.adults === 2 || !!s.hhAndere; }),
+      emStd: mitWenn('emStd', varUnter67),
+      ek1Art: ekFilter('ek1Art', false), ek2Art: ekFilter('ek2Art', false), ek1bArt: ekFilter('ek1bArt', true), ek2bArt: ekFilter('ek2bArt', true),
+      zusatzRente: mitWenn('zusatzRente', function (s) { return merk('zusatz', s, Number(s.zusatzRente) > 0); }),
+      uzBetrag: mitWenn('uzBetrag', function (s) { return merk('unterhalt', s, Number(s.uzBetrag) > 0); }),
+      autoWert: mitWenn('autoWert', function (s) { return merk('auto', s, Number(s.autoWert) > 0); }),
+      bezug: kopie('bezug', { felder: nach.bezug.felder.filter(function (x) { return x[0] !== 'kiz' && x[0] !== 'kindergeld'; }) })
+    };
+    ['ek1bArt', 'ek2bArt'].forEach(function (id) { var f = neu[id], alt = f.wenn; f.wenn = function (s) { return alt(s) && merk('zweitEk', s, s.ek1bArt || s.ek2bArt); }; });
+    neu.ek1bBetrag = nach.ek1bBetrag; neu.ek2bBetrag = nach.ek2bBetrag;
+    // Reihenfolge: Sammelfrage 1 nach dem Geburtsjahr; das zweite Einkommen erst nach Sammelfrage 2 (die steht nach allen Einkommen)
+    var spaeter = ['ek1bArt', 'ek1bBetrag', 'ek2bArt', 'ek2bBetrag'], out = [];
+    basis.forEach(function (f) {
+      if (weg.indexOf(f.id) >= 0 || spaeter.indexOf(f.id) >= 0) return;
+      if (f.id === 'zusatzRente') { out.push(geld); spaeter.forEach(function (id) { out.push(neu[id]); }); }
+      out.push(neu[f.id] || f);
+      if (f.id === 'gebJahr') out.push(lage);
+    });
+    return out;
+  }
+  // Plausibilitätshinweise (Senioren-Prüfung Punkt 2): freundlich, nicht sperrend (WCAG 3.3.3); beim zweiten „Weiter“ gilt die Eingabe
+  function varPlausibel(f, v, s) {
+    var m = /^ek([12])Netto$/.exec(f.id);
+    if (m) {
+      var b = Number(s['ek' + m[1] + 'Brutto']);
+      if (b > 0 && v === 0) return t('sux.p.netto0');
+      if (b > 0 && v > b) return t('sux.p.nettoHoch');
+    }
+    if (/^ek[12]Brutto$/.test(f.id) && v > 0 && v < 50) return t('sux.p.klein');
+    if (f.id === 'gebJahr' && v < 1920) return t('sux.p.geb');
+    if (f.id === 'miete' && v > 0 && v < 50) return t('sux.p.klein');
+    return '';
+  }
   if (window.__SOLO_TEST__) window.__soloVariante = { telNummern: varTelNummern, filter: varFilter, karten: VAR_KARTEN, variante: VARIANTE };
+  if (window.__SOLO_TEST__) window.__soloVariante.fragen = varFragen;
   /*VAR-PFLEGE-ENDE*/
 
   if (VAR_PFLEGE) { varInit(); if (aktAnsicht === 'start') varAnsicht('start'); }

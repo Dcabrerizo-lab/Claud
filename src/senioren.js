@@ -87,6 +87,20 @@ var SENIOREN = (function () {
     return window.SoloMehr && window.SoloMehr.quellen ? window.SoloMehr.quellen([t('sen.stand', { stand: STAND })]) : el('p', 'small muted', t('sen.stand', { stand: STAND }));
   }
   function abschnitt(box, key) { var h = el('h3', 'sen-abschnitt', t(key)); box.appendChild(h); }
+  // Text, den nur die App mitbringt (Oberflächentexte „sux.*“ der Pflege-Variante); fehlt er, bleibt die Stelle leer
+  function tApp(k, p) { var s = window.SoloMehr && window.SoloMehr.t ? window.SoloMehr.t(k, p) : null; return s == null ? '' : s; }
+  // Antippbare Zeile in derselben Form wie die anderen Unterseiten (.weg: Symbol, Titel, kurze Unterzeile, Pfeil per CSS)
+  function zeile(sym, titel, unter, ziel, container, opt) {
+    var b = el('button', 'weg sen-zeile'); b.type = 'button'; b.setAttribute('data-sen-ziel', ziel);
+    var sy = el('span', 'weg-sym'); sy.setAttribute('aria-hidden', 'true'); sy.innerHTML = '<svg viewBox="0 0 24 24">' + (SYM[sym] || SYM.liste) + '</svg>'; // feste Pfade
+    var tx = el('span', 'weg-txt'); tx.appendChild(el('b', null, titel)); if (unter) tx.appendChild(el('span', null, unter));
+    b.appendChild(sy); b.appendChild(tx);
+    b.addEventListener('click', function () {
+      if (opt && typeof opt.navigiere === 'function') opt.navigiere(ziel);
+      else container.dispatchEvent(new CustomEvent('sen-navigiere', { bubbles: true, detail: { ziel: ziel } }));
+    });
+    return b;
+  }
 
   function antrag(box, opt) {
     box.appendChild(el('h2', null, t('sen.antrag.h'))).id = 'h-sen-antrag';
@@ -108,16 +122,16 @@ var SENIOREN = (function () {
     box.appendChild(quellen());
   }
 
-  function angehoerige(box, opt) {
+  // Gruppen der Angehörigen-Seite (Senioren-Prüfung 24.11.2026, Punkt 7): oben „Die 3 wichtigsten Schritte“, der Rest auf eigenen Unterseiten.
+  // Ohne opt.navigiere (z. B. eigenständig im Test) steht alles auf einer Seite wie bisher.
+  var GRUPPEN = [
+    { id: 'sen-ang-entl', h: 'sen.ang.entl.h', sym: 'herz', t: 'sux.ang.entl.t' },
+    { id: 'sen-ang-arbeit', h: 'sen.ang.arbeit.h', sym: 'kalender', t: 'sux.ang.arbeit.t' },
+    { id: 'sen-ang-schutz', h: 'sen.ang.schutz.h', sym: 'schild', t: 'sux.ang.schutz.t' },
+    { id: 'sen-ang-hilfe', h: 'sen.ang.hilfe.h', sym: 'telefon', t: 'sux.ang.hilfe.t' }
+  ];
+  function angEntl(box) {
     var r = R();
-    box.appendChild(el('h2', null, t('sen.ang.h'))).id = 'h-sen-angehoerige';
-    box.appendChild(el('p', 'lead', t('sen.ang.lead')));
-    abschnitt(box, 'sen.ang.top.h');
-    box.appendChild(karte('sen.ang.top1', 'telefon', null, [navKnopf('sen-antrag', t('sen.antrag.h'), box, opt)]));
-    box.appendChild(karte('sen.ang.top2', 'person'));
-    box.appendChild(karte('sen.ang.top3', 'herz', { betrag: euro(r.entlastungsbudget) }));
-
-    abschnitt(box, 'sen.ang.entl.h');
     box.appendChild(karte('sen.ang.verh', 'kalender', { betrag: euro(r.entlastungsbudget) }));
     box.appendChild(karte('sen.ang.fed', 'person', { ent: euro(r.pflege.entlastung) }));
     box.appendChild(karte('sen.ang.tages', 'haus'));
@@ -125,42 +139,91 @@ var SENIOREN = (function () {
     box.appendChild(karte('sen.ang.hilfs', 'liste', { betrag: euro(r.beh.verbrauch) }));
     box.appendChild(karte('sen.ang.notruf', 'warn'));
     box.appendChild(karte('sen.ang.umbau', 'haus', { betrag: euro(r.beh.wohnumfeld) }));
-
-    abschnitt(box, 'sen.ang.arbeit.h');
+  }
+  function angArbeit(box) {
     box.appendChild(karte('sen.ang.akut', 'uhr', { tage: w('akutTage'), prozent: w('pugProzent') }));
     box.appendChild(karte('sen.ang.pzeit', 'kalender', { monate: w('pflegezeitMonate'), beschaeftigte: w('pflegezeitBeschaeftigte'), ankuendigung: w('pflegezeitAnkuendigung'), letzte: w('letzteLebensphaseMonate') }));
     box.appendChild(karte('sen.ang.fpz', 'kalender', { monate: w('fpzMonate'), beschaeftigte: w('fpzBeschaeftigte'), stunden: w('fpzStunden'), wochen: w('fpzAnkuendigungWochen') }));
-
-    abschnitt(box, 'sen.ang.schutz.h');
+  }
+  function angSchutz(box) {
+    var r = R();
     box.appendChild(karte('sen.ang.rente', 'schild', { stunden: w('rvStunden'), tage: w('rvTage'), arbeit: w('rvArbeitMax') }, [el('p', 'small', t('sen.ang.rente.alt'))]));
     box.appendChild(karte('sen.ang.unfall', 'schild', { stunden: w('rvStunden'), tage: w('rvTage') }));
     box.appendChild(karte('sen.ang.alv', 'schild', { stunden: w('rvStunden'), tage: w('rvTage') }));
     box.appendChild(karte('sen.ang.pausch', 'geld', { betrag: euro(r.pflegePausch[5]), pg2: euro(r.pflegePausch[2]), pg3: euro(r.pflegePausch[3]), pg4: euro(r.pflegePausch[4]) }));
-
-    abschnitt(box, 'sen.ang.hilfe.h');
+  }
+  // Telefon-Knopf in voller Breite (Senioren-Prüfung Punkt 17): Hörer, „Bürgertelefon anrufen“, Nummer darunter
+  function telKnopf() {
+    var a = el('a', 'btn sen-tel-knopf'); a.href = 'tel:' + BMG_TEL.tel;
+    var sy = el('span', 'sen-tel-sym'); sy.setAttribute('aria-hidden', 'true'); sy.innerHTML = '<svg viewBox="0 0 24 24">' + SYM.telefon + '</svg>';
+    var tx = el('span', 'sen-tel-txt'); tx.appendChild(el('b', null, tApp('sux.tel.bmg') || t('sen.tel', { nr: BMG_TEL.anzeige })));
+    var nr = el('span', 'sen-tel-nr no-tel', BMG_TEL.anzeige); nr.setAttribute('dir', 'ltr'); if (tApp('sux.tel.bmg')) tx.appendChild(nr);
+    a.appendChild(sy); a.appendChild(tx);
+    return a;
+  }
+  function angHilfe(box) {
     box.appendChild(el('p', null, t('sen.ang.hilfe.kasse')));
     box.appendChild(el('p', null, t('sen.ang.hilfe.stp')));
-    var p = el('p', 'sen-tel'); p.appendChild(el('span', null, t('sen.ang.hilfe.bmg') + ' '));
-    var a = el('a', 'btn sen-tel-knopf', t('sen.tel', { nr: BMG_TEL.anzeige })); a.href = 'tel:' + BMG_TEL.tel; p.appendChild(a);
-    box.appendChild(p);
+    box.appendChild(el('p', 'sen-tel', t('sen.ang.hilfe.bmg')));
+    box.appendChild(telKnopf());
+  }
+  var GRUPPE_FN = { 'sen-ang-entl': angEntl, 'sen-ang-arbeit': angArbeit, 'sen-ang-schutz': angSchutz, 'sen-ang-hilfe': angHilfe };
+  function angehoerige(box, opt) {
+    var r = R(), geteilt = !!(opt && typeof opt.navigiere === 'function');
+    box.appendChild(el('h2', null, t('sen.ang.h'))).id = 'h-sen-angehoerige';
+    box.appendChild(el('p', 'lead', t('sen.ang.lead')));
+    // „Die 3 wichtigsten Schritte“ als hervorgehobener, nummerierter Kasten
+    var top = el('section', 'sen-top3'); top.setAttribute('aria-labelledby', 'sen-top3-h');
+    var th = el('h3', 'sen-abschnitt', tApp('sux.ang.top3') || t('sen.ang.top.h')); th.id = 'sen-top3-h'; top.appendChild(th);
+    var ol = el('ol', 'sen-schritte');
+    [karte('sen.ang.top1', 'telefon', null, [navKnopf('sen-antrag', t('sen.antrag.h'), box, opt)]), karte('sen.ang.top2', 'person'), karte('sen.ang.top3', 'herz', { betrag: euro(r.entlastungsbudget) })]
+      .forEach(function (k) { var li = el('li'); li.appendChild(k); ol.appendChild(li); });
+    top.appendChild(ol); box.appendChild(top);
+    if (geteilt) {
+      abschnitt(box, tApp('sux.ang.mehr') ? 'sux.ang.mehr' : 'sen.ang.entl.h');
+      var l = el('div', 'weg-liste'); box.appendChild(l);
+      GRUPPEN.forEach(function (g) { l.appendChild(zeile(g.sym, t(g.h), tApp(g.t), g.id, box, opt)); });
+    } else {
+      GRUPPEN.forEach(function (g) { abschnitt(box, g.h); GRUPPE_FN[g.id](box); });
+    }
     box.appendChild(quellen());
   }
+  function gruppe(id) {
+    return function (box) {
+      var g = GRUPPEN.filter(function (x) { return x.id === id; })[0];
+      box.appendChild(el('h2', null, t(g.h)));
+      GRUPPE_FN[id](box);
+      box.appendChild(quellen());
+    };
+  }
 
+  // „Was steht mir zu?“ (Senioren-Prüfung Punkt 6): Knopf zum Check oben, darunter antippbare Zeilen in vier Gruppen
+  var GRUPPEN_SELBST = [
+    { h: 'sux.grp.pflege', karten: ['pflege', 'hzp', 'lpg'] },
+    { h: 'sux.grp.geld', karten: ['gsa', 'wohngeld', 'emrente', 'srente'] },
+    { h: 'sux.grp.ausweis', karten: ['ausweis', 'pausch', 'blindengeld'] },
+    { h: 'sux.grp.kosten', karten: ['rundfunk', 'zuzahl'] }
+  ];
+  var SYM_KARTE = { pflege: 'herz', hzp: 'herz', lpg: 'herz', gsa: 'geld', wohngeld: 'haus', emrente: 'schild', srente: 'kalender', ausweis: 'person', pausch: 'geld', blindengeld: 'person', rundfunk: 'post', zuzahl: 'liste' };
   function selbst(box, opt) {
     var names = (typeof Rules !== 'undefined' && Rules.NAMES) || {};
     box.appendChild(el('h2', null, t('sen.selbst.h'))).id = 'h-sen-selbst';
     box.appendChild(el('p', 'lead', t('sen.selbst.lead')));
-    var ul = el('ul', 'sen-karten');
-    KARTEN_SELBST.forEach(function (id) {
-      var li = el('li'); li.setAttribute('data-karte', id);
-      li.appendChild(el('b', null, names[id] || id)); li.appendChild(el('span', 'small', ' – ' + t('sen.selbst.' + id)));
-      ul.appendChild(li);
-    });
-    box.appendChild(ul);
     box.appendChild(navKnopf('check', t('sen.selbst.check'), box, opt));
+    GRUPPEN_SELBST.forEach(function (g) {
+      var h = tApp(g.h); if (h) box.appendChild(el('h3', 'sen-abschnitt', h));
+      var l = el('div', 'weg-liste sen-karten'); box.appendChild(l);
+      g.karten.forEach(function (id) {
+        if (KARTEN_SELBST.indexOf(id) < 0) return;
+        var name = tApp('n.' + id) || names[id] || id, unter = t('sen.selbst.' + id);
+        // Unterzeile nur mit Zusatznutzen (nicht, wenn sie den Titel wiederholt)
+        if (unter.toLowerCase().indexOf(String(name).toLowerCase()) >= 0 && unter.length < String(name).length + 12) unter = '';
+        var z = zeile(SYM_KARTE[id], name, unter, 'karte:' + id, box, opt); z.setAttribute('data-karte', id); l.appendChild(z);
+      });
+    });
   }
 
-  var SEITEN = { 'sen-antrag': antrag, 'sen-angehoerige': angehoerige, 'sen-selbst': selbst };
+  var SEITEN = { 'sen-antrag': antrag, 'sen-angehoerige': angehoerige, 'sen-selbst': selbst, 'sen-ang-entl': gruppe('sen-ang-entl'), 'sen-ang-arbeit': gruppe('sen-ang-arbeit'), 'sen-ang-schutz': gruppe('sen-ang-schutz'), 'sen-ang-hilfe': gruppe('sen-ang-hilfe') };
   function render(id, container, opt) {
     if (!SEITEN[id] || !container) return false;
     container.textContent = '';
