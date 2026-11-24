@@ -380,10 +380,11 @@ ck('[gg-ewt] Freibetrag 1.000 € = 100 + 84 + 144 = 328; 1.200 € = 348; 1.500
 ck('[gg-ewt-art] Lohn 1.000 € etwa 390 €; Rente und Arbeitslosengeld 1.000 € nur etwa 90 € (kein Freibetrag für Arbeit)', A({ art1: 'lohn', brutto: 1000, netto: 1000, miete: 500 }, 'ggeld') === E(390) && A({ art1: 'rente', brutto: 1000, netto: 1000, miete: 500 }, 'ggeld') === E(90) && A({ art1: 'alg', brutto: 1000, netto: 1000, miete: 500 }, 'ggeld') === E(90));
 const azubi = { young: 1, art1: 'lohn', brutto: 1800, netto: 1400, miete: 600, vermoegen: 0 };
 ck('[gg-azubi] Ausbildungsvergütung des Kindes bis 603 € frei (550 € ändert nichts), 850 € mindert', A(azubi, 'ggeld') === A({ ...azubi, kindEink: 550 }, 'ggeld') && Number(String(A({ ...azubi, kindEink: 850 }, 'ggeld')).replace(/\D/g, '')) < Number(String(A(azubi, 'ggeld')).replace(/\D/g, '')));
-// Elterngeld 300 € (Mindestbetrag, kein Einkommen vorher): zählt voll, 1.063 - 270 = 793; 500 € mit Einkommen vorher: 300 frei, 1.063 - 170 = 893
-ck('[gg-eg300] Elterngeld 300 € zählt voll (etwa 790 €), 500 € nur mit 200 € (etwa 890 €)', A({ einkommen: [{ art: 'eg', b: 300 }], miete: 500 }, 'ggeld') === E(790) && A({ einkommen: [{ art: 'eg', b: 500 }], miete: 500 }, 'ggeld') === E(890));
-// Alleinerziehend, 1 Kind, Miete 700: Unterhalt 2.000 € zählt nur bis zum Bedarf des Kindes (390 + 350 - 259 Kindergeld = 481)
-ck('[gg-unterhalt] Hoher Unterhalt fürs Kind mindert nur bis zu dessen Bedarf: 1.460 - 481 = etwa 980 €', A(ohne({ kids: 1, miete: 700 }), 'ggeld') === E(1460) && A(ohne({ kids: 1, miete: 700, unterhalt: 2000 }), 'ggeld') === E(980));
+// Elterngeld 300 € (Mindestbetrag, kein Einkommen vorher): zählt voll, 1.063 - 270 = 793; 500 € mit Einkommen vorher: Basiselterngeld 300 frei,
+// ElterngeldPlus nur 150 € (§ 10 Abs. 5 Satz 3 BEEG). Die App weiß nicht, welches: vorsichtig 150 € frei, 1.063 - 320 = 743 (Vollprüfung familie B3)
+ck('[gg-eg300] Elterngeld 300 € zählt voll (etwa 790 €), 500 € vorsichtig mit 150 € frei (etwa 740 €)', A({ einkommen: [{ art: 'eg', b: 300 }], miete: 500 }, 'ggeld') === E(790) && A({ einkommen: [{ art: 'eg', b: 500 }], miete: 500 }, 'ggeld') === E(740));
+// Alleinerziehend, 1 Kind, Miete 700: Unterhalt 2.000 € zählt nur bis zum Bedarf des Kindes (390 + 350 - 259 Kindergeld = 481); dazu 25 € Sofortzuschlag (§ 72 SGB II)
+ck('[gg-unterhalt] Hoher Unterhalt fürs Kind mindert nur bis zu dessen Bedarf: 1.460 + 25 = etwa 1.490 €, minus 481 = etwa 1.010 €', A(ohne({ kids: 1, miete: 700 }), 'ggeld') === E(1490) && A(ohne({ kids: 1, miete: 700, unterhalt: 2000 }), 'ggeld') === E(1010));
 ck('[gg-verm] Schonvermögen: bis 30 Jahre 5.000 €, ab 50 Jahre 20.000 €, Paar doppelt', L(ohne({ miete: 400, vermoegen: 6000, alterGruppe: '<30' }), 'ggeld') === 'nein' && L(ohne({ miete: 400, vermoegen: 15000, alterGruppe: '50+' }), 'ggeld') !== 'nein' && L(ohne({ adults: 2, miete: 500, vermoegen: 19000, alterGruppe: '30-39' }), 'ggeld') !== 'nein');
 ck('[gg-gemischt] Paar mit Kind, eine Person im Rentenalter: Jobcenter möglich (gemischte Bedarfsgemeinschaft)', L({ adults: 2, kids: 1, alter: true, miete: 700 }, 'ggeld') === 'vielleicht' && K({ adults: 2, kids: 1, alter: true, miete: 700 }, 'ggeld')[0] === 'ggeld.gemischt');
 ck('[gg-schulbuch] Schulbücher: Hinweis außerhalb Bayerns, nicht in Bayern (Lernmittelfreiheit)', K({ kids: 1, miete: 600, art1: 'lohn', brutto: 1500, netto: 1150, bundesland: 'NW' }, 'ggeld').includes('ggeld.schulbuch') && !K({ kids: 1, miete: 600, art1: 'lohn', brutto: 1500, netto: 1150, bundesland: 'BY' }, 'ggeld').includes('ggeld.schulbuch'));
@@ -419,7 +420,8 @@ ck('[gsa-ernaehrung] Krankenkost: Hinweis und nur „mindestens“', K({ alter: 
 // Wohngeld
 const wgT = (o) => JSON.stringify(res({ miete: 650, mietstufe: 3, vermoegen: 0, ...o }).m.wohngeld.tx);
 const lohn = [{ art: 'lohn', b: 1400, n: 1100 }];
-ck('[wg-eg300] Elterngeld bis 300 € ist kein Einkommen: 250 € und 300 € ändern nichts, 500 € schon', wgT({ einkommen: lohn.concat([{ art: 'eg', b: 300 }]) }) === wgT({ einkommen: lohn }) && wgT({ einkommen: lohn.concat([{ art: 'eg', b: 250 }]) }) === wgT({ einkommen: lohn }) && wgT({ einkommen: lohn.concat([{ art: 'eg', b: 500 }]) }) !== wgT({ einkommen: lohn }));
+// Elterngeld bis 300 € frei, bei ElterngeldPlus 150 € (§ 10 Abs. 1, 3 BEEG). Unter 300 € ist es sicher ElterngeldPlus; die App fragt nicht, welches (Vollprüfung familie B3)
+ck('[wg-eg300] Elterngeld: 150 € ändern nichts (ElterngeldPlus frei), 250 € schon (Plus: nur 150 € frei), 1.200 € (sicher Basiselterngeld) schon', wgT({ einkommen: lohn.concat([{ art: 'eg', b: 150 }]) }) === wgT({ einkommen: lohn }) && wgT({ einkommen: lohn.concat([{ art: 'eg', b: 250 }]) }) !== wgT({ einkommen: lohn }) && wgT({ einkommen: lohn.concat([{ art: 'eg', b: 1200 }]) }) !== wgT({ einkommen: lohn }));
 // Schon laufendes Elterngeld bei Mehrlingen (§ 10 Abs. 4 und 5 BEEG, gesetze-im-internet.de/beeg/__10.html; Richtlinien zum BEEG 07/2026 Nr. 10.4:
 // „bei Drillingen ... 900 Euro monatlich frei“, Nr. 10.5.2: bei SGB II, SGB XII, Kinderzuschlag keine Vervielfachung; abgerufen 21.11.2026).
 // Erwartung aus dem Gesetz: Wohngeld: Zwillinge 600 € und Drillinge 900 € Elterngeld sind kein Einkommen. Grundsicherungsgeld: 600 € bei Zwillingen sind
@@ -428,12 +430,15 @@ ck('[wg-eg300] Elterngeld bis 300 € ist kein Einkommen: 250 € und 300 € ä
   const zw = { baby: 'da', egKinder: '2', kids: 2, kidsU6: 2 }, dr = { baby: 'da', egKinder: '3', kids: 3, kidsU6: 3 };
   const mitEg = (b) => lohn.concat([{ art: 'eg', b }]);
   ck('[eg-mehrlinge-frei] Wohngeld: Elterngeld bei Zwillingen bis 600 €, bei Drillingen bis 900 € kein Einkommen; darüber und ohne Mehrlinge schon',
-    wgT({ ...zw, einkommen: mitEg(600) }) === wgT({ ...zw, einkommen: lohn }) && wgT({ ...dr, einkommen: mitEg(900) }) === wgT({ ...dr, einkommen: lohn })
-    && wgT({ ...zw, einkommen: mitEg(900) }) === wgT({ ...zw, egKinder: '', einkommen: mitEg(600) }) && wgT({ ...zw, einkommen: mitEg(900) }) !== wgT({ ...zw, einkommen: lohn })
+    // Unter dem Mindestbetrag des Basiselterngelds (Zwillinge 600 €, Drillinge 900 €) ist es sicher ElterngeldPlus: frei 150 € je Kind (§ 10 Abs. 3, 4 BEEG)
+    wgT({ ...zw, einkommen: mitEg(300) }) === wgT({ ...zw, einkommen: lohn }) && wgT({ ...dr, einkommen: mitEg(450) }) === wgT({ ...dr, einkommen: lohn })
+    // Über dem höchsten ElterngeldPlus sicher Basiselterngeld: Zwillinge 1.300 € (600 frei) wie ein Kind 1.000 € (300 frei)
+    && wgT({ ...zw, einkommen: mitEg(1300) }) === wgT({ ...zw, egKinder: '', einkommen: mitEg(1000) }) && wgT({ ...zw, einkommen: mitEg(1300) }) !== wgT({ ...zw, einkommen: lohn })
     && wgT({ ...zw, baby: 'bald', einkommen: mitEg(600) }) === wgT({ ...zw, baby: 'bald', egKinder: '', einkommen: mitEg(600) }));
   const gg = (o, b) => JSON.stringify(A({ ...o, einkommen: [{ art: 'eg', b }], miete: 500 }, 'ggeld'));
-  ck('[eg-mehrlinge-frei] Grundsicherungsgeld: 600 € Elterngeld bei Zwillingen zählen voll (wie 900 € mit 300 € Freibetrag), Freibetrag nicht vervielfacht',
-    gg(zw, 600) === gg(zw, 900) && gg(zw, 600) !== gg(zw, 601) && gg(zw, 1000) !== gg(zw, 900) && gg(dr, 900) === gg(dr, 1200) && gg({ ...zw, egKinder: '' }, 600) === gg({ ...zw, egKinder: '' }, 300), [gg(zw, 600), gg(zw, 900), gg(zw, 601)]);
+  // Vorsichtig (ElterngeldPlus möglich) 150 € frei, nicht vervielfacht (§ 10 Abs. 5 BEEG; Vollprüfung familie B2, B3)
+  ck('[eg-mehrlinge-frei] Grundsicherungsgeld: 600 € Elterngeld bei Zwillingen zählen voll (wie 750 € mit 150 € Freibetrag), Freibetrag nicht vervielfacht',
+    gg(zw, 600) === gg(zw, 750) && gg(zw, 600) !== gg(zw, 601) && gg(zw, 1000) !== gg(zw, 900) && gg(dr, 900) === gg(dr, 1050), [gg(zw, 600), gg(zw, 750), gg(zw, 601)]);
   ck('[eg-teilzeit] Hinweis auf höchstens 32 Wochenstunden nur mit Arbeit nach der Geburt (§ 1 Abs. 6 Nr. 1 BEEG)',
     K({ baby: 'da', egVor: 2000, egNach: 2500, miete: 500 }, 'elterngeld').includes('eg.teilzeitStunden') && K({ baby: 'da', egVor: 2000, egNach: 800, miete: 500 }, 'elterngeld').includes('eg.teilzeitStunden')
     && !K({ baby: 'da', egVor: 2000, miete: 500 }, 'elterngeld').includes('eg.teilzeitStunden'));
@@ -623,7 +628,9 @@ ck('[kiz-verm] Kinderzuschlag: Vermögen 55.000 € bei 2 Personen erlaubt (40.0
 // ---------- Landesleistungen (Phase 2) ----------
 ck('[lpg-ja] Bayerisches Landespflegegeld: Pflegegrad 2 in Bayern 500 € im Jahr, mit Hinweis auf den Antrag beim Landesamt', L({ pflegegrad: '2', bundesland: 'BY' }, 'lpg') === 'ja' && T({ pflegegrad: '2', bundesland: 'BY' }, 'lpg', 'lpg.ja').betrag === E(500) && K({ pflegegrad: '4' }, 'lpg').includes('lpg.antrag'));
 ck('[lpg-voraus] Landespflegegeld: Pflegegrad 1 nein, laufender Antrag möglich, außerhalb Bayerns nein', L({ pflegegrad: '1', bundesland: 'BY' }, 'lpg') === 'nein' && L({ pflegegrad: 'antrag', bundesland: 'BY' }, 'lpg') === 'vielleicht' && L({ pflegegrad: '3', bundesland: 'NW' }, 'lpg') === 'nein' && K({ pflegegrad: '3', bundesland: 'NW' }, 'lpg')[0] === 'lpg.land');
-ck('[kg-familiengeld] Bayern mit Kind: Hinweis Familiengeld 250 € / 300 €, Krippengeld bis 100 € (nur Geburten bis 2024); nicht in anderen Ländern', T({ kids: 1, bundesland: 'BY' }, 'kindergeld', 'kindergeld.familiengeld').betrag === E(250) && T({ kids: 1, bundesland: 'BY' }, 'kindergeld', 'kindergeld.familiengeld').ab3 === E(300) && !K({ kids: 1, bundesland: 'NW' }, 'kindergeld').includes('kindergeld.familiengeld') && !K({ young: 1, bundesland: 'BY' }, 'kindergeld').includes('kindergeld.familiengeld'));
+ck('[kg-familiengeld] Bayern mit Kind: Hinweis Familiengeld 250 € / 300 €, Krippengeld bis 100 € (nur Geburten bis 2024); nicht in anderen Ländern', T({ kids: 1, kidsU6: 1, bundesland: 'BY' }, 'kindergeld', 'kindergeld.familiengeld').betrag === E(250) && T({ kids: 1, kidsU6: 1, bundesland: 'BY' }, 'kindergeld', 'kindergeld.familiengeld').ab3 === E(300) && !K({ kids: 1, kidsU6: 1, bundesland: 'NW' }, 'kindergeld').includes('kindergeld.familiengeld') && !K({ young: 1, bundesland: 'BY' }, 'kindergeld').includes('kindergeld.familiengeld')
+  // nur Kinder unter 6 (Familiengeld nur bis zum 3. Geburtstag, Geburten bis 2024) und nur bis Ende 2027 (Vollprüfung familie B12)
+  && !K({ kids: 1, bundesland: 'BY' }, 'kindergeld').includes('kindergeld.familiengeld') && !K({ kids: 1, kidsU6: 1, bundesland: 'BY', heute: 2028.1 }, 'kindergeld').includes('kindergeld.familiengeld'));
 ck('[sb-gl] Merkzeichen Gl: Hinweis Gehörlosengeld und Freifahrt-Hinweis, auch aus der einfachen Version (mz.Gl)', K({ gdb: '80', bhPerson: 'erwNach25', mzGl: true }, 'ausweis').includes('ausweis.gl') && K({ gdb: '80', bhPerson: 'erwNach25', mzGl: true }, 'ausweis').includes('ausweis.g') && K({ gdb: '80', bhPerson: 'erwNach25', mz: { Gl: true } }, 'ausweis').includes('ausweis.gl') && !K({ gdb: '80', bhPerson: 'erwNach25' }, 'ausweis').includes('ausweis.gl'));
 
 // ---------- Jahreswechsel 2027: Minijob-Grenze 633 € (Mindestlohn 14,60 €), automatisch ab 1.1.2027 ----------
@@ -900,7 +907,7 @@ ck('[eu] EU-Bürger: Grundsicherung im Alter ausgeschlossen (§ 23 SGB XII) unte
   // 45 % von 227 € = 102,15 € weniger Kinderzuschlag (Schätzung auf 10 € gerundet: 300 -> 190 €)
   ck('[rechenbefunde-k1] Allein, Kind unter 6, UVG erwartet: Kinderzuschlag um 45 % von 227 € kleiner (300 -> 190 €)', z(al) === 300 && z({ ...al, unterhaltFehlt: true }) === 190, [z(al), z({ ...al, unterhaltFehlt: true })]);
   const g = (o) => { const t = res(o).m.ggeld.tx.find((x) => x[0] === 'schaetz.eins'); return t ? parseInt(t[1].a.replace(/\D/g, ''), 10) : null; };
-  ck('[rechenbefunde-g2] Allein, Kind unter 6, UVG erwartet: Grundsicherungsgeld-Lücke um 227 € kleiner (640 -> 410 €)', g(al) === 640 && g({ ...al, unterhaltFehlt: true }) === 410, [g(al), g({ ...al, unterhaltFehlt: true })]);
+  ck('[rechenbefunde-g2] Allein, Kind unter 6, UVG erwartet: Grundsicherungsgeld-Lücke um 227 € kleiner (640 -> 410 €, je + 25 € Sofortzuschlag § 72 SGB II)', g(al) === 670 && g({ ...al, unterhaltFehlt: true }) === 440, [g(al), g({ ...al, unterhaltFehlt: true })]);
   const pa = { adults: 2, kids: 1, kidsU6: 1, art1: 'lohn', art2: 'ohne', brutto2: 0, miete: 900, mietstufe: 3, bundesland: 'BY', gebJahr: 1990, bezug: { kindergeld: true }, heute: 2026.9, unterhaltFehlt: true };
   // Zweite Person ohne Angabe: mit Trauschein kein UVG (§ 1 Abs. 1 Nr. 2 UVG), ohne Trauschein 227 €. Vorsichtig: „möglich“ statt „wahrscheinlich“.
   ck('[rechenbefunde-k1] Paar, zweite Person unbekannt, 3.400 €: Kinderzuschlag „möglich“ (mit UVG unter 60 €), mit Trauschein „wahrscheinlich“',

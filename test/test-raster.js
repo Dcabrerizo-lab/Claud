@@ -103,7 +103,9 @@ function pruefe(e) {
   }
   if (r.ggeld.level !== gg.level) melde('Grundsicherungsgeld: Einstufung', e, { app: r.ggeld.level, ref: gg.level, ref2: gg });
   else if (gg.bedarf != null) {
-    const bApp = r.ggeld.tx[0][1] && r.ggeld.tx[0][1].bedarf ? r.ggeld.tx[0][1].bedarf.eur : null;
+    // Bedarfszeile (vor ihr kann ein Hinweis stehen, z. B. Wechselmodell)
+    const tB = r.ggeld.tx.find((t) => /^bedarf/.test(t[0]));
+    const bApp = tB && tB[1] && tB[1].bedarf ? tB[1].bedarf.eur : null;
     if (bApp !== Math.round(gg.bedarf)) melde('Grundsicherungsgeld: Bedarf', e, { app: bApp, ref: Math.round(gg.bedarf) });
     const s = zahlAus(r.ggeld, 'schaetz.eins', 'a');
     if (gg0.level === 'ja' && s !== Math.round(gg.luecke / 10) * 10) melde('Grundsicherungsgeld: geschätzter Betrag', e, { app: s, ref: gg.luecke });

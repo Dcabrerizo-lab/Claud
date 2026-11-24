@@ -5,15 +5,17 @@
   "Ändert eine Code-Änderung eine Abhängigkeit, wird der Test rot: dann Rechtsgrundlage prüfen und diese Tabelle bewusst anpassen.",
   "EU-Ausschluss bei Hilfe zur Pflege, Blindenhilfe und BAföG sowie Krankengeld bei Rente ergänzt am 20.11.2026 (Ausschluss-Regeln mit „wenn“).",
   "Einkommensart „Asylbewerberleistungen“ (asylblg) ergänzt am 20.11.2026: Wohngeld nein, Rundfunk ja, Bildung und Teilhabe ja.",
-  "Aufenthalt „ausreisepflichtig ohne Duldung“ (ausreise) ergänzt am 20.11.2026: Regeln wie asyl, dazu Wohngeld und WBS nein."
+  "Aufenthalt „ausreisepflichtig ohne Duldung“ (ausreise) ergänzt am 20.11.2026: Regeln wie asyl, dazu Wohngeld und WBS nein.",
+  "Vollprüfung familie 24.11.2026: Baby „ist da“ zählt als Kind (Kindergeld, UVG, GSA, BAföG, WBS, Kinderkrankengeld hängen von „baby“ ab); UVG ab 12 hängt am Einkommen und am Grundsicherungsgeld; Zufall setzt jetzt auch „Ein Kind ist 12 oder älter“."
  ],
  "karten": {
   "kindergeld": {
    "haengtAb": [
     "aufenthalt",
+    "baby",
     "kinder"
    ],
-   "quelle": "§§ 62 ff. EStG, Höhe § 66 EStG; Kinder ab 18: § 32 Abs. 4 EStG"
+   "quelle": "§§ 62 ff. EStG, Höhe § 66 EStG; Kinder ab 18: § 32 Abs. 4 EStG; Baby ist da (jünger als 14 Monate): zählt als Kind im Haushalt, auch wenn es bei „Kinder“ nicht mitgezählt wurde (§§ 62, 63 EStG; Vollprüfung familie 24.11.2026)."
   },
   "wohngeld": {
    "haengtAb": [
@@ -91,15 +93,23 @@
   },
   "uvg": {
    "haengtAb": [
+    "alter",
     "aufenthalt",
-    "kinder"
+    "ausbildung",
+    "baby",
+    "bhPerson",
+    "einkommen",
+    "kinder",
+    "vermoegen",
+    "wfbm"
    ],
-   "quelle": "Unterhaltsvorschussgesetz, §§ 1–4 UVG"
+   "quelle": "Unterhaltsvorschussgesetz, §§ 1–4 UVG; Baby ist da (jünger als 14 Monate): zählt als Kind im Haushalt, auch wenn es bei „Kinder“ nicht mitgezählt wurde (§§ 62, 63 EStG; Vollprüfung familie 24.11.2026).; ab 12 Jahren § 1 Abs. 1a UVG: eigenes Einkommen des Elternteils mindestens 600 € (Nr. 2) oder kein Grundsicherungsgeld des Kindes (Nr. 1, hängt an allem, was das Grundsicherungsgeld ändert); Kind von 14 bis 17 ist immer 12 oder älter (https://www.gesetze-im-internet.de/uhvorschg/__1.html, Abruf 24.11.2026; Vollprüfung familie B1, B22)"
   },
   "gsa": {
    "haengtAb": [
     "alter",
     "aufenthalt",
+    "baby",
     "bhPerson",
     "einkommen",
     "einkommen2",
@@ -109,19 +119,20 @@
     "wfbm",
     "wohnart"
    ],
-   "quelle": "§§ 41 ff. SGB XII; bhPerson: Werkstatt-Haken beim Kind unter 18 reicht nicht (§ 41 Abs. 3 SGB XII: ab 18); beim Kind ab 18 ist es die Leistung des Kindes allein, ohne Einkommen und Vermögen der Eltern (§ 43 Abs. 1, 5, § 94 Abs. 1a SGB XII; seit 24.11.2026)"
+   "quelle": "§§ 41 ff. SGB XII; bhPerson: Werkstatt-Haken beim Kind unter 18 reicht nicht (§ 41 Abs. 3 SGB XII: ab 18); beim Kind ab 18 ist es die Leistung des Kindes allein, ohne Einkommen und Vermögen der Eltern (§ 43 Abs. 1, 5, § 94 Abs. 1a SGB XII; seit 24.11.2026); Baby ist da (jünger als 14 Monate): zählt als Kind im Haushalt, auch wenn es bei „Kinder“ nicht mitgezählt wurde (§§ 62, 63 EStG; Vollprüfung familie 24.11.2026)."
   },
   "bafoeg": {
    "haengtAb": [
     "alter",
     "aufenthalt",
     "ausbildung",
+    "baby",
     "einkommen",
     "einkommen2",
     "kinder",
     "vermoegen"
    ],
-   "quelle": "BAföG; Aufenthalt § 8 Abs. 2a, Abs. 3 BAföG (https://www.gesetze-im-internet.de/baf_g/__8.html, Abruf 20.11.2026); Elterneinkommen §§ 21 ff. BAföG"
+   "quelle": "BAföG; Aufenthalt § 8 Abs. 2a, Abs. 3 BAföG (https://www.gesetze-im-internet.de/baf_g/__8.html, Abruf 20.11.2026); Elterneinkommen §§ 21 ff. BAföG; Baby ist da (jünger als 14 Monate): zählt als Kind im Haushalt, auch wenn es bei „Kinder“ nicht mitgezählt wurde (§§ 62, 63 EStG; Vollprüfung familie 24.11.2026)."
   },
   "pflege": {
    "haengtAb": [
@@ -240,6 +251,7 @@
   "wbs": {
    "haengtAb": [
     "aufenthalt",
+    "baby",
     "behinderung",
     "bundesland",
     "einkommen",
@@ -247,7 +259,7 @@
     "kinder",
     "pflegegrad"
    ],
-   "quelle": "§ 27 WoFG, Einkommensgrenze § 9 Abs. 2 WoFG; in Ländern mit eigenem Gesetz Landesrecht; Aufenthalt § 27 Abs. 2 WoFG (https://www.gesetze-im-internet.de/wofg/__27.html, Abruf 20.11.2026)"
+   "quelle": "§ 27 WoFG, Einkommensgrenze § 9 Abs. 2 WoFG; in Ländern mit eigenem Gesetz Landesrecht; Aufenthalt § 27 Abs. 2 WoFG (https://www.gesetze-im-internet.de/wofg/__27.html, Abruf 20.11.2026); Baby ist da (jünger als 14 Monate): zählt als Kind im Haushalt, auch wenn es bei „Kinder“ nicht mitgezählt wurde (§§ 62, 63 EStG; Vollprüfung familie 24.11.2026)."
   },
   "alg1": {
    "haengtAb": [
@@ -302,12 +314,13 @@
   },
   "kkg": {
    "haengtAb": [
+    "baby",
     "einkommen",
     "einkommen2",
     "kindKrank",
     "kinder"
    ],
-   "quelle": "§ 45 SGB V (krankes Kind, Versicherte mit Arbeitseinkommen)"
+   "quelle": "§ 45 SGB V (krankes Kind, Versicherte mit Arbeitseinkommen); Baby ist da (jünger als 14 Monate): zählt als Kind im Haushalt, auch wenn es bei „Kinder“ nicht mitgezählt wurde (§§ 62, 63 EStG; Vollprüfung familie 24.11.2026)."
   },
   "asylblg": {
    "haengtAb": [
