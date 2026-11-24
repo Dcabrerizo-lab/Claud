@@ -49,6 +49,9 @@
   /* Vorlesen und Tempo nebeneinander (src/vorlesen.js), bei sehr großer Schrift umbrechen */
   .var-pflege .vl-leiste { gap: 8px; flex-wrap: nowrap; align-items: stretch; }
   .var-pflege .vl-knopf { flex: 1 1 auto; min-width: 0; justify-content: center; padding: 8px 14px; font-size: 1.05rem; }
+  .var-pflege .vl-leiste { flex-wrap: wrap; }
+  .var-pflege .vl-knopf, .var-pflege .vl-tempo { -webkit-hyphens: manual; hyphens: manual; }
+  .var-pflege .vl-knopf { white-space: nowrap; }
   .var-pflege .vl-tempo { flex: 0 1 auto; min-width: 0; padding: 6px 12px; font-size: .9rem; line-height: 1.2; }
   /* Erststart-Hinweis oben auf den anderen Seiten: Platz für die Lupe rechts oben, damit sie keinen Text verdeckt */
   .var-pflege #inhalt > #firstNotice p { padding-inline-end: 52px; }
@@ -58,3 +61,69 @@
   .sen-platzhalter { padding: 16px; border: 2px dashed var(--line); border-radius: 14px; }
   .var-pflege a[href^="tel:"] { font-weight: 700; white-space: nowrap; text-decoration: underline; text-underline-offset: 3px; padding: 6px 0; display: inline-block; }
   .var-pflege #ebOpen, .var-pflege .sen-druck .btn { border-width: 2px; font-weight: 700; }
+  /* ===== Senioren-Prüfung 24.11.2026 (UX umsetzen) ===== */
+  /* Punkt 3: Silbentrennung statt Umbruch mitten im Wort ohne Trennstrich (Sprache steht an <html lang>); Notumbruch nur, wenn ein Wort sonst
+     über den Rand ragt. hyphenate-limit-chars: keine Ein-Buchstaben-Reste */
+  .var-pflege .app, .var-pflege .app :is(p, li, b, span, h2, h3, h4, summary, label, legend, dd, dt, button, a) { -webkit-hyphens: auto; hyphens: auto; hyphenate-limit-chars: 7 3 3; -webkit-hyphenate-limit-before: 3; -webkit-hyphenate-limit-after: 3; word-break: normal; }
+  /* overflow-wrap: anywhere aus der Grundfassung bleibt (lässt Flex-/Grid-Zeilen schrumpfen); mit hyphens: auto trennt der Browser zuerst
+     an Silbengrenzen mit Trennstrich, ein Notumbruch ohne Strich bleibt nur für Wörter ohne Silbentrennung (z. B. Zahlenketten) */
+  .var-pflege .app :is(.auf-titel, .ant-zeile h4, .card header h3) { -webkit-hyphens: auto; hyphens: auto; }
+  .var-pflege .app :is(input, select, textarea, address, bdi, [dir="ltr"], a[href^="tel:"], .no-tel) { -webkit-hyphens: manual; hyphens: manual; }
+  /* Punkt 4: 320 px bei 200 % Schrift – untere Leiste und Sprachwahl ohne seitliches Scrollen */
+  .var-pflege .appnav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .var-pflege .appnav button { min-width: 0; font-size: min(.82rem, 3.7vw); line-height: 1.15; padding-inline: 2px; overflow-wrap: anywhere; -webkit-hyphens: auto; hyphens: auto; }
+  .var-pflege .top { flex-wrap: wrap; }
+  .var-pflege .top .sprach-knopf { flex: 1 1 0; min-width: 0; max-width: none; margin-inline-start: 0; }
+  .var-pflege .top .su-lupe-knopf { flex: none; }
+  .var-pflege .top .sprach-knopf + .su-lupe-knopf { margin-inline-start: 0; }
+  /* Lupe oben rechts auf den Unterseiten: Überschrift ganz oben nicht darunter laufen lassen */
+  .var-pflege :is(#einstListe, .ansicht) > h2:first-child { padding-inline-end: 56px; }
+  .var-pflege .top .sprach-knopf select { max-width: none; width: 100%; min-width: 0; }
+  .var-pflege .app, .var-pflege .shell, .var-pflege main { max-width: 100%; }
+  /* Punkt 7: „Die 3 wichtigsten Schritte“ hervorgehoben */
+  .sen-top3 { margin: 10px 0 18px; padding: 12px 14px 4px; border: 2px solid var(--accent); border-radius: 16px; background: var(--accent-soft); }
+  .sen-top3 > h3 { margin-top: 2px; }
+  .sen-top3 .sen-schritte { margin: 0; }
+  /* Punkt 6/7: Zeilen in den Senioren-Seiten wie die übrigen Unterseiten */
+  .sen-inhalt .weg-liste { display: grid; gap: 10px; margin: 8px 0 16px; }
+  .sen-inhalt .sen-weiter { margin: 6px 0 16px; width: 100%; justify-content: center; }
+  /* Punkt 9: Tempo als Schalter „Langsam vorlesen“ (role=switch, src/vorlesen.js) */
+  .var-pflege .vl-tempo.vl-schalter { display: inline-flex; align-items: center; gap: 10px; text-align: start; }
+  .var-pflege .vl-bahn { flex: none; position: relative; width: 44px; height: 26px; border-radius: 99px; background: var(--field); transition: background .15s; }
+  .var-pflege .vl-bahn::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform .15s; }
+  .var-pflege .vl-tempo[aria-checked="true"] .vl-bahn { background: var(--accent); }
+  .var-pflege .vl-tempo[aria-checked="true"] .vl-bahn::after { transform: translateX(18px); }
+  @media (prefers-reduced-motion: reduce) { .var-pflege .vl-bahn, .var-pflege .vl-bahn::after { transition: none; } }
+  @media (max-width: 380px) { .var-pflege .vl-leiste { flex-wrap: wrap; } .var-pflege .vl-knopf, .var-pflege .vl-tempo { flex: 1 1 100%; } }
+  /* Punkt 13: Zusatz-Schalter im Check zugeklappt unter „Weitere Möglichkeiten“ */
+  .sf-leiste-zu { display: block; }
+  .sf-leiste-zu .sf-mehr > summary { min-height: 48px; display: flex; align-items: center; font-weight: 700; cursor: pointer; }
+  .sf-mehr-innen { display: grid; gap: 10px; padding: 8px 0; }
+  .sf-mehr-innen .sf-loeschen { margin-inline-start: 0; justify-self: start; }
+  /* Punkt 14: Höherstufung als Knopf im üblichen Stil in der Pflegekarte */
+  .var-pflege .pa-karte-knopf .btn { width: 100%; border-radius: var(--r-ctl, 14px); justify-content: center; }
+  /* Punkt 16: Kontraste – Unterzeilen auf farbigen Kacheln voll deckend, Einstiege etwas dunkler (≥ 7:1 für Weiß) */
+  .var-pflege .sk .sk-txt span { opacity: 1; color: #fff; }
+  .var-einstiege .var-selbst { --c: #2f5288; }
+  .var-einstiege .var-angeh { --c: #0b5a4c; }
+  .var-pflege #goPflege { --c: #5b3d8a; }
+  .var-pflege #goGeldAlter { --c: #2f5f2c; }
+  .var-pflege #goBriefe { --c: #8a3b16; }
+  .var-pflege .sen-weiter { background: var(--accent); color: #fff; border-color: var(--accent); }
+  /* Punkt 17: Telefon-Knopf in voller Breite mit Hörer und Nummer darunter */
+  .var-pflege a.sen-tel-knopf, .var-pflege a.var-tel { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 10px 16px; white-space: normal; text-decoration: none; justify-content: flex-start; }
+  .sen-tel-sym svg, .var-tel .knopf-sym { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 2; flex: none; }
+  .sen-tel-txt { display: grid; gap: 2px; text-align: start; }
+  .sen-tel-nr, .var-tel-nr { font-weight: 400; }
+  .var-tel > span { display: grid; text-align: start; }
+  /* Punkt 18: Karte „Lieber mit jemandem sprechen?“ */
+  .var-sprechen { margin: 18px 0 10px; padding: 14px 16px; border: 2px solid var(--line); border-radius: 16px; background: var(--surface); }
+  .var-sprechen h3 { margin: 0 0 6px; font-size: 1.2rem; }
+  .var-sprechen .btns { display: grid; gap: 10px; margin-top: 10px; }
+  .var-sprechen .btn { width: 100%; justify-content: center; }
+  /* Punkt 21: Lupe mit Wort */
+  .var-pflege #suLupeStart { width: auto; padding-inline: 12px; gap: 6px; display: inline-flex; align-items: center; border-radius: 999px; }
+  .var-lupe-t { font-weight: 700; font-size: .95rem; }
+  /* Punkt 22: deutliche Rückmeldung beim Tippen, Haken an der gewählten Antwort */
+  .var-pflege :is(.es-btn, .sk, .weg, .uk-karte, .btn, .zeile):active { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .var-pflege .es-btn.an:not([role="checkbox"]):not(.es-weiter):not(.es-skip) > span:last-child::after { content: " ✓"; font-weight: 700; }
