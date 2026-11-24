@@ -937,15 +937,17 @@
  {
   "id": "T57",
   "schluessel": "t.kdu.angemessen",
-  "beschreibung": "Miete über der Grenze: erstes Jahr höchstens das Eineinhalbfache, danach Kostensenkungsaufforderung und in der Regel noch bis zu 6 Monate (§ 22 Abs. 1 Satz 6, 9, 10 SGB II n. F.), TS-09",
+  "beschreibung": "Miete über der Grenze: erstes Jahr höchstens das Eineinhalbfache, danach Kostensenkungsaufforderung und in der Regel noch bis zu 6 Monate (§ 22 Abs. 1 Satz 6, 9, 10 SGB II n. F.), TS-09; zusätzlich § 35 SGB XII (Grundsicherung im Alter)",
   "sprachen": "alle",
   "erwartet": {
    "zahlen": [
     "22",
+    "35",
     "6"
    ],
    "gesetze": [
-    "SGB II"
+    "SGB II",
+    "SGB XII"
    ],
    "platzhalter": ""
   },
