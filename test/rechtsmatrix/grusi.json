@@ -321,7 +321,7 @@
  {
   "id": "GW-KI-02",
   "pruefer": "grundsicherung-wohnen",
-  "beschreibung": "Alleinerziehend, Kind unter 6, Unterhalt 500, kein Einkommen, Miete 400: Kindergeld-Überhang 202 € zählt beim Elternteil -> Lücke ca. 760 (nicht 970) – korrigiert 24.11.2026: 759 € angerechnet minus 30 € Versicherungspauschale auf den Kindergeld-Rest (§ 6 Abs. 1 Nr. 1 GrusiGV) -> ca. 790",
+  "beschreibung": "Alleinerziehend, Kind unter 6, Unterhalt 500, kein Einkommen, Miete 400: Kindergeld-Überhang 202 € zählt beim Elternteil -> Lücke ca. 760 (nicht 970) – korrigiert 24.11.2026: 759 € angerechnet minus 30 € Versicherungspauschale auf den Kindergeld-Rest (§ 6 Abs. 1 Nr. 1 GrusiGV) -> ca. 790 – inkl. Sofortzuschlag 25 € je Kind (§ 72 SGB II, Vollprüfung familie B4)",
   "quelle": "§ 11 Abs. 1 Satz 5 SGB II (Kindergeld nur soweit beim Kind benötigt, Rest Einkommen des Elternteils)",
   "h": {
    "adults": 1,
@@ -344,7 +344,7 @@
   "erwartet": {
    "ggeld": {
     "status": "ja",
-    "betrag": 790,
+    "betrag": 815,
     "toleranz": 15
    }
   }
@@ -1178,7 +1178,7 @@
  {
   "id": "GW-MB-02",
   "pruefer": "grundsicherung-wohnen",
-  "beschreibung": "Alleinerziehend, 2 Kinder 6-13, kein Einkommen, Miete 700: Mehrbedarf 36 % (2 Kinder unter 16) = 202,68",
+  "beschreibung": "Alleinerziehend, 2 Kinder 6-13, kein Einkommen, Miete 700: Mehrbedarf 36 % (2 Kinder unter 16) = 202,68 – inkl. Sofortzuschlag 25 € je Kind (§ 72 SGB II, Vollprüfung familie B4)",
   "quelle": "§ 21 Abs. 3 Nr. 1 SGB II; Bedarf 563 + 2*390 + 700 + 202,68 = 2.245,68 minus Kindergeld 518 = 1.727,68",
   "h": {
    "adults": 1,
@@ -1199,7 +1199,7 @@
   "erwartet": {
    "ggeld": {
     "status": "ja",
-    "betrag": 1730,
+    "betrag": 1780,
     "toleranz": 15
    }
   }
@@ -1656,7 +1656,7 @@
  {
   "id": "FA-GG-05",
   "pruefer": "fable-familie-grundsicherung",
-  "beschreibung": "Alleinerziehend, Kind 9, kein Einkommen, Unterhalt 700 (deckt den Bedarf des Kindes: Kindergeld zählt beim Elternteil)",
+  "beschreibung": "Alleinerziehend, Kind 9, kein Einkommen, Unterhalt 700 (deckt den Bedarf des Kindes: Kindergeld zählt beim Elternteil) – inkl. Sofortzuschlag 25 € je Kind (§ 72 SGB II, Vollprüfung familie B4)",
   "quelle": "§ 11 Abs. 1 Satz 5 SGB II (https://www.gesetze-im-internet.de/sgb_2/__11.html); § 6 Abs. 1 Nr. 1 GrusiGV (30 €)",
   "h": {
    "adults": 1,
@@ -1681,7 +1681,7 @@
   "erwartet": {
    "ggeld": {
     "status": "ja",
-    "betrag": 702,
+    "betrag": 727,
     "toleranz": 25
    }
   }
@@ -1689,7 +1689,7 @@
  {
   "id": "FA-GG-06",
   "pruefer": "fable-familie-grundsicherung",
-  "beschreibung": "wie GG-05, Unterhalt 300 (Kind bleibt bedürftig)",
+  "beschreibung": "wie GG-05, Unterhalt 300 (Kind bleibt bedürftig) – inkl. Sofortzuschlag 25 € je Kind (§ 72 SGB II, Vollprüfung familie B4)",
   "quelle": "§§ 7, 9, 11, 11b, 12, 12a, 19-22 SGB II; RBSFV 2026, https://www.gesetze-im-internet.de/sgb_2/",
   "h": {
    "adults": 1,
@@ -1714,7 +1714,7 @@
   "erwartet": {
    "ggeld": {
     "status": "ja",
-    "betrag": 1062,
+    "betrag": 1087,
     "toleranz": 15
    }
   }
@@ -2663,7 +2663,7 @@
  {
   "id": "FA-GG-32",
   "pruefer": "fable-familie-grundsicherung",
-  "beschreibung": "Alleinerziehend, 4 Kinder (2 × 6-13, 2 × 14-17), kein Einkommen, Miete 1.000",
+  "beschreibung": "Alleinerziehend, 4 Kinder (2 × 6-13, 2 × 14-17), kein Einkommen, Miete 1.000 – inkl. Sofortzuschlag 25 € je Kind (§ 72 SGB II, Vollprüfung familie B4)",
   "quelle": "§ 21 Abs. 3 Nr. 2 SGB II (4 × 12 %), RBSFV 2026",
   "h": {
    "adults": 1,
@@ -2688,7 +2688,7 @@
   "erwartet": {
    "ggeld": {
     "status": "ja",
-    "betrag": 2519,
+    "betrag": 2619,
     "toleranz": 15
    }
   }

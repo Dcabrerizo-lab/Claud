@@ -2983,7 +2983,7 @@
   };
   // ----- Netto-Helfer: Steuerklasse und Kirchensteuer mit großen Knöpfen wählen, Netto nach Programmablaufplan ausrechnen -----
   function lohnOpts(i) {
-    var o = Rules.lohnAnnahmen({ adults: state.adults, kids: Number(state.kids) || 0, young: Number(state.young) || 0, zweiVerdiener: state.adults === 2 && state.ek1Art === 'lohn' && state.ek2Art === 'lohn', land: state.bundesland }, i);
+    var o = Rules.lohnAnnahmen({ adults: state.adults, kids: Number(state.kids) || 0, young: Number(state.young) || 0, zweiVerdiener: state.adults === 2 && state.ek1Art === 'lohn' && state.ek2Art === 'lohn', land: state.bundesland, hhAndere: state.hhAndere === 'wg' || state.hhAndere === 'verwandte' ? state.hhAndere : '' }, i);
     if ([1, 2, 3, 4, 5, 6].indexOf(Number(state['stkl' + i])) >= 0) o.stkl = Number(state['stkl' + i]);
     o.kirche = state['kirche' + i] ? (state.bundesland === 'BY' || state.bundesland === 'BW' ? 0.08 : 0.09) : 0;
     return o;

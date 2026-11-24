@@ -27,7 +27,7 @@
  "t.bedarfJa": "Das braucht dein Haushalt laut Gesetz zum Leben, mit Miete: etwa {bedarf} im Monat. Dein Einkommen ist niedriger.",
  "t.bedarfRand": "Das braucht dein Haushalt laut Gesetz zum Leben, mit Miete: etwa {bedarf} im Monat. Dein Einkommen ist ungefähr so hoch, knapp darunter oder knapp darüber. Die Stelle rechnet Freibeträge und Abzüge genau aus.",
  "t.bedarfNein": "Das braucht dein Haushalt laut Gesetz zum Leben, mit Miete: etwa {bedarf} im Monat. Dein Einkommen ist höher. Prüfe, ob Wohngeld passt.",
- "t.but.keinKind": "Das Bildungspaket gilt für Kinder und junge Erwachsene bis 25, die zur Schule gehen oder eine Ausbildung machen.",
+ "t.but.keinKind": "Das Bildungspaket gilt für Kinder. Und für junge Erwachsene bis 25, die zur Schule gehen und keine Ausbildungsvergütung bekommen.",
  "t.but.inhalt": "Das gehört dazu: {schul} Schulbedarf im Jahr, {teil} im Monat für Sport, Musik oder Kultur, Mittagessen in Kita und Schule und Klassenfahrten.",
  "t.but.bezug": "Du bekommst schon eine passende Leistung. Darum hast du einen Anspruch.",
  "t.but.folgt": "Du bekommst Wohngeld, Kinderzuschlag oder Grundsicherung? Dann hast du auch Anspruch auf das Bildungspaket.",
