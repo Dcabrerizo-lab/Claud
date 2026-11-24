@@ -5335,10 +5335,20 @@
   // 33 Jahre Beiträge, Auto, gezahlter Unterhalt) stehen gesammelt in zwei Fragen „Trifft etwas davon zu?“; nur bei einem Haken folgt die
   // genaue Frage. Kreuzt niemand etwas an, gilt der Wert, den die Regeln auch für „nein / nicht angegeben“ nutzen (leer, 0, nein).
   function varAlter(s) { var j = Number(s.gebJahr); return /^\d{4}$/.test(String(s.gebJahr)) ? new Date().getFullYear() - j : null; }
-  // Unter 67 (höchste Regelaltersgrenze, § 235 SGB VI) oder Alter unbekannt: Fragen zu Erwerbsminderung, Werkstatt und Arbeitslosengeld bleiben
-  function varUnter67(s) { var a = varAlter(s); return a == null || a < 67; }
+  // Fragen zu Erwerbsminderung, Werkstatt und Arbeitslosengeld fallen nur weg, wenn die Regelaltersgrenze SICHER erreicht ist: gleiche Rechnung wie
+  // „alter“ in src/rules.js (Geburtsjahr + 1 + Grenze nach § 235 Abs. 2 SGB VI, ab Jahrgang 1964 67 Jahre nach § 35 Satz 2 SGB VI; Altersgrenze der
+  // Grundsicherung gleich, § 41 Abs. 2 SGB XII). Jahr minus Geburtsjahr reicht nicht: Jahrgang 1960 gilt ab 1.1.2027 als „67“, erreicht die Grenze
+  // (66 Jahre 4 Monate) aber je nach Geburtsmonat erst bis April 2027. Sie bleiben auch bei Paaren (das Geburtsjahr gilt der ältesten Person, die Frage
+  // zur Erwerbsminderung jeder erwachsenen Person) und bei einem erwachsenen Kind mit Behinderung. Prüfung 24.11.2026.
+  function varUnter67(s) {
+    var a = varAlter(s); if (a == null) return true;
+    if (Number(s.adults) === 2 || s.bhPerson === 'erwVor25') return true;
+    var j = Number(s.gebJahr), d = new Date(), rag = Rules.RULES.rag;
+    var grenze = j < 1947 ? 65 : j >= 1964 ? 67 : 65 + rag[j] / 12;
+    return !(j + 1 + grenze <= d.getFullYear() + d.getMonth() / 12);
+  }
   function varRente(s) { return s.ek1Art === 'rente' || s.ek2Art === 'rente' || s.ek1bArt === 'rente' || s.ek2bArt === 'rente'; }
-  var VAR_EK_ALT = ['rente', 'lohn', 'selbst', 'unt', 'ohne'];                        // ab 67: Rente, Minijob/Lohn, selbstständig, Unterhalt, kein Einkommen
+  var VAR_EK_ALT = ['rente', 'lohn', 'selbst', 'unt', 'asylblg', 'ohne'];             // Regelaltersgrenze sicher erreicht: Rente, Minijob/Lohn, selbstständig, Unterhalt, Asylbewerberleistungen (keine Altersgrenze; nur bei passendem Aufenthalt angeboten), kein Einkommen
   var VAR_EK_JUNG = ['rente', 'lohn', 'wfbm', 'alg', 'kg', 'unt', 'selbst', 'asylblg', 'ohne']; // unter 67 (Erwerbsminderung); Elterngeld nie
   function varFragen(basis) {
     var nach = {}; basis.forEach(function (f) { nach[f.id] = f; });
@@ -5421,7 +5431,7 @@
       if (b > 0 && v > b) return t('sux.p.nettoHoch');
     }
     if (/^ek[12]Brutto$/.test(f.id) && v > 0 && v < 50) return t('sux.p.klein');
-    if (f.id === 'gebJahr' && v < 1920) return t('sux.p.geb');
+    if (f.id === 'gebJahr' && (v < 1920 || v > new Date().getFullYear() - 18)) return t('sux.p.geb'); // gefragt ist die älteste erwachsene Person: jünger als 18 ist ein Tippfehler
     if (f.id === 'miete' && v > 0 && v < 50) return t('sux.p.klein');
     return '';
   }
