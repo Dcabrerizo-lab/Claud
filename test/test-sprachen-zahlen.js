@@ -43,7 +43,20 @@ const de = lies(path.join(DIR, 'de.json'));
 for (const lang of SPRACHEN) pruefe('', de, lang, lies(path.join(DIR, lang + '.json')));
 
 const ordner = fs.readdirSync(DIR).filter((d) => fs.statSync(path.join(DIR, d)).isDirectory() && fs.existsSync(path.join(DIR, d, 'de.json')));
-for (const o of ordner) {
+// Teil-Ebenen: überschreiben nur einzelne Schlüssel und nur in manchen Sprachen (sie = Sie-Anrede der Pflege-Variante, test/test-sie-ebene.js).
+// Dort keine Vollständigkeit; jeder vorhandene Text muss Zahlen und Platzhalter des deutschen Textes haben (Teil-Ebene, sonst Hauptdatei).
+const TEILEBENEN = ['sie'];
+for (const o of ordner.filter((d) => TEILEBENEN.includes(d))) {
+  const deO = Object.assign({}, de, ...ordner.filter((d) => !TEILEBENEN.includes(d)).map((d) => lies(path.join(DIR, d, 'de.json'))), lies(path.join(DIR, o, 'de.json')));
+  for (const lang of SPRACHEN) {
+    const f = path.join(DIR, o, lang + '.json');
+    if (!fs.existsSync(f)) continue;
+    const L = lies(f), deTeil = {};
+    Object.keys(L).forEach((k) => { if (typeof deO[k] === 'string') deTeil[k] = deO[k]; else fail(`${lang} ${o}/${k}: Schlüssel fehlt im Deutschen`); });
+    pruefe(o, deTeil, lang, L);
+  }
+}
+for (const o of ordner.filter((d) => !TEILEBENEN.includes(d))) {
   const deO = lies(path.join(DIR, o, 'de.json'));
   for (const lang of SPRACHEN) {
     const f = path.join(DIR, o, lang + '.json');

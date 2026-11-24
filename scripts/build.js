@@ -14,6 +14,7 @@ const LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'f
 // (name: voller Name für Store, Titel, Startseite; kurzname: unter dem Symbol auf dem Handy, Capacitor appName; Entscheidung David 24.11.2026).
 //  - sprachOrdner: zusätzliche Sprachdateien src/lang/<Ordner>/<Sprache>.json (dürfen Schlüssel der Grundfassung überschreiben, z. B. „lead“);
 //    Einfache Sprache dazu in src/lang/<Ordner>/einfach.json. Fehlt eine Sprache, gilt Deutsch (t() in src/app.js).
+//    „sie“ (nur SoLo Pflege, Entscheidung David 24.11.2026): Sie-Fassungen der übernommenen SoLo-Texte, zuletzt geladen; Liste: tools/sie-schluessel.js
 //  - skripte: zusätzliche Skripte vor src/app.js (fehlende Dateien werden übersprungen)
 //  - teile: src/variante/<Name>.html mit den Marken TEIL start, TEIL ansicht, TEIL stil
 //  - ohne: Module src/<x>.js, die nicht eingebaut werden (dazu ihre Texte src/lang/<x>/, außer haushalt: dessen Texte nutzt auch „Geld“)
@@ -21,7 +22,7 @@ const VARIANTEN = {
   solo: { name: 'SoLo', kurzname: 'SoLo', appId: 'com.Sozialleistungslotse', datei: 'sozialleistungslotse.html', i18n: 'i18n.js', sprachOrdner: [], skripte: [], teile: null, ohne: [] },
   pflege: {
     name: 'SoLo Pflege & Rente', kurzname: 'SoLo Pflege', titel: 'SoLo <span class="sub">Pflege &amp; Rente</span>', appId: 'com.Sozialleistungslotse.pflege', datei: 'solo-pflege.html', i18n: 'i18n-pflege.js',
-    sprachOrdner: ['sen-ui', 'senioren', 'vorlesen'], skripte: ['senioren.js', 'vorlesen.js'], teile: 'pflege.html',
+    sprachOrdner: ['sen-ui', 'senioren', 'vorlesen', 'sie'], skripte: ['senioren.js', 'vorlesen.js'], teile: 'pflege.html',
     // Teile, die es in SoLo Pflege nicht gibt (Startgröße unter 3 MB): Module und ihre Texte; src/app.js prüft window.Ausziehen/window.Haushalt
     ohne: ['ausziehen', 'haushalt']
   }
