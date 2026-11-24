@@ -88,7 +88,7 @@
   "ek.weiteres.hint.lohn": "Bei Lohn: Trage den Betrag ein, der auf dem Konto ankommt. Bei einem Minijob ist das meistens der ganze Lohn.",
   "cb.grundrente33": "Mindestens 33 Jahre Rentenbeiträge aus Arbeit (auch aus der Werkstatt), aus Kindererziehung oder aus Pflege",
   "ek.zusatzRente": "Davon Betriebsrente, Riester-Rente oder private Rente (netto im Monat)",
-  "ek.zusatzRente.hint": "Fülle das nur aus, wenn in der Rente oben so eine Rente enthalten ist. Bei der Grundsicherung im Alter bleiben davon 100 € und 30 % vom Rest frei. Es bleiben höchstens 281,50 € frei.",
+  "ek.zusatzRente.hint": "Fülle das nur aus, wenn in der Rente oben so eine Rente enthalten ist. Bei der Grundsicherung im Alter bleiben davon {eur:100} und 30 % vom Rest frei. Es bleiben höchstens {max} frei.",
   "cb.wfbmEssen": "Die Person isst in der Werkstatt zu Mittag (dafür gibt es Mehrbedarf)",
   "cb.teilhabe": "Die Person bekommt wegen der Behinderung Hilfe für Schule, Ausbildung oder Berufsvorbereitung (zum Beispiel Berufsbildungswerk, Schulbegleitung). Nicht gemeint ist: Werkstatt.",
   "cb.schwanger": "Jemand im Haushalt ist schwanger (ab der 13. Woche)",

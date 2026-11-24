@@ -51,6 +51,9 @@
     return ohne ? Fmt.ohnePara(s) : s;
   }
 
+  // Höchster Freibetrag (§ 82a SGB XII Grundrente, § 82 Abs. 4 SGB XII Zusatzrente): 50 % der Regelbedarfsstufe 1, wandert mit dem Regelsatz
+  function freiMax(art) { return { max: { eur: Rules.RULES[art].max * Rules.RULES.regelbedarf.alleinstehend } }; }
+
   // Text für Laien: ohne Beratungsmodus Paragrafen in Klammern ausblenden (Fmt.ohnePara); im Beratungsmodus unverändert
   function tL(key, p) { var s = t(key, p); return beratung ? s : Fmt.ohnePara(s); }
 
@@ -657,6 +660,7 @@
     document.querySelectorAll('[data-t]').forEach(function (el) { el.textContent = t(el.getAttribute('data-t')); });
     document.querySelectorAll('[data-t-aria]').forEach(function (el) { el.setAttribute('aria-label', t(el.getAttribute('data-t-aria'))); });
     document.querySelectorAll('[data-t-ph]').forEach(function (el) { el.setAttribute('placeholder', t(el.getAttribute('data-t-ph'))); });
+    if ($('zusatzRenteHint')) $('zusatzRenteHint').textContent = t('ek.zusatzRente.hint', freiMax('vorsorge')); // Höchstbetrag aus den Regeln (50 % Regelsatz), nicht fest im Text
     $('mappeDeNote').hidden = lang === 'de'; // Hinweis „Brief und Angabenblatt sind auf Deutsch“ nur bei anderer App-Sprache
     $('stand').textContent = t('stand', { stand: standL() });
     $('vertrauenT').textContent = t('vertrauen', { stand: standL() }); // Stand und Herkunft der Zahlen sichtbar am Ergebnis
@@ -2837,7 +2841,7 @@
     if (es.kind === 'ja' && es.ausweis === 'ja') tipps.push(t(mz.H || mz.Bl || mz.TBl ? 'es.tipp.pauschElternH' : 'es.tipp.pauschEltern'));
     if (es.wohnen === 'eltern' && (['2', '3', '4', '5'].indexOf(es.pflege) >= 0 || mz.H)) tipps.push(t('es.tipp.pflegePausch'));
     if ((out.zusammen || []).some(function (z) { return z[0] === 'z.gsaWg'; })) tipps.unshift(t('es.tipp.wgOderGsa'));
-    if (hat('gsa', 'gsa.grundrente') && es.renteJa === 'ja') tipps.push(t('es.tipp.grundrente'));
+    if (hat('gsa', 'gsa.grundrente') && es.renteJa === 'ja') tipps.push(t('es.tipp.grundrente', freiMax('grundrente')));
     if (gut.some(function (x) { return x.id === 'kgBeh'; })) tipps.push(t(es.wohnen === 'eltern' ? 'es.tipp.kgEltern' : 'es.tipp.kgAbzweig'));
     esMietgrenze(gut, out, tipps);
     var h = '<h2 class="es-q" id="es-q" tabindex="-1">' + esc(t(gut.length ? 'es.erg.h' : 'es.erg.keine')) + '</h2>' +

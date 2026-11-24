@@ -124,7 +124,7 @@
   "bp.vgl.pg": "Pflegegrad {pg}",
   "bp.vgl.kein": "kein Pflegegrad",
   "bp.vgl.klein": "Punkte nach Gewichtung, wie die Pflegekasse rechnet (§ 15 SGB XI). Plus heißt: Deine Einschätzung gibt dort mehr Punkte. Darunter steht, bei welchen Fragen genau.",
-  "t.bafoeg.vermTeil": "Das Vermögen liegt über dem Freibetrag von {verm}. Zusätzliche 2.300 € gibt es nur für Ehe- oder eingetragene Lebenspartner und für jedes eigene Kind. Es zählt nur der Teil über dem Freibetrag: Verteilt auf 12 Monate mindert er das BAföG um etwa {monat} im Monat. Das Amt für Ausbildungsförderung rechnet genau.",
+  "t.bafoeg.vermTeil": "Das Vermögen liegt über dem Freibetrag von {verm}. Zusätzliche {eur:2300} gibt es nur für Ehe- oder eingetragene Lebenspartner und für jedes eigene Kind. Es zählt nur der Teil über dem Freibetrag: Verteilt auf 12 Monate mindert er das BAföG um etwa {monat} im Monat. Das Amt für Ausbildungsförderung rechnet genau.",
   "akt.ergDrucken": "Ergebnis drucken oder teilen",
   "f.weg.zeile": "{a} oder {b}",
   "f.weg.nochNicht": "Weg noch nicht gewählt",

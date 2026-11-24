@@ -1642,7 +1642,7 @@ const Rules = (function () {
     const luecke = bedarf - eink;
     const hatRente = (h.pers || []).some((x) => x[0] === 'rente' && x[1] > 0);
     const extra = (h.alterGrenz ? [['gsa.grenz']] : []).concat(h.wfbmEssen ? [['gsa.essen']] : [], kduOffen ? [[h.wohnform === 'heim' ? 'gsa.heim' : 'gsa.eltern']] : [],
-      hatRente && !h.grundrente33 ? [['gsa.grundrente']] : [], teilFest ? [['mehr.teilhabe', { betrag: eur(teilFest) }]] : [], teilOffen ? [['ggeld.mehrBeh']] : [], maG.tx,
+      hatRente && !h.grundrente33 ? [['gsa.grundrente', { max: { eur: R.grundrente.max * R.regelbedarf.alleinstehend } }]] : [], teilFest ? [['mehr.teilhabe', { betrag: eur(teilFest) }]] : [], teilOffen ? [['ggeld.mehrBeh']] : [], maG.tx,
       !eigen && h.miete > 0 ? [['kdu.angemessen']] : []);
     // Merkzeichen G fragt die App nur für eine Person ab. Der Mehrbedarf von 17 % gilt für jede leistungsberechtigte Person mit Merkzeichen G
     // (§ 30 Abs. 1 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__30.html, Abruf 21.11.2026; Beispiel b) im Merkblatt Grundsicherung
