@@ -139,12 +139,13 @@ const head = '<!doctype html>\n<html lang="de"><head><meta charset="utf-8">' +
   '<link rel="icon" href="data:,">\n'; // leeres Symbol: sonst fragt die WebView /favicon.ico an (404 im Log); <title>, Links und <style> folgen aus der Vorlage
 fs.writeFileSync(path.join(WWW, 'index.html'), head + html + '\n</body></html>\n');
 
-// Variante (VARIANTE=pflege, scripts/build.js): Kennung und Namen für das App-Paket. Die nativen Projekte (Android applicationId bzw.
-// Produkt-Variante, iOS Bundle-ID und Anzeigename) übernehmen das noch nicht von selbst: eigener Schritt vor dem ersten Bau der Variante.
+// Variante (VARIANTE=pflege, scripts/build.js): Kennung und Namen für das App-Paket. Android liest www/variante.json (nach cap sync in
+// src/main/assets/public) und setzt danach Paket-ID, Namen und Symbol (app/android/app/build.gradle). iOS: beim Bauen
+// -xcconfig pflege.xcconfig übergeben (Bundle-ID, Anzeigename, Symbol). Siehe docs/VARIANTE-PFLEGE.md.
 if (gebaut.variante && gebaut.variante.id !== 'solo') {
   const v = gebaut.variante;
   fs.writeFileSync(path.join(WWW, 'variante.json'), JSON.stringify({ id: v.id, appId: v.appId, appName: v.kurzname, name: v.name }, null, 2) + '\n');
-  console.log('App-Build: Variante ' + v.name + ' (' + v.appId + ', Kurzname „' + v.kurzname + '“) – native Projekte noch auf com.Sozialleistungslotse, vor einem Bau anpassen');
+  console.log('App-Build: Variante ' + v.name + ' (' + v.appId + ', Kurzname „' + v.kurzname + '“). Android übernimmt das nach cap sync selbst; iOS: xcodebuild … -xcconfig pflege.xcconfig');
 }
 
 const kb = (f) => (fs.statSync(path.join(WWW, f)).size / 1024).toFixed(0);

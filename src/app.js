@@ -5200,8 +5200,15 @@
       if (l && h && h.nextSibling !== l) el.insertBefore(l, h.nextSibling);
     } catch (e) { /* Vorlesen ist eine Hilfe; Fehler darin dürfen die Seite nicht stören */ }
   }
+  // Erststart-Hinweis: auf der Startseite unter die zwei Einstiege (die sollen ohne Blättern sichtbar sein), sonst wie in SoLo oben
+  function varHinweis(a) {
+    var n = $('firstNotice'), e = $('varEinstiege'); if (!n || !e) return;
+    if (a === 'start') { if (n.previousElementSibling !== e) e.parentNode.insertBefore(n, e.nextSibling); }
+    else if (n.parentNode !== $('inhalt')) $('inhalt').insertBefore(n, $('v-start'));
+  }
   function varAnsicht(a) {
     varInit();
+    varHinweis(a);
     if (a === 'sen') senRender(false);
     if (a === 'briefe') ['brief-jc', 'brief-fk'].forEach(function (id) { if ($(id)) $(id).classList.add('var-aus'); });
     varVorlesen($('v-' + a));

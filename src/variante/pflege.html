@@ -38,6 +38,20 @@
   .var-einstiege .var-ein .sk-sym svg { width: 34px; height: 34px; }
   .var-einstiege .pfeil { font-size: 1.6em; margin-inline-start: auto; }
   .var-pflege .start-raster:not(.var-einstiege) { margin-top: 0; }
+  /* Startseite: „Pflege“ in Violett (die Kachel „Ausziehen“ gibt es hier nicht), damit sie sich von „Ich brauche selbst Hilfe“ (Blau) abhebt */
+  .var-pflege #goPflege { --c: var(--c-ausziehen); }
+  /* Logo in der Kopfzeile in Pflege-Blau wie das App-Symbol (tools/mkicon-pflege.js) */
+  .var-pflege .kopf-titel .logo rect { fill: var(--c-pflege); }
+  /* Erststart-Hinweis steht auf der Startseite unter den Einstiegen (app.js varHinweis); solange er da ist, kein Sicherheits-Knopf */
+  .var-pflege #v-start #firstNotice { margin: 0 0 14px; }
+  .var-pflege #firstNotice:not([hidden]) ~ .start-sicher { display: none; }
+  .var-pflege .kopf-titel .lead { margin-bottom: 4px; }
+  /* Vorlesen und Tempo nebeneinander (src/vorlesen.js), bei sehr großer Schrift umbrechen */
+  .var-pflege .vl-leiste { gap: 8px; flex-wrap: nowrap; align-items: stretch; }
+  .var-pflege .vl-knopf { flex: 1 1 auto; min-width: 0; justify-content: center; padding: 8px 14px; font-size: 1.05rem; }
+  .var-pflege .vl-tempo { flex: 0 1 auto; min-width: 0; padding: 6px 12px; font-size: .9rem; line-height: 1.2; }
+  /* Erststart-Hinweis oben auf den anderen Seiten: Platz für die Lupe rechts oben, damit sie keinen Text verdeckt */
+  .var-pflege #inhalt > #firstNotice p { padding-inline-end: 52px; }
   .sen .weg { min-height: 72px; }
   .sen .sen-druck { margin-top: 22px; }
   .sen-inhalt > h2 { display: none; } /* Überschrift steht schon oben (h-sen) */

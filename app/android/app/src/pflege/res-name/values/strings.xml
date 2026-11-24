@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Nur Variante „SoLo Pflege & Rente“ (Release): Name auf dem Startbildschirm und Paket-ID, siehe docs/VARIANTE-PFLEGE.md -->
+<resources>
+    <string name="app_name">SoLo Pflege</string>
+    <string name="title_activity_main">SoLo Pflege</string>
+    <string name="package_name">com.Sozialleistungslotse.pflege</string>
+    <string name="custom_url_scheme">com.Sozialleistungslotse.pflege</string>
+</resources>
