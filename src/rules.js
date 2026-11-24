@@ -13,6 +13,8 @@ const Rules = (function () {
     // RBSFV 2026, Anlage zu § 28 SGB XII: Stufe 1 563, Stufe 2 506, Stufe 3 451, Stufe 4 (14-17) 471, Stufe 5 (6-13) 390, Stufe 6 (0-5) 357
     regelbedarf: { alleinstehend: 563, partner: 506, kind0: 357, kind: 390, kind14: 471, jungErwachsener: 451 },
     kindergeld: 259,
+    // Sofortzuschlag je Kind mit Regelbedarfsstufe 3–6 (§ 72 Abs. 1 SGB II i. d. F. ab 1.7.2026, https://www.buzer.de/72_SGB_II.htm, abgerufen 24.11.2026)
+    sofortzuschlag: 25,
     // Wohnkostenanteil der Eltern (§ 6a Abs. 5 BKGG): Tabelle der Familienkasse nach dem Existenzminimumbericht
     // (DA-KiZ C.3.1.2, Stand 20.02.2026), Index = Zahl der Kinder 1-10; ab 10 Kindern gilt der Wert für 10
     kiz: { vermZwei: 55000, vermDrei: 70000, vermJeWeiteres: 15000, max: 297, minAlleinerziehend: 600, minPaar: 900, anrechnung: 0.45, ampelGruenAb: 60,
@@ -1794,13 +1796,19 @@ const Rules = (function () {
   }
   // Einkommen je Person (Brutto b, Netto n) aus den Angaben; ohne Liste wird das Netto nach dem Brutto aufgeteilt
   function bafPers(h) {
-    if (h.liste) return h.pers.map((x) => ({ art: x[0], b: x[1], n: x[2], aus: !!x[3], selbst: !!x[4], p: x[5] || 1 }));
-    return h.pers.map((x, i) => ({ art: x[0], b: x[1], n: h.brutto > 0 ? h.netto * x[1] / h.brutto : (i === 0 ? h.netto : 0), selbst: !!x[4], p: i + 1 }));
+    if (h.liste) return h.pers.map((x, i) => ({ art: x[0], b: x[1], n: x[2], aus: !!x[3], selbst: !!x[4], p: x[5] || 1, i }));
+    return h.pers.map((x, i) => ({ art: x[0], b: x[1], n: h.brutto > 0 ? h.netto * x[1] / h.brutto : (i === 0 ? h.netto : 0), selbst: !!x[4], p: i + 1, i }));
   }
+  // Höchster möglicher Elterngeld-Freibetrag beim BAföG: § 1 Nr. 2 Buchst. f BAföG-EinkommensV (https://www.buzer.de/s1.htm?a=1&g=BAf%C3%B6G-EinkommensV,
+  // Abruf 24.11.2026) zählt Elterngeld nur, „soweit es die nach § 10 BEEG anrechnungsfreien Beträge übersteigt“; das BAföG ist in § 10 Abs. 5
+  // BEEG nicht ausgenommen, also gelten Abs. 1, 3, 4 (https://www.buzer.de/10_BEEG.htm): 300 €, bei ElterngeldPlus 150 €, je Kind der Geburt,
+  // ohne Bedingung „Einkommen vor der Geburt“ – wie beim Wohngeld. Für die untere Schätzung (lo, „eher nicht“) der höchste mögliche Betrag
+  // (wgHi aus derive egFrei, falls vorhanden; sonst 300 € je Kind der Geburt). Bis 24.11.2026: immer 300 €, auch bei Mehrlingen.
+  const bafEgFreiMax = (h, x) => (h.egFreiJe && h.egFreiJe[x.i] ? h.egFreiJe[x.i].wgHi : R.elterngeldFrei * (h.egMehr || 1));
   // Monatliches Einkommen nach § 21 BAföG [lo, hi] aus dem heutigen Einkommen. hi: nie kleiner als das Netto (Sozialpauschale 22,3 %
   // bzw. 16,5 %/38,8 % ist mindestens so hoch wie die tatsächlichen Beiträge), lo: Lohn nach § 21 (Steuer = Brutto − Netto − Beiträge);
-  // Studierende selbst (Werkstudenten zahlen weniger Beiträge): Steuer höchstens Brutto − Netto. Andere Einkommen: Elterngeld bis 300 € frei
-  // (§ 10 Abs. 1 BEEG), Unterhalt für sich selbst zählt nur versteuert (lo 0), Rente lo 80 %, sonst lo 50 % (Annahme, vorsichtig).
+  // Studierende selbst (Werkstudenten zahlen weniger Beiträge): Steuer höchstens Brutto − Netto. Andere Einkommen: Elterngeld bis 300 € je Kind
+  // der Geburt frei (§ 10 Abs. 1, 4 BEEG, siehe bafEgFreiMax), Unterhalt für sich selbst zählt nur versteuert (lo 0), Rente lo 80 %, sonst lo 50 % (Annahme, vorsichtig).
   function bafEink(h, nurP, student) {
     const ps = bafPers(h).filter((x) => !nurP || x.p === nurP);
     let lo = 0, hi = 0, untHi = 0;
@@ -1817,7 +1825,7 @@ const Rules = (function () {
       const n = Math.max(0, x.n);
       hi += n;
       if (x.art === 'unt') untHi += n;
-      const nEg = Math.max(0, n - R.elterngeldFrei);
+      const nEg = Math.max(0, n - bafEgFreiMax(h, x));
       // Lohn ohne Brutto: Sozialpauschale 22,3 % und Arbeitnehmer-Pauschbetrag statt der echten Beiträge -> lo 80 % minus 80 € (Annahme)
       lo += x.art === 'eg' ? nEg : x.art === 'unt' ? 0 : x.art === 'rente' ? 0.8 * n : x.art === 'lohn' && !x.selbst ? Math.max(0, 0.8 * n - 80) : 0.5 * n;
     });
@@ -1846,8 +1854,9 @@ const Rules = (function () {
         return;
       }
       ja += n;
-      // wie bisher: Unterhalt für sich selbst ganz, Elterngeld bis 300 € abgezogen (Betrag laut Eingabe; ohne Liste das Brutto-Feld)
-      nein += n - (x.art === 'unt' ? (h.liste ? n : x.b) : x.art === 'eg' ? Math.min(R.elterngeldFrei, h.liste ? n : x.b) : 0);
+      // wie bisher: Unterhalt für sich selbst ganz, Elterngeld bis zum höchsten möglichen Freibetrag abgezogen (300 € je Kind der Geburt, § 10 BEEG;
+      // Betrag laut Eingabe; ohne Liste das Brutto-Feld)
+      nein += n - (x.art === 'unt' ? (h.liste ? n : x.b) : x.art === 'eg' ? Math.min(bafEgFreiMax(h, x), h.liste ? n : x.b) : 0);
     });
     // Prüfung 21.11.2026: Für „wahrscheinlich“ zählt als Steuer höchstens die Lohnsteuer, die das Finanzamt am Ende festsetzt, nicht alles,
     // was zwischen Brutto und Netto fehlt. Grund: Abgezogen wird nur die „zu leistende Einkommensteuer“ (§ 21 Abs. 1 Satz 3 Nr. 3 BAföG, laut
