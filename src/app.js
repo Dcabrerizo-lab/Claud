@@ -4472,7 +4472,9 @@
       ['verh', t('pfl.pi.z.verh.h', { betrag: piEuro(R.entlastungsbudget) }), 'budget', 'pi-verh'],
       ['tages', bis(je(R.pflegeTages)), 'budget', 'pi-dienst'],
       ['hilfs', t('pfl.pi.z.hilfs.h', { betrag: piEuro(R.beh.verbrauch) }), 'budget', 'pi-hilfs'],
-      ['umbau', t('pfl.pi.z.umbau.h', { betrag: piEuro(R.beh.wohnumfeld) }), 'budget', 'pi-hilfs']];
+      ['umbau', t('pfl.pi.z.umbau.h', { betrag: piEuro(R.beh.wohnumfeld) }), 'budget', 'pi-hilfs'],
+      // Pflege im Heim (§§ 43, 43a, 43c SGB XI; Beträge rules.js pflegeHeim, Vollprüfung B08, 24.11.2026)
+      ['heim', je(R.pflegeHeim), 'budget', 'pi-heim']];
     var tw = el('div', null, 'tabwrap'); tw.setAttribute('role', 'region'); tw.setAttribute('aria-label', t('pfl.pi.tab')); tw.tabIndex = 0;
     var tb = el('table'), th = el('thead'), tr0 = el('tr');
     ['leistung', 'wie', 'hoehe'].forEach(function (x) { tr0.appendChild(el('th', t('pfl.pi.sp.' + x))); }); th.appendChild(tr0); tb.appendChild(th);
@@ -4498,6 +4500,7 @@
     abschnitt('pi-verh', 6, 0, { betrag: piEuro(R.entlastungsbudget) });
     abschnitt('pi-hilfs', 3, 0, null);
     var hilfs = $('pi-hilfs').querySelectorAll('p'); hilfs[0].textContent = t('pfl.pi.hilfs.0', { betrag: piEuro(R.beh.verbrauch) }); hilfs[2].textContent = t('pfl.pi.hilfs.2', { betrag: piEuro(R.beh.wohnumfeld) });
+    abschnitt('pi-heim', 3, 0, puHeimWerte());
     abschnitt('pi-gut', 3);
     box.appendChild(quellenEl([t('pfl.pi.stand', { stand: R.stand || 'November 2026' })]));
   }
@@ -4534,12 +4537,17 @@
   ];
 
   // Texte der Übersicht: src/lang/pflege/<Sprache>.json (Schlüssel „pfl.pu.<id>.t|x|m0…|w“), Beträge im Beispiel aus den Rechenregeln
-  var PU_MEHR = { geld: 1, dienst: 2, entl: 3, verh: 6, tages: 2, kombi: 1, hilfs: 1, notruf: 0, umbau: 1, wg: 0, kurs: 0, beratung: 1, rente: 1, zeit: 1 };
+  var PU_MEHR = { geld: 1, dienst: 2, entl: 3, verh: 6, tages: 2, kombi: 1, hilfs: 1, notruf: 0, umbau: 1, wg: 0, heim: 3, kurs: 0, beratung: 1, rente: 1, zeit: 1 };
+  // Werte für die Texte zur Pflege im Heim: Zuschlag § 43c SGB XI, § 43a SGB XI, Elternunterhalt erst über 100.000 € (§ 94 Abs. 1a SGB XII)
+  function puHeimWerte() {
+    var R = Rules.RULES, z = R.pflegeHeimZuschlag;
+    return { pg1: piEuro(R.pflegeHeim[1]), z1: String(z[0]), z2: String(z[1]), z3: String(z[2]), z4: String(z[3]), q43a: String(R.pflege43a.quote), max: piEuro(R.pflege43a.max), grenze: piEuro(100000) };
+  }
   function puTexte(pg) {
     var R = Rules.RULES;
     var kombiPg = pg >= 2 ? pg : 2, halb = R.pflegeSach[kombiPg] / 2;
     var e2 = function (x) { return Number(x).toLocaleString('de-DE', { minimumFractionDigits: x % 1 ? 2 : 0, maximumFractionDigits: 2 }) + ' €'; };
-    var w = { pg: String(kombiPg), halb: e2(halb), rest: e2(Rules.pflegeKombi(kombiPg, halb)) }, o = {};
+    var w = Object.assign({ pg: String(kombiPg), halb: e2(halb), rest: e2(Rules.pflegeKombi(kombiPg, halb)) }, puHeimWerte()), o = {};
     Object.keys(PU_MEHR).forEach(function (id) {
       var k = 'pfl.pu.' + id + '.', m = [];
       for (var i = 0; i < PU_MEHR[id]; i++) m.push(t(k + 'm' + i, w));

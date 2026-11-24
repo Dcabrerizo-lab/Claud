@@ -99,7 +99,7 @@
  "t.rundfunk.haerte": "Dein Einkommen ist höher als die Bedarfsgrenze einer Sozialleistung, aber nur um weniger als den Rundfunkbeitrag? Dann kannst du einen Antrag als besonderer Härtefall stellen.",
  "t.rundfunk.nein": "Nach deinen Angaben hast du keinen Anspruch auf Befreiung. Sie gibt es vor allem, wenn du bestimmte Sozialleistungen bekommst.",
  "t.rundfunk.weitere": "Nach deinen Angaben kommt eine Leistung in Frage, die auch vom Rundfunkbeitrag befreit. Das sind Hilfe zur Pflege, Blindenhilfe oder BAföG, wenn du nicht bei den Eltern wohnst. Schicke nach der Bewilligung den Bescheid an den Beitragsservice. Das gilt auch für Berufsausbildungsbeihilfe, wenn du nicht bei deinen Eltern wohnst.",
- "t.zuzahl.keine": "Du hast keine Behinderung und keine Pflegebedürftigkeit angegeben.",
+ "t.zuzahl.keine": "Die Grenze für Zuzahlungen gilt für alle in der gesetzlichen Krankenkasse: 2 % von deinem Einkommen im Jahr. Ohne Behinderung, Pflegegrad oder lange Krankheit erreichst du sie aber selten.",
  "t.zuzahl.grenze": "Du zahlst bei Medikamenten, Hilfsmitteln und Behandlungen etwas dazu. Dafür gibt es eine Belastungsgrenze von 2 % der jährlichen Bruttoeinnahmen zum Lebensunterhalt. Hast du die Grenze erreicht, stellt die Krankenkasse eine Befreiung für den Rest des Jahres aus. Für Familienangehörige im Haushalt gibt es Freibeträge.",
  "t.zuzahl.chron": "Bei schwerwiegend chronisch Kranken liegt die Grenze bei 1 %. Dazu zählt zum Beispiel, wer einen GdB von mindestens 60 oder Pflegegrad 3 bis 5 hat und dauerhaft behandelt wird. Die Krankenkasse entscheidet.",
  "t.bab.keine": "Berufsausbildungsbeihilfe gibt es für Auszubildende in einem anerkannten Ausbildungsberuf. Dafür fehlt eine passende Angabe.",

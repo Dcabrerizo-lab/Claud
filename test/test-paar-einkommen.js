@@ -90,7 +90,8 @@ ck('[paar-ek] allein: p 2 wird Person 1, brutto2 = 0', m._h.brutto2 === 0 && sch
 // F10 Rentnerpaar, zwei Renten bei P1 (zweites Einkommen nur Zahlbetrag): Renten-Pauschbetrag 102 € bei P1 nur einmal
 m = run({ adults: 2, gebJahr: 1950, miete: 650, mietstufe: '2', einkommen: [P(1, 'rente', 790, 700), P(1, 'rente', 300), P(2, 'rente', 680, 600)] });
 ck('[paar-ek] F10 Grundsicherung im Alter ≈ 60 €', m.gsa.level === 'ja' && sch(m.gsa).a === E(60), m.gsa.tx);
-ck('F10 Wohngeld 170–260 €, lo 2.142 / hi 2.504', m.wohngeld.level === 'ja' && sch(m.wohngeld).a === E(170) && sch(m.wohngeld).b === E(260) && JSON.stringify(grenze(m.wohngeld)) === JSON.stringify([E(2142), E(2504)]), m.wohngeld.tx);
+// lo 2.126 (vorher 2.142): Rente nur als Zahlbetrag zählt seit 24.11.2026 mit [-4 %, 9 %] statt [0, 6 %] (Vollprüfung B09)
+ck('F10 Wohngeld 170–260 €, lo 2.126 / hi 2.504', m.wohngeld.level === 'ja' && sch(m.wohngeld).a === E(170) && sch(m.wohngeld).b === E(260) && JSON.stringify(grenze(m.wohngeld)) === JSON.stringify([E(2126), E(2504)]), m.wohngeld.tx);
 
 // F11 KiZ-Hinweis Rentnerpaar auch mit Liste (beide haben Rente)
 m = run({ adults: 2, kids: 1, gebJahr: 1955, miete: 800, einkommen: [P(1, 'rente', 1000, 880), P(1, 'lohn', 200), P(2, 'rente', 800, 700)] });

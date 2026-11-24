@@ -33,7 +33,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Erste Frage in Bereich 1', /im Bett/.test(await frage()));
   ok('Erklärung steht direkt unter der Frage', /Bettgalgen/.test(await p.textContent('#pflegeAssist .es-h')));
   ok('Antworten ohne Fachbegriffe, gleiche Skala', (await p.textContent('#pflegeAssist .es-wahl')).indexOf('Im Gutachten') < 0);
-  ok('Fortschritt zeigt Frage x von y', /Frage 1 von 5/.test(await p.textContent('#pflegeAssist .pa-kopf')));
+  ok('Fortschritt zeigt Frage x von y', /Frage 1 von 6/.test(await p.textContent('#pflegeAssist .pa-kopf')));
   ok('Kopf der Seite (Logo, Sprache) ist ausgeblendet', (await p.evaluate(() => document.querySelector('header.top').getBoundingClientRect().height)) <= 1);
   await tippe('Schafft nur einen kleinen Teil allein');
   await p.click('text=Weiß ich nicht');
@@ -42,6 +42,8 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Zurück zeigt die vorige Frage', /aufrecht sitzen/.test(await frage()), await frage());
   await tippe('Schafft nur einen kleinen Teil allein');
   for (let i = 0; i < 3; i++) await tippe('Schafft nur einen kleinen Teil allein');
+  ok('Am Ende von Bereich 1: Frage nach beiden Armen und Beinen (§ 15 Abs. 4 SGB XI)', /Arme und beide Beine/.test(await frage()), await frage());
+  await tippe('Nein');
   ok('Fortschritt: Bereich 2 von 6', /Bereich 2 von 6/.test(await p.textContent('#pflegeAssist .es-prog')));
   // Später weitermachen: Stand bleibt
   await p.click('text=Später weitermachen');

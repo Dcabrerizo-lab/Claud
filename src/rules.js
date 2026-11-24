@@ -122,6 +122,11 @@ const Rules = (function () {
     // Pflegesachleistung (§ 36 SGB XI) und Tages-/Nachtpflege (§ 41 SGB XI) im Monat, seit 1.1.2025; Entlastungsbudget für Verhinderungs-
     // und Kurzzeitpflege seit 1.7.2025 (§ 42a SGB XI)
     pflegeSach: { 2: 796, 3: 1497, 4: 1859, 5: 2299 }, pflegeTages: { 2: 721, 3: 1357, 4: 1685, 5: 2085 }, entlastungsbudget: 3539,
+    // Vollstationäre Pflege im Heim (§ 43 SGB XI): Pflegegrad 1 Zuschuss 131 €, Pflegegrad 2 bis 5 Leistungsbetrag im Monat; Leistungszuschlag
+    // auf den pflegebedingten Eigenanteil (§ 43c SGB XI, Pflegegrad 2 bis 5): 15 % im ersten Jahr, 30 % nach 12, 50 % nach 24, 75 % nach 36 Monaten.
+    // Besondere Wohnform der Eingliederungshilfe (§ 43a SGB XI): 15 % der Vergütung, höchstens 278 € im Monat (Pflegegrad 2 bis 5).
+    // Quellen: BMG „Übersicht Leistungsbeträge 2026“ (Stand 04.11.2025) und BMG-Ratgeber „Vollstationäre Pflege im Heim“ (Stand 15.9.2026), Abruf 24.11.2026
+    pflegeHeim: { 1: 131, 2: 805, 3: 1319, 4: 1855, 5: 2096 }, pflegeHeimZuschlag: [15, 30, 50, 75], pflege43a: { quote: 15, max: 278 },
     // Mehrbedarf 35 % für Menschen mit Behinderung bei Hilfe zur Schule, Ausbildung oder Teilhabe am Arbeitsleben:
     // § 21 Abs. 4 SGB II (erwerbsfähig), § 23 Nr. 2 SGB II (Sozialgeld ab 15), § 30 Abs. 4 SGB XII (ab 15, Eingliederungshilfe § 112 SGB IX)
     // Pflege-Pauschbetrag für unentgeltlich Pflegende (§ 33b Abs. 6 EStG): Pflegegrad 2: 600 €, 3: 1.100 €, 4 und 5 sowie Merkzeichen H: 1.800 €
@@ -241,11 +246,12 @@ const Rules = (function () {
     // Unterhalt für die Person selbst (unt): steuerfrei (§ 14 Abs. 2 Nr. 19/20 WoGG) oder mit Realsplitting steuerpflichtig (§ 22 Nr. 1a EStG);
     // familienversichert ohne Beiträge -> 0 %, mit Steuer und eigener Kranken-/Pflegeversicherung -> 20 % (§ 16 Abs. 1 Nr. 1 und 2, Satz 2 WoGG)
     wgAbzug: { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.1], unt: [0, 0.2], ohne: [0, 0] },
-    // Wenn nur die Auszahlung bekannt ist: Rente netto ≈ 0,87 bis 0,88 × Brutto (nettoRente), also 90 % (bzw. 80 %) Brutto ≈ 103 % (bzw. 91 %)
-    // der Auszahlung. Die Werte [0, 0,06] stammen aus der alten Annahme 0,89 und sind deshalb nur ungefähr (Prüfung 19.11.2026, Anpassung offen);
+    // Wenn nur die Auszahlung bekannt ist: Rente netto ≈ 0,87 bis 0,88 × Brutto (nettoRente: KV 7,3 % + halber Zusatzbeitrag, PV 3,6 % bzw.
+    // 4,2 % ohne Kinder), also 90 % (bzw. 80 %) Brutto ≈ 103 % (bzw. 91 %) der Auszahlung (§ 16 Abs. 1 WoGG) -> rente [-0,04, 0,09]. Bis 24.11.2026
+    // stand hier [0, 0,06] (alte Annahme 0,89): die vorsichtige Schätzung war damit günstiger als mit eingegebenem Brutto (Vollprüfung B09).
     // Lohn netto 70-80 %
     // Unterhalt: der Zahlbetrag ist schon der volle Betrag (keine Abzüge vor der Auszahlung), daher wie wgAbzug.unt
-    wgAbzugAuszahlung: { lohn: [0, 0.12], rente: [0, 0.06], kg: [0, 0.06], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.05], unt: [0, 0.2], ohne: [0, 0] },
+    wgAbzugAuszahlung: { lohn: [0, 0.12], rente: [-0.04, 0.09], kg: [0, 0.06], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.05], unt: [0, 0.2], ohne: [0, 0] },
     // Grundrentenfreibetrag (§ 82a SGB XII): bei 33 Jahren Grundrentenzeiten bleiben von der Rente 100 € und 30 % des Rests frei, höchstens 50 % der Regelbedarfsstufe 1
     grundrente: { sockel: 100, quote: 0.3, max: 0.5 },
     // Zusätzliche Altersvorsorge (Betriebsrente, Riester-Rente, private Rente), § 82 Abs. 4 SGB XII: 100 € frei und 30 % des Rests,
@@ -1720,6 +1726,9 @@ const Rules = (function () {
     const extra = (h.alterGrenz ? [['gsa.grenz']] : []).concat(h.wfbmEssen ? [['gsa.essen']] : [], kduOffen ? [[h.wohnform === 'heim' ? 'gsa.heim' : 'gsa.eltern']] : [],
       hatRente && !h.grundrente33 ? [['gsa.grundrente', { max: { eur: R.grundrente.max * R.regelbedarf.alleinstehend } }]] : [], teilFest ? [['mehr.teilhabe', { betrag: eur(teilFest) }]] : [], teilOffen ? [['ggeld.mehrBeh']] : [], maG.tx,
       !eigen && h.miete > 0 ? [['kdu.angemessen']] : []);
+    // Grundsicherung bei Erwerbsminderung nur bei dauerhafter voller Erwerbsminderung (§ 41 Abs. 3 SGB XII); befristet: Hilfe zum Lebensunterhalt
+    // (3. Kapitel, gleiches Amt, gleiche Regelsätze). Die App fragt „dauerhaft“ nicht -> Hinweis (Vollprüfung B16/F11, 24.11.2026)
+    if (!h.alter && !h.alterGrenz && h.emStd === 'unter3' && !h.wfbm) extra.push(['gsa.emDauer']);
     // Merkzeichen G fragt die App nur für eine Person ab. Der Mehrbedarf von 17 % gilt für jede leistungsberechtigte Person mit Merkzeichen G
     // (§ 30 Abs. 1 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__30.html, Abruf 21.11.2026; Beispiel b) im Merkblatt Grundsicherung
     // der Stadt Bochum: Ehepaar, beide G). Bei Paaren deshalb ein Hinweis, dass der Betrag dann höher ist (vorsichtige Seite).
@@ -1966,11 +1975,18 @@ const Rules = (function () {
     if (h.pflegegrad === 0) return mk(id, 'nein', 'vorausFehlt', [['pflege.keiner']]);
     if (h.pflegegrad === 1) return mk(id, 'ja', 'ja', [['pflege.pg1', { ent: eur(R.pflege.entlastung) }], ['pflege.zeit']]);
     const pg = h.pflegegrad;
+    // Besondere Wohnform der Eingliederungshilfe (Wohnheim): Die Pflegekasse zahlt pauschal 15 % der Vergütung, höchstens 278 € im Monat, an die
+    // Einrichtung (§ 43a SGB XI); Pflegegeld nur anteilig für Tage zu Hause (§ 43a Satz 3, § 38 SGB XI). Wer in der Wohnform gepflegt wird, weiß die
+    // App nicht sicher -> „möglich“ (Vollprüfung B07, 24.11.2026; vorher „wahrscheinlich“ mit vollem Pflegegeld)
+    if (h.wohnform === 'heim') return mk(id, 'vielleicht', 'vielleicht', [['pflege.wohnform', { quote: R.pflege43a.quote, max: eur(R.pflege43a.max) }], ['pflege.zeit']]);
+    // Pflegende in Vollrente nach der Regelaltersgrenze sind rentenversicherungsfrei (§ 5 Abs. 4 Satz 1 Nr. 1 SGB VI): keine Beiträge nach § 44 SGB XI,
+    // außer mit Teilrente (Vollprüfung B12)
+    const renteAlt = h.alter ? [['pflege.renteAlt']] : [];
     return mk(id, 'ja', 'ja', [['pflege.pg2', { geld: eur(R.pflege.geld[pg]), pg, ent: eur(R.pflege.entlastung) }],
       // Pflegedienst statt Angehörige (Sachleistung, auch kombiniert), Tages- und Nachtpflege zusätzlich
       ['pflege.sach', { sach: eur(R.pflegeSach[pg]), tages: eur(R.pflegeTages[pg]) }],
       // Pflegende Angehörige: Rentenversicherung (§ 44 SGB XI), Pflege-Pauschbetrag (§ 33b Abs. 6 EStG), Steuerermäßigung (§ 35a EStG), Pflegezeit
-      ['pflege.rente'], ['pflege.pauschbetrag', { betrag: eur(R.pflegePausch[pg]) }], ['pflege.steuer35a'], ['pflege.zeit']]);
+      ['pflege.rente']].concat(renteAlt, [['pflege.pauschbetrag', { betrag: eur(R.pflegePausch[pg]) }], ['pflege.steuer35a'], ['pflege.zeit']]));
   }
 
   // ---------------------------------------------------------------
@@ -2195,7 +2211,7 @@ const Rules = (function () {
   // Hilfe zur Pflege (SGB XII, 7. Kapitel): wenn Pflegekasse und eigenes Geld nicht reichen (Pflegedienst, Tagespflege, Heim)
   function hilfeZurPflege(h) {
     const id = 'hzp';
-    if (h.pflegegrad < 2 && !h.pflegeAntrag) return mk(id, 'nein', 'vorausFehlt', [['hzp.keine']]);
+    if (h.pflegegrad < 1 && !h.pflegeAntrag) return mk(id, 'nein', 'vorausFehlt', [['hzp.keine']]);
     // EU-Bürger ohne Arbeit, unter 5 Jahren: keine Leistungen nach § 23 Abs. 1 SGB XII (umfasst Hilfe zur Pflege), Ausnahmen Härte
     // (Satz 6) und nach 5 Jahren (Satz 7) – § 23 Abs. 3 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026.
     // Gleiche Logik und Stufe wie bei der Grundsicherung im Alter (euAusschluss)
@@ -2205,6 +2221,9 @@ const Rules = (function () {
     // Abruf 20.11.2026). Nach 36 Monaten SGB XII entsprechend (§ 2 Abs. 1 AsylbLG), davor nur im Einzelfall (§ 6 Abs. 1 AsylbLG,
     // https://www.gesetze-im-internet.de/asylblg/__6.html, Abruf 20.11.2026)
     if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['hzp.asyl'], ['hzp.heim']]);
+    // Pflegegrad 1: Hilfe zur Pflege nur für Pflegehilfsmittel, Wohnumfeld, digitale Pflegeanwendungen und den Entlastungsbetrag (§ 63 Abs. 2
+    // SGB XII, https://www.buzer.de/63_SGB_XII.htm, Abruf 24.11.2026). Bis 24.11.2026 „nein“ (Vollprüfung B06)
+    if (h.pflegegrad === 1 && !h.pflegeAntrag) return mk(id, 'vielleicht', 'vielleicht', [['hzp.pg1']]);
     const grenze = hzpGrenze(h);
     return mk(id, 'vielleicht', 'vielleicht', [[h.netto <= grenze ? 'hzp.unter' : 'hzp.ueber', { grenze: eur(grenze) }], ['hzp.heim']]);
   }
@@ -2242,6 +2261,8 @@ const Rules = (function () {
     const id = 'lpg';
     if (h.land && h.land !== 'BY') return mk(id, 'nein', 'land', [['lpg.land']]);
     if (h.pflegegrad < 2 && !h.pflegeAntrag) return mk(id, 'nein', 'vorausFehlt', [['lpg.keine']]);
+    // Bundesland nicht angegeben: nur „möglich“ (Hauptwohnsitz in Bayern, Art. 2 BayLPflGG; Vollprüfung F8, 24.11.2026)
+    if (!h.land) return mk(id, 'vielleicht', 'vielleicht', [['lpg.ohneLand', { betrag: eur(R.lpg.betrag) }]]);
     // lpg.antrag: Auszahlung bis 31. Januar des Folgejahres (Art. 2 Abs. 4 Satz 2 BayLPflGG, https://www.gesetze-bayern.de/Content/Document/BayLPflGG-2, Abruf 21.11.2026);
     // im Text „in der Regel“, weil der Antrag noch bis 3 Monate nach Ende des Pflegegeldjahres gestellt werden kann (Art. 3 Abs. 1 Satz 1)
     const tx = [['lpg.ja', { betrag: eur(R.lpg.betrag), stand: R.lpg.stand }], ['lpg.antrag']];
@@ -2262,11 +2283,25 @@ const Rules = (function () {
     if (vermSGB12(h) > R.grundsicherung.schonAllein * h.adults + 500 * h.children) return mk(id, 'nein', 'vermHoch', [['blh.verm']]);
     const grenze = hzpGrenze(h);
     const tx = [h.netto <= grenze ? ['blh.unter', { grenze: eur(grenze) }] : ['blh.ueber', { grenze: eur(grenze), prozent: Math.round(R.blh.einsatzUeber * 100) }],
-      [h.land && h.land !== 'BY' ? 'blh.landAnders' : 'blh.bayern']];
-    // Höhe: Blindenhilfe minus Landesblindengeld (voll angerechnet, § 72 Abs. 1 Satz 2), wo das Landesblindengeld belegt ist
-    const B = R.blhBetrag, landB = !h.land || h.land === 'BY' ? R.beh.blind.blind : R.landBlind.land[h.land];
+      [h.land === 'BY' ? 'blh.bayern' : 'blh.landAnders']];
+    // Höhe: Blindenhilfe minus Landesblindengeld (voll angerechnet, § 72 Abs. 1 Satz 1), wo das Landesblindengeld belegt ist. Ohne Bundesland
+    // kein Landesbetrag (Vollprüfung F8, 24.11.2026; vorher bayerischer Betrag).
+    const B = R.blhBetrag, landB = h.land === 'BY' ? R.beh.blind.blind : h.land ? R.landBlind.land[h.land] : 0;
     tx.push(['blh.betrag', { betrag: eur2(B.erw), kind: eur2(B.kind), stand: B.stand }]);
-    if (landB && h.bhPerson !== 'minder') tx.push(['blh.differenz', { land: BL_NAME[h.land || 'BY'], landbetrag: eur2(landB), rest: eur2(Math.max(0, B.erw - landB)) }]);
+    // Mit Pflegegrad 2 bis 5 wird Pflegegeld angerechnet: auf die Blindenhilfe 50 % des Pflegegelds PG 2 bzw. 40 % des Pflegegelds PG 3, höchstens
+    // 50 % der Blindenhilfe (§ 72 Abs. 1 Satz 2 SGB XII, https://www.buzer.de/72_SGB_XII.htm), auf das Bayerische Blindengeld 46 % bzw. 33 %
+    // (Art. 4 Abs. 1 BayBlindG, https://www.gesetze-bayern.de/Content/Document/BayBlindG-4), beide Abruf 24.11.2026. Beispiel PG 3: (951,92 − 239,60)
+    // − (809 − 197,67) = 100,99 €. Andere Länder rechnen anders: dort mit Pflegegrad kein Restbetrag (Vollprüfung F15; vorher 142,92 € ohne Anrechnung).
+    if (landB && h.bhPerson !== 'minder' && !(h.pflegegrad >= 2 && h.land !== 'BY')) {
+      let blhNetto = B.erw, landNetto = landB;
+      if (h.pflegegrad >= 2) {
+        const pg2 = h.pflegegrad === 2;
+        blhNetto = B.erw - Math.min(pg2 ? R.pflege.geld[2] * 0.5 : R.pflege.geld[3] * 0.4, 0.5 * B.erw);
+        landNetto = Math.max(20, landB - (pg2 ? R.pflege.geld[2] * 0.46 : R.pflege.geld[3] * 0.33));
+      }
+      const rest = Math.round(Math.max(0, blhNetto - landNetto) * 100) / 100;
+      tx.push(['blh.differenz', { land: BL_NAME[h.land], landbetrag: eur2(Math.round(landNetto * 100) / 100), rest: eur2(rest) }]);
+    }
     if (h.bhPerson === 'minder') tx.push(['blh.kind']);
     if (h.pflegegrad >= 2) tx.push(['blh.pflege']);
     tx.push(['blh.heim']);
@@ -2330,16 +2365,22 @@ const Rules = (function () {
   function pauschbetrag(h) {
     const id = 'pausch';
     const g = gdbEff(h);
-    if (!g && h.gdbAntrag) return mk(id, 'vielleicht', 'vielleicht', [['pausch.laeuft']]);
-    if (!g) return keinBeh(id);
-    const tx = [['pausch.ja', { betrag: eur(R.beh.pausch[g]) }]];
-    // Fahrtkostenpauschale (§ 33 Abs. 2a EStG): 900 € ab GdB 80 oder GdB 70 mit Merkzeichen G; 4.500 € bei aG, Bl, TBl oder H
-    if (g === 'H' || h.mzAG) tx.push(['pausch.fahrt', { betrag: eur(4500) }]);
+    // 7.400 € für blinde und hilflose Menschen (§ 33b Abs. 3 Satz 3 EStG); dem Merkzeichen H steht Pflegegrad 4 oder 5 gleich (§ 65 Abs. 2 Satz 2
+    // EStDV, https://www.gesetze-im-internet.de/estdv_1955/__65.html), ohne festgestellten GdB (Finanzverwaltung NRW „Steuererleichterungen für
+    // Menschen mit einer Behinderung“), Abruf 24.11.2026. Blind ohne GdB-Angabe: Nachweis Merkzeichen Bl fehlt evtl. noch -> „möglich“.
+    // Bis 24.11.2026 zählte nur das Merkzeichen H (Vollprüfung B01/B02).
+    const hilflos = g === 'H' || h.blind === 'blind' || h.pflegegrad >= 4;
+    if (!g && !hilflos && h.gdbAntrag) return mk(id, 'vielleicht', 'vielleicht', [['pausch.laeuft']]);
+    if (!g && !hilflos) return keinBeh(id);
+    const tx = [hilflos ? ['pausch.hilflos', { betrag: eur(R.beh.pausch.H) }] : ['pausch.ja', { betrag: eur(R.beh.pausch[g]) }]];
+    // Fahrtkostenpauschale (§ 33 Abs. 2a EStG): 900 € ab GdB 80 oder GdB 70 mit Merkzeichen G; 4.500 € bei aG, Bl, TBl oder H, Pflegegrad 4 und 5
+    // wie H (§ 33 Abs. 4 EStG mit § 65 Abs. 2 Satz 2 EStDV; Finanzverwaltung NRW, Abruf 24.11.2026)
+    if (hilflos || h.mzAG) tx.push(['pausch.fahrt', { betrag: eur(4500) }]);
     else if (gdbNum(h) >= 80 || (gdbNum(h) >= 70 && h.mzG)) tx.push(['pausch.fahrt', { betrag: eur(900) }]);
     if (h.alter || h.netto * 12 < R.beh.grundfreibetrag) tx.push(['pausch.steuer']);
     if (g === 'H' && h.pflegegrad < 2) tx.push(['pflege.pauschbetrag', { betrag: eur(R.pflegePausch.H) }]);
     if (h.bhPerson === 'minder' || h.bhPerson === 'erwVor25') tx.push(['pausch.kind']);
-    return mk(id, 'ja', 'ja', tx);
+    return !g && h.blind === 'blind' && !(h.pflegegrad >= 4) ? mk(id, 'vielleicht', 'vielleicht', tx) : mk(id, 'ja', 'ja', tx);
   }
 
   // Schwerbehindertenausweis und Nachteilsausgleiche (§ 2 SGB IX, § 208 SGB IX). § 2 Abs. 2 SGB IX verlangt Wohnsitz, gewöhnlichen
@@ -2354,10 +2395,17 @@ const Rules = (function () {
     const g = gdbNum(h);
     if (!gdbEff(h) && h.gdbAntrag) return mk(id, 'na', 'na', [['ausweis.laeuft']]);
     if (gdbEff(h) && g >= 50) {
-      const frei = gdbEff(h) === 'H' || h.blind === 'blind' || h.mzAG; // H, Bl, TBl, aG
-      return mk(id, 'ja', 'ja', [h.alter ? ['ausweis.schwerRente'] : ['ausweis.schwer', { tage: R.beh.zusatzurlaub }]]
-        .concat(h.alter ? [] : [['ausweis.kuendigung']], frei ? [['ausweis.frei']] : h.mzG || h.mzGl ? [['ausweis.g']] : [], h.mzGl ? [['ausweis.gl']] : [], h.mzAG || h.blind === 'blind' ? [['ausweis.park']] : []));
+      // Wertmarke ohne Eigenbeteiligung nur für blinde und hilflose Menschen (und bei Grundsicherung u. a.), § 228 Abs. 4 SGB IX
+      // (https://www.buzer.de/228_SGB_IX.htm, Abruf 24.11.2026); aG: Kfz-Steuer frei (§ 3a Abs. 1 KraftStG), Wertmarke gegen Eigenbeteiligung.
+      // Bis 24.11.2026 hieß es auch bei aG „kostenlos“ (Vollprüfung B03).
+      const frei = gdbEff(h) === 'H' || h.blind === 'blind'; // H, Bl, TBl
+      // Kind unter 18: Zusatzurlaub und Kündigungsschutz gelten nur für Beschäftigte (§§ 168, 208 SGB IX) -> eigener Text (Vollprüfung B14)
+      const kind = h.bhPerson === 'minder';
+      return mk(id, 'ja', 'ja', [kind ? ['ausweis.schwerKind'] : h.alter ? ['ausweis.schwerRente'] : ['ausweis.schwer', { tage: R.beh.zusatzurlaub }]]
+        .concat(h.alter || kind ? [] : [['ausweis.kuendigung']], frei ? [['ausweis.frei']] : h.mzAG ? [['ausweis.ag']] : h.mzG || h.mzGl ? [['ausweis.g']] : [], h.mzGl ? [['ausweis.gl']] : [], h.mzAG || h.blind === 'blind' ? [['ausweis.park']] : []));
     }
+    // Gleichstellung (§ 2 Abs. 3 SGB IX) hilft nur für einen Arbeitsplatz: allein lebend über der Regelaltersgrenze kein Nutzen (Vollprüfung B15)
+    if (gdbEff(h) && g >= 30 && h.alter && h.adults === 1) return mk(id, 'nein', 'vorausFehlt', [['ausweis.niedrigRente']]);
     if (gdbEff(h) && g >= 30) return mk(id, 'vielleicht', 'vielleicht', [['ausweis.gleich']]);
     if (gdbEff(h)) return mk(id, 'nein', 'vorausFehlt', [['ausweis.niedrig']]);
     if (hatBeh(h)) return mk(id, 'vielleicht', 'vielleicht', [['ausweis.antrag']]);
@@ -2384,6 +2432,13 @@ const Rules = (function () {
       return mk(id, 'ja', 'ja', [t1].concat(h.pflegegrad >= 2 ? [['blindengeld.pflegeLand']] : []));
     }
     const b = R.beh.blind;
+    // Bundesland nicht angegeben: Blindengeld gibt es in jedem Land, aber in eigener Höhe -> Spanne und den bayerischen Betrag nur als Beispiel;
+    // Sehbehindertengeld nur in einigen Ländern -> „möglich“ (Vollprüfung F8, 24.11.2026; vorher bayerischer Betrag als feste Zusage)
+    if (!h.land) {
+      const bsp = ['blindengeld.ohneLand', { betrag: eur2(h.blind === 'blind' ? b.blind : b.hoch), stand: b.stand }];
+      if (h.blind !== 'blind') return mk(id, 'vielleicht', 'vielleicht', [['blindengeld.hochLand'], bsp]);
+      return mk(id, 'ja', 'ja', [['blindengeld.landJa', { von: eur(R.landBlind.von), bis: eur(R.landBlind.bis) }], bsp].concat(h.pflegegrad >= 2 ? [['blindengeld.pflegeLand']] : []));
+    }
     const tx = [[h.blind === 'blind' ? 'blindengeld.blind' : 'blindengeld.hoch', { betrag: eur2(h.blind === 'blind' ? b.blind : b.hoch), stand: b.stand }]];
     // Art. 4 Abs. 1 Satz 2 BayBlindG (https://www.gesetze-bayern.de/Content/Document/BayBlindG-4, Abruf 21.11.2026): PG 2: 46 % des Pflegegeldes
     // nach § 37 Abs. 1 Satz 3 Nr. 1 SGB XI (Pflegegrad 2); PG 3 bis 5 einheitlich 33 % des Betrags nach Nr. 2 (Pflegegeld Pflegegrad 3 = 197,67 €);
@@ -2416,6 +2471,8 @@ const Rules = (function () {
       { id: 'notruf', ab: 1, art: 'zuschuss', betrag: null, recht: '§ 40 Abs. 1 SGB XI' },
       { id: 'umbau', ab: 1, art: 'zuschuss', betrag: je(R.beh.wohnumfeld, 1), einheit: 'mass', bis: true, recht: '§ 40 Abs. 4 SGB XI' },
       { id: 'wg', ab: 1, art: 'zuschuss', betrag: je(U.wohngruppe, 1), einheit: 'monat', bis: false, recht: '§ 45f SGB XI' },
+      // Pflege im Heim (§ 43 SGB XI) mit Leistungszuschlag auf den Eigenanteil (§ 43c SGB XI); nur Information, keine eigene Karte (Vollprüfung B08)
+      { id: 'heim', ab: 1, art: 'budget', betrag: je(R.pflegeHeim, 1), einheit: 'monat', bis: true, recht: '§§ 43, 43a, 43c SGB XI' },
       { id: 'kurs', ab: 0, art: 'frei', betrag: null, recht: '§ 45 SGB XI' },
       { id: 'beratung', ab: 0, art: 'frei', betrag: null, recht: '§§ 7a, 7c, 37 Abs. 3 SGB XI' },
       { id: 'rente', ab: 2, art: 'schutz', betrag: null, recht: '§ 44 SGB XI' },
@@ -2442,6 +2499,8 @@ const Rules = (function () {
     if (h.pflegegrad === 0) return mk(id, 'nein', 'vorausFehlt', [['pflegeplus.keiner']]);
     const tx = [['pflegeplus.mittel', { verbrauch: eur(R.beh.verbrauch), wohn: eur(R.beh.wohnumfeld) }]];
     if (h.pflegegrad >= 2) tx.push(['pflegeplus.budget', { betrag: eur(R.entlastungsbudget) }]);
+    // Besondere Wohnform (§ 43a SGB XI): Leistungen für die Pflege zu Hause nur anteilig bzw. für Tage zu Hause -> „möglich“ (Vollprüfung B07)
+    if (h.wohnform === 'heim' && h.pflegegrad >= 2) return mk(id, 'vielleicht', 'vielleicht', [['pflege.wohnform', { quote: R.pflege43a.quote, max: eur(R.pflege43a.max) }]].concat(tx));
     return mk(id, 'ja', 'ja', tx);
   }
 
@@ -2484,11 +2543,15 @@ const Rules = (function () {
   // Befreiung von Zuzahlungen der Krankenkasse (§ 62 SGB V)
   function zuzahlung(h) {
     const id = 'zuzahl';
-    if (!hatBeh(h)) return keinBeh(id);
+    // Die Belastungsgrenze von 2 % gilt für alle gesetzlich Versicherten (§ 62 Abs. 1 SGB V, https://www.buzer.de/62_SGB_V.htm, Abruf 24.11.2026);
+    // bis 24.11.2026 „nein“ ohne Behinderung oder Pflegegrad (Vollprüfung F7)
+    // Ohne Behinderung, Pflegegrad, Rente oder Grundsicherung erreicht man die Grenze selten: „eher nicht“ mit Hinweis, dass sie trotzdem gilt
+    if (!hatBeh(h) && !h.alter && !h.bezug.grundsicherungsgeld && !h.bezug.sozialamt) return mk(id, 'nein', 'keinBeh', [['zuzahl.keine']]);
     const tx = [['zuzahl.grenze']];
     // Chroniker-Richtlinie § 2: GdB mindestens 60 oder Pflegegrad 3 bis 5 (bei Dauerbehandlung)
     if (gdbNum(h) >= 60 || h.pflegegrad >= 3) tx.push(['zuzahl.chron']);
-    // Fahrten zur ambulanten Behandlung (§ 60 SGB V, Krankentransport-Richtlinie): bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5
+    // Fahrten zur ambulanten Behandlung (§ 60 SGB V, Krankentransport-Richtlinie): bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5;
+    // für Krankenfahrten gilt die Genehmigung dann als erteilt (§ 60 Abs. 1 Satz 5 SGB V, https://www.buzer.de/60_SGB_V.htm, Abruf 24.11.2026)
     if (gdbEff(h) === 'H' || h.mzAG || h.blind === 'blind' || h.pflegegrad >= 3) tx.push(['zuzahl.fahrt']);
     return mk(id, 'vielleicht', 'vielleicht', tx);
   }

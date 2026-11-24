@@ -65,6 +65,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Voll erwerbsgemindert (eigene Angabe), unter der Altersgrenze: Hinweis, dass Grundsicherung nur bei dauerhafter Erwerbsminderung gilt, sonst Hilfe zum Lebensunterhalt (§ 41 Abs. 3, § 45 SGB XII); Elternunterhalt erst über 100.000 € je Kind (Vollprüfung Pflege & Rente 24.11.2026, docs/rechtsmatrix/pflege.md) | ✓ | `vp-pflege` |
 | Angemessene Unterkunftskosten (§ 35 SGB XII) wie beim Grundsicherungsgeld | ◐ | `kdu-grenze` |
 | Angemessenes Auto geschützt (§ 90 Abs. 2 Nr. 10 SGB XII); über 15.000 € nur „möglich“; gebraucht (Behinderung, Arbeit) ohne Einschränkung | ◐ | `auto` |
 | EU-Staatsangehörige: Ausschluss wie § 7 SGB II (§ 23 Abs. 3 SGB XII) | ✓ | `eu` |
@@ -266,6 +267,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Pflege-Übersicht aufgeräumt (21.11.2026): Einleitung ein Satz, Rest zum Aufklappen; grüner Hauptknopf „Pflegegrad selbst einschätzen“ unter den Leistungen (nicht bei Grad 5 und nicht aus der Ergebnisseite); Hinweis als Tipp mit Symbol „Kostenlose Hilfe: Pflegekasse oder Pflegestützpunkt“ (§ 7a Abs. 1, § 7c SGB XI, abgerufen 21.11.2026) | ✓ | `pu-aufr` |
 | Pflege-Korrekturen (abgerufen 20.11.2026): Beratungsbesuch Pflicht halbjährlich bei PG 2–5, PG 4/5 auf Wunsch vierteljährlich (§ 37 Abs. 3 SGB XI); Verhinderungspflege durch nahe Angehörige/Haushalt nicht beruflich höchstens doppeltes Pflegegeld plus nachgewiesene Kosten bis zum Jahresbetrag (§ 39 Abs. 3 SGB XI); aufs Konto Pflegegeld und Wohngruppenzuschlag; ohne Pflegegrad 10 Arbeitstage auch bei voraussichtlicher Pflegebedürftigkeit (§ 2, § 7 Abs. 4 PflegeZG) | ✓ | `pu-korr` |
 | Pflegegrad selbst einschätzen, Ergebnisseite: groß „Wahrscheinlich Pflegegrad X“, Hinweis „Das ist eine Einschätzung. Entscheiden tut die Pflegekasse.“, wichtigste Leistungen mit Beträgen nur aus den Rechenregeln (Rules.pflegeFuer), Punkte je Bereich zum Aufklappen; höchstens 3 Kacheln in dieser Reihenfolge (Pflegegrad beantragen bzw. Höherstufung beantragen, Mit dem Gutachten vergleichen, Was steht mir zu?); Ergebnis automatisch gespeichert, „← Zurück“ von den Unterseiten zur Ergebnisseite, Pflege-Startseite zeigt die letzte Einschätzung; in den Leistungs-Check nur, wenn man von dort kam | ✓ | `pflege-ergebnis` |
+| Pflege im Heim als Information auf der Übersicht und der Erklärseite (keine Karte): § 43 SGB XI 131 / 805 / 1.319 / 1.855 / 2.096 €, Zuschlag § 43c 15 / 30 / 50 / 75 %, besondere Wohnform § 43a 15 %, höchstens 278 € (BMG Übersicht 2026); Karte Pflegegeld bei besonderer Wohnform nur „möglich“; Rentenbeiträge nicht bei Vollrente nach der Regelaltersgrenze (§ 5 Abs. 4 SGB VI); Einschätzung für Kinder bis 18 Monate nur Module 3, 5 und 4.K (Begutachtungs-Richtlinien), Frage nach Gebrauchsunfähigkeit beider Arme und Beine (§ 15 Abs. 4 SGB XI) (Vollprüfung Pflege & Rente 24.11.2026, docs/rechtsmatrix/pflege.md) | ✓ | `vp-pflege` |
 | Kachel „Mit dem Gutachten vergleichen“ öffnet die Gutachten-Prüfung (Brief → Pflegekasse) mit der Selbsteinschätzung; nach Eingabe der Gutachten-Werte Tabelle Bereich / Deine Punkte / Gutachten / Unterschied (gewichtet nach § 15 SGB XI, Rechnung aus pflege.js), Bereiche mit weniger Punkten im Gutachten fett; Texte in 13 Sprachen und Einfacher Sprache | ✓ | `pflege-vergleich` |
 
 ## Bayerisches Landespflegegeld (BayLPflGG)
@@ -276,6 +278,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Auszahlung bis 31. Januar des Folgejahres (Art. 2 Abs. 4 Satz 2 BayLPflGG), Satz im Antragshinweis in allen Sprachen, als „in der Regel“ (Antrag bis 3 Monate nach Jahresende möglich, Art. 3 Abs. 1 Satz 1); PG 2 in Bayern 500 €, anderes Land nein, Hinweis H3 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-lpg` |
 | Ab Pflegegrad 2, Hauptwohnsitz Bayern, unabhängig vom Einkommen; ab dem Pflegegeldjahr 2026 500 € im Jahr (vorher 1.000 €) | ✓ | `lpg-ja` |
 | Nur in Bayern; ohne Pflegegrad 2 nein, bei laufendem Pflegegrad-Antrag möglich | ✓ | `lpg-voraus` |
+| Ohne Bundesland nur „möglich“ (Hauptwohnsitz in Bayern, Art. 2 BayLPflGG) (Vollprüfung Pflege & Rente 24.11.2026, docs/rechtsmatrix/pflege.md) | ✓ | `vp-pflege` |
 | Antrag einmal beim Bayerischen Landesamt für Pflege; Antragsfrist | ◐ (Fristangaben der Quellen widersprüchlich; die App rät zum baldigen Antrag) | `lpg-ja` |
 | Empfänger des Antrags: Bayerisches Landesamt für Pflege, Postfach 13 65, 92203 Amberg (Hausanschrift Mildred-Scheel-Str. 4, 92224 Amberg); Quelle lfp.bayern.de (Seite Landespflegegeld und Impressum), abgerufen 19.11.2026; nicht für Wohnorte außerhalb Bayerns | ✓ | `lpg-stelle` |
 
@@ -286,11 +289,11 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 |---|---|---|
 | Asylverfahren oder Duldung: keine Sozialhilfe (§ 23 Abs. 2 SGB XII), nach 36 Monaten § 2 AsylbLG, davor Einzelfall § 6 AsylbLG: „möglich“ mit eigenem Hinweis (Abruf 20.11.2026) | ◐ | `hzp-asyl` |
 | EU-Bürger ohne Arbeit, unter 5 Jahren: keine Leistungen nach § 23 Abs. 1 SGB XII, Ausnahmen Härte und nach 5 Jahren (§ 23 Abs. 3 Satz 1, 6, 7 SGB XII): „unwahrscheinlich“ wie Grundsicherung im Alter, Hinweis Sozialhilfe (Abruf 20.11.2026) | ✓ | `sh-eu` |
-| Voraussetzung Pflegegrad 2–5 oder laufender Antrag (§ 61a) | ✓ | `hzp-voraus` |
+| Voraussetzung Pflegegrad 2–5 oder laufender Antrag (§ 61a); Pflegegrad 1 eingeschränkt „möglich“ (§ 63 Abs. 2: Hilfsmittel, Wohnumfeld, DiPA, Entlastungsbetrag) | ✓ | `hzp-voraus` |
 | Einkommensgrenze: 2 × Regelsatz Stufe 1 + Wohnkosten + 70 % Familienzuschlag (§ 85) | ✓ | `hzp-grenze` |
 | Einkommensgrenze: Unterkunft mit Heizung, also ganze Warmmiete (BSG 30.04.2020, B 8 SO 1/19 R, Leitsatz; § 85 nennt die Heizung nicht; manche Träger rechnen ohne Heizung, z. B. Infoblatt Nr. 37 Pflegestützpunkte Berlin 12/2025, deshalb Karte „möglich“ und „etwa“), Familienzuschlag auf volle Euro aufgerundet (395 €, § 85 Abs. 1 Nr. 3), Befund 15 (Abgleich 2 und Prüfung, Abruf 21.11.2026) | ✓ | `mb2-hzp` |
 | Schonvermögen 10.000 € je Erwachsenem, 500 € je unterhaltener Person | ✓ | `hzp-verm` |
-| Heim: Eigenanteil; Unterhalt der Kinder erst ab 100.000 € (§ 94 Abs. 1a) | ◐ | `hzp-heim` |
+| Heim: Eigenanteil; Unterhalt der Kinder erst bei mehr als 100.000 € Jahreseinkommen je Kind, Schwiegerkinder zählen nicht (§ 94 Abs. 1a); Antrag wirkt ab dem Tag der Kenntnis (§ 18 Abs. 1) | ◐ | `hzp-heim` |
 | Höhe: hängt von den tatsächlichen Pflegekosten ab | ○ (Kosten werden nicht abgefragt; Karte zeigt „möglich“) | |
 
 ## Steuer (EStG)
@@ -301,6 +304,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Pauschbeträge § 33b Abs. 3 EStG (384 bis 2.840 €, 7.400 €) (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-pausch` |
 | Behinderten-Pauschbetrag (§ 33b Abs. 3), Übertragung auf die Eltern (§ 33b Abs. 5) | ✓ | `st-pausch` |
 | Fahrtkostenpauschale 900 / 4.500 € (§ 33 Abs. 2a) | ✓ | `st-fahrt` |
+| 7.400 € auch bei Blindheit und bei Pflegegrad 4 oder 5 ohne GdB (§ 33b Abs. 3 Satz 3 EStG, § 65 Abs. 2 Satz 2 EStDV), dazu Fahrtkostenpauschale 4.500 €; blind ohne GdB-Angabe nur „möglich“ (Vollprüfung Pflege & Rente 24.11.2026, docs/rechtsmatrix/pflege.md) | ✓ | `vp-pflege` |
 | Pflege-Pauschbetrag 600 / 1.100 / 1.800 € (§ 33b Abs. 6) | ✓ | `st-pflege` |
 | Steuerermäßigung haushaltsnahe Dienstleistungen und Pflege (§ 35a) | ◐ | `st-35a` |
 
@@ -312,8 +316,9 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Asylverfahren oder Duldung: Eingliederungshilfe ausgeschlossen (§ 100 Abs. 2 SGB IX), nach 36 Monaten § 2 AsylbLG, davor Einzelfall; Kinder mit seelischer Behinderung § 6 Abs. 2 SGB VIII: eigener Hinweis (Abruf 20.11.2026) | ◐ | `eingl-asyl` |
 | Asylverfahren oder Duldung: Schwerbehinderteneigenschaft verlangt „rechtmäßigen“ Wohnsitz oder Arbeitsplatz (§ 2 Abs. 2 SGB IX); mit Duldung Anspruch auf Feststellung, wenn der Aufenthalt voraussichtlich länger als 6 Monate dauert (BSG 29.04.2010, B 9 SB 2/09 R, rechtsprechung-im-internet.de). Die Prognose fragt die App nicht ab: höchstens „möglich“ (Abruf 20.11.2026) | ◐ | `ausweis-asyl` |
 | Schwerbehindertenausweis ab GdB 50, Gleichstellung ab 30, Zusatzurlaub 5 Tage (§ 2, § 208) | ✓ | `sb-ausweis` |
-| Wertmarke kostenlos bei H/Bl/TBl/aG und mit G bei Grundsicherung (§ 228); Kfz-Steuer-Ermäßigung bei G, Befreiung bei H/Bl/aG | ✓ | `sb-frei` |
+| Wertmarke kostenlos bei H/Bl/TBl und mit G oder aG bei Grundsicherung (§ 228 Abs. 4); mit aG sonst gegen Eigenbeteiligung (bis 24.11.2026 fälschlich „kostenlos“); Kfz-Steuer-Ermäßigung bei G, Befreiung bei H/Bl/aG | ✓ | `sb-frei` |
 | Besonderer Kündigungsschutz (§ 168) | ◐ | `sb-kuendigung` |
+| Kind unter 18 mit GdB ab 50: eigener Text ohne Zusatzurlaub und Kündigungsschutz (§§ 168, 208 SGB IX nur für Beschäftigte); allein lebend über der Regelaltersgrenze mit GdB 30/40: keine Gleichstellung (§ 2 Abs. 3 SGB IX) (Vollprüfung Pflege & Rente 24.11.2026, docs/rechtsmatrix/pflege.md) | ✓ | `vp-pflege` |
 | Parkerleichterungen bei aG/Bl | ◐ | `sb-park` |
 | Eingliederungshilfe (SGB IX Teil 2, § 35a SGB VIII für Kinder mit seelischer Behinderung) | ◐ | `sb-eingl` |
 | Budget für Arbeit statt Werkstatt, Lohnkostenzuschuss bis 75 % (§ 61) | ◐ | `sb-budget` |
@@ -338,6 +343,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Ohne Bundesland: Spanne der Länder, bayerischer Betrag nur als Beispiel; Sehbehindertengeld nur „möglich“ (Vollprüfung Pflege & Rente 24.11.2026, docs/rechtsmatrix/pflege.md) | ✓ | `vp-pflege` |
 | Asylverfahren oder Duldung: § 9 Abs. 1 AsylbLG schließt Leistungen nach „vergleichbaren Landesgesetzen“ aus; ob das Landesblindengeld darunter fällt, ist offen (Art. 1, 3 BayBlindG ohne Regel): höchstens „möglich“ (Abruf 20.11.2026) | ◐ | `blindengeld-asyl` |
 | Blindengeld und Sehbehindertengeld, Beträge Stand 7/2026 | ✓ | `bg-betrag` |
 | Anrechnung von Pflegegeld: 46 % bei Pflegegrad 2, 33 % ab 3, mindestens 20 € (Art. 4) | ✓ | `bg-pflege` |
@@ -360,6 +366,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Unter 18 Jahren halber Betrag (§ 72 Abs. 2), Anrechnung von Pflegegeld (§ 72 Abs. 1 Satz 3), Kürzung im Heim (§ 72 Abs. 4) | ◐ | `blh-hinweise` |
 | Asylbewerber: erst mit Analogleistungen (§ 2 AsylbLG) | ◐ | `blh-asyl` |
 | Höhe der Blindenhilfe 951,92 €, unter 18 Jahren 476,78 € (ab 1.7.2026); Unterschied zum Landesblindengeld, wo dieses belegt ist | ✓ | `blh-betrag` |
+| Mit Pflegegrad 2–5 in Bayern: Rest nach beiden Anrechnungen (§ 72 Abs. 1 Satz 2 SGB XII 50 % bzw. 40 %, Art. 4 BayBlindG 46 % bzw. 33 %), z. B. PG 3: 100,99 €; andere Länder mit Pflegegrad ohne Restbetrag; ohne Bundesland kein Landesbetrag (Vollprüfung Pflege & Rente 24.11.2026, docs/rechtsmatrix/pflege.md) | ✓ | `vp-pflege` |
 | Zuständig in Bayern: Bezirk | ○ (bitte von einer Beratungsstelle bestätigen lassen) | |
 
 ## Arbeitslosengeld I (SGB III)
@@ -391,7 +398,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Minijob ohne Krankengeld | ✓ | `kv-minijob` |
 | Rente (erste Person): Vollrente wegen Alters oder volle Erwerbsminderungsrente beendet den Anspruch, Teilrente kürzt ihn (§ 50 Abs. 1 Satz 1 Nr. 1, Abs. 2 SGB V). Welche Rente, fragt die App nicht: höchstens „möglich“, Hinweis vorn (Abruf 20.11.2026) | ◐ | `krank-rente` |
 | Belastungsgrenze 2 % / 1 % bei chronisch Kranken (GdB ab 60 oder Pflegegrad 3–5) | ✓ | `kv-zuzahl` |
-| Fahrtkosten zur ambulanten Behandlung bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5 (§ 60) | ◐ | `kv-fahrt` |
+| Belastungsgrenze gilt für alle gesetzlich Versicherten (§ 62 Abs. 1 SGB V): „möglich“ auch ohne Behinderung bei Rente oder Grundsicherung, sonst „eher nicht“ mit Hinweis, dass sie gilt (Vollprüfung Pflege & Rente 24.11.2026, docs/rechtsmatrix/pflege.md) | ✓ | `vp-pflege` |
+| Fahrtkosten zur ambulanten Behandlung bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5 (§ 60); Genehmigung für Krankenfahrten gilt als erteilt (§ 60 Abs. 1 Satz 5), Krankentransport vorher genehmigen | ◐ | `kv-fahrt` |
 
 ## Rundfunkbeitrag (RBeitrStV)
 <!-- karten: rundfunk -->

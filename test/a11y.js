@@ -37,7 +37,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
     await p.click('#paStart'); await pruefe('Pflegegrad: Alter');
     await p.fill('#pa-jahre', '80'); await p.click('text=Weiter ➜'); await p.click('#pflegeAssist .es-btn >> nth=0');
     await pruefe('Pflegegrad: Frage mit Erklärung');
-    for (let i = 0; i < 6; i++) { const q = await p.textContent('#pa-q'); if (/Wahrscheinlich/.test(q)) break; await p.click(/Probleme|Hilfe|Verhalten/.test(q) ? '#pflegeAssist .es-btn >> nth=1' : '#pflegeAssist .es-btn >> nth=2'); }
+    for (let i = 0; i < 6; i++) { const q = await p.textContent('#pa-q'); if (/Wahrscheinlich/.test(q)) break; await p.click(/Probleme|Hilfe|Verhalten|Arme und beide Beine/.test(q) ? '#pflegeAssist .es-btn >> nth=1' : '#pflegeAssist .es-btn >> nth=2'); }
     for (let i = 0; i < 40 && !/Wahrscheinlich/.test(await p.textContent('#pa-q')); i++) await p.click('#pflegeAssist .es-btn >> nth=1');
     await pruefe('Pflegegrad: Ergebnis');
     // Ergebnisseite (#63): Textlink zurück in den Leistungs-Check, dort öffnet sich die Pflege-Karte; Erklärseite über deren Link
