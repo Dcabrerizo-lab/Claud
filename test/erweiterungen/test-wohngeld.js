@@ -37,7 +37,23 @@ ok('Miete = Bruttokalt + Heizkostenkomponente', r1.miete === Math.round((400 + R
 ok('Höchstbetrag kappt', W.rechne(Object.assign({}, basis, { bruttokalt: 2000 }), Rules).mieteGekappt === true && W.rechne(Object.assign({}, basis, { bruttokalt: 2000 }), Rules).miete === Math.round((Rules.wgCap(3, 1) + Rules.wgHeiz(1)) * 100) / 100);
 ok('Rente: Werbungskosten 8,50 € und 10 % Abzug', Math.abs(r1.einkommen - (1000 - 8.5) * 0.9) < 0.01, r1.einkommen);
 ok('Abzug aus Prozentangabe und aus Häkchen', W.abzugAus({ abzug: 20 }) === 0.2 && Math.abs(W.abzugAus({ steuer: true, kv: true, rv: true }) - 0.3) < 1e-9 && W.abzugAus({}) === 0);
-ok('Elterngeld bis 300 € kein Einkommen', W.rechne({ personen: 2, stufe: 3, bruttokalt: 500, mitglieder: [{ art: 'eg', brutto: 300 }] }, Rules).einkommen === 0);
+// Elterngeld-Freibetrag (§ 14 Abs. 2 Nr. 6 WoGG i. V. m. § 10 Abs. 1, 3, 4 BEEG, buzer.de, abgerufen 24.11.2026): 300 €, Plus 150 €, je Kind der Geburt
+const egW = (m) => W.rechne({ personen: 2, stufe: 3, bruttokalt: 500, mitglieder: [Object.assign({ art: 'eg' }, m)] }, Rules);
+ok('Basiselterngeld bis 300 € kein Einkommen', egW({ brutto: 300, egPlus: false }).einkommen === 0);
+ok('ElterngeldPlus: nur 150 € frei', egW({ brutto: 300, egPlus: true }).einkommen === 150);
+ok('Zwillinge, Basiselterngeld 600 €: 600 € frei (§ 10 Abs. 4 BEEG)', egW({ brutto: 600, egPlus: false, egKinder: 2 }).einkommen === 0);
+ok('Kein Abzug „Einkommen vor der Geburt“ beim Wohngeld: Mindestbetrag 300 € Basis frei', egW({ brutto: 300, egPlus: false }).einkommen === 0);
+ok('Unbekannt, 300 € (Basis oder Plus möglich): vorsichtig 150 € frei, offen', egW({ brutto: 300 }).einkommen === 150 && egW({ brutto: 300 }).egOffen === true);
+ok('Unbekannt, 200 € (unter Basis-Mindestbetrag): sicher Plus, 150 € frei', egW({ brutto: 200 }).einkommen === 50 && !egW({ brutto: 200 }).egOffen);
+ok('Unbekannt, 1.200 € (über höchstem Plus 990 €): sicher Basis, 300 € frei', egW({ brutto: 1200 }).einkommen === 900 && !egW({ brutto: 1200 }).egOffen);
+{
+  const f = { personen: 2, stufe: 3, bruttokalt: 500, mitglieder: [{ art: 'eg', brutto: 600 }] };
+  const hoch = W.rechne(f, Rules, { egHoch: true }), tief = W.rechne(f, Rules);
+  const p = W.pruefe(Object.assign({}, f, { bescheid: { miete: hoch.miete, einkommen: hoch.einkommen, wohngeld: hoch.wohngeld } }), Rules);
+  ok('Offen: Bescheid mit 300 € Freibetrag gilt als passend', p.posten.every((x) => x.wirkung === 'passt') && p.zuWenigImMonat === 0, p.posten);
+  const q = W.pruefe(Object.assign({}, f, { bescheid: { miete: tief.miete, einkommen: tief.einkommen, wohngeld: tief.wohngeld } }), Rules);
+  ok('Offen: Bescheid mit 150 € Freibetrag gilt als passend', q.posten.every((x) => x.wirkung === 'passt'), q.posten);
+}
 ok('Unterhalt ohne Abzug', W.rechne({ personen: 2, stufe: 3, bruttokalt: 500, mitglieder: [{ art: 'ohne', brutto: 0, unterhalt: 250 }] }, Rules).einkommen === 250);
 ok('Freibetrag Alleinerziehende', W.rechne({ personen: 2, stufe: 3, bruttokalt: 500, mitglieder: [{ art: 'ohne', unterhalt: 500 }], alleinerziehend: true }, Rules).einkommen === 500 - R.wohngeld.freibetragAlleinerzMonat);
 ok('Freibetrag Schwerbehinderung je Person', W.rechne({ personen: 2, stufe: 3, bruttokalt: 500, mitglieder: [{ art: 'ohne', unterhalt: 500 }], schwerbehindert: 2 }, Rules).einkommen === 500 - 2 * R.wohngeld.freibetragBehinderungMonat);

@@ -24,7 +24,7 @@ Grundlage für künftige Aktualitätsprüfungen. Zusammengeführt aus zwei unabh
 | Belastungsgrenze Zuzahlungen | 2 %, chronisch krank 1 % der Bruttoeinnahmen; für alle GKV-Versicherten | § 62 Abs. 1 SGB V | buzer.de/62_SGB_V.htm | `zuzahlung` |
 | Hilfe zur Pflege bei PG 1 | nur Pflegehilfsmittel, Wohnumfeld, DiPA (+ Unterstützung), Entlastungsbetrag | § 63 Abs. 2 SGB XII | buzer.de/63_SGB_XII.htm | `hilfeZurPflege` |
 | Sozialhilfe setzt ein | ab Kenntnis des Trägers (Tag, nicht Monat) | § 18 Abs. 1 SGB XII | buzer.de/18_SGB_XII.htm | Texte `s.hzp.tip`, `s.blh.tip` |
-| Elternunterhalt | nur wenn ein Kind jeweils mehr als 100.000 € Gesamteinkommen (§ 16 SGB IV) hat; Vermutung darunter | § 94 Abs. 1a SGB XII | buzer.de/94_SGB_XII.htm | Texte `t.hzp.heim`, `s.gsa.tip`, `pfl.pi.heim.2` |
+| Elternunterhalt | nur wenn ein Kind jeweils mehr als 100.000 € Gesamteinkommen (§ 16 SGB IV) hat; Vermutung darunter | § 94 Abs. 1a SGB XII | buzer.de/94_SGB_XII.htm | Texte `t.hzp.heim`, `s.gsa.tip`, `pfl.pi.heim.2`, Antragsmappe GSA (`src/formulare.js`: „mehr als“ statt „ab“, 24.11.2026) |
 | Blindenhilfe | 951,92 € / unter 18: 476,78 € (ab 1.7.2026) | § 72 Abs. 2 SGB XII | ZBFS-Infoblatt 7/2026 (abgeleitet), siehe Prüfliste | `R.blhBetrag` |
 | Anrechnung Pflegegeld auf Blindenhilfe | PG 2: 50 % von PG-2-Pflegegeld; PG 3–5: 40 % von PG-3-Pflegegeld, höchstens 50 % der Blindenhilfe | § 72 Abs. 1 Satz 2 SGB XII | buzer.de/72_SGB_XII.htm | `blindenhilfe` |
 | Bayerisches Blindengeld | 809 € / Sehbehinderte 242,70 €; Anrechnung PG 2: 46 % von PG-2-, PG 3–5: 33 % von PG-3-Pflegegeld, mind. 20 € | Art. 2, 4 BayBlindG | gesetze-bayern.de/Content/Document/BayBlindG-4 | `blindengeld0` |

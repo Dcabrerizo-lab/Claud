@@ -142,7 +142,7 @@ const Formulare = (function () {
         'Angaben zu dir und zu Personen im Haushalt, Wohnkosten (Mietvertrag, Nebenkosten- und Heizkostenabrechnung)',
         'Einkommen: Rentenbescheid, bei Werkstatt Lohnabrechnung; Vermögen mit Kontoauszügen der letzten 3 Monate (geschützt sind 10.000 €)',
         'Bei Erwerbsminderung: Rentenbescheid oder Bescheid über die volle Erwerbsminderung; bei Werkstatt reicht der Nachweis der Werkstatt',
-        'Unterhalt von Kindern oder Eltern wird erst ab 100.000 € Jahreseinkommen geprüft',
+        'Unterhalt von Kindern oder Eltern wird erst bei mehr als 100.000 € Jahreseinkommen geprüft (§ 94 Abs. 1a SGB XII)',
         'Schwerbehindertenausweis mit Merkzeichen G oder aG: Mehrbedarf, Kopie beilegen']);
     }
     // Wohnberechtigungsschein: SoLo füllt nichts aus. Es gibt den leeren Landesvordruck mit Ausfüllhilfe, sonst die Fundstelle.

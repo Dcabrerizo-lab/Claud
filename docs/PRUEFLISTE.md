@@ -89,7 +89,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Mehrbedarf Alleinerziehende (§ 30 Abs. 3) | ✓ | `gsa-mb-ae` |
 | Mehrbedarf 35 % bei Eingliederungshilfe für Schule oder Ausbildung (§ 30 Abs. 4), nicht neben G | ✓ | `gsa-mb-teilhabe` |
 | Mittagessen in der Werkstatt (§ 42b Abs. 2) | ◐ | `gsa-essen` |
-| Bei den Eltern: eigene Grundsicherung, Stufe 1, Wohnkosten anteilig (§ 42a Abs. 3); Einkommen der Eltern erst ab 100.000 € (§ 94 Abs. 1a); nur bei dauerhafter voller Erwerbsminderung, befristet: Hilfe zum Lebensunterhalt oder Sozialgeld, Einkommen der Eltern kann zählen (Text, seit 24.11.2026) | ✓ / ◐ Wohnkosten | `gsa-eltern` |
+| Bei den Eltern: eigene Grundsicherung, Stufe 1, Wohnkosten anteilig (§ 42a Abs. 3); Einkommen der Eltern erst bei mehr als 100.000 € (§ 94 Abs. 1a); nur bei dauerhafter voller Erwerbsminderung, befristet: Hilfe zum Lebensunterhalt oder Sozialgeld, Einkommen der Eltern kann zählen (Text, seit 24.11.2026) | ✓ / ◐ Wohnkosten | `gsa-eltern` |
 | Gemischtes Paar: zweite Person mit Lohn oder Arbeitslosengeld, Kinder ab 14 oder volljährig -> sie gehören meist zum Jobcenter; Grundsicherung nur für die Person im Rentenalter bzw. voll erwerbsgemindert (§ 43 Abs. 1 SGB XII, § 7 Abs. 2, 3 SGB II): höchstens „möglich“ ohne Betrag (Vollprüfung 24.11.2026) | ◐ | `rechtsmatrix-grusi` |
 | Wohnheim: Stufe 2, Wohnkosten (§ 42a Abs. 5) | ✓ / ◐ Wohnkosten | `gsa-heim` |
 | Schonvermögen 10.000 € je Erwachsenem (Barbetragsverordnung) | ✓ | `gsa-verm` |
