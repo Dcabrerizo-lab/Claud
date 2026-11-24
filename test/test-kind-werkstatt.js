@@ -62,5 +62,14 @@ ck('[kind-werkstatt] Wohngeld-Hinweis mit Schonvermögen des Jobcenters', hat(m.
 m = run({ adults: 1, wfbm: true, netto: 300, brutto: 300, vermoegen: 12000, gebJahr: 1981 });
 ck('Einzelperson in Werkstatt: Wohngeld-Hinweis weiter mit Schonvermögen des Sozialamts', hat(m.wohngeld, 'wohngeld.zuNiedrigVerm'), m.wohngeld);
 
+// ---- Zweite unabhängige Prüfung 24.11.2026 ----
+// 11) Einfache Version: Die Person in der Werkstatt antwortet selbst („Behinderung seit der Kindheit“ -> erwVor25, wfbmSelbst). Sie ist kein
+//     Elternteil mit Kind in der Werkstatt, auch wenn sie die Lohnfrage überspringt: Sozialamt zuständig, Grundsicherung mit Betrag wie bisher.
+for (const ein of [[], [{ art: 'rente', b: 600 }], [{ art: 'wfbm', b: 250 }]]) for (const wohnform of ['', 'eltern', 'heim']) {
+  m = run({ adults: 1, young: 0, bhPerson: 'erwVor25', bhSelbst: true, wfbm: true, wfbmSelbst: true, einkommen: ein, wohnform, miete: wohnform === '' ? 500 : 0, gebJahr: 1996 });
+  ck('[kind-werkstatt] Einfache Version, selbst in der Werkstatt (' + (wohnform || 'eigene Wohnung') + ', ' + ein.length + ' Einkommen): ggeld nein, Sozialamt', m.ggeld.level === 'nein' && hat(m.ggeld, 'ggeld.sozialamtZustaendig') && !hat(m.ggeld, 'ggeld.kindGsa'), m.ggeld);
+  ck('Einfache Version, selbst in der Werkstatt: gsa ohne Hinweis „erwachsenes Kind“', !hat(m.gsa, 'ggeld.kindGsa') && m.gsa.level !== 'nein' && m.gsa.tx.some((a) => a[0].indexOf('bedarf') === 0), m.gsa);
+}
+
 console.log(fails ? fails + ' von ' + n + ' Prüfungen ROT' : 'Kind in der Werkstatt: ' + n + ' Prüfungen bestanden');
 process.exitCode = fails ? 1 : 0;

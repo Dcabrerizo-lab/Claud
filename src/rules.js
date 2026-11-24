@@ -826,7 +826,10 @@ const Rules = (function () {
       // WfbM-Arbeitsbereich gilt als voll erwerbsgemindert (BA-Weisung § 8 SGB II Rz. 8.8-8.10a) -> Sozialamt statt Jobcenter
       erwerbsgemindert: !!inp.erwerbsgemindert || inp.emStd === 'unter3' || !!inp.wfbm || pers.some((x) => x[0] === 'wfbm'),
       // Voll erwerbsgemindert ist der Elternteil selbst, nicht ein Kind mit Behinderung (Werkstatt-Haken bei „Kind unter 18“ / „Kind ab 18“)
-      emEltern: !!inp.erwerbsgemindert || inp.emStd === 'unter3' || pers.some((x) => x[0] === 'wfbm') || (!!inp.wfbm && inp.bhPerson !== 'minder' && inp.bhPerson !== 'erwVor25'),
+      // wfbmSelbst: einfache Version („Arbeitest du?“ – Werkstatt). Dort antwortet die Person in der Werkstatt selbst; „Behinderung seit der
+      // Kindheit“ setzt bhPerson auf erwVor25, gemeint ist aber sie selbst, kein Kind im Haushalt. Ohne diese Angabe hielt die App sie bei
+      // übersprungener Lohnfrage für einen Elternteil (zweite Prüfung 24.11.2026).
+      emEltern: !!inp.erwerbsgemindert || inp.emStd === 'unter3' || pers.some((x) => x[0] === 'wfbm') || (!!inp.wfbm && (!!inp.wfbmSelbst || (inp.bhPerson !== 'minder' && inp.bhPerson !== 'erwVor25'))),
       behinderung: !!inp.behinderung || String(inp.gdb) === '100',
       kinder12: !!inp.kinder12,
       // Alter der Kinder bekannt: ausdrücklich angegeben (Frage „14 bis 17“ beantwortet) oder alle Kinder unter 6

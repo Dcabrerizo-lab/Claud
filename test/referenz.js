@@ -310,7 +310,7 @@ function kindNurEMRef(h) {
 }
 function emElternteil(e) {
   const wfbmEink = e.art1 === 'wfbm' || (e.adults === 2 && e.art2 === 'wfbm') || (Array.isArray(e.einkommen) && e.einkommen.some((x) => x.art === 'wfbm'));
-  return e.emStd === 'unter3' || !!e.erwerbsgemindert || wfbmEink || (!!e.wfbm && ['minder', 'erwVor25'].indexOf(e.bhPerson) < 0);
+  return e.emStd === 'unter3' || !!e.erwerbsgemindert || wfbmEink || (!!e.wfbm && (!!e.wfbmSelbst || ['minder', 'erwVor25'].indexOf(e.bhPerson) < 0));
 }
 function kinderzuschlag(h) {
   const b = h.bezug;
