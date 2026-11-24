@@ -28,7 +28,9 @@ Object.keys(FEST).forEach((id) => [2, 3, 4, 5].forEach((pg) => check('[pu-betrag
 check('[pu-pg] Ohne Pflegegrad: nur Pflegekurse und Pflegeberatung', ids(0).join() === 'kurs,beratung', ids(0));
 ['geld', 'dienst', 'kombi', 'verh', 'tages', 'rente'].forEach((id) => check('Pflegegrad 1 ohne ' + id + ' (§ 28a SGB XI)', ids(1).indexOf(id) < 0, ids(1)));
 ['entl', 'hilfs', 'umbau', 'wg', 'notruf', 'kurs', 'beratung', 'zeit'].forEach((id) => check('Pflegegrad 1 mit ' + id, ids(1).indexOf(id) >= 0, ids(1)));
-[2, 3, 4, 5].forEach((pg) => check('Pflegegrad ' + pg + ': alle 14 Leistungen', ids(pg).length === 14, ids(pg)));
+// 15 seit 24.11.2026: Pflege im Heim (§§ 43, 43c SGB XI) als Information (Vollprüfung B08)
+[2, 3, 4, 5].forEach((pg) => check('Pflegegrad ' + pg + ': alle 15 Leistungen', ids(pg).length === 15, ids(pg)));
+check('Pflege im Heim: 131 / 805 / 1.319 / 1.855 / 2.096 € (§ 43 SGB XI, BMG 2026)', [1, 2, 3, 4, 5].map((g) => Rules.pflegeFuer(g).find((l) => l.id === 'heim').wert).join() === '131,805,1319,1855,2096');
 check('Ungültiger Pflegegrad wie „noch keiner“', ids('x').join() === ids(0).join() && ids(7).join() === ids(0).join());
 
 // Einheiten: pro Monat und pro Jahr klar getrennt; jede Leistung mit Rechtsgrundlage

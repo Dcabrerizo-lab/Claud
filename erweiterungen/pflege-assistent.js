@@ -17,7 +17,7 @@ const PflegeAssistent = (function () {
   const zahl = (x) => String(Math.round(x * 100) / 100).replace('.', ',');
   const eur = (x) => (Math.round(x * 100) / 100).toLocaleString('de-DE', { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' €';
 
-  function neu() { return { v: 2, alterJahre: '', alterMonate: '', vor: {}, stufen: {}, m5: {}, m5Hilfe: {}, m5Wahl: {}, inkontinenz: { harn: false, stuhl: false }, ink: null, sonde: null, k4K: false, pos: 0 }; }
+  function neu() { return { v: 2, alterJahre: '', alterMonate: '', vor: {}, stufen: {}, m5: {}, m5Hilfe: {}, m5Wahl: {}, inkontinenz: { harn: false, stuhl: false }, ink: null, sonde: null, k4K: false, bk: null, pos: 0 }; }
   function monate(a) { const j = a.alterJahre === '' ? null : +a.alterJahre; if (j == null) return null; return j < 2 && a.alterMonate !== '' ? +a.alterMonate : Math.round(j * 12); }
   function istKind(a) { const m = monate(a); return m != null && m < 216; }
   function saeugling(a) { const m = monate(a); return m != null && m < 18; }
@@ -36,6 +36,9 @@ const PflegeAssistent = (function () {
   function schritte(a) {
     const s = [{ art: 'alter' }];
     for (const m of [1, 2, 3, 4, 5, 6]) {
+      // Kinder bis 18 Monate: Bereiche 1, 2 und 6 werden nicht bewertet (Begutachtungs-Richtlinien); aus Bereich 1 zählt nur die
+      // Gebrauchsunfähigkeit beider Arme und Beine (besondere Bedarfskonstellation, § 15 Abs. 4 SGB XI). Vollprüfung B05, 24.11.2026
+      if (saeugling(a) && (m === 1 || m === 2 || m === 6)) { if (m === 1) s.push({ art: 'bk', m }); continue; }
       s.push({ art: 'vor', m });
       if (a.vor[m] !== true) continue;
       if (m === 4 && saeugling(a)) { s.push({ art: 'k4K', m }); continue; }
@@ -50,6 +53,8 @@ const PflegeAssistent = (function () {
         if (k.id === '4.12') { if (a.inkontinenz.stuhl) s.push({ art: 'krit', m, id: k.id, skala: k.s }); continue; }
         s.push({ art: 'krit', m, id: k.id, skala: k.s });
       }
+      // Besondere Bedarfskonstellation (§ 15 Abs. 4 SGB XI): Pflegegrad 5 auch unter 90 Punkten (Vollprüfung B11)
+      if (m === 1) s.push({ art: 'bk', m });
     }
     s.push({ art: 'ergebnis' });
     return s;
@@ -60,8 +65,9 @@ const PflegeAssistent = (function () {
     for (const [id, w] of Object.entries(a.m5 || {})) if (!a.m5Hilfe || a.m5Hilfe[id]) m5[id] = w;
     if (a.stufen['5.16'] != null) m5['5.16'] = a.stufen['5.16'];
     const stufen = {};
-    for (const [id, v] of Object.entries(a.stufen)) if (id !== '5.16' && a.vor[+id.split('.')[0]] === true) stufen[id] = v;
-    return { stufen, m5: a.vor[5] === true ? m5 : {}, inkontinenz: a.vor[4] === true ? a.inkontinenz : { harn: false, stuhl: false }, k4K: a.vor[4] === true && a.k4K,
+    for (const [id, v] of Object.entries(a.stufen)) if (id !== '5.16' && a.vor[+id.split('.')[0]] === true && !(saeugling(a) && /^[126]\./.test(id))) stufen[id] = v;
+    const bk = a.bk === true && (saeugling(a) || a.vor[1] === true);
+    return { stufen, m5: a.vor[5] === true ? m5 : {}, inkontinenz: a.vor[4] === true ? a.inkontinenz : { harn: false, stuhl: false }, k4K: a.vor[4] === true && a.k4K, bedarfskonstellation: bk,
       alterJahre: a.alterJahre, alterMonate: a.alterMonate, pgBescheid: pgAktuell == null ? '' : pgAktuell };
   }
 
@@ -150,6 +156,10 @@ const PflegeAssistent = (function () {
         frage = T('k4K.frage', 'Gibt es beim Füttern so große Probleme, dass die Pflege außergewöhnlich aufwendig ist?');
         hilfe = T('k4K.hinweis', 'Nur bei Kindern bis 18 Monate: Gemeint sind zum Beispiel Schluckstörungen, sehr lange Mahlzeiten oder Ernährung über eine Sonde.');
         inhalt = knoepfe([{ text: T('ja', 'Ja') }, { text: T('nein', 'Nein') }], a.k4K === true ? 0 : null, (i) => { a.k4K = i === 0; weiter(); });
+      } else if (s.art === 'bk') {
+        frage = T('bk.frage', 'Kann die Person beide Arme und beide Beine gar nicht mehr gebrauchen?');
+        hilfe = T('bk.hinweis', 'Zum Beispiel bei einer hohen Querschnittslähmung oder im Wachkoma. Dann gilt Pflegegrad 5, auch wenn die Punkte niedriger sind.');
+        inhalt = knoepfe([{ text: T('ja', 'Ja') }, { text: T('nein', 'Nein') }], a.bk === true ? 0 : a.bk === false ? 1 : null, (i) => { a.bk = i === 0; weiter(); });
       } else if (s.art === 'ink') {
         frage = T('ink.frage', 'Ist die Person inkontinent, oder hat sie einen Katheter oder ein Stoma?');
         hilfe = T('ink.hinweis', 'Gemeint ist überwiegend oder ganz inkontinent, also mehr als ab und zu ein paar Tropfen.');

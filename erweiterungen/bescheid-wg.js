@@ -27,9 +27,26 @@ const BescheidWG = (function () {
     return Math.min(p, z(m.brutto));
   }
 
-  // f = { personen, stufe (1–7), bruttokalt (Miete ohne Heizung), mitglieder: [{art, brutto, werbung?, abzug?|steuer,kv,rv, unterhalt}],
+  // f = { personen, stufe (1–7), bruttokalt (Miete ohne Heizung), mitglieder: [{art, brutto, werbung?, abzug?|steuer,kv,rv, unterhalt, egPlus?, egKinder?}],
   //       alleinerziehend, schwerbehindert (Zahl der Personen mit GdB 100 oder GdB ab 50 und Pflegegrad) }
-  function rechne(f, Rules) {
+  // Elterngeld-Freibetrag beim Wohngeld (§ 14 Abs. 2 Nr. 6 WoGG: „§ 10 BEEG bleibt unberührt“, https://www.buzer.de/14_WoGG.htm; § 10 Abs. 1, 3, 4
+  // BEEG, https://www.buzer.de/10_BEEG.htm, beide abgerufen 24.11.2026): 300 €, bei ElterngeldPlus 150 €, je Kind der Geburt vervielfacht. Die
+  // Bedingung „Einkommen vor der Geburt“ (§ 10 Abs. 5) gilt nur für SGB II/XII, Kinderzuschlag und AsylbLG, nicht beim Wohngeld.
+  // m.egPlus: true = ElterngeldPlus, false = Basiselterngeld, fehlt = unbekannt; m.egKinder: Kinder dieser Geburt (Standard 1).
+  // Unbekannt: unter dem Mindestbetrag des Basiselterngelds (300 € je Kind) sicher Plus, über dem höchsten ElterngeldPlus sicher Basis,
+  // dazwischen offen (lo 150 €, hi 300 € je Kind). Gleiche Logik wie derive egFrei in src/rules.js. Bis 24.11.2026: immer 300 €.
+  function egFrei(m, b, R) {
+    const k = Math.min(3, Math.max(1, Math.round(z(m.egKinder)) || 1)), F = R.elterngeldFrei;
+    if (m.egPlus === true) return { lo: F / 2 * k, hi: F / 2 * k };
+    if (m.egPlus === false) return { lo: F * k, hi: F * k };
+    const plusSicher = b < R.eg.min + R.eg.mehrling * (k - 1), basisSicher = b > (R.eg.max / 2) * (1 + R.eg.bonus) + (R.eg.mehrling / 2) * (k - 1);
+    const f = plusSicher ? [F / 2] : basisSicher ? [F] : [F / 2, F];
+    return { lo: Math.min(...f) * k, hi: Math.max(...f) * k };
+  }
+
+  // opt.egHoch: obere Variante (höherer Elterngeld-Freibetrag), wenn offen ist, ob Basiselterngeld oder ElterngeldPlus
+  function rechne(f, Rules, opt) {
+    let egOffen = false;
     const R = Rules.RULES, n = Math.max(1, Math.round(z(f.personen) || 1)), st = Math.max(1, Math.min(7, Math.round(z(f.stufe) || 1)));
     const hoechst = Rules.wgCap(st, n), heiz = Rules.wgHeiz(n);
     const kalt = z(f.bruttokalt);
@@ -43,7 +60,7 @@ const BescheidWG = (function () {
       }
       let anr = 0;
       if (b > 0) {
-        if (m.art === 'eg') anr = Math.max(0, b - R.elterngeldFrei); // Elterngeld bis 300 € ist kein Einkommen (§ 10 BEEG)
+        if (m.art === 'eg') { const ef = egFrei(m, b, R); anr = Math.max(0, b - (opt && opt.egHoch ? ef.hi : ef.lo)); if (ef.hi !== ef.lo) egOffen = true; }
         else anr = (b - werbung(m, R)) * (1 - abzugAus(m));
       }
       anr += z(m.unterhalt); // Unterhalt ohne Pauschalabzug
@@ -58,7 +75,7 @@ const BescheidWG = (function () {
     let wg = Math.max(0, Math.round(roh));
     if (wg < 10) wg = 0; // § 21 Nr. 1 WoGG
     wg = Rules.wgUeber12(n, wg, miete); // § 19 Abs. 3 WoGG
-    return { personen: n, stufe: st, hoechstbetrag: c2(hoechst), heizkomponente: c2(heiz), miete: c2(miete), mieteGekappt: kalt > hoechst, einkommen: c2(eink), freibetraege: c2(frei), teile, wohngeld: wg };
+    return { personen: n, stufe: st, hoechstbetrag: c2(hoechst), heizkomponente: c2(heiz), miete: c2(miete), mieteGekappt: kalt > hoechst, einkommen: c2(eink), freibetraege: c2(frei), teile, wohngeld: wg, egOffen };
   }
   function ausBescheid(n, M, Y, Rules) {
     let w = Math.max(0, Math.round(Rules.wgBetrag(n, z(M), z(Y))));
@@ -68,6 +85,10 @@ const BescheidWG = (function () {
   // e = { ...f, bescheid: { miete, einkommen, wohngeld } } (Beträge im Monat)
   function pruefe(e, Rules) {
     const r = rechne(e, Rules), b = e.bescheid || {};
+    // Offener Elterngeld-Freibetrag: vorsichtig mit dem kleineren gerechnet (nie zu viel versprechen); passt der Bescheid zur Variante mit dem
+    // größeren Freibetrag (ElterngeldPlus oder Basiselterngeld nicht bekannt), gilt er auch als passend
+    const rHoch = r.egOffen ? rechne(e, Rules, { egHoch: true }) : r;
+    const passtHoch = (key, ib) => r.egOffen && Math.abs((key === 'einkommen' ? rHoch.einkommen : rHoch.wohngeld) - ib) <= TOL;
     const posten = [];
     const leer = (v) => v == null || v === '';
     if (!leer(b.miete)) {
@@ -78,7 +99,7 @@ const BescheidWG = (function () {
     }
     if (!leer(b.einkommen)) {
       const diff = c2(z(b.einkommen) - r.einkommen);
-      const w = Math.abs(diff) <= TOL ? 'passt' : diff > 0 ? 'zuWenig' : 'zuViel';
+      const w = Math.abs(diff) <= TOL || passtHoch('einkommen', z(b.einkommen)) ? 'passt' : diff > 0 ? 'zuWenig' : 'zuViel';
       posten.push({ key: 'einkommen', name: 'Gesamteinkommen im Monat', erwartet: r.einkommen, bescheid: z(b.einkommen), diff, wirkung: w, recht: '§§ 14–17 WoGG',
         grund: w === 'zuWenig' ? `Nach Abzug der Werbungskosten, des Pauschalabzugs (je 10 % für Steuern, Kranken- und Pflegeversicherung, Rentenversicherung) und der Freibeträge (${eur(r.freibetraege)}) ergeben sich ${eur(r.einkommen)} im Monat. Im Bescheid sind ${eur(z(b.einkommen))} angesetzt.` : null });
     }
@@ -91,11 +112,11 @@ const BescheidWG = (function () {
     }
     if (!leer(b.wohngeld)) {
       const diff = c2(r.wohngeld - z(b.wohngeld));
-      posten.push({ key: 'wohngeld', name: 'Wohngeld im Monat', erwartet: r.wohngeld, bescheid: z(b.wohngeld), diff, wirkung: Math.abs(diff) <= TOL ? 'passt' : diff > 0 ? 'zuWenig' : 'zuViel', recht: '§ 19 WoGG', grund: null });
+      posten.push({ key: 'wohngeld', name: 'Wohngeld im Monat', erwartet: r.wohngeld, bescheid: z(b.wohngeld), diff, wirkung: Math.abs(diff) <= TOL || passtHoch('wohngeld', z(b.wohngeld)) ? 'passt' : diff > 0 ? 'zuWenig' : 'zuViel', recht: '§ 19 WoGG', grund: null });
     }
     const gesamt = posten.find((p) => p.key === 'wohngeld');
     return { rechnung: r, posten, gruende: posten.filter((p) => p.grund), zuWenigImMonat: gesamt && gesamt.wirkung === 'zuWenig' ? gesamt.diff : 0,
-      grenzen: 'Nicht geprüft: Mietenstufe der Gemeinde (bitte aus dem Bescheid übernehmen), Einkommen aus Selbständigkeit, Vermögen, Untermiete, Wohneigentum (Lastenzuschuss), Freibeträge für Kinder mit eigenem Einkommen und für Pflegepersonen, Grundrentenfreibetrag bei Betriebs- oder Privatrenten (gilt nur für die gesetzliche Rente), Einkommen über ein ganzes Jahr mit wechselnden Beträgen.' };
+      grenzen: 'Nicht geprüft: Mietenstufe der Gemeinde (bitte aus dem Bescheid übernehmen), Einkommen aus Selbständigkeit, Vermögen, Untermiete, Wohneigentum (Lastenzuschuss), Freibeträge für Kinder mit eigenem Einkommen und für Pflegepersonen, Grundrentenfreibetrag bei Betriebs- oder Privatrenten (gilt nur für die gesetzliche Rente), Einkommen über ein ganzes Jahr mit wechselnden Beträgen. Elterngeld: Ohne Angabe, ob Basiselterngeld oder ElterngeldPlus, rechnet SoLo vorsichtig mit dem kleineren Freibetrag (150 statt 300 € je Kind).' };
   }
   function eur(x) { return (Math.round(x * 100) / 100).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'; }
   return { rechne, pruefe, ausBescheid, abzugAus };

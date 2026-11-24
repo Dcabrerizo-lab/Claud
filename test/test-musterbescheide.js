@@ -80,7 +80,8 @@ ck('DA-KiZ C.2.2.2 Mia: Vermögen 56.500 € (1.500 € über dem Freibetrag) ->
   ck('BG-Muster 2/2023 auf den Cent: Regel 1.250; Warmwasser 24,92; Einkommen 370; Kindergeld 250; Zahlbetrag 1.644,92',
     nah(p23.regel, 1250) && nah(p23.mehrWW, 24.92) && nah(p23.einkommen, 370) && nah(p23.kindergeld, 250) && nah(p23.zahlbetrag, 1644.92), p23);
   const k = karte({ adults: 2, kids: 1, kidsAlter: true, einkommen: [{ art: 'lohn', b: 500, n: 400, p: 1 }, { art: 'alg', b: 180, p: 2 }], miete: 990, warmwasser: true, mietstufe: '5', gebJahr: 1988 }, 'ggeld');
-  ck('BG-Muster mit Werten 2026: Check 1.790,96 €, App 1.790 €', nah(p26.zahlbetrag, 1790.96) && eins(k) === 1790, [p26.zahlbetrag, eins(k)]);
+  // App-Karte zusätzlich mit 25 € Sofortzuschlag für das Kind (§ 72 SGB II, Vollprüfung familie B4): 1.790,96 + 25 = 1.815,96 -> etwa 1.820 €
+  ck('BG-Muster mit Werten 2026: Check 1.790,96 €, App 1.820 € (mit Sofortzuschlag)', nah(p26.zahlbetrag, 1790.96) && eins(k) === 1820, [p26.zahlbetrag, eins(k)]);
 }
 ck('MB-SGB2 9.2: Freibetrag Minijob 603 € = 208,90 €', nah(F(603, false), 208.9));
 // Befund 2: Vermögen bei Paaren je Person (MB-SGB2 9.5: Paar 32 und 59 Jahre, Freibeträge 10.000 + 20.000 €)

@@ -192,6 +192,24 @@ var Haushalt = (function () {
     o.kg = o.kinder > 0 && kindergeldEuro > 0 ? Math.round(o.kinder * kindergeldEuro * 100) : null;
     return o;
   }
+  // Pfändbares Einkommen für den Ratenvorschlag (Cent), nur der Person 1 (Schuldner; Prüfung Schulden 24.11.2026): Lohn, Selbstständigkeit,
+  // Rente, Arbeitslosengeld I, Krankengeld, Werkstattlohn (pfändbar wie Arbeitseinkommen, § 850 ZPO, § 54 Abs. 4 SGB I) und Elterngeld über
+  // 300 € (§ 54 Abs. 3 Nr. 1 SGB I i. V. m. § 10 BEEG). Nicht: Einkommen des Partners (haftet nicht für die Schulden), Kindergeld, Unterhalt
+  // für die Kinder, Unterhalt für sich selbst (§ 850b ZPO, nur bedingt pfändbar), „Andere Leistungen“ (Wohngeld, Grundsicherungsgeld,
+  // Kinderzuschlag: § 54 Abs. 3 Nr. 2a, Abs. 5 SGB I, § 42 Abs. 4 SGB II, § 17 Abs. 1 SGB XII). „Sonstige Einnahmen“ (sonst, Cent) zählen mit:
+  // Sozialleistungen haben ein eigenes Feld, dort steht also eher Nebenverdienst oder Untermiete; im Zweifel kein falsches „nichts pfändbar“.
+  var PFAENDBAR_ART = ['lohn', 'selbst', 'rente', 'alg', 'kg', 'wfbm'], EG_FREI = 30000;
+  function pfaendbarBasis(g, sonst) {
+    var s0 = sonst > 0 ? sonst : 0;
+    if (!g) return s0;
+    return [['ek1', 'ek1Art'], ['ek1b', 'ek1bArt']].reduce(function (sum, x) {
+      var c = g[x[0]], art = g[x[1]];
+      if (!(c > 0)) return sum;
+      if (PFAENDBAR_ART.indexOf(art) >= 0) return sum + c;
+      if (art === 'eg') return sum + Math.max(0, c - EG_FREI);
+      return sum;
+    }, s0);
+  }
   // Eine Änderung im Plan an einem gemeinsamen Feld: direkt schreiben (Feld leer oder gleich) oder erst fragen (anderer Wert steht schon da)
   function aenderung(alt, neu) {
     if (neu === alt) return 'gleich';
@@ -1384,7 +1402,7 @@ var Haushalt = (function () {
     ausCheck: ausCheck, aenderung: aenderung, uebernahme: uebernahme, normiere: normiere, hinweisListe: hinweisListe, aenderungsBrief: aenderungsBrief,
     // Abschlag prüfen (Rechnung)
     PREIS: PREIS, TOL: TOL, tageZwischen: tageZwischen, jahresVerbrauch: jahresVerbrauch, gasKwh: gasKwh, jahresKosten: jahresKosten,
-    abschlagVergleich: abschlagVergleich, energieSparte: energieSparte, tarifKosten: tarifKosten, tarifVergleich: tarifVergleich, dezimalAus: dezimalAus, SAISON_TAGE: SAISON_TAGE, AKTUELL_TAGE: AKTUELL_TAGE,
+    pfaendbarBasis: pfaendbarBasis, abschlagVergleich: abschlagVergleich, energieSparte: energieSparte, tarifKosten: tarifKosten, tarifVergleich: tarifVergleich, dezimalAus: dezimalAus, SAISON_TAGE: SAISON_TAGE, AKTUELL_TAGE: AKTUELL_TAGE,
     // Oberfläche
     // Kurzstatus für „Mein Ordner“: { rest, restEuro, leer, ausgefuellt }. ausgefuellt: mindestens eine eigene Ausgabe im Plan (die Miete
     // kommt aus dem Check und zählt nicht) – sonst wäre „Im Monat bleiben dir …“ nur Einkommen minus Miete, ohne Essen, Strom und Handy.
@@ -1395,6 +1413,7 @@ var Haushalt = (function () {
       r.ausgefuellt = !!daten && Object.keys(daten.plan.aus || {}).some(function (k) { return k !== 'miete' && daten.plan.aus[k] > 0; });
       r.wesentlich = !!daten && r.ein > 0 && a.miete > 0 && a.essen > 0;
       r.kindergeld = daten ? (daten.plan.kg !== null ? daten.plan.kg : geteilte().kg) || 0 : 0;
+      r.pfBasis = daten ? pfaendbarBasis(geteilte(), daten.plan.sonst) : 0; // pfändbares eigenes Einkommen (Cent), siehe pfaendbarBasis
       return r;
     },
     abschlag: function (ziel, art) { abschlagBox(ziel, art); }, tarif: function (ziel, art) { tarifBox(ziel, art); }, // Seiten „Strom“ und „Heizen“ (src/app.js)
