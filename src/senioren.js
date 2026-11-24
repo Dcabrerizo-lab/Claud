@@ -9,24 +9,25 @@
 var SENIOREN = (function () {
   'use strict';
 
-  // Werte, die es in rules.js nicht gibt. pruefen: noch gegen den amtlichen Wortlaut abzugleichen (Fable-Prüfung), siehe Quellen-Datei.
+  // Werte, die es in rules.js nicht gibt. Am 24.11.2026 gegen den amtlichen Wortlaut geprüft (gesetze-im-internet.de), siehe Quellen-Datei.
   var WERTE = {
-    beratungTage: { wert: 14, recht: '§ 7b Abs. 1 SGB XI', quelle: 'https://www.gesetze-im-internet.de/sgb_11/__7b.html' },
-    bescheidArbeitstage: { wert: 25, recht: '§ 18c Abs. 1 SGB XI', quelle: 'https://www.gesetze-im-internet.de/sgb_11/__18c.html' },
-    verzugJeWoche: { wert: 70, recht: '§ 18c Abs. 5 SGB XI', quelle: 'https://www.gesetze-im-internet.de/sgb_11/__18c.html' },
-    widerspruchMonate: { wert: 1, recht: '§ 84 Abs. 1 SGG', quelle: 'https://www.gesetze-im-internet.de/sgg/__84.html' },
-    akutTage: { wert: 10, recht: '§ 2 Abs. 1 PflegeZG, § 44a Abs. 3 SGB XI', quelle: 'https://www.gesetze-im-internet.de/sgb_11/__44a.html' },
-    pugProzent: { wert: 90, recht: '§ 44a Abs. 3 SGB XI i. V. m. § 45 Abs. 2 Satz 3 SGB V', quelle: 'https://www.gesetze-im-internet.de/sgb_5/__45.html' },
-    pflegezeitMonate: { wert: 6, recht: '§ 4 Abs. 1 PflegeZG', quelle: 'https://www.gesetze-im-internet.de/pflegezg/__4.html' },
+    beratungTage: { wert: 14, recht: '§ 7b Abs. 1 Satz 1 SGB XI', quelle: 'https://www.gesetze-im-internet.de/sgb_11/__7b.html' },
+    bescheidArbeitstage: { wert: 25, recht: '§ 18c Abs. 1 Satz 1 SGB XI', quelle: 'https://www.gesetze-im-internet.de/sgb_11/__18c.html' },
+    verzugJeWoche: { wert: 70, recht: '§ 18c Abs. 5 Satz 1 und 2 SGB XI', quelle: 'https://www.gesetze-im-internet.de/sgb_11/__18c.html' },
+    widerspruchMonate: { wert: 1, recht: '§ 84 Abs. 1 Satz 1 SGG', quelle: 'https://www.gesetze-im-internet.de/sgg/__84.html' },
+    akutTage: { wert: 10, recht: '§ 2 Abs. 1 PflegeZG (Fernbleiben), § 44a Abs. 3 Satz 1 und 2 SGB XI (Pflegeunterstützungsgeld je Kalenderjahr)', quelle: 'https://www.gesetze-im-internet.de/sgb_11/__44a.html' },
+    pugProzent: { wert: 90, recht: '§ 44a Abs. 3 Satz 4 SGB XI i. V. m. § 45 Abs. 2 Satz 3 bis 5 SGB V', quelle: 'https://www.gesetze-im-internet.de/sgb_5/__45.html' },
+    pflegezeitMonate: { wert: 6, recht: '§ 4 Abs. 1 Satz 1 PflegeZG', quelle: 'https://www.gesetze-im-internet.de/pflegezg/__4.html' },
     pflegezeitBeschaeftigte: { wert: 15, recht: '§ 3 Abs. 1 Satz 2 PflegeZG', quelle: 'https://www.gesetze-im-internet.de/pflegezg/__3.html' },
-    pflegezeitAnkuendigung: { wert: 10, recht: '§ 3 Abs. 3 PflegeZG', quelle: 'https://www.gesetze-im-internet.de/pflegezg/__3.html' },
-    letzteLebensphaseMonate: { wert: 3, recht: '§ 3 Abs. 6, § 4 Abs. 3 PflegeZG', quelle: 'https://www.gesetze-im-internet.de/pflegezg/__4.html' },
-    fpzMonate: { wert: 24, recht: '§ 2 Abs. 1 FPfZG', quelle: 'https://www.gesetze-im-internet.de/fpfzg/__2.html' },
+    pflegezeitAnkuendigung: { wert: 10, recht: '§ 3 Abs. 3 Satz 1 PflegeZG', quelle: 'https://www.gesetze-im-internet.de/pflegezg/__3.html' },
+    letzteLebensphaseMonate: { wert: 3, recht: '§ 3 Abs. 6 Satz 1, § 4 Abs. 3 Satz 2 PflegeZG', quelle: 'https://www.gesetze-im-internet.de/pflegezg/__4.html' },
+    fpzMonate: { wert: 24, recht: '§ 2 Abs. 1 Satz 1 und Abs. 2 FPfZG, § 4 Abs. 1 Satz 4 PflegeZG', quelle: 'https://www.gesetze-im-internet.de/fpfzg/__2.html' },
     fpzBeschaeftigte: { wert: 25, recht: '§ 2 Abs. 1 Satz 4 FPfZG', quelle: 'https://www.gesetze-im-internet.de/fpfzg/__2.html' },
     fpzStunden: { wert: 15, recht: '§ 2 Abs. 1 Satz 2 FPfZG', quelle: 'https://www.gesetze-im-internet.de/fpfzg/__2.html' },
-    rvStunden: { wert: 10, recht: '§ 19 Satz 2 SGB XI, § 3 Satz 1 Nr. 1a SGB VI', quelle: 'https://www.gesetze-im-internet.de/sgb_11/__19.html' },
+    fpzAnkuendigungWochen: { wert: 8, recht: '§ 2a Abs. 1 Satz 1 FPfZG', quelle: 'https://www.gesetze-im-internet.de/fpfzg/__2a.html' },
+    rvStunden: { wert: 10, recht: '§ 19 Satz 2, § 44 Abs. 1 Satz 2 SGB XI, § 3 Satz 1 Nr. 1a SGB VI', quelle: 'https://www.gesetze-im-internet.de/sgb_11/__19.html' },
     rvTage: { wert: 2, recht: '§ 19 Satz 2 SGB XI', quelle: 'https://www.gesetze-im-internet.de/sgb_11/__19.html' },
-    rvArbeitMax: { wert: 30, recht: '§ 3 Satz 3 SGB VI', quelle: 'https://www.gesetze-im-internet.de/sgb_6/__3.html' }
+    rvArbeitMax: { wert: 30, recht: '§ 3 Satz 3 SGB VI, § 44 Abs. 1 Satz 1 SGB XI', quelle: 'https://www.gesetze-im-internet.de/sgb_6/__3.html' }
   };
   var STAND = '24.11.2026';
   // Bundesweit feste Nummer: Bürgertelefon des BMG, Pflegeversicherung (Quelle: bundesgesundheitsministerium.de/service/buergertelefon)
@@ -128,12 +129,12 @@ var SENIOREN = (function () {
     abschnitt(box, 'sen.ang.arbeit.h');
     box.appendChild(karte('sen.ang.akut', 'uhr', { tage: w('akutTage'), prozent: w('pugProzent') }));
     box.appendChild(karte('sen.ang.pzeit', 'kalender', { monate: w('pflegezeitMonate'), beschaeftigte: w('pflegezeitBeschaeftigte'), ankuendigung: w('pflegezeitAnkuendigung'), letzte: w('letzteLebensphaseMonate') }));
-    box.appendChild(karte('sen.ang.fpz', 'kalender', { monate: w('fpzMonate'), beschaeftigte: w('fpzBeschaeftigte'), stunden: w('fpzStunden') }));
+    box.appendChild(karte('sen.ang.fpz', 'kalender', { monate: w('fpzMonate'), beschaeftigte: w('fpzBeschaeftigte'), stunden: w('fpzStunden'), wochen: w('fpzAnkuendigungWochen') }));
 
     abschnitt(box, 'sen.ang.schutz.h');
     box.appendChild(karte('sen.ang.rente', 'schild', { stunden: w('rvStunden'), tage: w('rvTage'), arbeit: w('rvArbeitMax') }, [el('p', 'small', t('sen.ang.rente.alt'))]));
-    box.appendChild(karte('sen.ang.unfall', 'schild'));
-    box.appendChild(karte('sen.ang.alv', 'schild'));
+    box.appendChild(karte('sen.ang.unfall', 'schild', { stunden: w('rvStunden'), tage: w('rvTage') }));
+    box.appendChild(karte('sen.ang.alv', 'schild', { stunden: w('rvStunden'), tage: w('rvTage') }));
     box.appendChild(karte('sen.ang.pausch', 'geld', { betrag: euro(r.pflegePausch[5]), pg2: euro(r.pflegePausch[2]), pg3: euro(r.pflegePausch[3]), pg4: euro(r.pflegePausch[4]) }));
 
     abschnitt(box, 'sen.ang.hilfe.h');
