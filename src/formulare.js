@@ -86,7 +86,8 @@ const Formulare = (function () {
       if (miete > 0 || eigen) anl.push('Anlage KDU: Kosten für Unterkunft und Heizung' + (miete > 0 ? ' (laut SoLo zusammen ' + geld(miete) + ' € im Monat: nach Grundmiete, Nebenkosten und Heizkosten aufteilen)' : ''));
       anl.push('Anlage VM: Vermögen (Konten, Auto, Immobilien)');
       if (erw === 2) anl.push('Anlage WEP und eine eigene Anlage EK für die Partnerin oder den Partner; Anlage VE nur, wenn ihr nicht verheiratet seid');
-      if (young > 0) anl.push('Anlage WEP für jedes Kind ab 15 Jahren');
+      // Anlage WEP für jede weitere Person ab 15 (BA-Vordrucke): auch Kinder 15–17; „14 bis 17“ im Check kann ein 15-Jähriges enthalten (Prüfung Schulden 24.11.2026)
+      if (young > 0 || (s.kids14 | 0) > 0) anl.push('Anlage WEP für jedes Kind ab 15 Jahren');
       if (kids > 0) anl.push('Anlage KI für jedes Kind unter 15 Jahren');
       if (allein) anl.push('Anlage UH3: Unterhalt für die Kinder vom anderen Elternteil, je Kind eine');
       if (s.schwanger && erw === 1) anl.push('Anlage UH2: Schwangerschaft, wenn du nicht verheiratet bist');

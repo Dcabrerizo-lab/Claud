@@ -121,8 +121,11 @@ var Geld = (function () {
   //  Puffer = 10 % der Einnahmen (auf den Cent aufgerundet), mindestens 50 € – für Unvorhergesehenes (Nachzahlung, Reparatur)
   //  Obergrenze = pfändbarer Betrag nach der Pfändungstabelle (§ 850c ZPO mit den geprüften Werten 2026 in Rules.pfaendung, Wortlaut § 850c
   //    abgerufen 21.11.2026 auf https://www.gesetze-im-internet.de/zpo/__850c.html): mehr als das könnten alle Gläubiger zusammen auch mit einer
-  //    Lohnpfändung nicht bekommen. Grundlage grob: Einnahmen des Plans ohne Kindergeld (§ 76 EStG), Unterhaltsberechtigte aus dem Pfändungsrechner
-  //    oder dem Check (Partner und Kinder im Haushalt). Unterhaltsgläubiger können mehr pfänden (§ 850d ZPO) – das ersetzt keine Beratung.
+  //    Lohnpfändung nicht bekommen. Grundlage: nur das eigene pfändbare Einkommen der Person 1 (Haushalt.rest().pfBasis: Lohn, Rente, ALG,
+  //    Krankengeld, Elterngeld über 300 €, „Sonstige Einnahmen“) – ohne Einkommen des Partners und ohne unpfändbare Leistungen (Kindergeld § 76 EStG, Wohngeld,
+  //    Kinderzuschlag, Grundsicherungsgeld, Sozialhilfe, Unterhalt für die Kinder; § 54 SGB I, § 42 Abs. 4 SGB II, § 17 Abs. 1 SGB XII;
+  //    Prüfung Schulden 24.11.2026). Fehlt pfBasis (alte Aufrufer), wie bisher Einnahmen ohne Kindergeld. Unterhaltsberechtigte aus dem
+  //    Pfändungsrechner oder dem Check (Partner und Kinder im Haushalt). Unterhaltsgläubiger können mehr pfänden (§ 850d ZPO) – das ersetzt keine Beratung.
   //  Rate   = min(frei − Puffer, pfändbar), abgerundet auf volle 5 €; unter 5 € keine Empfehlung: „keine“ (kein Spielraum) oder
   //    „unpfaendbar“ (nach der Tabelle nichts pfändbar) – beide mit Verweis auf die Schuldnerberatung.
   //  Mehrere offene Schulden mit Betrag: Reihenfolge wie in der Schulden-Liste (Schulden.artStufe: 1 Miete, Strom, Unterhalt, Geldstrafe,
@@ -144,7 +147,8 @@ var Geld = (function () {
     var ein = Math.round(hh.ein), aus = hh.aus > 0 ? Math.round(hh.aus) : 0;
     var frei = ein - aus, puffer = Math.max(Math.ceil(ein * RATE.pufferAnteil / 100), RATE.pufferMin);
     // pfaendbar (Cent) nur, wenn schon berechnet übergeben (Tests der reinen Rechnung); sonst aus der Pfändungstabelle
-    var pf = typeof hh.pfaendbar === 'number' ? hh.pfaendbar : pfaendbarCent(ein - (hh.kindergeld > 0 ? Math.round(hh.kindergeld) : 0), hh.personen);
+    var basis = typeof hh.pfBasis === 'number' ? Math.round(hh.pfBasis) : ein - (hh.kindergeld > 0 ? Math.round(hh.kindergeld) : 0);
+    var pf = typeof hh.pfaendbar === 'number' ? hh.pfaendbar : pfaendbarCent(basis, hh.personen);
     var roh = Math.min(frei - puffer, pf), rate = roh > 0 ? Math.floor(roh / RATE.schritt) * RATE.schritt : 0;
     var art = rate >= RATE.schritt ? 'rate' : pf < RATE.schritt ? 'unpfaendbar' : 'keine';
     var r = { art: art, ein: ein, aus: aus, frei: frei, puffer: puffer, pfaendbar: pf, gedeckelt: frei - puffer > pf, rate: art === 'rate' ? rate : 0, teile: [] };

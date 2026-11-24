@@ -1252,8 +1252,10 @@ Ergebnis: Pflegegrad 2`;
         h('p', { text: tA('bp.an.zeile', 'So steht es im Brief: „{zeile}“', { zeile: r.fristen[0].zeile }) }),
         h('p', { text: tA('bp.an.pruefen', 'Bitte lies die Frist im Brief selbst nach. Die Texterkennung kann sich irren.') })));
     }
-    if (r.mahnbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { text: 'Das ist wohl ein gerichtlicher Mahnbescheid. ' }), 'Widerspruch nur innerhalb von 2 Wochen ab Zustellung. Mehr dazu unten.'));
-    if (r.vollstreckungsbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { text: 'Das ist wohl ein Vollstreckungsbescheid. ' }), 'Einspruch nur innerhalb von 2 Wochen ab Zustellung. Frag sofort eine Schuldnerberatung.'));
+    // Mahnbescheid: Widerspruch am besten binnen 2 Wochen (§ 692 Abs. 1 Nr. 3 ZPO), danach noch, solange kein Vollstreckungsbescheid verfügt ist
+    // (§ 694 Abs. 1 ZPO); Vollstreckungsbescheid: Einspruch 2 Wochen, Notfrist (§§ 700, 339 ZPO). Texte übersetzt (src/lang/zusatz, Prüfung Schulden 24.11.2026).
+    if (r.mahnbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { 'data-t': 'bp.mb.titel', text: tA('bp.mb.titel', 'Das ist wohl ein gerichtlicher Mahnbescheid.') }), ' ', h('span', { 'data-t': 'bp.mb.frist', text: tA('bp.mb.frist', 'Widerspruch am besten innerhalb von 2 Wochen ab Zustellung. Später geht es nur noch, solange das Gericht keinen Vollstreckungsbescheid erlassen hat. Mehr dazu unten.') })));
+    if (r.vollstreckungsbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { 'data-t': 'bp.vb.titel', text: tA('bp.vb.titel', 'Das ist wohl ein Vollstreckungsbescheid.') }), ' ', h('span', { 'data-t': 'bp.vb.frist', text: tA('bp.vb.frist', 'Einspruch nur innerhalb von 2 Wochen ab Zustellung. Frag sofort eine Schuldnerberatung.') })));
     // Mahnbescheid/Vollstreckungsbescheid: Tag der Zustellung (gelber Umschlag) erfragen, erst der Tipp merkt die Frist
     if ((r.mahnbescheid || r.vollstreckungsbescheid) && window.FristenOrdner) box.append(window.FristenOrdner.knopf((zugang) => ({ art: r.vollstreckungsbescheid ? 'vb' : 'mb', stelle: 'gericht', basis: { zugang }, quelle: 'brief' }), { feld: 'zugang' }));
     if (r.inkasso) box.append(h('p', { class: 'note' }, h('strong', { text: 'Im Brief steht „Inkasso“. ' }), 'Lies unten, was du prüfen solltest.'));

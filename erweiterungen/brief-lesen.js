@@ -12,12 +12,14 @@ const BriefLesen = (function () {
     sa: { titel: 'Bescheid vom Sozialamt (Grundsicherung im Alter)', w: [[/Grundsicherung im Alter/i, 6], [/Sozialamt|Amt für Soziales|Sozialhilfe/i, 3], [/SGB XII\b|Zwölfte[sn]? Buch/i, 3], [/Erwerbsminderung/i, 2]] },
     wg: { titel: 'Wohngeldbescheid', w: [[/Wohngeldbescheid|Bewilligung von Wohngeld|Wohngeld in Höhe/i, 6], [/Wohngeldbehörde|Wohngeldstelle/i, 4], [/WoGG|Wohngeldgesetz/i, 3], [/Wohngeld/i, 1]] },
     fk: { titel: 'Bescheid der Familienkasse (Kinderzuschlag)', w: [[/Kinderzuschlag/i, 5], [/Familienkasse/i, 3], [/BKGG|Bundeskindergeldgesetz/i, 3]] },
+    // Kindergeld (Prüfung Schulden 24.11.2026): Steuerrecht, Rechtsbehelf Einspruch (§§ 347, 355 AO), kein Kinderzuschlag-Prüfer
+    kg: { titel: 'Bescheid der Familienkasse (Kindergeld)', w: [[/Kindergeld/i, 3], [/§\s*(?:62|63|66|67|68|70)\b[^\n]{0,20}EStG\b|Einkommensteuergesetz/i, 2], [/Einspruch/i, 3], [/Familienkasse/i, 1]] },
     anh: { titel: 'Anhörung', w: [[/Anhörung/i, 5], [/§\s*24 SGB X\b/i, 4], [/Gelegenheit, sich (zu|dazu) zu äußern|Stellungnahme/i, 2]] },
     mit: { titel: 'Aufforderung, Unterlagen nachzureichen', w: [[/Mitwirkung/i, 4], [/§\s*6[06] SGB I\b/i, 4], [/reichen Sie .{0,40}(ein|nach)|bitte legen Sie .{0,40}vor|fehlende Unterlagen/i, 3]] },
     af: { titel: 'Antragsformular', w: [[/[☐□▢]/, 3], [/Bitte (ankreuzen|ausfüllen)|Zutreffendes ankreuzen/i, 3], [/Unterschrift (des|der) Antragstellers?/i, 3], [/^\s*Antrag auf\b/im, 2], [/Angaben zur Person/i, 2]] }
   };
   // Ein Bescheid schlägt die allgemeinen Arten: „Anhörung“ oder Formular-Merkmale stehen manchmal auch in Bescheiden
-  const VORRANG = ['pk', 'vm', 'jc', 'sa', 'wg', 'fk', 'anh', 'mit', 'af'];
+  const VORRANG = ['pk', 'vm', 'jc', 'sa', 'wg', 'fk', 'kg', 'anh', 'mit', 'af'];
 
   function erkenne(text) {
     const t = String(text || '');
@@ -28,6 +30,7 @@ const BriefLesen = (function () {
     for (const art of VORRANG) {
       let p = ARTEN[art].w.reduce((s, [re, g]) => s + (re.test(t) ? g : 0), 0);
       if (art === 'af') p += Math.min(8, formFelder * 2);
+      if (art === 'kg' && !/Einspruch|Rechtsbehelfsbelehrung/i.test(t)) p = 0; // Kindergeld nur als Bescheid mit Rechtsbehelf, sonst Anhörung o. Ä.
       if (p > bestP) { best = art; bestP = p; }
     }
     if (bestP < 3) return { art: null, titel: 'Nicht erkannt', sicher: 0 };
@@ -128,7 +131,11 @@ const BriefLesen = (function () {
     const D = '(\\d{1,2}\\.\\d{1,2}\\.20\\d{2})';
     const muster = [new RegExp('(?:^|[^\\wäöüß])(?:Datum|Bescheiddatum)\\s*:?\\s*' + D, 'i'), new RegExp('\\bBescheid(?:es)? vom\\s*' + D, 'i')];
     const gut = (x) => { const d = x.match(DATUM); return d && gueltig(d) ? iso(d) : null; };
-    for (const re of muster) for (const zl of z.slice(0, 40)) { const m = zl.match(re); if (m && gut(m[1])) return gut(m[1]); }
+    // „mein Bescheid vom 12.03.2026 wird geändert“: Verweis auf einen früheren Bescheid, nicht das Datum dieses Briefs (Prüfung Schulden
+    // 24.11.2026) – sonst wäre die Widerspruchsfrist scheinbar längst vorbei. Dann zählt der Briefkopf.
+    const verweis = (zl) => /\b(?:mein(?:en|em|es)?|unser(?:en|em|es)?|Ihr(?:en|em|es)?|den|dem|des|der|diese[nms]?|o\.\s?g\.|genannte[nmr]?)\s+Bescheid(?:es)?\s+vom\b/i.test(zl) ||
+      /\bBescheid(?:es)?\s+vom\s*\d{1,2}\.\d{1,2}\.20\d{2}.{0,60}\b(?:geändert|aufgehoben|ersetzt|zurückgenommen|abgeändert)\b/i.test(zl);
+    for (const re of muster) for (const zl of z.slice(0, 40)) { if (re === muster[1] && verweis(zl)) continue; const m = zl.match(re); if (m && gut(m[1])) return gut(m[1]); }
     // Briefkopf als Spalten („Unser Zeichen   Datum“, darunter „64.4-412000   Frankfurt am Main,“ / „4125   03.06.2025“): Datum am Zeilenende
     for (let i = 0; i < Math.min(z.length, 60); i++) {
       if (!/(?:^|\s)Datum:?$/.test(z[i])) continue;
@@ -257,6 +264,7 @@ const BriefLesen = (function () {
   // Was die App bei Briefen ohne Rechnung sagt
   const ERKLAERUNG = {
     anh: 'Eine Anhörung kommt, bevor das Amt etwas zu deinen Ungunsten entscheidet, zum Beispiel Geld zurückfordert oder kürzt. Du darfst dich innerhalb der genannten Frist äußern. Erkläre kurz, wie es war, und lege Belege bei. Wenn du nicht antwortest, entscheidet das Amt nach Aktenlage.',
+    kg: 'Das ist wohl ein Bescheid der Familienkasse über Kindergeld. Bist du nicht einverstanden, heißt das hier Einspruch, nicht Widerspruch (§ 347 AO). Der Einspruch muss innerhalb eines Monats bei der Familienkasse sein. Der Monat beginnt, wenn der Bescheid als bekannt gegeben gilt: bei Post am vierten Tag nach dem Datum des Bescheids (§§ 122, 355 AO). Was genau gilt, steht am Ende des Bescheids. SoLo rechnet Kindergeld-Bescheide nicht nach.',
     mit: 'Das Amt braucht noch Unterlagen. Reiche sie bis zur genannten Frist ein, am besten mit Kopie und Eingangsbestätigung. Wenn du etwas nicht rechtzeitig schaffst, schreib das vor Ablauf der Frist und nenne einen Termin. Ohne Unterlagen kann das Amt die Leistung ganz oder teilweise versagen (§ 66 SGB I).'
   };
   // Frist für Anhörung und Mitwirkung: Zeile für Zeile, nur aus Zeilen mit einem Frist-Wort („äußern“, „Unterlagen“, „Frist“ …).
@@ -264,7 +272,16 @@ const BriefLesen = (function () {
   // ein festes Datum geht vor einer Dauer („innerhalb von zwei Wochen“). Ergebnis: { frist, zeile, abBrief } oder null.
   // abBrief: Die Zeile sagt, dass die Frist ab dem Datum des Schreibens läuft (dann nie ab dem Tag des Erhalts rechnen).
   const FRIST_WORT = /(?:^|[^A-Za-zÄÖÜäöüß])(?:äußer|Äußer|Stellung|einreich|einzureich|reichen Sie|vorleg|vorzuleg|legen Sie|Unterlagen|nachreich|nachzureich|Frist|Widerspruch|Gelegenheit|mitteil|mitzuteil|Nachweis|Rückmeldung)/i;
-  const FRIST_ANFANG = /(?:bis zum|bis spätestens(?: zum)?|spätestens bis zum?|spätestens am|innerhalb von|innerhalb eines|binnen)\s*$/i;
+  const FRIST_ANFANG = /(?:bis zum|bis spätestens(?: zum)?|spätestens bis zum?|spätestens am|innerhalb von|innerhalb eines|innerhalb einer|binnen|bis)\s*$/i;
+  // Datum mit Monatsnamen („15. Dezember 2026“) nur zum Suchen in „15.12.2026“ umschreiben; angezeigt wird die Zeile wie im Brief
+  const MONATE = ['januar', 'februar', 'märz', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'dezember'];
+  function mitZahlMonat(z) {
+    return String(z).replace(/\b(\d{1,2})\.\s*(Januar|Februar|März|Maerz|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)\s+(20\d{2})\b/gi,
+      (x, d, m, y) => d + '.' + (MONATE.indexOf(m.toLowerCase().replace('maerz', 'märz')) + 1) + '.' + y);
+  }
+  // „bis 15.12.2026“ ohne „zum“ nur als Frist, wenn ein Frist-Wort in der Zeile steht und das „bis“ keinen Zeitraum abschließt
+  // („01.01.2026 bis 30.06.2026“, „Leistungen bis 30.06.2027“ ohne Frist-Wort).
+  function bisOhneZum(z, m) { return /^bis$/i.test(m[0].replace(/\s*\d.*$/, '').trim()) && (!FRIST_WORT.test(z) || /\d{1,2}\.\d{1,2}\.20\d{2}\s*$/.test(z.slice(0, m.index).trim()) || /bewillig|Zeitraum|gilt|gültig|Leistungen/i.test(z)); }
   const AB_BRIEF = /\bab (?:dem )?(?:Datum|Ausstellungsdatum) (?:dieses|des|dieser|der) (?:Schreibens|Briefe?s|Bescheide?s|Mitteilung|Anhörung|Aufforderung)|\bnach (?:dem )?Datum (?:dieses|des) (?:Schreibens|Briefe?s)|\bvom Datum dieses Schreibens an\b/i;
   function fristMitZeile(text) {
     const zl = zeilen(text), re = new RegExp(FRIST.source, 'gi');
@@ -274,8 +291,10 @@ const BriefLesen = (function () {
       if (FRIST_ANFANG.test(z) && i + 1 < zl.length) z += ' ' + zl[i + 1]; // „… bis zum“ am Zeilenende, Datum in der nächsten Zeile
       if (!FRIST_WORT.test(z)) continue;
       const zeile = z.length > 160 ? z.slice(0, 157) + '…' : z;
+      z = mitZahlMonat(z);
       let m; re.lastIndex = 0;
       while ((m = re.exec(z))) {
+        if (bisOhneZum(z, m)) continue;
         const d = m[1].match(DATUM);
         if (d) { const x = iso(d); if (!fest || x < fest.iso) fest = { frist: m[1], zeile, iso: x }; }
         else if (!dauer) dauer = { frist: m[1], zeile, abBrief: AB_BRIEF.test(z) };
@@ -297,11 +316,13 @@ const BriefLesen = (function () {
 
   // Anderer Brief: Frist nur mit Beleg (die Zeile aus dem Brief, in der sie steht), dazu Hinweise auf Mahnbescheid oder Inkasso.
   // Ergebnis: { fristen: [{ frist, zeile }], mahnbescheid, vollstreckungsbescheid, inkasso, art (erkannte Art aus erkenne oder null) }
-  const FRIST = /(?:bis zum|bis spätestens(?: zum)?|spätestens bis zum?|spätestens am|innerhalb von|innerhalb eines|binnen)\s*(\d{1,2}\.\d{1,2}\.20\d{2}|(?:zwei|drei|vier|sechs|einem|einer|\d{1,2})\s+(?:Wochen?|Tagen?|Monats?|Monaten)|Monats|Woche)/i;
+  // Prüfung Schulden 24.11.2026: auch „bis 15.12.2026“ (mit Frist-Wort, siehe bisOhneZum), „innerhalb einer Woche“, „Frist: 4 Wochen“,
+  // „Frist von einem Monat“ und Monatsnamen (mitZahlMonat). Die Rechnung selbst steht in src/fristen.js (§ 26 SGB X, §§ 187–193 BGB).
+  const FRIST = /(?:bis zum|bis spätestens(?: zum)?|spätestens bis zum?|spätestens am|innerhalb von|innerhalb eines|innerhalb einer|binnen|Frist(?: von)?:?|bis(?=\s*\d{1,2}\.\d{1,2}\.20\d{2}))\s*(\d{1,2}\.\d{1,2}\.20\d{2}|(?:zwei|drei|vier|sechs|einem|einer|\d{1,2})\s+(?:Wochen?|Tagen?|Monats?|Monaten)|Monats|Woche)/i;
   function andere(text) {
     const t = String(text || ''), fristen = [];
     const zl = zeilen(t), alle = [];
-    for (const z of zl) { const m = z.match(FRIST); if (m) alle.push({ frist: m[1], zeile: z.length > 160 ? z.slice(0, 157) + '…' : z }); }
+    for (const z of zl) { const zz = mitZahlMonat(z), m = zz.match(FRIST); if (m && !bisOhneZum(zz, m)) alle.push({ frist: m[1], zeile: z.length > 160 ? z.slice(0, 157) + '…' : z }); }
     // Fristen für Widerspruch, Einspruch oder Klage zuerst (stabil sortiert), höchstens 3
     const rf = (x) => (/Widerspruch|Einspruch|Klage/i.test(x.zeile) ? 0 : 1);
     alle.map((x, i) => [x, i]).sort((a, b) => rf(a[0]) - rf(b[0]) || a[1] - b[1]).slice(0, 3).forEach((x) => fristen.push(x[0]));

@@ -73,7 +73,7 @@ setTimeout(async () => {
   // Anderer Brief: Ergebnis aus vorschau.js
   $('briefZurueck').click(); $('brief-ab').click(); $('brief-an').click();
   $('elPaste').click(); $('elText').value = 'Mahnbescheid\nAmtsgericht Coburg\nWiderspruch\nZustellung am 01.11.2026'; $('elLesen').click(); await warte();
-  ok('Anderer Brief einfach: Mahnbescheid-Hinweis', $('elErg').textContent.includes(W['Widerspruch nur innerhalb von 2 Wochen ab Zustellung. Mehr dazu unten.']), $('elErg').textContent.slice(0, 300));
+  ok('Anderer Brief einfach: Mahnbescheid-Hinweis', $('elErg').textContent.includes(require('../src/lang/einfach/scanpruef.json')['bp.mb.frist']), $('elErg').textContent.slice(0, 300)); // Text über tA (src/lang/zusatz, einfach/scanpruef.json)
   // Schalter aus: alles zurück
   $('einfacheSpracheBtn').click(); await warte();
   const zurueck = sichtbareTexte().filter((s) => Object.values(W).includes(s) && W[s] === undefined);
