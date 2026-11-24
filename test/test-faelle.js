@@ -123,14 +123,17 @@ const gueltig = ['ja', 'vielleicht', 'nein', 'na'];
 const T = (o, id, key) => { const x = res(o).m[id].tx.find((a) => a[0] === key); return x ? x[1] : null; };
 // § 147 Abs. 2 SGB III: ab 58 Jahren und 48 Monaten Versicherung 24 Monate; mit Kind 67 % (§ 149)
 const a1 = { adults: 2, kids: 2, arbeitSit: 'arbeitslos', algZeit: true, algMonate: 48, gebJahr: 1966, heute: 2026.8, lohnVorher: 4000 };
-ck('[alg-dauer] ALG I: 60 Jahre, 48 Monate → 24 Monate, mit Kindern 67 %', L(a1, 'alg1') === 'ja' && T(a1, 'alg1', 'alg1.dauer').m === 24 && T(a1, 'alg1', 'alg1.ja').p === 67);
+ck('[alg-dauer] ALG I: 60 Jahre (Einzelperson), 48 Monate → 24 Monate, mit Kindern 67 %', L({ ...a1, adults: 1 }, 'alg1') === 'ja' && T({ ...a1, adults: 1 }, 'alg1', 'alg1.dauer').m === 24 && T({ ...a1, adults: 1 }, 'alg1', 'alg1.ja').p === 67);
+// Paar: Das Alter gilt der ältesten Person, die arbeitslose Person kann jünger sein (§ 147 Abs. 2 SGB III) → keine konkrete Dauer
+ck('[alg-dauer] ALG I: Paar, älteste Person 60 → keine Dauer zugesagt, nur Mindestdauer', L(a1, 'alg1') === 'ja' && !T(a1, 'alg1', 'alg1.dauer') && res(a1).m.alg1.tx.some((a) => a[0] === 'alg1.dauerMin'));
 // Oben: Leistungsentgelt Steuerklasse III (§ 153 SGB III): 4.000 − 20 % − 207,66 € Lohnsteuer = 2.992,34 € × 67 % = 2.004,87 -> 2.000 €
 ck('ALG I: Schätzung 4.000 € x 60 % x 67 % = 1.610 bis 2.000 € (Steuerklasse III)', T(a1, 'alg1', 'schaetz.spanne').a === E(1610) && T(a1, 'alg1', 'schaetz.spanne').b === E(2000), JSON.stringify(T(a1, 'alg1', 'schaetz.spanne')));
-ck('ALG I: 57 Jahre mit 48 Monaten → 18 Monate (ab 55 und 36 Monaten)', T({ ...a1, gebJahr: 1969 }, 'alg1', 'alg1.dauer').m === 18);
+ck('ALG I: 57 Jahre mit 48 Monaten → 18 Monate (ab 55 und 36 Monaten)', T({ ...a1, adults: 1, gebJahr: 1969 }, 'alg1', 'alg1.dauer').m === 18);
 ck('ALG I: 30 Jahre, 20 Monate → 10 Monate, ohne Kind 60 %', T({ ...a1, adults: 1, kids: 0, gebJahr: 1996, algMonate: 20 }, 'alg1', 'alg1.dauer').m === 10 && T({ ...a1, adults: 1, kids: 0, gebJahr: 1996, algMonate: 20 }, 'alg1', 'alg1.ja').p === 60);
 ck('ALG I: über der Beitragsbemessungsgrenze gedeckelt (8.450 €)', T({ ...a1, lohnVorher: 12000 }, 'alg1', 'schaetz.spanne').b === E(Math.round(8450 * 0.72 * 0.67 / 10) * 10));
 ck('ALG I: ohne 12 Monate Versicherung nur möglich', L({ ...a1, algZeit: false }, 'alg1') === 'vielleicht');
-ck('ALG I: im Rentenalter nicht', L({ ...a1, gebJahr: 1955 }, 'alg1') === 'nein');
+ck('ALG I: im Rentenalter nicht (Einzelperson)', L({ ...a1, adults: 1, gebJahr: 1955 }, 'alg1') === 'nein');
+ck('ALG I: Paar, älteste Person im Rentenalter → nur möglich (jüngere kann arbeitslos sein)', L({ ...a1, gebJahr: 1955 }, 'alg1') === 'vielleicht');
 ck('ALG I: wer es schon bekommt → schon vorhanden', L({ ...a1, art1: 'alg', brutto: 1900, netto: 1900 }, 'alg1') === 'na');
 ck('ALG I: Krankengeld läuft aus → Nahtlosigkeit möglich (§ 145 SGB III)', L({ arbeitSit: 'krank', krankWochen: 'ende' }, 'alg1') === 'vielleicht' && K({ arbeitSit: 'krank', krankWochen: 'ende' }, 'alg1')[0] === 'alg1.nahtlos');
 // § 47 SGB V: 70 % brutto, höchstens 90 % netto; abzüglich Beiträge 12,5 %. 3.000 € brutto: netto 60-72 % → 1.620/1.944 x 0,9
