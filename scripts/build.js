@@ -44,7 +44,10 @@ function einfachSource(de, vari) {
   const zusatz = ((vari && vari.sprachOrdner) || []).map((o) => path.join(SRC, 'lang', o, 'einfach.json')).filter((f) => fs.existsSync(f));
   zusatz.forEach((f) => { const o = JSON.parse(fs.readFileSync(f, 'utf8')); Object.keys(o).forEach((k) => { if (Object.prototype.hasOwnProperty.call(de, k) && typeof o[k] === 'string' && o[k] !== '=') out[k] = o[k]; }); });
   if (fs.existsSync(dir)) {
-    const ohne = (vari && vari.ohne || []).filter((m) => m !== 'haushalt'); // Texte weggelassener Module (Variante) nicht ausliefern
+    // Texte weggelassener Module und Texte anderer Varianten (z. B. einfach/senioren.json nur in SoLo Pflege) nicht ausliefern
+    const aktiv = (vari && vari.sprachOrdner) || [];
+    const fremd = [...new Set(Object.values(VARIANTEN).flatMap((v) => v.sprachOrdner))].filter((o) => !aktiv.includes(o));
+    const ohne = (vari && vari.ohne || []).filter((m) => m !== 'haushalt').concat(fremd);
     fs.readdirSync(dir).filter((f) => f.endsWith('.json') && !f.startsWith('_') && !ohne.some((m) => f.startsWith(m))).sort().forEach((f) => {
       const o = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
       Object.keys(o).forEach((k) => {
@@ -220,6 +223,8 @@ function varianteVorlage(html, vari) {
     const alt = '<span class="titel">SoLo <span class="sub">Sozial&shy;leistungs&shy;lotse</span></span>';
     if (!html.includes(alt)) throw new Error('Variante: App-Titel in src/template.html nicht gefunden');
     html = html.replace(alt, () => '<span class="titel">' + vari.titel + '</span>');
+    if (!html.includes('<title>SoLo – Sozialleistungslotse</title>')) throw new Error('Variante: <title> in src/template.html nicht gefunden');
+    html = html.replace('<title>SoLo – Sozialleistungslotse</title>', () => '<title>' + vari.name.replace(/&/g, '&amp;') + '</title>');
   }
   return html;
 }

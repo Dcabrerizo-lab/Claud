@@ -1,0 +1,46 @@
+<!-- Variante „SoLo Pflege“ (VARIANTE=pflege, scripts/build.js): Teile, die nur in dieser Variante in src/template.html eingesetzt werden.
+     Marken: TEIL start (in die Startseite unter den Gruß), TEIL ansicht (eigene Ansicht v-sen), TEIL stil (CSS). -->
+<!--TEIL start-->
+      <div class="start-raster var-einstiege" id="varEinstiege">
+        <button type="button" class="sk sk-haupt var-ein var-selbst" id="goSelbst"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.5"/><path d="M5 21c.8-4.5 3.6-7 7-7s6.2 2.5 7 7"/></svg></span><span class="sk-txt"><b data-t="sv.selbst"></b><span data-t="sv.selbst.t"></span></span><span class="pfeil" aria-hidden="true">→</span></button>
+        <button type="button" class="sk sk-haupt var-ein var-angeh" id="goAngeh"><span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="8" cy="7" r="3"/><circle cx="16.5" cy="9" r="2.5"/><path d="M2.5 20c.6-3.8 2.8-6 5.5-6s4.9 2.2 5.5 6"/><path d="M14 20c.4-2.6 1.6-4.3 3.5-4.3S20.6 17.4 21 20"/></svg></span><span class="sk-txt"><b data-t="sv.angeh"></b><span data-t="sv.angeh.t"></span></span><span class="pfeil" aria-hidden="true">→</span></button>
+      </div>
+<!--TEIL ansicht-->
+    <!-- SoLo Pflege: Seiten „Ich brauche selbst Hilfe“, „Ich pflege einen Angehörigen“, Unterseiten (Inhalte teils aus src/senioren.js) -->
+    <section id="v-sen" class="ansicht" aria-labelledby="h-sen" hidden>
+      <!--ZURUECK-->
+      <h2 id="h-sen" class="ans-h"></h2>
+      <div id="senInhalt" class="pf sen"></div>
+    </section>
+<!--TEIL stil-->
+  /* ===== Variante „SoLo Pflege“: für ältere Menschen (BAGSO-Leitfaden „Ältere Menschen und digitale Angebote“, WCAG 2.2 AA/AAA:
+     große Grundschrift, hoher Kontrast, große Tippflächen ≥ 48 px, wenig Text auf einmal) ===== */
+  html.var-pflege { font-size: 19px; }
+  html.var-pflege.big { font-size: 22px; }
+  .var-pflege .app { --muted: #48443e; --field: #5f574d; --line: #ddd2c1; --kante: #cfc3b0; line-height: 1.55; }
+  @media (prefers-color-scheme: dark) { .var-pflege .app { --muted: #d9d2c7; --field: #b3a897; --line: #4a443c; --kante: #4a443c; } }
+  .var-pflege button, .var-pflege .btn, .var-pflege a.uk-karte, .var-pflege select, .var-pflege input:not([type="checkbox"]):not([type="radio"]) { min-height: 48px; }
+  .var-pflege .linkbtn, .var-pflege .pa-zur { min-height: 48px; font-size: 1.05em; }
+  .var-pflege label.check { min-height: 48px; align-items: center; }
+  .var-pflege label.check input { width: 26px; height: 26px; }
+  .var-pflege .small, .var-pflege .hint, .var-pflege small { font-size: .95em; }
+  .var-pflege .var-aus { display: none !important; }
+  .var-einstiege { margin: 4px 0 14px; }
+  .var-einstiege .var-ein { flex-direction: row; align-items: center; gap: 16px; min-height: 120px; }
+  .var-einstiege .var-ein .sk-txt { flex: 1; }
+  .var-einstiege .var-selbst { --c: var(--c-pflege); }
+  .var-einstiege .var-angeh { --c: var(--c-leistungen); }
+  .var-einstiege .var-ein .sk-sym { width: 52px; height: 52px; }
+  .var-einstiege .var-ein .sk-txt { flex: 1; overflow-wrap: normal; }
+  .app .var-einstiege .var-ein .sk-txt b, .app.big .var-einstiege .var-ein .sk-txt b { font-size: 1.3rem; overflow-wrap: normal; }
+  .app.big .var-einstiege .var-ein .sk-txt span { font-size: 1rem; }
+  .var-pflege #h-start { font-size: 1.5rem; }
+  .var-einstiege .var-ein .sk-sym svg { width: 34px; height: 34px; }
+  .var-einstiege .pfeil { font-size: 1.6em; margin-inline-start: auto; }
+  .var-pflege .start-raster:not(.var-einstiege) { margin-top: 0; }
+  .sen .weg { min-height: 72px; }
+  .sen .sen-druck { margin-top: 22px; }
+  .sen-inhalt > h2 { display: none; } /* Überschrift steht schon oben (h-sen) */
+  .sen-platzhalter { padding: 16px; border: 2px dashed var(--line); border-radius: 14px; }
+  .var-pflege a[href^="tel:"] { font-weight: 700; white-space: nowrap; text-decoration: underline; text-underline-offset: 3px; padding: 6px 0; display: inline-block; }
+  .var-pflege #ebOpen, .var-pflege .sen-druck .btn { border-width: 2px; font-weight: 700; }

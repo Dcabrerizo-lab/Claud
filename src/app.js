@@ -21,7 +21,8 @@
   var VAR_FIELDSETS_AUS = ['arbeitSit', 'ausbildung']; // ganze Abschnitte „Arbeit“ und „Ausbildung“
   var varBereit = false;
   var VAR_TEL = /(^|[^\d\w+])((?:\+49[\s-]?|0)\d{2,5}(?:[\s\/-]?\d{2,}){1,4})(?![\d,.]\d)/g;
-  var SEN_TITEL = { selbst: 'sv.selbst', angeh: 'sv.angeh', antrag: 'sv.antrag', geld: 'sv.geld', hilfen: 'sv.hilfen' };
+  var SEN_TITEL = { selbst: 'sv.selbst', angeh: 'sv.angeh', antrag: 'sv.antrag', geld: 'sv.geld', hilfen: 'sv.hilfen', was: 'sv.k.check' };
+  var SEN_INHALT = { antrag: 'sen-antrag', hilfen: 'sen-angehoerige', was: 'sen-selbst' }; // Seiten aus src/senioren.js
   var SEN_SYM = {
     check: '<path d="M9 11l2 2 4-4"/><rect x="4" y="3" width="16" height="18" rx="2"/>',
     schaetzen: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h5M8 16h3"/><path d="M13.5 16l1.8 1.8 3.2-3.6"/>',
@@ -5147,6 +5148,7 @@
   function varInit() {
     if (varBereit) return; varBereit = true;
     document.documentElement.classList.add('var-pflege');
+    if (window.VORLESEN && typeof window.VORLESEN.uebersetzer === 'function') window.VORLESEN.uebersetzer(t); // Vorlesen in der App-Sprache, auch Einfache Sprache
     ['goLeistungen', 'goGeld', 'goAusziehen'].forEach(function (id) { if ($(id)) $(id).classList.add('var-aus'); });
     // Kachel „Geld im Alter“ in derselben Form wie die anderen Startkacheln, nach „Pflege“
     var g = document.createElement('button'); g.type = 'button'; g.className = 'sk sk-geld'; g.id = 'goGeldAlter';
@@ -5169,6 +5171,7 @@
     var out = [], m; VAR_TEL.lastIndex = 0;
     while ((m = VAR_TEL.exec(text))) {
       var n = m[2].replace(/[\s\/-]+$/, ''), z = n.replace(/\D/g, '');
+      if (/[A-Z]{2}\d{2}\s?$/.test(text.slice(Math.max(0, m.index + m[1].length - 6), m.index + m[1].length))) continue; // IBAN (DE12 0123 …)
       if (z.length >= 8 && z.length <= 15) out.push({ i: m.index + m[1].length, n: n, tel: n.replace(/[^\d+]/g, '') });
     }
     return out;
@@ -5189,7 +5192,14 @@
       k.parentNode.replaceChild(f, k);
     });
   }
-  function varVorlesen(el) { if (el && window.VORLESEN && typeof VORLESEN.knopf === 'function') { try { VORLESEN.knopf(el); } catch (e) { /* Vorlesen ist eine Hilfe; Fehler darin dürfen die Seite nicht stören */ } } }
+  // Vorlesen-Leiste (src/vorlesen.js) unter die Überschrift der Seite statt ganz nach oben (vor Zurück-Knopf und Überschrift)
+  function varVorlesen(el) {
+    if (!el || !window.VORLESEN || typeof window.VORLESEN.knopf !== 'function') return;
+    try {
+      var l = window.VORLESEN.knopf(el), h = el.querySelector(':scope > h2');
+      if (l && h && h.nextSibling !== l) el.insertBefore(l, h.nextSibling);
+    } catch (e) { /* Vorlesen ist eine Hilfe; Fehler darin dürfen die Seite nicht stören */ }
+  }
   function varAnsicht(a) {
     varInit();
     if (a === 'sen') senRender(false);
@@ -5204,7 +5214,15 @@
       t: t, lang: function () { return lang; }, einfach: function () { return einfachSprache; }, beratung: function () { return beratung; }, esc: esc,
       euro: function (v) { return Fmt.euro(v, lang, !!(I18N[lang] && I18N[lang]['meta.dir'] === 'rtl')); }, regeln: function () { return Rules.RULES; },
       check: function () { oeffneVon('leistungen', true); }, pflegegrad: function () { paOeffnen(); }, pflegekasse: function (pg) { puOeffnen(pg == null ? 'pg' : 'liste', pg); },
-      brief: function (art) { $('goBriefe').click(); if (art) briefOeffnen(art); }, seite: senWeiter, nativ: NATIVE
+      brief: function (art) { $('goBriefe').click(); if (art) briefOeffnen(art); }, seite: senWeiter, nativ: NATIVE,
+      // Ziele aus src/senioren.js: 'sen-antrag', 'pflege-einschaetzen', 'check', 'karte:<id>'
+      navigiere: function (ziel) {
+        ziel = String(ziel || '');
+        if (ziel === 'sen-antrag') senWeiter('antrag');
+        else if (ziel === 'pflege-einschaetzen') paOeffnen();
+        else if (ziel === 'check') oeffneVon('leistungen', true);
+        else if (/^karte:/.test(ziel) && VAR_KARTEN.indexOf(ziel.slice(6)) >= 0) sucheGehe('l-' + ziel.slice(6));
+      }
     };
   }
   function senRender(fokus) {
@@ -5225,7 +5243,7 @@
     var check = function () { oeffneVon('leistungen', true); };
     if (senSeite === 'selbst') {
       frage('sv.selbst.frage');
-      liste([['check', 'sv.k.check', 'sv.k.check.t', check], ['schaetzen', 'pu.schaetzen', 'pu.schaetzen.t', function () { paOeffnen(); }, assistent],
+      liste([['check', 'sv.k.check', 'sv.k.check.t', function () { senWeiter('was'); }], ['schaetzen', 'pu.schaetzen', 'pu.schaetzen.t', function () { paOeffnen(); }, assistent],
         ['antrag', 'sv.k.antrag', 'sv.k.antrag.t', function () { senWeiter('antrag'); }], ['pflege', 'sv.k.pflege', 'sv.k.pflege.t', function () { puOeffnen('pg'); }],
         ['geld', 'sv.geld', 'sv.geld.t', function () { senWeiter('geld'); }]]);
     } else if (senSeite === 'angeh') {
@@ -5242,7 +5260,7 @@
       // Inhalte aus src/senioren.js; fehlen sie noch, ein Platzhalter
       var innen = document.createElement('div'); innen.className = 'sen-inhalt'; box.appendChild(innen);
       var ok = false;
-      if (window.SENIOREN && typeof SENIOREN.render === 'function') { try { SENIOREN.render(senSeite === 'antrag' ? 'sen-antrag' : 'sen-angehoerige', innen, senCtx()); ok = true; } catch (e) { innen.innerHTML = ''; } }
+      if (window.SENIOREN && typeof window.SENIOREN.render === 'function') { try { ok = window.SENIOREN.render(SEN_INHALT[senSeite], innen, senCtx()) !== false; } catch (e) { innen.innerHTML = ''; } }
       if (!ok) { var ph = document.createElement('p'); ph.className = 'sen-platzhalter'; ph.textContent = t('sv.bald'); innen.appendChild(ph); }
     }
     // Ausdrucken gut sichtbar (Browser: Druckdialog; App: wie die anderen Texte als PDF drucken oder teilen)

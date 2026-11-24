@@ -403,7 +403,8 @@ states.forEach((s) => {
 check('Parameter der Logik passen zu den Platzhaltern', phBad.length === 0, [...new Set(phBad)].join(' | '));
 
 // Schlüssel in der Oberfläche (data-t, t('...')) existieren
-const tpl = fs.readFileSync(__dirname + '/../src/template.html', 'utf8') + fs.readFileSync(__dirname + '/../src/app.js', 'utf8');
+// Teile nur der Variante „SoLo Pflege“ (Marken VAR-PFLEGE in src/app.js) haben eigene Texte: geprüft in test/test-variante-pflege.js
+const tpl = fs.readFileSync(__dirname + '/../src/template.html', 'utf8') + fs.readFileSync(__dirname + '/../src/app.js', 'utf8').replace(/\/\*VAR-PFLEGE-ANFANG[\s\S]*?VAR-PFLEGE-ENDE[^*]*\*\//g, '');
 const ui = new Set();
 for (const m of tpl.matchAll(/data-t(?:-aria)?="([\w.]+)"/g)) ui.add(m[1]);
 for (const m of tpl.matchAll(/\bt\('([\w.]+)'/g)) ui.add(m[1]);

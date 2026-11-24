@@ -32,3 +32,4 @@ node test/test-vorgang-wechsel-dom.js
 node test/test-denetz-dom.js
 node test/test-cache-reste.js
 node test/test-vorlesen.js
+node test/test-variante-pflege.js
