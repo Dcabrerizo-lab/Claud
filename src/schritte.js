@@ -140,7 +140,7 @@ var Schritte = (function () {
   ]);
 
   function fr(id) { for (var i = 0; i < FRAGEN.length; i++) if (FRAGEN[i].id === id) return FRAGEN[i]; return null; }
-  function aktiv(f, s) { return !f.wenn || !!f.wenn(s); }
+  function aktiv(f, s) { if (ctx && ctx.frageAus && ctx.frageAus(f.id)) return false; return !f.wenn || !!f.wenn(s); } // frageAus: Variante ohne diese Frage
   function liste() { var s = S(); return FRAGEN.filter(function (f) { return aktiv(f, s); }); }
   function wert(f, s, x) { return typeof x === 'function' ? x(s) : x; }
   function opts(f, s) { return typeof f.opts === 'function' ? f.opts(s) : f.opts; }

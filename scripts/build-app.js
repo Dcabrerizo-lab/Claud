@@ -139,6 +139,14 @@ const head = '<!doctype html>\n<html lang="de"><head><meta charset="utf-8">' +
   '<link rel="icon" href="data:,">\n'; // leeres Symbol: sonst fragt die WebView /favicon.ico an (404 im Log); <title>, Links und <style> folgen aus der Vorlage
 fs.writeFileSync(path.join(WWW, 'index.html'), head + html + '\n</body></html>\n');
 
+// Variante (VARIANTE=pflege, scripts/build.js): Kennung und Namen für das App-Paket. Die nativen Projekte (Android applicationId bzw.
+// Produkt-Variante, iOS Bundle-ID und Anzeigename) übernehmen das noch nicht von selbst: eigener Schritt vor dem ersten Bau der Variante.
+if (gebaut.variante && gebaut.variante.id !== 'solo') {
+  const v = gebaut.variante;
+  fs.writeFileSync(path.join(WWW, 'variante.json'), JSON.stringify({ id: v.id, appId: v.appId, appName: v.kurzname, name: v.name }, null, 2) + '\n');
+  console.log('App-Build: Variante ' + v.name + ' (' + v.appId + ', Kurzname „' + v.kurzname + '“) – native Projekte noch auf com.Sozialleistungslotse, vor einem Bau anpassen');
+}
+
 const kb = (f) => (fs.statSync(path.join(WWW, f)).size / 1024).toFixed(0);
 const startKb = (fs.statSync(path.join(WWW, 'index.html')).size + fs.readdirSync(path.join(WWW, 'js')).reduce((a, f) => a + fs.statSync(path.join(WWW, 'js', f)).size, 0)) / 1024;
 const langKb = sprachDateien.reduce((a, [, c]) => a + Buffer.byteLength(c), 0) / 1024;

@@ -105,7 +105,8 @@ var Suche = (function () {
   function index(o) {
     var wb = o.woerter || WOERTER || {};
     var eigene = wb[o.lang] || {}, de = wb.de || {}, nah = o.lang === 'fa-AF' ? (wb.fa || {}) : o.lang === 'fa' ? (wb['fa-AF'] || {}) : {};
-    return ZIELE.map(function (z, i) {
+    // o.erlaubt(id): Variante der App (z. B. „SoLo Pflege“) blendet Ziele aus, die es dort nicht gibt
+    return ZIELE.filter(function (z) { return !o.erlaubt || o.erlaubt(z[0]); }).map(function (z, i) {
       var id = z[0], titel = o.titel(z), terme = [];
       var dazu = function (text, g) { var b = begriff(text, g); if (b && !terme.some(function (x) { return x.n === b.n && x.g >= g; })) terme.push(b); };
       dazu(titel, 1);
@@ -138,7 +139,7 @@ var Suche = (function () {
   function $(id) { return document.getElementById(id); }
   function aktIndex() {
     var s = app.schluessel();
-    if (!idx || idxFuer !== s) { idx = index({ lang: app.lang(), titel: app.titel, titelDe: app.titelDe }); idxFuer = s; }
+    if (!idx || idxFuer !== s) { idx = index({ lang: app.lang(), titel: app.titel, titelDe: app.titelDe, erlaubt: app.erlaubt }); idxFuer = s; }
     return idx;
   }
   // Leeres Feld: häufige Begriffe als Knöpfe (UX-Audit A, Aufgabe 12). Amtsbegriffe auf Deutsch, die Suche findet sie in jeder Sprache.

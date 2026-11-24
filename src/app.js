@@ -5,6 +5,34 @@
     { id: 'p3', v: { adults: 2, kids: 1, kidsU6: 0, kids14: 0, young: 0, ek1Art: 'lohn', ek1Brutto: 3200, ek1Netto: 2500, ek2Art: 'ohne', brutto: 3200, brutto2: '', netto: 2500, miete: 1100, mietstufe: '5', vermoegen: 8000, gebJahr: 1988, kinder12: false, unterhaltFehlt: false, ausbildung: '', pflegegrad: '', bezug: {} } }
   ];
   var NATIVE = /*NATIVE*/ false; // true in der Store-App (Android und iOS)
+  // Variante beim Bauen (scripts/build.js, VARIANTE=pflege): 'solo' = SoLo, 'pflege' = „SoLo Pflege“ für Menschen in Rente oder dauerhaft
+  // erwerbsgemindert und pflegende Angehörige (gleiche Regeln, weniger Leistungen, eigene Startseite; Teil „Variante Pflege“ unten)
+  var VARIANTE = /*VARIANTE*/ 'solo';
+  var VAR_PFLEGE = VARIANTE === 'pflege';
+  /*VAR-PFLEGE-ANFANG oben*/
+  // Leistungen der Pflege-Variante (ids aus test/karten.js): Pflege, häufige Hilfen im Alter und bei dauerhafter Erwerbsminderung.
+  // Gerechnet wird mit denselben Regeln (src/rules.js); die Variante filtert nur die Anzeige (varFilter).
+  var VAR_KARTEN = ['pflege', 'pflegeplus', 'hzp', 'lpg', 'gsa', 'wohngeld', 'emrente', 'srente', 'ausweis', 'pausch', 'rundfunk', 'zuzahl', 'blindengeld', 'blh'];
+  // Fragen (src/schritte.js) und Formularfelder, die nur weggefallene Leistungen betreffen (Kinder, Elterngeld, Arbeit, Ausbildung)
+  var VAR_FRAGEN_AUS = ['kids', 'kidsU6', 'kids14', 'kinderMehr', 'uvgWechsel', 'uvgPartner', 'young', 'schwanger', 'baby', 'egVor', 'egKinder', 'egNach',
+    'arbeitSit', 'algZeit', 'algMonate', 'krankWochen', 'lohnVorher', 'ausbildung', 'babMehr', 'unterhalt', 'waisen', 'kindEink'];
+  var VAR_FELDER_AUS = ['kids', 'kidsU6', 'kids14', 'kinder12', 'kindKrank', 'unterhaltFehlt', 'uvgWechsel', 'uvgPartner', 'young', 'schwanger', 'baby', 'egVor', 'egKinder', 'egNach',
+    'unterhalt', 'waisen', 'kindEink'];
+  var VAR_FIELDSETS_AUS = ['arbeitSit', 'ausbildung']; // ganze Abschnitte „Arbeit“ und „Ausbildung“
+  var varBereit = false;
+  var VAR_TEL = /(^|[^\d\w+])((?:\+49[\s-]?|0)\d{2,5}(?:[\s\/-]?\d{2,}){1,4})(?![\d,.]\d)/g;
+  var SEN_TITEL = { selbst: 'sv.selbst', angeh: 'sv.angeh', antrag: 'sv.antrag', geld: 'sv.geld', hilfen: 'sv.hilfen' };
+  var SEN_SYM = {
+    check: '<path d="M9 11l2 2 4-4"/><rect x="4" y="3" width="16" height="18" rx="2"/>',
+    schaetzen: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h5M8 16h3"/><path d="M13.5 16l1.8 1.8 3.2-3.6"/>',
+    antrag: '<path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9 13h7M9 17h4"/>',
+    pflege: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M9 12h6M12 9v6"/>',
+    geld: '<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M6 7l9.6-2.9A1 1 0 0 1 17 5v2"/><path d="M21 11h-4.5a2 2 0 0 0 0 4H21"/>',
+    brief: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+    hilfen: '<circle cx="8" cy="7" r="3"/><path d="M2.5 20c.6-3.8 2.8-6 5.5-6s4.9 2.2 5.5 6"/><path d="M15 11l2 2 4-4"/>'
+  };
+  var senSeite = 'selbst', senStapel = []; // Ansicht „sen“: aktuelle Seite und Weg dorthin (Zurück)
+  /*VAR-PFLEGE-ENDE oben*/
   var LANGS = ['de', 'en', 'tr', 'ar', 'ru', 'uk', 'pl', 'ro', 'fr', 'fa-AF', 'fa', 'ps', 'so'];
   var MARK = { ja: '✓', vielleicht: '~', nein: '✕', na: '•' };
 
@@ -1272,7 +1300,7 @@
       return;
     }
     $('legende').hidden = false;
-    var out = Rules.evaluate(state);
+    var out = varFilter(Rules.evaluate(state));
     lastOut = out;
     var n = { ja: 0, vielleicht: 0 };
     out.results.forEach(function (r) { if (r.level in n) n[r.level]++; });
@@ -2795,7 +2823,7 @@
     if (zeigt('gsa') || zeigt('ggeld')) tipps.push(t('es.tipp.kduAnders'));
   }
   function esErgebnis(fr) {
-    var out = Rules.evaluate(esEingabe());
+    var out = varFilter(Rules.evaluate(esEingabe()));
     lastEs = out;
     var r = out.results.filter(function (x) { return ES_KARTEN.indexOf(x.id) >= 0; });
     // Schon vorhanden: der Ausweis (wenn ja), alles mit „schon vorhanden“; ohne Steuern kein Steuer-Freibetrag
@@ -2950,10 +2978,11 @@
       plz: function (p) { return Plz.lookup ? Plz.lookup(p) : null; }, plzDa: function () { return !!(Plz.available && Plz.available()); },
       laender: function () { return BUNDESLAENDER; }, kurzAn: function () { return esModus; },
       wegSpeichern: function (w) { if (w) Store.set('lotse.checkWeg', w); else Store.remove('lotse.checkWeg'); },
+      frageAus: function (id) { return VAR_PFLEGE && VAR_FRAGEN_AUS.indexOf(id) >= 0; },
       nachRender: function () { esKopf(); if (navBereit) Navigation.melde(); },
       verzoegerung: window.__SOLO_TEST__ ? 0 : 250
     }, $('schritte'));
-    Store.get('lotse.checkWeg', function (v) { Schritte.wegLaden(v, beratung); });
+    Store.get('lotse.checkWeg', function (v) { Schritte.wegLaden(v || (VAR_PFLEGE && !beratung ? 'schritt' : v), beratung); }); // Pflege-Variante: Frage für Frage als Standard
   }
   Store.get('lotse.haken', function (v) { try { var d = v ? JSON.parse(v) : null; if (d && typeof d === 'object') { haken = d; render(); } } catch (e) {} });
   Store.get('lotse.einfach', function (v) {
@@ -3571,7 +3600,7 @@
 
   // ----- Bereiche: Start, Leistungen (Leistungscheck), Brief prüfen -----
   // Beim Öffnen die Startseite; „#leistungen“ und „#briefe“ öffnen den Bereich direkt (Links, Tests).
-  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'pflegestart', 'einst', 'ordner', 'pfaendung', 'sparen', 'haushalt', 'ausziehen', 'schulden']; // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
+  var ANSICHTEN = ['start', 'leistungen', 'briefe', 'pflege', 'pflegeinfo', 'pflegestart', 'einst', 'ordner', 'pfaendung', 'sparen', 'haushalt', 'ausziehen', 'schulden'].concat(VAR_PFLEGE ? ['sen'] : []); // „pflege“: Pflegegrad-Einschätzung, gehört zu Leistungen
   var aktAnsicht = 'leistungen';
   // Herkunft merken: „Zurück“, Leiste und Android-Taste folgen ihr (keine festen Ziele)
   var NAV_BEREICHE = ['start', 'ordner', 'einst']; // Leiste unten; Leistungen und Briefe erreicht man über die Startkacheln (markieren Start)
@@ -3597,6 +3626,7 @@
     if (a === 'briefe' && !$('checkBox').hidden) { briefZurueckTun(); return true; }
     if (a === 'leistungen' && !esModus && window.Schritte && Schritte.zurueck()) return true; // Frage für Frage: eine Frage zurück
     if (a === 'leistungen' && $('es-zurueck')) { $('es-zurueck').click(); return true; }
+    if (a === 'sen' && senStapel.length) { senSeite = senStapel.pop(); senRender(true); return true; }
     if ((a === 'einst' || a === 'ordner') && usOffen(a)) { usZeigen(a, '', true); return true; } // Unterseite: zurück zur Liste
     if ((a === 'leistungen' || a === 'briefe') && herkunft[a]) { zurueckZurHerkunft(a); return true; } // z. B. aus „Mein Ordner“ gekommen
     return false;
@@ -3622,6 +3652,7 @@
     else if (a === 'leistungen') { d = esModus && es ? es.schritt || 0 : 0; sub = d ? 'es' + d : ''; if (!d && window.Schritte && (x = Schritte.tiefe())) { d = x; sub = 'sf-' + Schritte.pos(); } }
     else if (a === 'pflegestart') { d = pu.schritt === 'liste' ? 2 : pu.schritt === 'pg' ? 1 : 0; sub = d ? pu.schritt + (pu.pg == null ? '' : pu.pg) : ''; }
     else if (a === 'einst' || a === 'ordner') { d = usOffen(a) ? 1 : 0; sub = usAktiv[a]; }
+    else if (a === 'sen') { d = senStapel.length; sub = senSeite; }
     return { pfad: a + (sub ? '/' + sub : ''), tiefe: ansichtTiefe(a) + d };
   }
   // Eine Ebene hoch; false nur auf der Startseite
@@ -3703,6 +3734,7 @@
     if (a === 'sparen') spRender(false);
     if (a === 'ordner') ordnerRender();
     if (a === 'einst') einstStatus();
+    if (VAR_PFLEGE) varAnsicht(a);
     document.querySelectorAll('#appnav button').forEach(function (b) { if (b.getAttribute('data-ansicht') === navA) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
     if (navBereit) Navigation.melde(); else { try { if (location.hash !== '#' + a) history.replaceState(null, '', '#' + a); } catch (e) {} }
     bereicheText();
@@ -5012,7 +5044,7 @@
   if (window.Suche) {
     Suche.init({ t: t, lang: function () { return lang; }, schluessel: function () { return lang + (lang === 'de' && einfachSprache ? '-e' : ''); },
       titel: function (z) { return sucheTitel(z, false); }, titelDe: function (z) { return sucheTitel(z, true); },
-      gehe: sucheGehe, check: function () { sucheGehe('check'); } });
+      gehe: sucheGehe, check: function () { sucheGehe('check'); }, erlaubt: VAR_PFLEGE ? varZiel : null });
     Suche.sprache();
   }
   if (window.Klient) {
@@ -5089,9 +5121,148 @@
     navBereit = true;
   }
 
+
+  /*VAR-PFLEGE-ANFANG*/
+  // ===================== Variante Pflege („SoLo Pflege“, nur bei VARIANTE=pflege aktiv) =====================
+  // Startseite mit zwei Einstiegen, eigene Ansicht „sen“, weniger Leistungen und Fragen, große Schrift, Telefonnummern zum Antippen.
+  // Inhalte für Angehörige und für den Pflegegrad-Antrag liefert src/senioren.js (window.SENIOREN), Vorlesen src/vorlesen.js (window.VORLESEN).
+  function varFilter(out) {
+    if (!VAR_PFLEGE || !out || !out.results) return out;
+    var w = out.wege;
+    if (w && w.a.concat(w.b).some(function (id) { return VAR_KARTEN.indexOf(id) < 0; })) w = null; // Weg mit weggefallener Leistung: Karten einzeln zeigen
+    return Object.assign({}, out, { results: out.results.filter(function (r) { return VAR_KARTEN.indexOf(r.id) >= 0; }), wege: w });
+  }
+  // Suche: nur Ziele, die es in der Variante gibt
+  function varZiel(id) {
+    if (/^l-/.test(id)) return VAR_KARTEN.indexOf(id.slice(2)) >= 0;
+    if (id === 'b-jc' || id === 'b-fk') return false;
+    if (id === 'geld' || /^g-/.test(id)) return id === 'g-finden';
+    if (id === 'ausziehen' || /^a-/.test(id)) return false;
+    return true;
+  }
+  function varGross() {
+    if ($('app').classList.contains('big')) return;
+    $('app').classList.add('big'); document.documentElement.classList.add('big'); $('bigBtn').setAttribute('aria-checked', 'true');
+  }
+  function varInit() {
+    if (varBereit) return; varBereit = true;
+    document.documentElement.classList.add('var-pflege');
+    ['goLeistungen', 'goGeld', 'goAusziehen'].forEach(function (id) { if ($(id)) $(id).classList.add('var-aus'); });
+    // Kachel „Geld im Alter“ in derselben Form wie die anderen Startkacheln, nach „Pflege“
+    var g = document.createElement('button'); g.type = 'button'; g.className = 'sk sk-geld'; g.id = 'goGeldAlter';
+    g.innerHTML = '<span class="sk-sym" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M6 7l9.6-2.9A1 1 0 0 1 17 5v2"/><path d="M21 11h-4.5a2 2 0 0 0 0 4H21"/><circle cx="16.6" cy="13" r=".6"/></svg></span><span class="sk-txt"><b data-t="sv.geld"></b><span data-t="sv.geld.t"></span></span>';
+    $('goPflege').parentNode.insertBefore(g, $('goPflege').nextSibling);
+    g.addEventListener('click', function () { senOeffnen('geld'); });
+    $('goSelbst').addEventListener('click', function () { senOeffnen('selbst'); });
+    $('goAngeh').addEventListener('click', function () { senOeffnen('angeh'); });
+    [g, $('goSelbst'), $('goAngeh')].forEach(function (b) { b.querySelectorAll('[data-t]').forEach(function (e) { e.textContent = t(e.getAttribute('data-t')); }); });
+    // Formular „Alles auf einer Seite“: Felder zu weggefallenen Leistungen ausblenden (Klasse statt hidden: die App schaltet hidden selbst)
+    VAR_FELDER_AUS.forEach(function (id) { var e = $(id); var f = e && (e.closest('.field') || e.closest('label')); if (f) f.classList.add('var-aus'); });
+    VAR_FIELDSETS_AUS.forEach(function (id) { var e = $(id); var f = e && e.closest('fieldset'); if (f) f.classList.add('var-aus'); });
+    // Telefonnummern zum Antippen (tel:-Links), auch in später gezeichneten Seiten
+    var tm = null;
+    if (window.MutationObserver) new MutationObserver(function () { if (!tm) tm = setTimeout(function () { tm = null; varTelefon($('inhalt')); }, 0); }).observe($('inhalt'), { childList: true, subtree: true, characterData: true });
+  }
+  // Deutsche Telefonnummer im Text (0… oder +49…, mind. 8 Ziffern, Leerzeichen, Schrägstrich oder Bindestrich erlaubt).
+  // Nicht: Postleitzahlen (5 Ziffern), Beträge, Datumsangaben, IBAN; nicht in Links, Knöpfen, Eingabefeldern.
+  function varTelNummern(text) {
+    var out = [], m; VAR_TEL.lastIndex = 0;
+    while ((m = VAR_TEL.exec(text))) {
+      var n = m[2].replace(/[\s\/-]+$/, ''), z = n.replace(/\D/g, '');
+      if (z.length >= 8 && z.length <= 15) out.push({ i: m.index + m[1].length, n: n, tel: n.replace(/[^\d+]/g, '') });
+    }
+    return out;
+  }
+  function varTelefon(wurzel) {
+    if (!wurzel || !document.createTreeWalker) return;
+    var w = document.createTreeWalker(wurzel, 4, null), knoten = [], k;
+    while ((k = w.nextNode())) { if (/\d{2}/.test(k.nodeValue) && !(k.parentNode && k.parentNode.closest('a, button, input, textarea, select, script, style, .no-tel, label'))) knoten.push(k); }
+    knoten.forEach(function (k) {
+      var text = k.nodeValue, nr = varTelNummern(text); if (!nr.length) return;
+      var f = document.createDocumentFragment(), pos = 0;
+      nr.forEach(function (x) {
+        if (x.i > pos) f.appendChild(document.createTextNode(text.slice(pos, x.i)));
+        var a = document.createElement('a'); a.href = 'tel:' + x.tel; a.textContent = x.n; a.setAttribute('dir', 'ltr'); f.appendChild(a);
+        pos = x.i + x.n.length;
+      });
+      if (pos < text.length) f.appendChild(document.createTextNode(text.slice(pos)));
+      k.parentNode.replaceChild(f, k);
+    });
+  }
+  function varVorlesen(el) { if (el && window.VORLESEN && typeof VORLESEN.knopf === 'function') { try { VORLESEN.knopf(el); } catch (e) { /* Vorlesen ist eine Hilfe; Fehler darin dürfen die Seite nicht stören */ } } }
+  function varAnsicht(a) {
+    varInit();
+    if (a === 'sen') senRender(false);
+    if (a === 'briefe') ['brief-jc', 'brief-fk'].forEach(function (id) { if ($(id)) $(id).classList.add('var-aus'); });
+    varVorlesen($('v-' + a));
+  }
+  function senOeffnen(seite) { senStapel = []; senSeite = seite; if (aktAnsicht === 'sen') senRender(true); else oeffneVon('sen', true); }
+  function senWeiter(seite) { senStapel.push(senSeite); senSeite = seite; senRender(true); if (navBereit) Navigation.melde(); }
+  // Kontext für src/senioren.js: Übersetzung, Sprache, Beträge, Wege in andere Teile der App
+  function senCtx() {
+    return {
+      t: t, lang: function () { return lang; }, einfach: function () { return einfachSprache; }, beratung: function () { return beratung; }, esc: esc,
+      euro: function (v) { return Fmt.euro(v, lang, !!(I18N[lang] && I18N[lang]['meta.dir'] === 'rtl')); }, regeln: function () { return Rules.RULES; },
+      check: function () { oeffneVon('leistungen', true); }, pflegegrad: function () { paOeffnen(); }, pflegekasse: function (pg) { puOeffnen(pg == null ? 'pg' : 'liste', pg); },
+      brief: function (art) { $('goBriefe').click(); if (art) briefOeffnen(art); }, seite: senWeiter, nativ: NATIVE
+    };
+  }
+  function senRender(fokus) {
+    var box = $('senInhalt'); if (!box) return;
+    if (!SEN_TITEL[senSeite]) senSeite = 'selbst';
+    box.innerHTML = '';
+    $('h-sen').textContent = t(SEN_TITEL[senSeite]);
+    var frage = function (k) { var p = document.createElement('p'); p.className = 'pf-frage'; p.textContent = t(k); box.appendChild(p); };
+    var liste = function (eintraege) {
+      var l = document.createElement('div'); l.className = 'weg-liste'; box.appendChild(l);
+      eintraege.forEach(function (x) {
+        if (x[4] === false) return;
+        var b = nhKnopf('weg', '<span class="weg-sym" aria-hidden="true"><svg viewBox="0 0 24 24">' + SEN_SYM[x[0]] + '</svg></span><span class="weg-txt"><b>' + esc(t(x[1])) + '</b><span>' + esc(t(x[2])) + '</span></span>', null, x[3]);
+        b.id = 'sen-' + senSeite + '-' + x[0]; l.appendChild(b);
+      });
+    };
+    var assistent = typeof PflegeAssistent !== 'undefined';
+    var check = function () { oeffneVon('leistungen', true); };
+    if (senSeite === 'selbst') {
+      frage('sv.selbst.frage');
+      liste([['check', 'sv.k.check', 'sv.k.check.t', check], ['schaetzen', 'pu.schaetzen', 'pu.schaetzen.t', function () { paOeffnen(); }, assistent],
+        ['antrag', 'sv.k.antrag', 'sv.k.antrag.t', function () { senWeiter('antrag'); }], ['pflege', 'sv.k.pflege', 'sv.k.pflege.t', function () { puOeffnen('pg'); }],
+        ['geld', 'sv.geld', 'sv.geld.t', function () { senWeiter('geld'); }]]);
+    } else if (senSeite === 'angeh') {
+      frage('sv.angeh.frage');
+      liste([['hilfen', 'sv.hilfen', 'sv.hilfen.t', function () { senWeiter('hilfen'); }], ['schaetzen', 'sv.k.schaetzenA', 'sv.k.schaetzenA.t', function () { paOeffnen(); }, assistent],
+        ['antrag', 'sv.k.antrag', 'sv.k.antragA.t', function () { senWeiter('antrag'); }], ['pflege', 'sv.k.pflegeA', 'sv.k.pflegeA.t', function () { puOeffnen('pg'); }],
+        ['check', 'sv.k.checkA', 'sv.k.checkA.t', check]]);
+    } else if (senSeite === 'geld') {
+      frage('sv.geld.frage');
+      liste([['check', 'sv.k.geldcheck', 'sv.k.geldcheck.t', check], ['brief', 'home.brief', 'home.brief.t', function () { $('goBriefe').click(); }]]);
+      var sh = document.createElement('p'); sh.className = 'pf-frage'; sh.textContent = t('sv.schulden'); box.appendChild(sh);
+      linkKarte(box, 'sen-sb', SB_SUCHE_URL, t('sb.finden.link'), t('sb.finden.link.t'));
+    } else {
+      // Inhalte aus src/senioren.js; fehlen sie noch, ein Platzhalter
+      var innen = document.createElement('div'); innen.className = 'sen-inhalt'; box.appendChild(innen);
+      var ok = false;
+      if (window.SENIOREN && typeof SENIOREN.render === 'function') { try { SENIOREN.render(senSeite === 'antrag' ? 'sen-antrag' : 'sen-angehoerige', innen, senCtx()); ok = true; } catch (e) { innen.innerHTML = ''; } }
+      if (!ok) { var ph = document.createElement('p'); ph.className = 'sen-platzhalter'; ph.textContent = t('sv.bald'); innen.appendChild(ph); }
+    }
+    // Ausdrucken gut sichtbar (Browser: Druckdialog; App: wie die anderen Texte als PDF drucken oder teilen)
+    var dz = document.createElement('p'); dz.className = 'btns sen-druck no-print';
+    dz.appendChild(nhKnopf('btn ghost', '<svg class="knopf-sym" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 9V3h10v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/></svg><span>' + esc(t('sv.drucken')) + '</span>', null, function () {
+      if (!NATIVE) { window.print(); return; }
+      schreibenAusgeben({ value: $('h-sen').textContent + '\n\n' + (box.innerText || box.textContent) }, $('h-sen').textContent, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', null);
+    }));
+    box.appendChild(dz);
+    varTelefon(box);
+    varVorlesen($('v-sen'));
+    if (fokus) { window.scrollTo(0, 0); var h = $('h-sen'); h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+  }
+  if (window.__SOLO_TEST__) window.__soloVariante = { telNummern: varTelNummern, filter: varFilter, karten: VAR_KARTEN, variante: VARIANTE };
+  /*VAR-PFLEGE-ENDE*/
+
+  if (VAR_PFLEGE) { varInit(); if (aktAnsicht === 'start') varAnsicht('start'); }
   Store.get('lotse.state', stateLaden);
   function stateLaden(v) {
-    if (!v) return;
+    if (!v) { if (VAR_PFLEGE) varGross(); return; } // Pflege-Variante: große Schrift als Standard (erster Start)
     try {
       var d = JSON.parse(v);
       if (!d || !d.s) return;
