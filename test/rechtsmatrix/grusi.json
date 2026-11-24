@@ -1,0 +1,4405 @@
+[
+ {
+  "id": "GW-GS-01",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Alleinstehend 36 J., kein Einkommen, Warmmiete 500, Stufe III: Grundsicherungsgeld = 563 + 500",
+  "quelle": "§ 19, § 20, § 22 SGB II; RBSFV 2026 (Stufe 1 = 563 €)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1990,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 1060,
+    "toleranz": 10
+   },
+   "rundfunk": {
+    "status": "vielleicht"
+   },
+   "wbs": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "GW-GS-02",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Alleinstehend, Lohn 1.200 brutto (Midijob, netto 1.014,11), Miete 500: Lücke 1.063 - (1.014,11 - 348) = 397",
+  "quelle": "§ 11b Abs. 2, 3 SGB II; § 20 Abs. 2a SGB IV",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "lohn",
+   "brutto": 1200,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1990,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 400,
+    "toleranz": 10
+   }
+  }
+ },
+ {
+  "id": "GW-GS-03",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Wohngeld 1 Person, Lohn 1.200, Warmmiete 500, Stufe III: obere Schätzung = 1,15*(500-(0,04+4,797e-4*500+4,08e-5*Y)*Y), Y=(14.400-1.230)*0,7/12=768,25 -> 300",
+  "quelle": "§ 19 Abs. 1, Anlage 1-3 WoGG (Fassung 1.1.2025); Wohngeldrechner BMWSB",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "lohn",
+   "brutto": 1200,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1990,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GW-VM-01",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "28 J., Vermögen 4.999 €: unter Freibetrag 5.000 (§ 12 Abs. 2 SGB II n. F. ab 1.7.2026)",
+  "quelle": "§ 12 Abs. 2 SGB II i. d. F. 13. SGB II-ÄndG v. 16.04.2026 (BGBl. 2026 I Nr. 107); buzer.de/12_SGB_II.htm",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1998,
+   "vermoegen": 4999
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "GW-VM-02",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "28 J., Vermögen 5.001 €",
+  "quelle": "wie VM-01",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1998,
+   "vermoegen": 5001
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "GW-VM-03",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "35 J., Vermögen 9.999 / Grenze 10.000",
+  "quelle": "wie VM-01",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1991,
+   "vermoegen": 9999
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "GW-VM-04",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "35 J., Vermögen 10.001",
+  "quelle": "wie VM-01",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1991,
+   "vermoegen": 10001
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "GW-VM-05",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "45 J., Vermögen 12.501 (Grenze 12.500)",
+  "quelle": "wie VM-01",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1981,
+   "vermoegen": 12501
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "GW-VM-06",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "55 J., Vermögen 19.999 (Grenze 20.000)",
+  "quelle": "wie VM-01",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1971,
+   "vermoegen": 19999
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "GW-VM-07",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Grenzjahr: geboren 1996, am 24.11.2026 je nach Monat 29 oder 30 -> 7.000 € nur 'möglich'",
+  "quelle": "§ 12 Abs. 2 Satz 2 SGB II (erhöhter Freibetrag ab Beginn des Monats, in dem die Altersgrenze erreicht wird)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.85,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1996,
+   "vermoegen": 7000
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GW-VM-08",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Wohngeld Vermögen 1 Person 60.001 € (Regelvermutung WoGVwV 21.37)",
+  "quelle": "§ 21 Nr. 3 WoGG; Nr. 21.37 WoGVwV",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "lohn",
+   "brutto": 1500,
+   "miete": 600,
+   "mietstufe": "3",
+   "gebJahr": 1990,
+   "vermoegen": 60001
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "GW-KI-01",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Paar, 2 Kinder 14-17 (Alter NICHT angegeben), Lohn 3.500: mit Stufe 4 (471 €) Lücke > 50 -> darf nicht 'eher nicht' sein",
+  "quelle": "§ 23 Nr. 1 SGB II, RBSFV 2026 Stufe 4 = 471 €",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "lohn",
+   "brutto": 3500,
+   "miete": 900,
+   "mietstufe": "3",
+   "gebJahr": 1985,
+   "vermoegen": 0,
+   "ohneWege": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GW-KI-02",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Alleinerziehend, Kind unter 6, Unterhalt 500, kein Einkommen, Miete 400: Kindergeld-Überhang 202 € zählt beim Elternteil -> Lücke ca. 760 (nicht 970) – korrigiert 24.11.2026: 759 € angerechnet minus 30 € Versicherungspauschale auf den Kindergeld-Rest (§ 6 Abs. 1 Nr. 1 GrusiGV) -> ca. 790",
+  "quelle": "§ 11 Abs. 1 Satz 5 SGB II (Kindergeld nur soweit beim Kind benötigt, Rest Einkommen des Elternteils)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "kidsU6": 1,
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 400,
+   "mietstufe": "3",
+   "gebJahr": 1992,
+   "vermoegen": 0,
+   "unterhalt": 500,
+   "ohneWege": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 790,
+    "toleranz": 15
+   }
+  }
+ },
+ {
+  "id": "GW-KI-03",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Paar mit volljährigem Kind im Studium (BAföG-förderfähig) im Haushalt: Kind nach § 7 Abs. 5 ausgeschlossen, Bedarf ohne Kind -> höchstens 'möglich', kein Betrag 910",
+  "quelle": "§ 7 Abs. 5, Abs. 6 Nr. 2 SGB II",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "young": 1,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "ausbildung": "kind",
+   "art1": "lohn",
+   "brutto": 1800,
+   "miete": 800,
+   "mietstufe": "3",
+   "gebJahr": 1975,
+   "vermoegen": 0,
+   "ohneWege": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GW-KI-04",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Paar, 2 Kinder, Lohn 2.800, Miete 800: Wohngeld + KiZ decken Bedarf -> Grundsicherungsgeld nur 'möglich' (Vorrang)",
+  "quelle": "§ 12a Satz 2 Nr. 2 SGB II; § 6a BKGG",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "lohn",
+   "brutto": 2800,
+   "miete": 800,
+   "mietstufe": "3",
+   "gebJahr": 1988,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht"
+   },
+   "wohngeld": {
+    "status": "ja"
+   },
+   "kiz": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "GW-AZ-01",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Studium, 25 J., allein: kein Grundsicherungsgeld (§ 7 Abs. 5), kein Wohngeld (§ 20 Abs. 2 WoGG)",
+  "quelle": "§ 7 Abs. 5 SGB II; § 20 Abs. 2 WoGG; § 4 Abs. 1 Nr. 5 RBStV",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "ausbildung": "ich",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 400,
+   "mietstufe": "3",
+   "gebJahr": 2001,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   },
+   "wohngeld": {
+    "status": "nein"
+   },
+   "bafoeg": {
+    "status": "vielleicht"
+   },
+   "rundfunk": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GW-AZ-02",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Studium mit 50 J. (über BAföG-Altersgrenze): Ausschluss § 7 Abs. 5 SGB II bleibt (dem Grunde nach förderfähig), Wohngeld möglich",
+  "quelle": "§ 7 Abs. 5 SGB II ('dem Grunde nach förderungsfähig', unabhängig von persönlichen Voraussetzungen); Merkblatt Thomé 2024",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "ausbildung": "ich",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 400,
+   "mietstufe": "3",
+   "gebJahr": 1976,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   },
+   "wohngeld": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GW-AZ-03",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Betriebliche Ausbildung, 20 J., eigene Wohnung, 900 brutto: kein BAföG, BAB möglich, Wohngeld ausgeschlossen, Grundsicherungsgeld aufstockend nur 'möglich' (BAB vorrangig)",
+  "quelle": "§§ 2, 7 BAföG; §§ 56, 60 SGB III; § 20 Abs. 2 WoGG; § 12a SGB II; § 4 Abs. 1 Nr. 5 b RBStV",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "ausbildung": "ich",
+   "babBetrieb": true,
+   "babWohnt": true,
+   "art1": "lohn",
+   "brutto": 900,
+   "miete": 450,
+   "mietstufe": "3",
+   "gebJahr": 2006,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "bafoeg": {
+    "status": "nein"
+   },
+   "bab": {
+    "status": "vielleicht"
+   },
+   "wohngeld": {
+    "status": "nein"
+   },
+   "ggeld": {
+    "status": "vielleicht"
+   },
+   "rundfunk": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GW-AZ-04",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Betriebliche Ausbildung U25, 2.000 brutto, eigene Wohnung 450: Freibetrag § 11b Abs. 2b (603 € + 30 %/10 %) = 735 € -> Lücke > 50, nicht 'eher nicht'",
+  "quelle": "§ 11b Abs. 2b, Abs. 3 Satz 4 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "ausbildung": "ich",
+   "babBetrieb": true,
+   "babWohnt": true,
+   "art1": "lohn",
+   "brutto": 2000,
+   "miete": 450,
+   "mietstufe": "3",
+   "gebJahr": 2005,
+   "vermoegen": 0,
+   "ohneWege": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GW-AZ-05",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Azubi wohnt bei den Eltern (einfache Version): keine BAB (§ 60 Abs. 1 SGB III)",
+  "quelle": "§ 60 Abs. 1 SGB III",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "ausbildung": "ich",
+   "babBetrieb": true,
+   "babWohnt": false,
+   "art1": "lohn",
+   "brutto": 900,
+   "miete": 0,
+   "wohnform": "eltern",
+   "gebJahr": 2007,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "bab": {
+    "status": "nein"
+   },
+   "bafoeg": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "GW-U25-01",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "22 J., wohnt bei den Eltern, kein Einkommen: Bedarfsgemeinschaft mit den Eltern (Stufe 3 = 451 €, Elterneinkommen zählt) -> nur 'möglich'",
+  "quelle": "§ 7 Abs. 3 Nr. 4, § 9 Abs. 2 Satz 2, § 20 Abs. 2 Satz 2 Nr. 1 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "wohnform": "eltern",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "gebJahr": 2004,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GW-U25-02",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "31 J., wohnt bei den Eltern: eigene BG, aber Vermutung der Unterstützung durch Verwandte -> 'möglich'",
+  "quelle": "§ 9 Abs. 5 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "wohnform": "eltern",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "gebJahr": 1995,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GW-EU-01",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "EU-Bürger, nur Arbeitsuche, < 5 Jahre: Ausschluss",
+  "quelle": "§ 7 Abs. 1 Satz 2 Nr. 2 SGB II; § 23 Abs. 3 SGB XII",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "eu",
+   "euArbeit": "nein",
+   "euJahre": "unter5",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1990,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   },
+   "gsa": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "GW-EU-02",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "EU-Bürger, früher gearbeitet, jetzt ohne Einkommen, < 5 Jahre: Erhalt des Arbeitnehmerstatus offen -> 'möglich'",
+  "quelle": "§ 2 Abs. 3 FreizügG/EU (Fortwirkung nur bei unfreiwilliger Arbeitslosigkeit; unter 1 Jahr Beschäftigung nur 6 Monate)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "eu",
+   "euArbeit": "ja",
+   "euJahre": "unter5",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1990,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GW-EU-03",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "EU-Bürger ab 5 Jahre: kein Ausschluss",
+  "quelle": "§ 7 Abs. 1 Satz 4 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "eu",
+   "euArbeit": "nein",
+   "euJahre": "ab5",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1990,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "GW-AS-01",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Asylverfahren, bezieht AsylbLG: kein Grundsicherungsgeld, kein Wohngeld, Rundfunkbefreiung, AsylbLG läuft",
+  "quelle": "§ 7 Abs. 1 Satz 2 Nr. 3 SGB II; § 7 Abs. 1 Nr. 8 WoGG; § 4 Abs. 1 Nr. 4 RBStV",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "asyl",
+   "art1": "asylblg",
+   "brutto": 0,
+   "miete": 0,
+   "gebJahr": 1990,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   },
+   "wohngeld": {
+    "status": "nein"
+   },
+   "rundfunk": {
+    "status": "ja"
+   },
+   "asylblg": {
+    "status": "na"
+   },
+   "wbs": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "GW-AS-02",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Gestattung, Lohn 2.000 brutto, kein AsylbLG-Bezug: AsylbLG nach § 7 AsylbLG nicht bedürftig -> höchstens 'möglich'/'eher nicht', Wohngeld möglich",
+  "quelle": "§ 7 Abs. 1 AsylbLG (Einkommen und Vermögen vorrangig); § 3 Abs. 5 WoGG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "asyl",
+   "art1": "lohn",
+   "brutto": 2000,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1990,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "asylblg": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   },
+   "wohngeld": {
+    "status": "vielleicht"
+   },
+   "ggeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "GW-AS-03",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Ausreisepflichtig ohne Duldung: kein Wohngeld, kein WBS",
+  "quelle": "§ 3 Abs. 5 WoGG; § 27 Abs. 2 WoFG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "ausreise",
+   "art1": "lohn",
+   "brutto": 1500,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1990,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "nein"
+   },
+   "wbs": {
+    "status": "nein"
+   },
+   "ggeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "GW-RE-01",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Rentner 71 J., Rente netto 900, Miete 550: Grundsicherung im Alter ca. 210, Wohngeld als Wahl",
+  "quelle": "§§ 41, 42 SGB XII; § 7 Abs. 1 Nr. 5 WoGG; BSG 23.03.2021 B 8 SO 2/20 R",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "rente",
+   "brutto": 1000,
+   "netto": 900,
+   "miete": 550,
+   "mietstufe": "3",
+   "gebJahr": 1955,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 210,
+    "toleranz": 10
+   },
+   "ggeld": {
+    "status": "nein"
+   },
+   "wohngeld": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "GW-RE-02",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Paar: eine Person Rentner (71), andere hat Lohn 500 (erwerbsfähig): gemischte Bedarfsgemeinschaft, Grundsicherungsgeld für die erwerbsfähige Person möglich",
+  "quelle": "§ 7 Abs. 2, 3 Nr. 3, Abs. 4 SGB II; § 5 Abs. 2 SGB II; § 21 SGB XII",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "rente",
+   "art2": "lohn",
+   "brutto": 1400,
+   "brutto2": 500,
+   "miete": 600,
+   "mietstufe": "3",
+   "gebJahr": 1955,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GW-RE-03",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "63 J., nur Rente: vorgezogene Altersrente möglich -> Grundsicherungsgeld nur 'möglich'",
+  "quelle": "§ 7 Abs. 4 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "rente",
+   "brutto": 1000,
+   "netto": 900,
+   "miete": 550,
+   "mietstufe": "3",
+   "gebJahr": 1963,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht"
+   },
+   "gsa": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "GW-RE-04",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Dauerhaft voll erwerbsgemindert 45 J., Rente 700: Sozialamt",
+  "quelle": "§ 41 Abs. 3 SGB XII; § 5 Abs. 2 Satz 2 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "rente",
+   "brutto": 780,
+   "netto": 700,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1981,
+   "emStd": "unter3",
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   },
+   "gsa": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "GW-RF-01",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Merkzeichen RF ohne Sozialleistung: Ermäßigung auf ein Drittel",
+  "quelle": "§ 4 Abs. 2 RBStV",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "rente",
+   "brutto": 1600,
+   "netto": 1400,
+   "miete": 550,
+   "mietstufe": "3",
+   "gebJahr": 1955,
+   "mz": {
+    "RF": true
+   },
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "rundfunk": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GW-RF-02",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Ohne Sozialleistung, gutes Einkommen: keine Befreiung",
+  "quelle": "§ 4 Abs. 1 RBStV",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "lohn",
+   "brutto": 3500,
+   "miete": 700,
+   "mietstufe": "3",
+   "gebJahr": 1985,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "rundfunk": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "GW-WBS-01",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Bayern, 1 Person, 1.458 €/Monat brutto (17.496 €/Jahr <= 17.500)",
+  "quelle": "Art. 4 Abs. 1 BayWoBindG (17.500 €), gesetze-bayern.de, Abruf 24.11.2026",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "lohn",
+   "brutto": 1458,
+   "miete": 600,
+   "mietstufe": "4",
+   "gebJahr": 1990,
+   "bundesland": "BY",
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "wbs": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "GW-WBS-02",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Bayern, 1 Person, 1.459 €/Monat (17.508 €): über Grenze, nach Abzügen möglich",
+  "quelle": "Art. 4 Abs. 1 BayWoBindG; Art. 6 BayWoFG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "lohn",
+   "brutto": 1459,
+   "miete": 600,
+   "mietstufe": "4",
+   "gebJahr": 1990,
+   "bundesland": "BY",
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "wbs": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "GW-WBS-03",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Bayern, Schwangere allein, 1.500 €/Monat (18.000 €): Grenze 17.500 + 1.300 (Schwangerschaft wie Kind) = 18.800 -> 'ja'",
+  "quelle": "Art. 4 Abs. 1 Satz 4 BayWoBindG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "lohn",
+   "brutto": 1500,
+   "miete": 600,
+   "mietstufe": "4",
+   "gebJahr": 1995,
+   "bundesland": "BY",
+   "schwanger": true,
+   "baby": "bald",
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "wbs": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "GW-MJ-01",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Minijob 603 € (Grenze 2026): keine SV-Abzüge, netto 603",
+  "quelle": "§ 8 Abs. 1a SGB IV (603 € bei 13,90 €/h); Bedarf 963 - (603 - 208,90) = 568,90",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "lohn",
+   "brutto": 603,
+   "miete": 400,
+   "mietstufe": "3",
+   "gebJahr": 1990,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 570,
+    "toleranz": 10
+   }
+  }
+ },
+ {
+  "id": "GW-MJ-02",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Lohn 604 € (Übergangsbereich): SV ca. 0,31 €",
+  "quelle": "§ 20 Abs. 2, 2a SGB IV",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "lohn",
+   "brutto": 604,
+   "miete": 400,
+   "mietstufe": "3",
+   "gebJahr": 1990,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 570,
+    "toleranz": 10
+   }
+  }
+ },
+ {
+  "id": "GW-FB-01",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Freibetrag mit minderjährigem Kind bis 1.500 €: Paar 1 Kind, Lohn 1.500 -> 100+84+144+50 = 378",
+  "quelle": "§ 11b Abs. 3 Satz 3 SGB II",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "lohn",
+   "brutto": 1500,
+   "miete": 700,
+   "mietstufe": "3",
+   "gebJahr": 1990,
+   "vermoegen": 0,
+   "ohneWege": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "GW-MB-01",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Schwangere allein, kein Einkommen, Miete 500: Mehrbedarf 17 % = 95,71 -> 1.158,71",
+  "quelle": "§ 21 Abs. 2 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1995,
+   "schwanger": true,
+   "vermoegen": 0,
+   "ohneWege": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 1160,
+    "toleranz": 10
+   }
+  }
+ },
+ {
+  "id": "GW-MB-02",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Alleinerziehend, 2 Kinder 6-13, kein Einkommen, Miete 700: Mehrbedarf 36 % (2 Kinder unter 16) = 202,68",
+  "quelle": "§ 21 Abs. 3 Nr. 1 SGB II; Bedarf 563 + 2*390 + 700 + 202,68 = 2.245,68 minus Kindergeld 518 = 1.727,68",
+  "h": {
+   "adults": 1,
+   "kids": 2,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 700,
+   "mietstufe": "3",
+   "gebJahr": 1990,
+   "vermoegen": 0,
+   "ohneWege": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 1730,
+    "toleranz": 15
+   }
+  }
+ },
+ {
+  "id": "GW-MB-03",
+  "pruefer": "grundsicherung-wohnen",
+  "beschreibung": "Dezentrales Warmwasser allein: 2,3 % von 563 = 12,95",
+  "quelle": "§ 21 Abs. 7 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 1990,
+   "warmwasser": true,
+   "vermoegen": 0,
+   "ohneWege": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 1080,
+    "toleranz": 10
+   }
+  }
+ },
+ {
+  "id": "FA-KIZ-01",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Paar, 2 Kinder (4 und 9), Lohn 2.800 brutto / 2.196 netto, Miete 950 (III)",
+  "quelle": "§ 6a BKGG, https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; KiZ-Merkblatt 7/2026, https://www.arbeitsagentur.de/datei/kiz2-merkblattkinderzuschlag_ba015395.pdf; Vorrang § 12a SGB II; Wohngeld § 19 WoGG",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2800,
+   "brutto2": 0,
+   "netto": 2196,
+   "miete": 950,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "ja",
+    "betrag": 552,
+    "toleranz": 15
+   },
+   "ggeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-KIZ-02",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Paar, 2 Kinder, Lohn 899 (unter Mindesteinkommen 900)",
+  "quelle": "§ 6a Abs. 1 Nr. 2 BKGG",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 899,
+   "brutto2": 0,
+   "netto": 899,
+   "miete": 950,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "FA-KIZ-03b",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "wie KIZ-03a, Lohn 599",
+  "quelle": "§ 6a Abs. 1 Nr. 2 BKGG; § 1 Abs. 1a UVG",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 1,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 599,
+   "brutto2": "",
+   "netto": 599,
+   "miete": 400,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "kinder12": true,
+   "unterhaltFehlt": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "FA-KIZ-04",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Alleinerziehend, Kind 4, Lohn 1.800/1.420, Unterhalt fehlt (UVG 227), Miete 700",
+  "quelle": "§ 6a BKGG, https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; KiZ-Merkblatt 7/2026, https://www.arbeitsagentur.de/datei/kiz2-merkblattkinderzuschlag_ba015395.pdf; UVG zählt zu 45 % (§ 6a Abs. 3)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1800,
+   "brutto2": "",
+   "netto": 1420,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "unterhaltFehlt": true
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "ja",
+    "auchOk": [
+     "vielleicht"
+    ]
+   },
+   "ggeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-KIZ-05",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Paar, 2 Kinder (8, 10), Lohn 4.000/3.000, Miete 950",
+  "quelle": "§ 6a BKGG, https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; KiZ-Merkblatt 7/2026, https://www.arbeitsagentur.de/datei/kiz2-merkblattkinderzuschlag_ba015395.pdf",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 4000,
+   "brutto2": 0,
+   "netto": 3000,
+   "miete": 950,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-KIZ-06",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Paar, 2 Kinder, Lohn 6.000/4.200",
+  "quelle": "§ 6a BKGG, https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; KiZ-Merkblatt 7/2026, https://www.arbeitsagentur.de/datei/kiz2-merkblattkinderzuschlag_ba015395.pdf",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 6000,
+   "brutto2": 0,
+   "netto": 4200,
+   "miete": 950,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "nein"
+   },
+   "ggeld": {
+    "status": "nein"
+   },
+   "rundfunk": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-KIZ-07",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Bezug von Grundsicherungsgeld, 1 Kind",
+  "quelle": "§ 6a Abs. 1 Nr. 3 BKGG, § 7 Abs. 1 Nr. 1 WoGG, § 4 Abs. 1 Nr. 3 RBeitrStV",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {
+    "grundsicherungsgeld": true
+   }
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "nein"
+   },
+   "ggeld": {
+    "status": "na"
+   },
+   "rundfunk": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "FA-KIZ-11",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Rentner (Regelaltersgrenze) allein mit Kind 10",
+  "quelle": "§ 6a Abs. 1 Nr. 3 BKGG i. V. m. § 7 Abs. 1, § 7a SGB II; DA-KiZ D.2",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 900,
+   "brutto2": "",
+   "netto": 789,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1955,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   },
+   "gsa": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-01",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Alleinstehend, kein Einkommen, Miete 600",
+  "quelle": "§§ 7, 9, 11, 11b, 12, 12a, 19-22 SGB II; RBSFV 2026, https://www.gesetze-im-internet.de/sgb_2/",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 1163,
+    "toleranz": 10
+   },
+   "rundfunk": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ]
+   },
+   "gsa": {
+    "status": "nein"
+   },
+   "asylblg": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-02",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Alleinstehend, Lohn 1.500/1.190",
+  "quelle": "§§ 7, 9, 11, 11b, 12, 12a, 19-22 SGB II; RBSFV 2026, https://www.gesetze-im-internet.de/sgb_2/; § 8 Abs. 2 WoGG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1500,
+   "brutto2": "",
+   "netto": 1190,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 321,
+    "toleranz": 15
+   },
+   "wohngeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ],
+    "betrag": 268,
+    "toleranz": 15
+   }
+  }
+ },
+ {
+  "id": "FA-GG-03",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Alleinstehend, Lohn 2.600/1.800",
+  "quelle": "§§ 7, 9, 11, 11b, 12, 12a, 19-22 SGB II; RBSFV 2026, https://www.gesetze-im-internet.de/sgb_2/",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2600,
+   "brutto2": "",
+   "netto": 1800,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   },
+   "wohngeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-04",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Paar ohne Kind, ein Lohn 2.000/1.590, Miete 750",
+  "quelle": "§§ 7, 9, 11, 11b, 12, 12a, 19-22 SGB II; RBSFV 2026, https://www.gesetze-im-internet.de/sgb_2/",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2000,
+   "brutto2": 0,
+   "netto": 1590,
+   "miete": 750,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 520,
+    "toleranz": 15
+   }
+  }
+ },
+ {
+  "id": "FA-GG-05",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Alleinerziehend, Kind 9, kein Einkommen, Unterhalt 700 (deckt den Bedarf des Kindes: Kindergeld zählt beim Elternteil)",
+  "quelle": "§ 11 Abs. 1 Satz 5 SGB II (https://www.gesetze-im-internet.de/sgb_2/__11.html); § 6 Abs. 1 Nr. 1 GrusiGV (30 €)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "unterhalt": 700
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 702,
+    "toleranz": 25
+   }
+  }
+ },
+ {
+  "id": "FA-GG-06",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "wie GG-05, Unterhalt 300 (Kind bleibt bedürftig)",
+  "quelle": "§§ 7, 9, 11, 11b, 12, 12a, 19-22 SGB II; RBSFV 2026, https://www.gesetze-im-internet.de/sgb_2/",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "unterhalt": 300
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 1062,
+    "toleranz": 15
+   }
+  }
+ },
+ {
+  "id": "FA-GG-09",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Student, 23, allein",
+  "quelle": "§ 7 Abs. 5 SGB II, § 20 Abs. 2 WoGG, § 4 Abs. 1 Nr. 5 RBeitrStV",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 500,
+   "brutto2": "",
+   "netto": 500,
+   "miete": 400,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 2003,
+   "heute": 2026.9,
+   "bezug": {},
+   "ausbildung": "ich"
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   },
+   "wohngeld": {
+    "status": "nein"
+   },
+   "bafoeg": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ]
+   },
+   "rundfunk": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-10",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Student, 47, allein (BAföG-Altersgrenze überschritten)",
+  "quelle": "§ 7 Abs. 5 und Abs. 6 Nr. 3 SGB II (Ausschluss knüpft an die Ausbildung, nicht an persönliche Gründe; BSG 19.08.2010, B 14 AS 24/09 R); WoGVwV Nr. 20.21",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1979,
+   "heute": 2026.9,
+   "bezug": {},
+   "ausbildung": "ich"
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein",
+    "auchOk": [
+     "vielleicht"
+    ]
+   },
+   "bafoeg": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   },
+   "wohngeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-GG-11",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Studentin, 25, allein mit Kind 2",
+  "quelle": "§ 7 Abs. 5 SGB II schließt nur die auszubildende Person aus; Kind: § 7 Abs. 3 Nr. 4, § 19 Abs. 1 SGB II; Mehrbedarf § 27 Abs. 2 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 500,
+   "brutto2": "",
+   "netto": 500,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 2001,
+   "heute": 2026.9,
+   "bezug": {},
+   "ausbildung": "ich"
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ]
+   },
+   "wohngeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-GG-12",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Student, 26, mit Partnerin ohne Einkommen",
+  "quelle": "§ 7 Abs. 5 SGB II (Partner nicht ausgeschlossen)",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "ohne",
+   "brutto": 0,
+   "brutto2": 0,
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 2000,
+   "heute": 2026.9,
+   "bezug": {},
+   "ausbildung": "ich"
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-GG-13",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Azubi im Betrieb, 19, eigene Wohnung, Vergütung 900/720, Miete 450 (ohne BAB gerechnet) – korrigiert 24.11.2026: BAB geht vor (§ 12a SGB II), daher höchstens „möglich“ (Befund B-02)",
+  "quelle": "§ 11b Abs. 2b SGB II (Minijob-Grenze 603 € statt 100 € für Auszubildende unter 25), § 2 BAföG, § 56 SGB III, § 20 Abs. 2 WoGG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 900,
+   "brutto2": "",
+   "netto": 720,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 2007,
+   "heute": 2026.9,
+   "bezug": {},
+   "ausbildung": "ich",
+   "babBetrieb": true,
+   "babWohnt": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht",
+    "betrag": 1010,
+    "toleranz": 60
+   },
+   "bafoeg": {
+    "status": "nein"
+   },
+   "bab": {
+    "status": "vielleicht"
+   },
+   "wohngeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-14",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "EU-Bürger ohne Arbeit, unter 5 Jahre, allein",
+  "quelle": "§ 7 Abs. 1 Satz 2 Nr. 2 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "eu",
+   "euArbeit": "nein",
+   "euJahre": "unter5"
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   },
+   "gsa": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-15",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "EU-Bürger mit Arbeit, allein, Lohn 1.000/800",
+  "quelle": "§ 7 Abs. 1 Satz 2 SGB II (Arbeitnehmer nicht ausgeschlossen)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1000,
+   "brutto2": "",
+   "netto": 800,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "eu",
+   "euArbeit": "ja",
+   "euJahre": "unter5"
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 691,
+    "toleranz": 15
+   }
+  }
+ },
+ {
+  "id": "FA-GG-16",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "EU-Bürger ohne Arbeit, 5 Jahre oder länger",
+  "quelle": "§ 7 Abs. 1 Satz 4 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "eu",
+   "euArbeit": "nein",
+   "euJahre": "ab5"
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-17",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Rentenalter, allein, Rente 900/789, Miete 500",
+  "quelle": "§ 7 Abs. 1 Nr. 1, § 7a SGB II; § 41 SGB XII",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 900,
+   "brutto2": "",
+   "netto": 789,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1955,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   },
+   "gsa": {
+    "status": "ja",
+    "betrag": 274,
+    "toleranz": 15
+   },
+   "wohngeld": {
+    "status": "ja",
+    "auchOk": [
+     "vielleicht"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-GG-18",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Voll erwerbsgemindert, 46, Rente 700/614, Miete 500",
+  "quelle": "§ 8 SGB II, § 41 Abs. 3 SGB XII (dauerhaft) bzw. § 27 SGB XII (befristet: Hilfe zum Lebensunterhalt)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 700,
+   "brutto2": "",
+   "netto": 614,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1980,
+   "heute": 2026.9,
+   "bezug": {},
+   "emStd": "unter3"
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   },
+   "gsa": {
+    "status": "ja",
+    "betrag": 449,
+    "toleranz": 15
+   }
+  }
+ },
+ {
+  "id": "FA-GG-19",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Paar ohne Kind: eine Person im Rentenalter (Rente 1.000/877), Partner ohne Einkommen und jünger möglich",
+  "quelle": "§ 7 Abs. 2 und 3 SGB II (gemischte Bedarfsgemeinschaft: erwerbsfähiger Partner beim Jobcenter)",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "ohne",
+   "brutto": 1000,
+   "brutto2": 0,
+   "netto": 877,
+   "miete": 650,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1958,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht"
+   },
+   "gsa": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-GG-20",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Alleinerziehend, erwachsenes Kind (20) arbeitet in der Werkstatt, Elternteil ohne Einkommen",
+  "quelle": "§ 7 Abs. 1, § 8 SGB II: der Elternteil ist erwerbsfähig; nur das Kind ist voll erwerbsgemindert (§ 41 Abs. 3 SGB XII)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 1,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "bhPerson": "erwVor25",
+   "wfbm": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "auchOk": [
+     "vielleicht"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-GG-21a",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Vermögen 10.000 mit 36 Jahren",
+  "quelle": "§ 12 Abs. 2 SGB II (ab dem 31. Lebensjahr 10.000 €)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 10000,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-21b",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Vermögen 10.001 mit 36 Jahren",
+  "quelle": "§ 12 Abs. 2 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 10001,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-22a",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Vermögen 5.000 mit 25 Jahren",
+  "quelle": "§ 12 Abs. 2 SGB II (bis zum 30. Geburtstag 5.000 €)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 5000,
+   "gebJahr": 2001,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-22b",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Vermögen 5.001 mit 25 Jahren",
+  "quelle": "§ 12 Abs. 2 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 5001,
+   "gebJahr": 2001,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-23a",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Vermögen 12.500 mit 45 Jahren",
+  "quelle": "§ 12 Abs. 2 SGB II (ab dem 41. Lebensjahr 12.500 €)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 12500,
+   "gebJahr": 1981,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-23b",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Vermögen 12.501 mit 45 Jahren",
+  "quelle": "§ 12 Abs. 2 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 12501,
+   "gebJahr": 1981,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-23c",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Vermögen 20.000 mit 55 Jahren",
+  "quelle": "§ 12 Abs. 2 SGB II (ab dem 51. Lebensjahr 20.000 €)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 20000,
+   "gebJahr": 1971,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-23d",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Vermögen 20.001 mit 55 Jahren",
+  "quelle": "§ 12 Abs. 2 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 20001,
+   "gebJahr": 1971,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-24",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Paar (älteste Person 36) mit 2 Kindern, Vermögen 30.001 (höchstens 2 × 10.000 + 2 × 5.000)",
+  "quelle": "§ 12 Abs. 2 SGB II",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "ohne",
+   "brutto": 0,
+   "brutto2": 0,
+   "netto": "",
+   "miete": 900,
+   "mietstufe": "3",
+   "vermoegen": 30001,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-25",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Alleinstehend OHNE Geburtsjahr, Vermögen 6.000 (unter 30: nur 5.000 € frei)",
+  "quelle": "§ 12 Abs. 2 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 6000,
+   "gebJahr": "",
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-26",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Jahrgang 1996 (wird 2026 erst 30), Vermögen 8.000, Stand November 2026",
+  "quelle": "§ 12 Abs. 2 SGB II: höherer Freibetrag erst ab dem Monat des 30. Geburtstags",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 8000,
+   "gebJahr": 1996,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-27",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Bezug von Sozialhilfe/Grundsicherung im Alter",
+  "quelle": "§ 7 Abs. 1 Nr. 5, 6 WoGG; § 4 Abs. 1 Nr. 1, 2 RBeitrStV",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 600,
+   "brutto2": "",
+   "netto": 526,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {
+    "sozialamt": true
+   }
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   },
+   "gsa": {
+    "status": "na"
+   },
+   "wohngeld": {
+    "status": "nein"
+   },
+   "rundfunk": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-28",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Vorgezogene Altersrente mit 64 (Rente 700/614): kein Grundsicherungsgeld, sondern Hilfe zum Lebensunterhalt",
+  "quelle": "§ 7 Abs. 4 SGB II; § 27 SGB XII (keine Karte „Hilfe zum Lebensunterhalt“ in der App: Befund 14)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 700,
+   "brutto2": "",
+   "netto": 614,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1962,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   },
+   "gsa": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-GG-29",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Arbeitslosengeld I 1.100, allein, Miete 600: Wohngeld deckt die Lücke und geht vor",
+  "quelle": "§ 12a SGB II, § 19 WoGG, § 6 Abs. 1 Nr. 1 GrusiGV",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "alg",
+   "art2": "",
+   "brutto": 1100,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   },
+   "wohngeld": {
+    "status": "ja",
+    "betrag": 211,
+    "toleranz": 15
+   }
+  }
+ },
+ {
+  "id": "FA-GG-30",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Alleinstehend, kein Einkommen, Miete 1.500 (mehr als das 1,5-fache der Orientierungsgrenze 630 €)",
+  "quelle": "§ 22 Abs. 1 Satz 6 SGB II (Aufwendungen über dem 1,5-fachen werden auch in der Karenzzeit nicht anerkannt)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 1500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 1508,
+    "toleranz": 60
+   }
+  }
+ },
+ {
+  "id": "FA-GG-31",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Schwanger (ab 13. Woche), allein, kein Einkommen",
+  "quelle": "§ 21 Abs. 2 SGB II (17 %)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "schwanger": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 1259,
+    "toleranz": 10
+   }
+  }
+ },
+ {
+  "id": "FA-GG-32",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Alleinerziehend, 4 Kinder (2 × 6-13, 2 × 14-17), kein Einkommen, Miete 1.000",
+  "quelle": "§ 21 Abs. 3 Nr. 2 SGB II (4 × 12 %), RBSFV 2026",
+  "h": {
+   "adults": 1,
+   "kids": 4,
+   "kidsU6": 0,
+   "kids14": 2,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 1000,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "kinder12": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 2519,
+    "toleranz": 15
+   }
+  }
+ },
+ {
+  "id": "FA-GG-33",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Asylverfahren, allein, kein Einkommen",
+  "quelle": "§ 7 Abs. 1 Satz 2 Nr. 3 SGB II, § 23 Abs. 2 SGB XII, § 1 AsylbLG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "asyl"
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   },
+   "gsa": {
+    "status": "nein"
+   },
+   "asylblg": {
+    "status": "ja"
+   },
+   "wbs": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-WG-02",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Rentner, allein, Rente 1.400 brutto / 1.227 netto, Miete 500",
+  "quelle": "WoGG §§ 3, 7, 12, 14-21, Anlagen 1-3, https://www.gesetze-im-internet.de/wogg/; § 16 Abs. 1 WoGG (10 % nur Kranken-/Pflegeversicherung)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1400,
+   "brutto2": "",
+   "netto": 1227,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1955,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "ja",
+    "betrag": 98,
+    "toleranz": 15
+   },
+   "gsa": {
+    "status": "nein"
+   },
+   "rundfunk": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-WG-03a",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Vermögen 60.000, allein",
+  "quelle": "§ 21 Nr. 3 WoGG, WoGVwV Nr. 21.37",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1200,
+   "brutto2": "",
+   "netto": 980,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 60000,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "ja",
+    "auchOk": [
+     "vielleicht"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-WG-03b",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Vermögen 60.001, allein",
+  "quelle": "§ 21 Nr. 3 WoGG, WoGVwV Nr. 21.37",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1200,
+   "brutto2": "",
+   "netto": 980,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 60001,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-WG-03c",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "4 Personen, Vermögen 150.001",
+  "quelle": "WoGVwV Nr. 21.37; § 6a Abs. 3 BKGG",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2800,
+   "brutto2": 0,
+   "netto": 2196,
+   "miete": 900,
+   "mietstufe": "3",
+   "vermoegen": 150001,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-WG-04",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Wohngeld wird schon bezogen",
+  "quelle": "WoGG §§ 3, 7, 12, 14-21, Anlagen 1-3, https://www.gesetze-im-internet.de/wogg/",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1500,
+   "brutto2": "",
+   "netto": 1190,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {
+    "wohngeld": true
+   }
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "na"
+   }
+  }
+ },
+ {
+  "id": "FA-WG-05a",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Asylverfahren mit Bezug von Asylbewerberleistungen",
+  "quelle": "§ 7 Abs. 1 Satz 1 Nr. 8 WoGG; § 4 Abs. 1 Nr. 4 RBeitrStV",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "asylblg",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "asyl"
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "nein"
+   },
+   "asylblg": {
+    "status": "na"
+   },
+   "rundfunk": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "FA-WG-05b",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Duldung/Gestattung, Lohn 1.800/1.330, kein Bezug von Asylbewerberleistungen",
+  "quelle": "§ 3 Abs. 5 Satz 1 Nr. 2 und 4 WoGG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1800,
+   "brutto2": "",
+   "netto": 1330,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "asyl"
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-WG-05c",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Ausreisepflichtig ohne Duldung",
+  "quelle": "§ 3 Abs. 5 WoGG, § 27 Abs. 2 WoFG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1800,
+   "brutto2": "",
+   "netto": 1330,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "ausreise"
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "nein"
+   },
+   "wbs": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-WG-07",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Keine Miete angegeben (0)",
+  "quelle": "§ 1 WoGG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1500,
+   "brutto2": "",
+   "netto": 1190,
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-WG-10",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Alleinerziehend, Kind 9, Lohn 2.000/1.500, Unterhalt 300, Miete 700",
+  "quelle": "§ 17 Nr. 3 WoGG (1.320 €/Jahr), § 14 Abs. 2 Nr. 19 WoGG",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "unterhalt": 300
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "ja",
+    "auchOk": [
+     "vielleicht"
+    ],
+    "betrag": 236,
+    "toleranz": 15
+   }
+  }
+ },
+ {
+  "id": "FA-BT-03",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Asylbewerberleistungen mit Kindern",
+  "quelle": "§ 3 Abs. 4 AsylbLG",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "asylblg",
+   "art2": "ohne",
+   "brutto": 0,
+   "brutto2": 0,
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "asyl"
+  },
+  "erwartet": {
+   "rundfunk": {
+    "status": "ja"
+   },
+   "wohngeld": {
+    "status": "nein"
+   },
+   "ggeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-BT-06",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Wohngeld wird bezogen, 2 Kinder",
+  "quelle": "§ 6b Abs. 1 Nr. 2 BKGG",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2800,
+   "brutto2": 0,
+   "netto": 2196,
+   "miete": 950,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {
+    "wohngeld": true
+   },
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "na"
+   }
+  }
+ },
+ {
+  "id": "FA-BA-03",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Azubi im Betrieb, 17, wohnt bei den Eltern",
+  "quelle": "§ 60 Abs. 1 Nr. 1 SGB III; § 2 BAföG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 800,
+   "brutto2": "",
+   "netto": 650,
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 2009,
+   "heute": 2026.9,
+   "bezug": {},
+   "ausbildung": "ich",
+   "babBetrieb": true,
+   "babWohnt": false
+  },
+  "erwartet": {
+   "bab": {
+    "status": "nein"
+   },
+   "bafoeg": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-BA-04a",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Kind studiert, Elternpaar Lohn 3.200/2.500",
+  "quelle": "§ 25 Abs. 1 Nr. 1 BAföG (2.540 €)",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 1,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 3200,
+   "brutto2": 0,
+   "netto": 2500,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "ausbildung": "kind"
+  },
+  "erwartet": {
+   "bafoeg": {
+    "status": "ja",
+    "auchOk": [
+     "vielleicht"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-BA-04b",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Kind studiert, Elternpaar Lohn 9.000/5.700",
+  "quelle": "§ 25 Abs. 1, 4 BAföG",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 1,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 9000,
+   "brutto2": 0,
+   "netto": 5700,
+   "miete": 900,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "ausbildung": "kind"
+  },
+  "erwartet": {
+   "bafoeg": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-BA-06",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Student, 23, Vermögen 30.000 (15.000 über dem Freibetrag: 1.250 € im Monat)",
+  "quelle": "§ 29 Abs. 1 Nr. 1, § 30 BAföG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 30000,
+   "gebJahr": 2003,
+   "heute": 2026.9,
+   "bezug": {},
+   "ausbildung": "ich"
+  },
+  "erwartet": {
+   "bafoeg": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-BA-08",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Student im Asylverfahren",
+  "quelle": "§ 8 Abs. 2a, 3 BAföG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 2003,
+   "heute": 2026.9,
+   "bezug": {},
+   "ausbildung": "ich",
+   "aufenthalt": "asyl"
+  },
+  "erwartet": {
+   "bafoeg": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-WB-01a",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Bayern, allein, 1.458 € brutto (17.496 €/Jahr)",
+  "quelle": "Art. 4 BayWoBindG (17.500/27.500/+5.000/+1.300), https://www.gesetze-bayern.de/Content/Document/BayWoBindG-4; § 9 Abs. 2, § 27 WoFG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1458,
+   "brutto2": "",
+   "netto": 1170,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "wbs": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "FA-WB-01b",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Bayern, allein, 1.459 € brutto (über 17.500, nach Abzügen darunter)",
+  "quelle": "Art. 4 BayWoBindG (17.500/27.500/+5.000/+1.300), https://www.gesetze-bayern.de/Content/Document/BayWoBindG-4; § 9 Abs. 2, § 27 WoFG; Art. 6 BayWoFG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1459,
+   "brutto2": "",
+   "netto": 1170,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "wbs": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-WB-01c",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Bayern, allein, 4.000 € brutto",
+  "quelle": "Art. 4 BayWoBindG (17.500/27.500/+5.000/+1.300), https://www.gesetze-bayern.de/Content/Document/BayWoBindG-4; § 9 Abs. 2, § 27 WoFG; Art. 11 BayWoFG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 4000,
+   "brutto2": "",
+   "netto": 2600,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "wbs": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-WB-03",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Bayern, Paar mit 2 Kindern, 3.341 € brutto (Grenze 40.100 €)",
+  "quelle": "Art. 4 BayWoBindG (17.500/27.500/+5.000/+1.300), https://www.gesetze-bayern.de/Content/Document/BayWoBindG-4; § 9 Abs. 2, § 27 WoFG",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 3341,
+   "brutto2": 0,
+   "netto": 2600,
+   "miete": 950,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "wbs": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "FA-WB-04",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Saarland, allein, 1.000 € brutto (Bundesgrenze 12.000 €)",
+  "quelle": "§ 9 Abs. 2 WoFG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1000,
+   "brutto2": "",
+   "netto": 800,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "bundesland": "SL"
+  },
+  "erwartet": {
+   "wbs": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "FA-RF-04",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Alleinstehend, Lohn 3.500/2.300",
+  "quelle": "§ 4 RBeitrStV",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3500,
+   "brutto2": "",
+   "netto": 2300,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "rundfunk": {
+    "status": "nein"
+   },
+   "ggeld": {
+    "status": "nein"
+   },
+   "wohngeld": {
+    "status": "nein"
+   },
+   "wbs": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-AS-04",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Duldung, Lohn 4.000/2.600 (Einkommen deckt den Bedarf)",
+  "quelle": "§ 7 Abs. 1 AsylbLG (Einkommen ist vorher aufzubrauchen)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 4000,
+   "brutto2": "",
+   "netto": 2600,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "asyl"
+  },
+  "erwartet": {
+   "asylblg": {
+    "status": "nein",
+    "auchOk": [
+     "vielleicht"
+    ]
+   },
+   "ggeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-AS-05",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Asylverfahren, kein Einkommen, Vermögen 50.000 (Freibetrag 200 € je Person)",
+  "quelle": "§ 7 Abs. 1 und 5 AsylbLG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 50000,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "asyl"
+  },
+  "erwartet": {
+   "asylblg": {
+    "status": "nein",
+    "auchOk": [
+     "vielleicht"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-AS-06",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Ausreisepflichtig ohne Duldung, kein Einkommen",
+  "quelle": "§ 1 Abs. 1 Nr. 5 AsylbLG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "ausreise"
+  },
+  "erwartet": {
+   "asylblg": {
+    "status": "ja"
+   },
+   "ggeld": {
+    "status": "nein"
+   },
+   "wohngeld": {
+    "status": "nein"
+   },
+   "wbs": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-GS-02a",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Rentner allein, Vermögen 10.000",
+  "quelle": "§§ 41-43, 82, 90 SGB XII; § 1 VO zu § 90 Abs. 2 Nr. 9 SGB XII",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 600,
+   "brutto2": "",
+   "netto": 526,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 10000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "FA-GS-02b",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Rentner allein, Vermögen 10.001",
+  "quelle": "§§ 41-43, 82, 90 SGB XII; § 1 VO zu § 90 Abs. 2 Nr. 9 SGB XII",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 600,
+   "brutto2": "",
+   "netto": 526,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 10001,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-GS-02c",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Rentnerpaar, Vermögen 20.001",
+  "quelle": "§§ 41-43, 82, 90 SGB XII; § 1 VO zu § 90 Abs. 2 Nr. 9 SGB XII",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "ohne",
+   "brutto": 900,
+   "brutto2": 0,
+   "netto": 789,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 20001,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-GS-03",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "EU-Bürger im Rentenalter, ohne Arbeit, unter 5 Jahre",
+  "quelle": "§ 23 Abs. 3 SGB XII",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "eu",
+   "euArbeit": "nein",
+   "euJahre": "unter5"
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   },
+   "ggeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-SE-01",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Selbstständig, allein, Gewinn 1.200, nach Steuern und Versicherung 960",
+  "quelle": "§ 11b Abs. 3 SGB II; § 3 GrusiGV",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "selbst",
+   "art2": "",
+   "brutto": 1200,
+   "brutto2": "",
+   "netto": 960,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 551,
+    "toleranz": 20
+   }
+  }
+ },
+ {
+  "id": "FA-MJ-01",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Minijob 603 € (Minijob-Grenze 2026), allein",
+  "quelle": "§ 8 Abs. 1a SGB IV (603 €), § 11b Abs. 3 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 603,
+   "brutto2": "",
+   "netto": 603,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 769,
+    "toleranz": 10
+   }
+  }
+ },
+ {
+  "id": "FA-EIG-01",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Wohneigentum, Paar, 2 Kinder, Lohn 2.500/1.980, Belastung 900",
+  "quelle": "§ 3 Abs. 2, § 10 WoGG (Lastenzuschuss); § 6a Abs. 8 Satz 3 BKGG",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2500,
+   "brutto2": 0,
+   "netto": 1980,
+   "miete": 900,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "wohnart": "eigentum"
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-HH-01",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Wohnt mit Verwandten zusammen, Lohn 800/800, eigener Mietanteil 300",
+  "quelle": "§ 9 Abs. 5 SGB II; § 5 WoGG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 800,
+   "brutto2": "",
+   "netto": 800,
+   "miete": 300,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "hhAndere": "verwandte"
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht"
+   },
+   "wohngeld": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "FA-HH-02",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Wohngemeinschaft, Lohn 800/800, eigener Mietanteil 300",
+  "quelle": "§ 7 Abs. 3 SGB II (keine Bedarfsgemeinschaft)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 800,
+   "brutto2": "",
+   "netto": 800,
+   "miete": 300,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "hhAndere": "wg"
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 331,
+    "toleranz": 15
+   }
+  }
+ },
+ {
+  "id": "FA-YO-01",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Alleinstehend mit Kind 20 in Ausbildung/Studium, kein Einkommen",
+  "quelle": "RBSFV 2026 Stufe 3 (451 €); § 11 Abs. 1 Satz 5 SGB II; § 6 Abs. 1 Nr. 1 GrusiGV",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 1,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 1385,
+    "toleranz": 35
+   }
+  }
+ },
+ {
+  "id": "FA-GS-05",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Rentnerpaar, Renten 1.600 brutto / 1.403 netto, Miete 650",
+  "quelle": "§§ 41-43, 82, 90 SGB XII; § 1 VO zu § 90 Abs. 2 Nr. 9 SGB XII; Regelbedarfsstufe 2 (506 €)",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "rente",
+   "brutto": 1600,
+   "brutto2": 600,
+   "netto": 1403,
+   "miete": 650,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 259,
+    "toleranz": 15
+   },
+   "ggeld": {
+    "status": "nein",
+    "auchOk": [
+     "vielleicht"
+    ]
+   },
+   "rundfunk": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-AL-01",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Paar, 1 Kind (9), Arbeitslosengeld I 1.400, Miete 800",
+  "quelle": "§ 6a Abs. 1 Nr. 2 und 3, Abs. 6 BKGG; § 12a SGB II; § 14 WoGG (Arbeitslosengeld ohne Pauschalabzug)",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "alg",
+   "art2": "ohne",
+   "brutto": 1400,
+   "brutto2": 0,
+   "netto": "",
+   "miete": 800,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "ja",
+    "betrag": 457,
+    "toleranz": 15
+   },
+   "ggeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-EGI-01",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Paar, Baby da, Lohn 1.500/1.250 und Elterngeld 900 (mit Arbeit vor der Geburt), Miete 800",
+  "quelle": "§ 10 Abs. 1 und Abs. 5 BEEG (300 € frei); § 6a BKGG; § 12a SGB II",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "eg",
+   "brutto": 2400,
+   "brutto2": 900,
+   "netto": 2150,
+   "miete": 800,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "baby": "da"
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "ja",
+    "betrag": 390,
+    "toleranz": 15
+   },
+   "ggeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-PW-01",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Patchwork: Paar ohne Trauschein, 2 Kinder (8, 10) aus früherer Beziehung, Unterhalt fehlt, Löhne 2.000 + 1.000 / zusammen 2.380",
+  "quelle": "§ 1 Abs. 1 Nr. 2 UVG; § 7 Abs. 3 Nr. 3c, Abs. 3a SGB II (Einkommen des Partners zählt); § 9 Abs. 2 Satz 2 SGB II",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "lohn",
+   "brutto": 3000,
+   "brutto2": 1000,
+   "netto": 2380,
+   "miete": 1000,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "unterhaltFehlt": true,
+   "uvgPartner": "neu"
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   }
+  }
+ },
+ {
+  "id": "FA-RF-06",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Rentner mit Wohngeld-Anspruch, aber ohne Grundsicherung (Rente 1.400/1.227)",
+  "quelle": "§ 4 Abs. 1 RBeitrStV (Wohngeld befreit nicht)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1400,
+   "brutto2": "",
+   "netto": 1227,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1955,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "rundfunk": {
+    "status": "nein"
+   },
+   "wbs": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "FA-AS-07",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Asylverfahren, Paar mit 2 Kindern, ohne Einkommen (kein Bezug angegeben)",
+  "quelle": "§§ 1, 3, 3a AsylbLG; § 3 Abs. 4 AsylbLG",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "ohne",
+   "brutto": 0,
+   "brutto2": 0,
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "asyl"
+  },
+  "erwartet": {
+   "asylblg": {
+    "status": "ja"
+   },
+   "rundfunk": {
+    "status": "vielleicht"
+   },
+   "bafoeg": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-BA-09",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "EU-Bürger ohne Arbeit, unter 5 Jahre, studiert",
+  "quelle": "§ 8 Abs. 1 Nr. 2 bis 4 BAföG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 2003,
+   "heute": 2026.9,
+   "bezug": {},
+   "ausbildung": "ich",
+   "aufenthalt": "eu",
+   "euArbeit": "nein",
+   "euJahre": "unter5"
+  },
+  "erwartet": {
+   "bafoeg": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   },
+   "ggeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-WB-02",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Wohnberechtigungsschein im Asylverfahren",
+  "quelle": "§ 27 Abs. 2 WoFG, Art. 14 Abs. 2 BayWoFG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1200,
+   "brutto2": "",
+   "netto": 980,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "asyl",
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "wbs": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "FA-KIZ-15",
+  "pruefer": "fable-familie-grundsicherung",
+  "beschreibung": "Alleinerziehend, Kind 9, Lohn 2.400/1.780, Unterhalt fehlt (UVG 299), Miete 700: oberer Rand",
+  "quelle": "§ 6a BKGG, https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; KiZ-Merkblatt 7/2026, https://www.arbeitsagentur.de/datei/kiz2-merkblattkinderzuschlag_ba015395.pdf (Mehrbedarf 12 % oder 36 %, je nachdem ob das Kind unter 7 ist)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2400,
+   "brutto2": "",
+   "netto": 1780,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "unterhaltFehlt": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "EX-01",
+  "pruefer": "fix-grusi",
+  "beschreibung": "Miete 1.500, allein, Stufe III, Rente 600 im Rentenalter: Grundsicherung im Alter mit höchstens 1,5-facher Grenze (563 + 894 − 600 ≈ 860)",
+  "quelle": "§ 35 Abs. 1 Satz 7 SGB XII",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "rente",
+   "brutto": 600,
+   "netto": 600,
+   "miete": 1500,
+   "mietstufe": "3",
+   "gebJahr": 1950,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 860,
+    "toleranz": 20
+   }
+  }
+ },
+ {
+  "id": "EX-02",
+  "pruefer": "fix-grusi",
+  "beschreibung": "Student mit 47 bei den Eltern (einfache Version): nicht ausgeschlossen (§ 7 Abs. 6 Nr. 2), höchstens möglich",
+  "quelle": "§ 7 Abs. 6 Nr. 2 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "ausbildung": "ich",
+   "wohnform": "eltern",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "gebJahr": 1979,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "EX-03",
+  "pruefer": "fix-grusi",
+  "beschreibung": "Azubi 20 im Betrieb, 1.200 brutto, eigene Wohnung 500: Freibetrag 603 + 144 + 20 = 767 € -> Lücke > 50, höchstens möglich (BAB)",
+  "quelle": "§ 11b Abs. 2b, Abs. 3 Satz 4 SGB II",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "ausbildung": "ich",
+   "babBetrieb": true,
+   "babWohnt": true,
+   "art1": "lohn",
+   "brutto": 1200,
+   "netto": 950,
+   "miete": 500,
+   "mietstufe": "3",
+   "gebJahr": 2006,
+   "vermoegen": 0,
+   "ohneWege": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht",
+    "betrag": 880,
+    "toleranz": 15
+   },
+   "rundfunk": {
+    "status": "vielleicht"
+   },
+   "bafoeg": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "EX-04",
+  "pruefer": "fix-grusi",
+  "beschreibung": "Paar Rentner + Partner mit Lohn 1.200: Grundsicherung im Alter höchstens möglich ohne Betrag (gemischte Bedarfsgemeinschaft)",
+  "quelle": "§ 43 Abs. 1 SGB XII, § 7 Abs. 2, 3 SGB II",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "rente",
+   "art2": "lohn",
+   "brutto": 2200,
+   "brutto2": 1200,
+   "netto": 1850,
+   "miete": 700,
+   "mietstufe": "3",
+   "gebJahr": 1950,
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "vielleicht",
+    "ohneBetrag": true
+   }
+  }
+ },
+ {
+  "id": "EX-05",
+  "pruefer": "fix-grusi",
+  "beschreibung": "Bayern, Paar, Schwangerschaft: Grenze 27.500 + 1.300 = 28.800; 2.390 €/Monat (28.680) -> ja",
+  "quelle": "Art. 4 Abs. 1 Satz 4 BayWoBindG",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "",
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2390,
+   "brutto2": 0,
+   "miete": 700,
+   "mietstufe": "4",
+   "gebJahr": 1995,
+   "bundesland": "BY",
+   "schwanger": true,
+   "baby": "bald",
+   "vermoegen": 0
+  },
+  "erwartet": {
+   "wbs": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "EX-06",
+  "pruefer": "fix-grusi",
+  "beschreibung": "Asylverfahren, kein Einkommen, Vermögen 150 (unter 200 €): wahrscheinlich",
+  "quelle": "§ 7 Abs. 5 AsylbLG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "young": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "asyl",
+   "art1": "ohne",
+   "brutto": 0,
+   "netto": 0,
+   "miete": 400,
+   "gebJahr": 1990,
+   "vermoegen": 150
+  },
+  "erwartet": {
+   "asylblg": {
+    "status": "ja"
+   }
+  }
+ }
+]

@@ -49,7 +49,8 @@ ck('F5 Wohngeld/KiZ ausgeschlossen, BuT/Rundfunk ja', L(f5, 'wohngeld') === 'nei
 const f6 = { ausbildung: 'ich', brutto: 900, miete: 450, mietstufe: 3, babBetrieb: true, babWohnt: true };
 ck('[bab-voraus] F6 BAB möglich, nie "ja"', L(f6, 'bab') === 'vielleicht');
 ck('[wg-azubi] F6 Wohngeld ausgeschlossen (§ 20 WoGG)', L(f6, 'wohngeld') === 'nein' && K(f6, 'wohngeld')[0] === 'wohngeld.ausbildung');
-ck('F6 aufstockendes Grundsicherungsgeld bleibt möglich', L(f6, 'ggeld') === 'ja');
+// Vollprüfung 24.11.2026 (Befund B-02): BAB geht vor und zählt als Einkommen (§ 12a SGB II) -> höchstens „möglich“ mit Hinweis
+ck('F6 aufstockendes Grundsicherungsgeld bleibt möglich (BAB zuerst)', L(f6, 'ggeld') === 'vielleicht' && K(f6, 'ggeld')[0] === 'ggeld.babZuerst');
 const f6b = { ...f6, babWohnt: false };
 ck('F6b Azubi bei den Eltern: BAB unwahrscheinlich, Wohngeld nicht per § 20 ausgeschlossen', L(f6b, 'bab') === 'nein' && K(f6b, 'wohngeld')[0] !== 'wohngeld.ausbildung');
 // 7 Studierende allein
@@ -58,7 +59,8 @@ ck('[gg-studium] F7 Student: kein Grundsicherungsgeld (§ 7 Abs. 5 SGB II)', L(f
 ck('F7 Student: kein Wohngeld', L(f7, 'wohngeld') === 'nein');
 ck('F7 BAföG möglich', L(f7, 'bafoeg') === 'vielleicht');
 ck('F7 Student mit Kind: Wohngeld nicht per § 20 ausgeschlossen', K({ ...f7, kids: 1 }, 'wohngeld')[0] !== 'wohngeld.ausbildung');
-ck('F7 Student 51+: Ausschluss entfällt (nicht mehr förderfähig)', K({ ...f7, alterGruppe: '50+' }, 'ggeld')[0] !== 'ggeld.ausbildung');
+// Vollprüfung 24.11.2026 (Befunde B-07, Fable 1): Ausschluss „dem Grunde nach“ auch ohne BAföG wegen des Alters (BSG B 14 AS 24/09 R)
+ck('F7 Student 51+: Ausschluss bleibt (§ 7 Abs. 5 SGB II, dem Grunde nach)', L({ ...f7, alterGruppe: '50+' }, 'ggeld') === 'nein' && K({ ...f7, alterGruppe: '50+' }, 'ggeld')[0] === 'ggeld.ausbildung');
 // 8 Familie, Kind 20 mit GdB 100
 const f8 = { adults: 2, young: 1, brutto: 3000, brutto2: 1000, miete: 900, mietstufe: 3, bhPerson: 'erwVor25', bhSelbst: true, gdb: '100', ausbildung: 'kind' };
 ck('[kgbeh-ja] F8 KG-Beh ja, 259', L(f8, 'kgBeh') === 'ja' && P(f8, 'kgBeh', 'kg') === '259 €');
@@ -88,7 +90,7 @@ ck('F12 Pauschbetrag 2.120, Rundfunk ja, Wohngeld nein', P(f12, 'pausch', 'betra
 const f13 = { adults: 2, kids: 1, brutto: 9500, brutto2: 3500, miete: 1200, mietstufe: 4, vermoegen: 100000 };
 ck('F13 nur Kindergeld', ['wohngeld', 'kiz', 'ggeld', 'but', 'wbs'].every((id) => L(f13, id) === 'nein') && L(f13, 'kindergeld') === 'ja');
 // 14 Rentnerpaar
-const f14 = { adults: 2, alter: true, nichtArbeit: true, brutto: 1400, brutto2: 800, miete: 700, mietstufe: 2, vermoegen: 3000 };
+const f14 = { adults: 2, alter: true, nichtArbeit: true, nichtArbeit2: true, brutto: 1400, brutto2: 800, miete: 700, mietstufe: 2, vermoegen: 3000 };
 ck('F14 GSA ja, Bedarf 1012+700', L(f14, 'gsa') === 'ja' && P(f14, 'gsa', 'bedarf') === E(1012 + 700));
 // 15 Sozialamt-Bezug
 const f15 = { alter: true, nichtArbeit: true, brutto: 400, miete: 500, mietstufe: 3, pflegegrad: '2', bezug: { sozialamt: true } };
@@ -382,8 +384,9 @@ const azubi = { young: 1, art1: 'lohn', brutto: 1800, netto: 1400, miete: 600, v
 ck('[gg-azubi] Ausbildungsvergütung des Kindes bis 603 € frei (550 € ändert nichts), 850 € mindert', A(azubi, 'ggeld') === A({ ...azubi, kindEink: 550 }, 'ggeld') && Number(String(A({ ...azubi, kindEink: 850 }, 'ggeld')).replace(/\D/g, '')) < Number(String(A(azubi, 'ggeld')).replace(/\D/g, '')));
 // Elterngeld 300 € (Mindestbetrag, kein Einkommen vorher): zählt voll, 1.063 - 270 = 793; 500 € mit Einkommen vorher: 300 frei, 1.063 - 170 = 893
 ck('[gg-eg300] Elterngeld 300 € zählt voll (etwa 790 €), 500 € nur mit 200 € (etwa 890 €)', A({ einkommen: [{ art: 'eg', b: 300 }], miete: 500 }, 'ggeld') === E(790) && A({ einkommen: [{ art: 'eg', b: 500 }], miete: 500 }, 'ggeld') === E(890));
-// Alleinerziehend, 1 Kind, Miete 700: Unterhalt 2.000 € zählt nur bis zum Bedarf des Kindes (390 + 350 - 259 Kindergeld = 481)
-ck('[gg-unterhalt] Hoher Unterhalt fürs Kind mindert nur bis zu dessen Bedarf: 1.460 - 481 = etwa 980 €', A(ohne({ kids: 1, miete: 700 }), 'ggeld') === E(1460) && A(ohne({ kids: 1, miete: 700, unterhalt: 2000 }), 'ggeld') === E(980));
+// Alleinerziehend, 1 Kind, Miete 700: Unterhalt 2.000 € zählt nur bis zum Bedarf des Kindes (390 + 350 = 740). Das Kindergeld braucht das Kind dann
+// nicht mehr: es zählt beim Elternteil, abzüglich 30 € Versicherungspauschale (§ 11 Abs. 1 Satz 5 SGB II; Vollprüfung 24.11.2026, Befunde B-03 / Fable 4)
+ck('[gg-unterhalt] Hoher Unterhalt fürs Kind mindert bis zu dessen Bedarf, Kindergeld-Rest beim Elternteil: 1.460 - 740 + 30 = etwa 750 €', A(ohne({ kids: 1, miete: 700 }), 'ggeld') === E(1460) && A(ohne({ kids: 1, miete: 700, unterhalt: 2000 }), 'ggeld') === E(750));
 ck('[gg-verm] Schonvermögen: bis 30 Jahre 5.000 €, ab 50 Jahre 20.000 €, Paar doppelt', L(ohne({ miete: 400, vermoegen: 6000, alterGruppe: '<30' }), 'ggeld') === 'nein' && L(ohne({ miete: 400, vermoegen: 15000, alterGruppe: '50+' }), 'ggeld') !== 'nein' && L(ohne({ adults: 2, miete: 500, vermoegen: 19000, alterGruppe: '30-39' }), 'ggeld') !== 'nein');
 ck('[gg-gemischt] Paar mit Kind, eine Person im Rentenalter: Jobcenter möglich (gemischte Bedarfsgemeinschaft)', L({ adults: 2, kids: 1, alter: true, miete: 700 }, 'ggeld') === 'vielleicht' && K({ adults: 2, kids: 1, alter: true, miete: 700 }, 'ggeld')[0] === 'ggeld.gemischt');
 ck('[gg-schulbuch] Schulbücher: Hinweis außerhalb Bayerns, nicht in Bayern (Lernmittelfreiheit)', K({ kids: 1, miete: 600, art1: 'lohn', brutto: 1500, netto: 1150, bundesland: 'NW' }, 'ggeld').includes('ggeld.schulbuch') && !K({ kids: 1, miete: 600, art1: 'lohn', brutto: 1500, netto: 1150, bundesland: 'BY' }, 'ggeld').includes('ggeld.schulbuch'));
@@ -517,7 +520,8 @@ ck('[uvg-elternteil] Mehrere Kinder, lebt mit dem Vater eines Kindes zusammen: m
 // Mutter studiert (kein Grundsicherungsgeld wegen § 7 Abs. 5 SGB II), Kind 13, Einkommen 400 €: Kind kann Sozialgeld beziehen -> nur möglich
 {
   const st = uv({ kinder12: true, brutto: 400, netto: 400, ausbildung: 'ich', gebJahr: 2000, heute: 2026.8 });
-  ck('[uvg-ab12] Elternteil im Studium, Kind 13, 400 € Einkommen: Grundsicherungsgeld aus anderem Grund ausgeschlossen -> nur möglich', L(st, 'ggeld') === 'nein' && L(st, 'uvg') === 'vielleicht');
+  // Seit 24.11.2026 (Befund Fable 2): Grundsicherungsgeld-Karte „möglich“ (das Kind hat eigenen Anspruch), ohne Betrag
+  ck('[uvg-ab12] Elternteil im Studium, Kind 13, 400 € Einkommen: Grundsicherungsgeld nur fürs Kind -> UVG nur möglich', L(st, 'ggeld') === 'vielleicht' && K(st, 'ggeld')[0] === 'ggeld.ausbildungFamilie' && L(st, 'uvg') === 'vielleicht');
 }
 ck('[uvg-hinweise] Hinweise: Änderungen melden (§§ 5, 6 UVG); verheiratet, aber dauernd getrennt (auch Klinik oder Haft, § 1 Abs. 2) bei Alleinlebenden', K(uv({}), 'uvg').includes('uvg.melden') && K(uv({}), 'uvg').includes('uvg.getrennt') && !K(uv({ adults: 2, uvgPartner: 'neu' }), 'uvg').includes('uvg.getrennt'));
 ck('[uvg-volljaehrig] Nur volljährige Kinder: kein Unterhaltsvorschuss, Hinweis auf Unterhalt, Jugendamt bis 21, BAföG', L({ young: 1 }, 'uvg') === 'nein' && K({ young: 1 }, 'uvg')[0] === 'uvg.volljaehrig' && K({}, 'uvg')[0] === 'uvg.keinKind');
@@ -581,7 +585,8 @@ ck('[rf-rf] Merkzeichen RF: Ermäßigung möglich', K({ mz: { RF: true }, gdb: '
 // § 4 Abs. 1 RBeitrStV: Befreiung auch bei Blindenhilfe, Hilfe zur Pflege und BAföG (nicht bei den Eltern)
 ck('[rf-weitere] Blindenhilfe möglich (Grundsicherung nicht): Rundfunkbefreiung möglich', K({ bhPerson: 'erwNach25', blind: 'blind', alter: true, art1: 'rente', brutto: 1500, netto: 1400, miete: 400 }, 'rundfunk')[0] === 'rundfunk.weitere');
 ck('[rf-weitere] BAföG in eigener Wohnung: Rundfunkbefreiung möglich', K({ ausbildung: 'ich', gebJahr: 2004, art1: 'lohn', brutto: 300, netto: 300, miete: 400 }, 'rundfunk')[0] === 'rundfunk.weitere');
-ck('[rf-weitere] BAföG bei den Eltern: keine Befreiung', L({ ausbildung: 'ich', gebJahr: 2004, art1: 'lohn', brutto: 300, netto: 300, miete: 0, wohnform: 'eltern' }, 'rundfunk') === 'nein');
+// Bei den Eltern ist seit 24.11.2026 Grundsicherungsgeld „möglich“ (§ 7 Abs. 6 Nr. 2 SGB II); die Befreiung wegen BAföG gibt es dort weiter nicht
+ck('[rf-weitere] BAföG bei den Eltern: keine Befreiung wegen BAföG', !K({ ausbildung: 'ich', gebJahr: 2004, art1: 'lohn', brutto: 300, netto: 300, miete: 0, wohnform: 'eltern' }, 'rundfunk').includes('rundfunk.weitere'));
 // Wohnberechtigungsschein
 ck('[wbs-schwerb] WBS: Freibetrag Schwerbehinderte verbessert die Einstufung (2.200 € brutto: Gebietsgrenze -> Grenzbereich)', L({ art1: 'lohn', brutto: 2200, netto: 1600 }, 'wbs') === 'vielleicht' && K({ art1: 'lohn', brutto: 2200, netto: 1600 }, 'wbs')[0] === 'wbs.gebiet' && K({ art1: 'lohn', brutto: 2200, netto: 1600, gdb: '100', bhPerson: 'erwNach25' }, 'wbs')[0] === 'wbs.rand');
 // Bundeswerte § 9 Abs. 2 WoFG: 12.000 € (1 Person), 18.000 € (2), + 4.100 € je weitere Person, + 500 € je Kind
@@ -615,7 +620,7 @@ ck('[eg-hinweise] Elterngeld: Hinweise Mutterschaftsgeld und Einkommensgrenze 17
 const gv = (jahr, verm) => L(ohne({ miete: 400, vermoegen: verm, gebJahr: jahr, heute: 2026.8 }), 'ggeld');
 ck('[gg-verm] Schonvermögen ab dem 30. Geburtstag 10.000 € (29: 5.000 €), ab dem 40. 12.500 €, ab dem 50. 20.000 €', gv(1997, 8000) === 'nein' && gv(1996, 8000) !== 'nein' && gv(1987, 12000) === 'nein' && gv(1986, 12000) !== 'nein' && gv(1977, 18000) === 'nein' && gv(1976, 18000) !== 'nein');
 ck('[bafoeg-verm] BAföG-Vermögen: ab dem 30. Geburtstag 45.000 € (29 Jahre: 15.000 €)', L({ ausbildung: 'ich', vermoegen: 30000, gebJahr: 1997, heute: 2026.8 }, 'bafoeg') === 'nein' && L({ ausbildung: 'ich', vermoegen: 30000, gebJahr: 1996, heute: 2026.8 }, 'bafoeg') === 'vielleicht');
-ck('[gg-studium] Studium mit 44: kein Grundsicherungsgeld (BAföG-Alter); mit 46 Ausschluss offen', K(ohne({ ausbildung: 'ich', miete: 400, gebJahr: 1982, heute: 2026.8 }), 'ggeld')[0] === 'ggeld.ausbildung' && K(ohne({ ausbildung: 'ich', miete: 400, gebJahr: 1980, heute: 2026.8 }), 'ggeld')[0] !== 'ggeld.ausbildung');
+ck('[gg-studium] Studium mit 44 und mit 46: kein Grundsicherungsgeld (Ausschluss dem Grunde nach, unabhängig vom BAföG-Alter; Vollprüfung 24.11.2026)', K(ohne({ ausbildung: 'ich', miete: 400, gebJahr: 1982, heute: 2026.8 }), 'ggeld')[0] === 'ggeld.ausbildung' && L(ohne({ ausbildung: 'ich', miete: 400, gebJahr: 1980, heute: 2026.8 }), 'ggeld') === 'nein');
 ck('[bafoeg-alter] BAföG mit 44 normal geprüft, mit 46 nur möglich (Altersgrenze 45), mit 50 nein', K({ ausbildung: 'ich', gebJahr: 1982, heute: 2026.8 }, 'bafoeg')[0] === 'bafoeg.ab30' && K({ ausbildung: 'ich', gebJahr: 1980, heute: 2026.8 }, 'bafoeg')[0] === 'bafoeg.alter' && L({ ausbildung: 'ich', gebJahr: 1976, heute: 2026.8 }, 'bafoeg') === 'nein');
 ck('[gg-verm] Alte gespeicherte Altersgruppen werden übernommen', L(ohne({ miete: 400, vermoegen: 6000, alterGruppe: '<31' }), 'ggeld') === 'nein' && L(ohne({ miete: 400, vermoegen: 15000, alterGruppe: '51+' }), 'ggeld') !== 'nein');
 
@@ -774,7 +779,8 @@ ck('[auto] BAföG: Auto zählt zum Vermögen (10.000 € + Auto 6.000 € über 
 ck('[hh-andere] Verwandte in der Wohnung: Vermutung der Unterstützung (§ 9 Abs. 5 SGB II) und Wohngeld-Haushalt -> nur „möglich“; WG: Hinweis eigener Mietanteil',
   L({ ...bz, hhAndere: 'verwandte' }, 'ggeld') === 'vielleicht' && K({ ...bz, hhAndere: 'verwandte' }, 'ggeld').includes('ggeld.verwandte') && L({ ...bz, hhAndere: 'wg' }, 'ggeld') === 'ja' && K({ ...bz, hhAndere: 'wg' }, 'ggeld').includes('wg.anteil'));
 // Angemessene Unterkunftskosten: 1 Person, Mietenstufe III: (456 € + 19,20 € Klima) × 1,1 + 110,40 € Heizung = 633,12 € -> etwa 630 €
-const kd = { art1: 'alg', brutto: 1600, netto: 1600, miete: 1500, mietstufe: 3, vermoegen: 1000, gebJahr: 1985 };
+// Miete unter dem Eineinhalbfachen der Grenze (seit 24.11.2026 deckelt die App darüber, § 22 Abs. 1 Satz 6 SGB II; eigener Test in test-rechtsmatrix-grusi.js)
+const kd = { art1: 'alg', brutto: 1250, netto: 1250, miete: 800, mietstufe: 3, vermoegen: 1000, gebJahr: 1985 };
 ck('[kdu-grenze] Miete über der Angemessenheitsgrenze: Hinweis mit Grenze (etwa 630 €); jetzt wahrscheinlich, mit der Grenze nicht -> „möglich“',
   res(kd).m.ggeld.tx.some((t) => t[0] === 'kdu.hoch' && t[1].grenze === E(630)) && L(kd, 'ggeld') === 'vielleicht' && !K({ ...kd, miete: 600 }, 'ggeld').includes('kdu.hoch') && !K({ ...kd, mietstufe: '' }, 'ggeld').includes('kdu.hoch'));
 const eu = { art1: 'ohne', brutto: 0, netto: 0, miete: 500, mietstufe: 3, vermoegen: 500, gebJahr: 1990, aufenthalt: 'eu', euArbeit: 'nein', euJahre: 'unter5' };
