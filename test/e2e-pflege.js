@@ -36,7 +36,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Fortschritt zeigt Frage x von y', /Frage 1 von 6/.test(await p.textContent('#pflegeAssist .pa-kopf')));
   ok('Kopf der Seite (Logo, Sprache) ist ausgeblendet', (await p.evaluate(() => document.querySelector('header.top').getBoundingClientRect().height)) <= 1);
   await tippe('Schafft nur einen kleinen Teil allein');
-  await p.click('text=Weiß ich nicht');
+  await p.click('#pflegeAssist >> text=Weiß ich nicht');
   ok('„Weiß ich nicht“ geht weiter', /aufrecht sitzen|sitzen bleiben/.test(await frage()) === false);
   await p.click('text=← Zurück >> visible=true');
   ok('Zurück zeigt die vorige Frage', /aufrecht sitzen/.test(await frage()), await frage());
@@ -114,7 +114,7 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   ok('Mit Pflegegrad: Knopf „Höherstufung prüfen“', /Höherstufung/.test(await p.textContent('#paStart')));
   await p.click('#paStart');
   for (let i = 0; i < 80 && !/Wahrscheinlich/.test(await frage()); i++) {
-    const an = await p.$('#pflegeAssist .es-btn.an'); if (an) await an.click(); else await p.click('text=Weiß ich nicht');
+    const an = await p.$('#pflegeAssist .es-btn.an'); if (an) await an.click(); else await p.click('#pflegeAssist >> text=Weiß ich nicht');
   }
   ok('Mit Pflegegrad 1: Höherstufung lohnt sich', /Höherstufung lohnt sich/.test(await p.textContent('#pflegeAssist')));
   ok('Mit Pflegegrad 1: Kachel „Höherstufung beantragen“', /Höherstufung beantragen/.test(await p.textContent('#pflegeAssist .pa-k-antrag')));
