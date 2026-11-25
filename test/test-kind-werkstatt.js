@@ -117,7 +117,7 @@ ck('[kind-werkstatt] Kindeinkommen allein führt nicht zur Absage beim Elterntei
 ck('Einkommen des Elternteils zu hoch: weiter „nein“', run({ adults: 1, young: 1, bhPerson: 'erwVor25', wfbm: true, netto: 2600, brutto: 3500, art1: 'lohn', miete: 650, kindEink: 1500 }).ggeld.level === 'nein');
 // 16) gsa.eltern: „mehr als 100.000 €“ (§ 94 Abs. 1a SGB XII) und „kann … bekommen“
 const de = require('../src/lang/de.json');
-ck('gsa.eltern: „mehr als 100.000 €“ und „kann“', /mehr als 100\.000/.test(de['t.gsa.eltern']) && /kann/.test(de['t.gsa.eltern']) && !/erst ab 100/.test(de['t.gsa.eltern']), de['t.gsa.eltern']);
+ck('gsa.eltern: „mehr als 100.000 €“ und „kann“', /mehr als (100\.000|\{eur:100000\})/.test(de['t.gsa.eltern']) && /kann/.test(de['t.gsa.eltern']) && !/erst ab 100/.test(de['t.gsa.eltern']), de['t.gsa.eltern']);
 
 // 15) Kind ab 18 in der Werkstatt OHNE laufenden Bezug vom Sozialamt: für dieses Kind kein Kinderzuschlag (DA-KiZ 20.02.2026 B.2 Abs. 2
 //     Satz 5 bis 8, https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf). Einziges Kind: „nein“; mit weiteren Kindern höchstens „möglich“

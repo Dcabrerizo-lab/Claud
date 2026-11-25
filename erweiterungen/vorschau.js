@@ -130,7 +130,10 @@
     const summe = (plus, minus, zahl) => {
       if (plus.concat([zahl]).some((id) => n(id) == null && !/-(ae|schw|ww|g)$/.test(id))) return;
       const s = plus.reduce((a, id) => a + (n(id) || 0), 0) - minus.reduce((a, id) => a + (n(id) || 0), 0);
-      if (Math.abs(Math.max(0, s) - n(zahl)) > 1) plus.concat(minus, [zahl]).filter((id) => n(id) != null).forEach((id) => aus.add(id));
+      // Grundsicherungsgeld: Der Zahlbetrag enthält oft den Sofortzuschlag (§ 72 SGB II, 25 € je Kind) – Vielfache davon gelten als passend
+      const sz = art === 'jc' ? Rules.RULES.sofortzuschlag : 0, d = n(zahl) - Math.max(0, s);
+      const passtSZ = sz > 0 && d > 0 && d <= 10 * sz + 1 && Math.abs(d - Math.round(d / sz) * sz) <= 1;
+      if (Math.abs(d) > 1 && !passtSZ) plus.concat(minus, [zahl]).filter((id) => n(id) != null).forEach((id) => aus.add(id));
     };
     if (art === 'jc') summe(['bs-b-regel', 'bs-b-ae', 'bs-b-schw', 'bs-b-ww', 'bs-b-kdu'], ['bs-b-eink', 'bs-b-kg'], 'bs-b-zahl');
     if (art === 'sa') summe(['ga-b-regel', 'ga-b-g', 'ga-b-ww', 'ga-b-kdu'], ['ga-b-eink'], 'ga-b-zahl');
@@ -668,7 +671,7 @@ Ergebnis: Pflegegrad 2`;
     r.hinweise.forEach((t) => box.append(h('p', { class: 'note', text: t })));
     box.append(h('p', {}, r.zuWenigImMonat > 0 ? h('span', { class: 'big', text: `Vermutlich ${eur(r.zuWenigImMonat)} im Monat zu wenig` }) : h('span', { class: 'big', text: 'Keine sichere Abweichung zu deinen Lasten gefunden' })));
     abweichungsKarten(box, r, 'Vergleich der Posten');
-    if (r.zahlbetrag) box.append(h('p', { class: 'small', text: `Zahlbetrag nach SoLo ${eur(r.zahlbetrag.erwartet)}, im Bescheid ${eur(r.zahlbetrag.bescheid)}.` }));
+    if (r.zahlbetrag) box.append(h('p', { class: 'small', text: `Zahlbetrag nach SoLo ${eur(r.zahlbetrag.erwartet)}${r.zahlbetrag.mitSofortzuschlag ? ` (mit ${eur(r.erwartet.sofortzuschlag)} Sofortzuschlag für Kinder, § 72 SGB II)` : ''}, im Bescheid ${eur(r.zahlbetrag.bescheid)}.${r.zahlbetrag.sofortzuschlagMoeglich ? ` Dazu kommt möglicherweise der Sofortzuschlag für Kinder von ${eur(r.zahlbetrag.sofortzuschlagMoeglich)} (§ 72 SGB II), falls er nicht gesondert gezahlt wird.` : ''}` }));
     box.append(h('p', { class: 'small muted', text: r.grenzen }));
   }
   // Widerspruch mit Zahlen-Begründung nur, wenn der Vergleich vollständig ist. Fehlen Angaben, entsteht ein fristwahrender Widerspruch
@@ -1252,8 +1255,10 @@ Ergebnis: Pflegegrad 2`;
         h('p', { text: tA('bp.an.zeile', 'So steht es im Brief: „{zeile}“', { zeile: r.fristen[0].zeile }) }),
         h('p', { text: tA('bp.an.pruefen', 'Bitte lies die Frist im Brief selbst nach. Die Texterkennung kann sich irren.') })));
     }
-    if (r.mahnbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { text: 'Das ist wohl ein gerichtlicher Mahnbescheid. ' }), 'Widerspruch nur innerhalb von 2 Wochen ab Zustellung. Mehr dazu unten.'));
-    if (r.vollstreckungsbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { text: 'Das ist wohl ein Vollstreckungsbescheid. ' }), 'Einspruch nur innerhalb von 2 Wochen ab Zustellung. Frag sofort eine Schuldnerberatung.'));
+    // Mahnbescheid: Widerspruch am besten binnen 2 Wochen (§ 692 Abs. 1 Nr. 3 ZPO), danach noch, solange kein Vollstreckungsbescheid verfügt ist
+    // (§ 694 Abs. 1 ZPO); Vollstreckungsbescheid: Einspruch 2 Wochen, Notfrist (§§ 700, 339 ZPO). Texte übersetzt (src/lang/zusatz, Prüfung Schulden 24.11.2026).
+    if (r.mahnbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { 'data-t': 'bp.mb.titel', text: tA('bp.mb.titel', 'Das ist wohl ein gerichtlicher Mahnbescheid.') }), ' ', h('span', { 'data-t': 'bp.mb.frist', text: tA('bp.mb.frist', 'Widerspruch am besten innerhalb von 2 Wochen ab Zustellung. Später geht es nur noch, solange das Gericht keinen Vollstreckungsbescheid erlassen hat. Mehr dazu unten.') })));
+    if (r.vollstreckungsbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { 'data-t': 'bp.vb.titel', text: tA('bp.vb.titel', 'Das ist wohl ein Vollstreckungsbescheid.') }), ' ', h('span', { 'data-t': 'bp.vb.frist', text: tA('bp.vb.frist', 'Einspruch nur innerhalb von 2 Wochen ab Zustellung. Frag sofort eine Schuldnerberatung.') })));
     // Mahnbescheid/Vollstreckungsbescheid: Tag der Zustellung (gelber Umschlag) erfragen, erst der Tipp merkt die Frist
     if ((r.mahnbescheid || r.vollstreckungsbescheid) && window.FristenOrdner) box.append(window.FristenOrdner.knopf((zugang) => ({ art: r.vollstreckungsbescheid ? 'vb' : 'mb', stelle: 'gericht', basis: { zugang }, quelle: 'brief' }), { feld: 'zugang' }));
     if (r.inkasso) box.append(h('p', { class: 'note' }, h('strong', { text: 'Im Brief steht „Inkasso“. ' }), 'Lies unten, was du prüfen solltest.'));

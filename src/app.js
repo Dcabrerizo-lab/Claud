@@ -91,6 +91,9 @@
     return ohne ? Fmt.ohnePara(s) : s;
   }
 
+  // Höchster Freibetrag (§ 82a SGB XII Grundrente, § 82 Abs. 4 SGB XII Zusatzrente): 50 % der Regelbedarfsstufe 1, wandert mit dem Regelsatz
+  function freiMax(art) { return { max: { eur: Rules.RULES[art].max * Rules.RULES.regelbedarf.alleinstehend } }; }
+
   // Text für Laien: ohne Beratungsmodus Paragrafen in Klammern ausblenden (Fmt.ohnePara); im Beratungsmodus unverändert
   function tL(key, p) { var s = t(key, p); return beratung ? s : Fmt.ohnePara(s); }
 
@@ -698,6 +701,7 @@
     document.querySelectorAll('[data-t]').forEach(function (el) { el.textContent = t(el.getAttribute('data-t')); });
     document.querySelectorAll('[data-t-aria]').forEach(function (el) { el.setAttribute('aria-label', t(el.getAttribute('data-t-aria'))); });
     document.querySelectorAll('[data-t-ph]').forEach(function (el) { el.setAttribute('placeholder', t(el.getAttribute('data-t-ph'))); });
+    if ($('zusatzRenteHint')) $('zusatzRenteHint').textContent = t('ek.zusatzRente.hint', freiMax('vorsorge')); // Höchstbetrag aus den Regeln (50 % Regelsatz), nicht fest im Text
     $('mappeDeNote').hidden = lang === 'de'; // Hinweis „Brief und Angabenblatt sind auf Deutsch“ nur bei anderer App-Sprache
     $('stand').textContent = t('stand', { stand: standL() });
     $('vertrauenT').textContent = t('vertrauen', { stand: standL() }); // Stand und Herkunft der Zahlen sichtbar am Ergebnis
@@ -2878,7 +2882,7 @@
     if (es.kind === 'ja' && es.ausweis === 'ja') tipps.push(t(mz.H || mz.Bl || mz.TBl ? 'es.tipp.pauschElternH' : 'es.tipp.pauschEltern'));
     if (es.wohnen === 'eltern' && (['2', '3', '4', '5'].indexOf(es.pflege) >= 0 || mz.H)) tipps.push(t('es.tipp.pflegePausch'));
     if ((out.zusammen || []).some(function (z) { return z[0] === 'z.gsaWg'; })) tipps.unshift(t('es.tipp.wgOderGsa'));
-    if (hat('gsa', 'gsa.grundrente') && es.renteJa === 'ja') tipps.push(t('es.tipp.grundrente'));
+    if (hat('gsa', 'gsa.grundrente') && es.renteJa === 'ja') tipps.push(t('es.tipp.grundrente', freiMax('grundrente')));
     if (gut.some(function (x) { return x.id === 'kgBeh'; })) tipps.push(t(es.wohnen === 'eltern' ? 'es.tipp.kgEltern' : 'es.tipp.kgAbzweig'));
     esMietgrenze(gut, out, tipps);
     var h = '<h2 class="es-q" id="es-q" tabindex="-1">' + esc(t(gut.length ? 'es.erg.h' : 'es.erg.keine')) + '</h2>' +
@@ -3022,7 +3026,7 @@
   };
   // ----- Netto-Helfer: Steuerklasse und Kirchensteuer mit großen Knöpfen wählen, Netto nach Programmablaufplan ausrechnen -----
   function lohnOpts(i) {
-    var o = Rules.lohnAnnahmen({ adults: state.adults, kids: Number(state.kids) || 0, young: Number(state.young) || 0, zweiVerdiener: state.adults === 2 && state.ek1Art === 'lohn' && state.ek2Art === 'lohn', land: state.bundesland }, i);
+    var o = Rules.lohnAnnahmen({ adults: state.adults, kids: Number(state.kids) || 0, young: Number(state.young) || 0, zweiVerdiener: state.adults === 2 && state.ek1Art === 'lohn' && state.ek2Art === 'lohn', land: state.bundesland, hhAndere: state.hhAndere === 'wg' || state.hhAndere === 'verwandte' ? state.hhAndere : '' }, i);
     if ([1, 2, 3, 4, 5, 6].indexOf(Number(state['stkl' + i])) >= 0) o.stkl = Number(state['stkl' + i]);
     o.kirche = state['kirche' + i] ? (state.bundesland === 'BY' || state.bundesland === 'BW' ? 0.08 : 0.09) : 0;
     return o;
@@ -3563,8 +3567,21 @@
     } else if (pf.schritt === 2 && pf.art === 'konto') {
       p(t('pf.kg.q'), 'pf-frage'); p(t('pf.kg.hint'), 'hint');
       var r2 = knoepfe('wahl-raster');
-      [0, 1, 2, 3, 4, 5].forEach(function (n) { r2.appendChild(nhKnopf('wahl', '<b>' + esc(n === 5 ? t('pf.mehr') : String(n)) + '</b>', pf.kg === n, function () { pf.kg = n; pf.schritt = 3; pfRender(true); })); });
+      [0, 1, 2, 3, 4, 5].forEach(function (n) { r2.appendChild(nhKnopf('wahl', '<b>' + esc(n === 5 ? t('pf.mehr') : String(n)) + '</b>', pf.kg === n, function () { pf.kg = n; if (!n) pf.kiz = ''; pf.schritt = 3; pfRender(true); })); });
       leiste(null);
+    } else if (pf.schritt === 3 && pf.art === 'konto' && pf.kg > 0) {
+      // Kinderzuschlag ist auf dem P-Konto zusätzlich geschützt: „andere gesetzliche Geldleistungen für Kinder“ (§ 902 Satz 1 Nr. 5 ZPO,
+      // https://www.gesetze-im-internet.de/zpo/__902.html, abgerufen 24.11.2026; Prüfung Schulden 24.11.2026). Leer = kein Kinderzuschlag.
+      p(t('pf.kiz.q'), 'pf-frage');
+      var fk = document.createElement('div'); fk.className = 'field';
+      fk.innerHTML = '<label for="pfKiz">' + esc(t('pf.kiz.l')) + '</label><div class="money"><input type="text" inputmode="decimal" autocomplete="off" id="pfKiz"><span aria-hidden="true">€</span></div><span class="hint">' + esc(t('pf.kiz.hint')) + '</span>';
+      box.appendChild(fk);
+      var inK = fk.querySelector('input'); inK.value = pf.kiz === '' ? '' : String(pf.kiz).replace('.', ',');
+      var msgK = p('', 'warn'); msgK.hidden = true; msgK.setAttribute('role', 'status');
+      var weiterK = function () { var leerK = inK.value.trim() === '', v = leerK ? '' : parseAmount(inK.value); if (!leerK && !(v >= 0 && v !== '')) { msgK.hidden = false; msgK.textContent = t('pf.netto.fehlt'); inK.focus(); return; } pf.kiz = v; pf.schritt = 4; pfRender(true); };
+      inK.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') weiterK(); });
+      leiste(weiterK);
+      if (fokus) { inK.focus(); return; }
     } else if (pf.art === 'lohn') {
       var e = Rules.pfaendung(pf.netto, pf.pers);
       p(t('pf.erg.h'), 'pf-frage');
@@ -3584,18 +3601,18 @@
       spVerweis();
       box.appendChild(quellenEl([t('pf.stand')])); // Quelle der Werte unter dem Ergebnis, zugeklappt
     } else {
-      var k = Rules.pkonto({ personen: pf.pers, kindergeldKinder: pf.kg });
+      var k = Rules.pkonto({ personen: pf.pers, kindergeldKinder: pf.kg, kiz: pf.kg > 0 ? pf.kiz : 0 });
       p(t('pf.erg.h'), 'pf-frage');
       p(t('pf.erg.konto', { g: { eur: k.gesamt } }), 'pf-zahl');
-      // Aufschlüsselung nur bei Erhöhung (Unterhalt, Kindergeld); sonst stünde der Grundfreibetrag zweimal da (UX-Audit C)
-      if (k.unterhalt || k.kindergeld) {
+      // Aufschlüsselung nur bei Erhöhung (Unterhalt, Kindergeld, Kinderzuschlag); sonst stünde der Grundfreibetrag zweimal da (UX-Audit C)
+      if (k.unterhalt || k.kindergeld || k.kiz) {
         var tab = document.createElement('table'); tab.className = 'pf-tab';
-        [['pf.k.sockel', k.sockel], ['pf.k.unterhalt', k.unterhalt], ['pf.k.kg', k.kindergeld]].forEach(function (x) { if (!x[1] && x[0] !== 'pf.k.sockel') return; var tr = tab.insertRow(); tr.insertCell().textContent = t(x[0]); tr.insertCell().textContent = E(x[1]); });
+        [['pf.k.sockel', k.sockel], ['pf.k.unterhalt', k.unterhalt], ['pf.k.kg', k.kindergeld], ['pf.k.kiz', k.kiz]].forEach(function (x) { if (!x[1] && x[0] !== 'pf.k.sockel') return; var tr = tab.insertRow(); tr.insertCell().textContent = t(x[0]); tr.insertCell().textContent = E(x[1]); });
         box.appendChild(tab);
       }
-      var mk = k.unterhalt || k.kindergeld ? 'pf.tipp.bescheinigung' : 'pf.tipp.kontomehr';
-      jetzt(['pf.tipp.umwandeln', mk, 'pf.tipp.beratung']);
-      tipps(['pf.tipp.uebertrag', 'pf.tipp.sozial'].concat(mk === 'pf.tipp.kontomehr' ? [] : ['pf.tipp.kontomehr']));
+      // Bescheinigung immer nennen: auch ohne Unterhalt und Kinder kann mehr geschützt werden (§ 902 Satz 1 Nr. 1 b, 2, 4, 6 ZPO, Prüfung Schulden 24.11.2026)
+      jetzt(['pf.tipp.umwandeln', 'pf.tipp.bescheinigung', 'pf.tipp.beratung']);
+      tipps(['pf.tipp.uebertrag', 'pf.tipp.sozial', 'pf.tipp.kontomehr']);
       var d2 = knoepfe('btns');
       d2.appendChild(nhKnopf('btn ghost', esc(t('pf.neu')), null, function () { pf = { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; pfRender(true); }));
       spVerweis();
@@ -4502,7 +4519,9 @@
       ['verh', t('pfl.pi.z.verh.h', { betrag: piEuro(R.entlastungsbudget) }), 'budget', 'pi-verh'],
       ['tages', bis(je(R.pflegeTages)), 'budget', 'pi-dienst'],
       ['hilfs', t('pfl.pi.z.hilfs.h', { betrag: piEuro(R.beh.verbrauch) }), 'budget', 'pi-hilfs'],
-      ['umbau', t('pfl.pi.z.umbau.h', { betrag: piEuro(R.beh.wohnumfeld) }), 'budget', 'pi-hilfs']];
+      ['umbau', t('pfl.pi.z.umbau.h', { betrag: piEuro(R.beh.wohnumfeld) }), 'budget', 'pi-hilfs'],
+      // Pflege im Heim (§§ 43, 43a, 43c SGB XI; Beträge rules.js pflegeHeim, Vollprüfung B08, 24.11.2026)
+      ['heim', je(R.pflegeHeim), 'budget', 'pi-heim']];
     var tw = el('div', null, 'tabwrap'); tw.setAttribute('role', 'region'); tw.setAttribute('aria-label', t('pfl.pi.tab')); tw.tabIndex = 0;
     var tb = el('table'), th = el('thead'), tr0 = el('tr');
     ['leistung', 'wie', 'hoehe'].forEach(function (x) { tr0.appendChild(el('th', t('pfl.pi.sp.' + x))); }); th.appendChild(tr0); tb.appendChild(th);
@@ -4528,6 +4547,7 @@
     abschnitt('pi-verh', 6, 0, { betrag: piEuro(R.entlastungsbudget) });
     abschnitt('pi-hilfs', 3, 0, null);
     var hilfs = $('pi-hilfs').querySelectorAll('p'); hilfs[0].textContent = t('pfl.pi.hilfs.0', { betrag: piEuro(R.beh.verbrauch) }); hilfs[2].textContent = t('pfl.pi.hilfs.2', { betrag: piEuro(R.beh.wohnumfeld) });
+    abschnitt('pi-heim', 3, 0, puHeimWerte());
     abschnitt('pi-gut', 3);
     box.appendChild(quellenEl([t('pfl.pi.stand', { stand: R.stand || 'November 2026' })]));
   }
@@ -4564,12 +4584,17 @@
   ];
 
   // Texte der Übersicht: src/lang/pflege/<Sprache>.json (Schlüssel „pfl.pu.<id>.t|x|m0…|w“), Beträge im Beispiel aus den Rechenregeln
-  var PU_MEHR = { geld: 1, dienst: 2, entl: 3, verh: 6, tages: 2, kombi: 1, hilfs: 1, notruf: 0, umbau: 1, wg: 0, kurs: 0, beratung: 1, rente: 1, zeit: 1 };
+  var PU_MEHR = { geld: 1, dienst: 2, entl: 3, verh: 6, tages: 2, kombi: 1, hilfs: 1, notruf: 0, umbau: 1, wg: 0, heim: 3, kurs: 0, beratung: 1, rente: 1, zeit: 1 };
+  // Werte für die Texte zur Pflege im Heim: Zuschlag § 43c SGB XI, § 43a SGB XI, Elternunterhalt erst über 100.000 € (§ 94 Abs. 1a SGB XII)
+  function puHeimWerte() {
+    var R = Rules.RULES, z = R.pflegeHeimZuschlag;
+    return { pg1: piEuro(R.pflegeHeim[1]), z1: String(z[0]), z2: String(z[1]), z3: String(z[2]), z4: String(z[3]), q43a: String(R.pflege43a.quote), max: piEuro(R.pflege43a.max), grenze: piEuro(100000) };
+  }
   function puTexte(pg) {
     var R = Rules.RULES;
     var kombiPg = pg >= 2 ? pg : 2, halb = R.pflegeSach[kombiPg] / 2;
     var e2 = function (x) { return Number(x).toLocaleString('de-DE', { minimumFractionDigits: x % 1 ? 2 : 0, maximumFractionDigits: 2 }) + ' €'; };
-    var w = { pg: String(kombiPg), halb: e2(halb), rest: e2(Rules.pflegeKombi(kombiPg, halb)) }, o = {};
+    var w = Object.assign({ pg: String(kombiPg), halb: e2(halb), rest: e2(Rules.pflegeKombi(kombiPg, halb)) }, puHeimWerte()), o = {};
     Object.keys(PU_MEHR).forEach(function (id) {
       var k = 'pfl.pu.' + id + '.', m = [];
       for (var i = 0; i < PU_MEHR[id]; i++) m.push(t(k + 'm' + i, w));
@@ -4774,7 +4799,7 @@
     var r = BriefLesen.lies(text, briefArt || null);
     // Auch in einer Kachel: Anhörung oder Aufforderung zur Mitwirkung erkennen und erklären statt nachzurechnen
     var e0 = briefArt ? BriefLesen.erkenne(text) : null;
-    if (e0 && (e0.art === 'anh' || e0.art === 'mit')) r = BriefLesen.lies(text, null);
+    if (e0 && (e0.art === 'anh' || e0.art === 'mit' || (e0.art === 'kg' && briefArt === 'fk'))) r = BriefLesen.lies(text, null); // Kindergeld in der Kachel „Familienkasse“ (Kinderzuschlag)
     $('elErg').textContent = '';
     // Aufforderung zur Senkung der Wohn- oder Heizkosten: Erklärung statt Nachrechnung (erweiterungen/kostensenkung.js)
     var ks = BriefLesen.kostensenkung ? BriefLesen.kostensenkung(text) : null;
@@ -4786,11 +4811,11 @@
     // Anderer Brief: Frist mit Beleg suchen, Mahnbescheid und Inkasso erkennen (Anhörung und Mitwirkung erklärt der Teil darunter)
     if (briefArt === 'an' && r.art !== 'anh' && r.art !== 'mit') { elNachricht(''); if (window.PruefpaketAndere) window.PruefpaketAndere.zeige(text, { box: $('elErg'), wechseln: function (art) { var tx = text; briefOeffnen(art); textLesen(tx); } }); return; }
     if (!r.art) { elNachricht(t('el.unbekannt')); return; }
-    if (r.art === 'anh' || r.art === 'mit') {
+    if (r.art === 'anh' || r.art === 'mit' || r.art === 'kg') { // kg: Kindergeld-Bescheid nur erklären (Einspruch § 347 AO), kein Nachrechnen
       var d = document.createElement('div'); d.className = 'el-erkl';
       var b = document.createElement('b'); b.textContent = ppEin(r.titel); d.appendChild(b);
       var p = document.createElement('p'); p.textContent = BriefLesen.ERKLAERUNG[r.art]; d.appendChild(p);
-      var fr = BriefLesen.frist(text);
+      var fr = r.art === 'kg' ? null : BriefLesen.frist(text);
       if (fr) { var q = document.createElement('p'); q.className = 'frist frist-wann'; q.setAttribute('role', 'note'); q.textContent = t('el.frist', { frist: BriefLesen.fristLesbar ? BriefLesen.fristLesbar(fr) : fr }); $('elErg').appendChild(q); } // Frist-Muster ganz oben
       var fk = fr && window.FristenOrdner ? FristenOrdner.briefKnopf(text, r.art) : null; if (fk) d.appendChild(fk); // nur auf Knopfdruck merken
       $('elErg').appendChild(d); if (ks) ksZeigen(ks, text); elNachricht(t('el.erkanntOhne', { titel: ppEin(r.titel) })); return;

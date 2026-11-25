@@ -1,0 +1,7963 @@
+[
+ {
+  "id": "F-gsa-01",
+  "beschreibung": "Rentnerin allein, Rente netto 800 €, Warmmiete 450 €: Bedarf 563+450=1.013 €, Anspruch 213 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 913,
+   "brutto2": "",
+   "netto": 800,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 213,
+    "toleranz": 10,
+    "betragAus": "schaetz.eins.a"
+   }
+  },
+  "quelle": "§§ 41-43, 82, 82a, 90 SGB XII; RBSFV 2026 (RS1 563 €, RS2 506 €); VO zu § 90 Abs. 2 Nr. 9 SGB XII (10.000 €) – https://www.gesetze-im-internet.de/sgb_12/__41.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-02",
+  "beschreibung": "wie gsa-01, Vermögen genau 10.000 € (Schonbetrag)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 913,
+   "brutto2": "",
+   "netto": 800,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 10000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§§ 41-43, 82, 82a, 90 SGB XII; RBSFV 2026 (RS1 563 €, RS2 506 €); VO zu § 90 Abs. 2 Nr. 9 SGB XII (10.000 €) – https://www.gesetze-im-internet.de/sgb_12/__41.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-03",
+  "beschreibung": "wie gsa-01, Vermögen 10.001 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 913,
+   "brutto2": "",
+   "netto": 800,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 10001,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§§ 41-43, 82, 82a, 90 SGB XII; RBSFV 2026 (RS1 563 €, RS2 506 €); VO zu § 90 Abs. 2 Nr. 9 SGB XII (10.000 €) – https://www.gesetze-im-internet.de/sgb_12/__41.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-04",
+  "beschreibung": "Einkommen 50 € unter Bedarf",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1099,
+   "brutto2": "",
+   "netto": 963,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 50,
+    "toleranz": 10,
+    "betragAus": "schaetz.eins.a"
+   }
+  },
+  "quelle": "§§ 41-43, 82, 82a, 90 SGB XII; RBSFV 2026 (RS1 563 €, RS2 506 €); VO zu § 90 Abs. 2 Nr. 9 SGB XII (10.000 €) – https://www.gesetze-im-internet.de/sgb_12/__41.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-05",
+  "beschreibung": "Einkommen 1 € unter Bedarf (Anspruch 1 €; App darf „möglich“ zeigen)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1155,
+   "brutto2": "",
+   "netto": 1012,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja|vielleicht"
+   }
+  },
+  "quelle": "§§ 41-43, 82, 82a, 90 SGB XII; RBSFV 2026 (RS1 563 €, RS2 506 €); VO zu § 90 Abs. 2 Nr. 9 SGB XII (10.000 €) – https://www.gesetze-im-internet.de/sgb_12/__41.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-06",
+  "beschreibung": "Einkommen 1 € über Bedarf (ohne Absetzbeträge kein Anspruch; mit Versicherungen § 82 Abs. 2 Nr. 3 möglich)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1157,
+   "brutto2": "",
+   "netto": 1014,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "vielleicht|nein"
+   }
+  },
+  "quelle": "§§ 41-43, 82, 82a, 90 SGB XII; RBSFV 2026 (RS1 563 €, RS2 506 €); VO zu § 90 Abs. 2 Nr. 9 SGB XII (10.000 €) – https://www.gesetze-im-internet.de/sgb_12/__41.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-07",
+  "beschreibung": "Einkommen 187 € über Bedarf",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§§ 41-43, 82, 82a, 90 SGB XII; RBSFV 2026 (RS1 563 €, RS2 506 €); VO zu § 90 Abs. 2 Nr. 9 SGB XII (10.000 €) – https://www.gesetze-im-internet.de/sgb_12/__41.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-08",
+  "beschreibung": "Ehepaar, beide Regelaltersgrenze, zusammen netto 1.400 €, Miete 600 €: Bedarf 2×506+600=1.612 €, Anspruch 212 €",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "rente",
+   "brutto": 1597,
+   "brutto2": 600,
+   "netto": 1400,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 212,
+    "toleranz": 10,
+    "betragAus": "schaetz.eins.a"
+   }
+  },
+  "quelle": "§§ 41-43, 82, 82a, 90 SGB XII; RBSFV 2026 (RS1 563 €, RS2 506 €); VO zu § 90 Abs. 2 Nr. 9 SGB XII (10.000 €) – https://www.gesetze-im-internet.de/sgb_12/__41.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-09",
+  "beschreibung": "Ehepaar Vermögen 20.000 € (2 × 10.000 €)",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "rente",
+   "brutto": 1597,
+   "brutto2": 600,
+   "netto": 1400,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 20000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§§ 41-43, 82, 82a, 90 SGB XII; RBSFV 2026 (RS1 563 €, RS2 506 €); VO zu § 90 Abs. 2 Nr. 9 SGB XII (10.000 €) – https://www.gesetze-im-internet.de/sgb_12/__41.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-10",
+  "beschreibung": "Ehepaar Vermögen 20.001 €",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "rente",
+   "brutto": 1597,
+   "brutto2": 600,
+   "netto": 1400,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 20001,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§§ 41-43, 82, 82a, 90 SGB XII; RBSFV 2026 (RS1 563 €, RS2 506 €); VO zu § 90 Abs. 2 Nr. 9 SGB XII (10.000 €) – https://www.gesetze-im-internet.de/sgb_12/__41.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-11",
+  "beschreibung": "Merkzeichen G: Mehrbedarf 17 % von 563 = 95,71 €, Anspruch 308,71 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 913,
+   "brutto2": "",
+   "netto": 800,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "mzG": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 308.71,
+    "toleranz": 10,
+    "betragAus": "schaetz.eins.a"
+   }
+  },
+  "quelle": "§ 30 Abs. 1 SGB XII – https://www.gesetze-im-internet.de/sgb_12/__30.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-12",
+  "beschreibung": "33 Jahre Grundrentenzeiten, Rente brutto 1.300/netto 1.150: Freibetrag 281,50 € (Höchstbetrag 50 % RS1), Anspruch 144,50 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1300,
+   "brutto2": "",
+   "netto": 1150,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "grundrente33": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 144.5,
+    "toleranz": 10,
+    "betragAus": "schaetz.eins.a"
+   }
+  },
+  "quelle": "§ 82a SGB XII – https://www.gesetze-im-internet.de/sgb_12/__82a.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-13",
+  "beschreibung": "33 Jahre, Rente brutto 500/netto 440: Freibetrag 100+30 % von 400 = 220 €, Anspruch 793 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 500,
+   "brutto2": "",
+   "netto": 440,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "grundrente33": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 793,
+    "toleranz": 10,
+    "betragAus": "schaetz.eins.a"
+   }
+  },
+  "quelle": "§ 82a SGB XII",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-14",
+  "beschreibung": "Betriebsrente 200 € in der Rente (netto 800): Freibetrag 100+30 % von 100 = 130 €, Anspruch 343 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 913,
+   "brutto2": "",
+   "netto": 800,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "zusatzRente": 200
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 343,
+    "toleranz": 10,
+    "betragAus": "schaetz.eins.a"
+   }
+  },
+  "quelle": "§ 82 Abs. 4 und 5 SGB XII",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-15",
+  "beschreibung": "Dauerhaft voll erwerbsgemindert, 41 Jahre, ohne Einkommen, Miete 400 €: 963 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 400,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1985,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "emStd": "unter3"
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 963,
+    "toleranz": 10,
+    "betragAus": "schaetz.eins.a"
+   },
+   "ggeld": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§§ 41-43, 82, 82a, 90 SGB XII; RBSFV 2026 (RS1 563 €, RS2 506 €); VO zu § 90 Abs. 2 Nr. 9 SGB XII (10.000 €) – https://www.gesetze-im-internet.de/sgb_12/__41.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-16",
+  "beschreibung": "Jahrgang 1961 (Regelaltersgrenze 66 J. 6 M., frühestens 7/2027), nicht erwerbsgemindert",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 913,
+   "brutto2": "",
+   "netto": 800,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1961,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 41 Abs. 2 SGB XII, § 235 SGB VI",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-17",
+  "beschreibung": "Jahrgang 1960 (66 J. 4 M.: je nach Geburtsmonat erreicht)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 913,
+   "brutto2": "",
+   "netto": 800,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1960,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "§ 41 Abs. 2 SGB XII",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-18",
+  "beschreibung": "Jahrgang 1959 (66 J. 2 M.: spätestens 2/2026 erreicht)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 913,
+   "brutto2": "",
+   "netto": 800,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1959,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 41 Abs. 2 SGB XII",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-19",
+  "beschreibung": "Asylverfahren/Duldung: kein SGB XII",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 913,
+   "brutto2": "",
+   "netto": 800,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "asyl",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 23 Abs. 2 SGB XII",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-20",
+  "beschreibung": "EU-Bürgerin ohne Arbeit, unter 5 Jahre",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 913,
+   "brutto2": "",
+   "netto": 800,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "eu",
+   "bezug": {},
+   "ohneWege": true,
+   "euArbeit": "nein",
+   "euJahre": "unter5"
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 23 Abs. 3 SGB XII",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-21",
+  "beschreibung": "bezieht schon Grundsicherung vom Sozialamt",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 913,
+   "brutto2": "",
+   "netto": 800,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {
+    "sozialamt": true
+   },
+   "ohneWege": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "na"
+   },
+   "rundfunk": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§§ 41-43, 82, 82a, 90 SGB XII; RBSFV 2026 (RS1 563 €, RS2 506 €); VO zu § 90 Abs. 2 Nr. 9 SGB XII (10.000 €) – https://www.gesetze-im-internet.de/sgb_12/__41.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-22",
+  "beschreibung": "Werkstattbeschäftigter (250 € Entgelt) bei den Eltern: anrechenbar 250−52=198; frei 70,38+50 % von 127,62=134,19; Einkommen 63,81; mindestens 563−63,81=499 € plus Wohnanteil",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "wfbm",
+   "art2": "",
+   "brutto": 250,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1995,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "erwNach25",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "wohnform": "eltern",
+   "wfbm": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 499.19,
+    "toleranz": 10,
+    "betragAus": "schaetz.mind.a"
+   }
+  },
+  "quelle": "§ 82 Abs. 3 Satz 2, Abs. 2 Nr. 5 SGB XII, § 59 Abs. 2 SGB IX",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-23",
+  "beschreibung": "Kind unter 18 in Werkstatt-Haken, Elternteil arbeitet: Grundsicherung nach § 41 Abs. 3 erst ab 18",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1400,
+   "brutto2": "",
+   "netto": 1100,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1980,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "minder",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "kids14": 1,
+   "wfbm": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 41 Abs. 3 SGB XII",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-24",
+  "beschreibung": "Rentner mit Minijob 400 € (Liste): Freibetrag 30 % = 120 €; Einkommen 600+280=880; Anspruch 133 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 600
+    },
+    {
+     "art": "lohn",
+     "b": 400
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 133,
+    "toleranz": 10,
+    "betragAus": "schaetz.eins.a"
+   }
+  },
+  "quelle": "§ 82 Abs. 3 Satz 1 SGB XII",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-gsa-25",
+  "beschreibung": "Teilweise erwerbsgemindert (3 bis unter 6 Std.): keine Grundsicherung nach SGB XII, Jobcenter",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 500,
+   "brutto2": "",
+   "netto": 440,
+   "miete": 400,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1985,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "emStd": "3bis6",
+   "em5": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   },
+   "ggeld": {
+    "status": "ja|vielleicht"
+   }
+  },
+  "quelle": "§ 41 Abs. 3 SGB XII, § 8 SGB II",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-00",
+  "beschreibung": "kein Pflegegrad",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "nein"
+   },
+   "pflegeplus": {
+    "status": "nein"
+   },
+   "hzp": {
+    "status": "nein"
+   },
+   "lpg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§§ 36, 37, 39, 40, 41, 42a, 45b SGB XI; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025) – https://www.bundesgesundheitsministerium.de/fileadmin/Dateien/3_Downloads/P/Pflegeversicherung_Leistungsbeitraege/Uebersicht_Leistungsbetraege_2026.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-0a",
+  "beschreibung": "Pflegegrad beantragt",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "antrag",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "vielleicht"
+   },
+   "pflegeplus": {
+    "status": "vielleicht"
+   },
+   "lpg": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "§§ 36, 37, 39, 40, 41, 42a, 45b SGB XI; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025) – https://www.bundesgesundheitsministerium.de/fileadmin/Dateien/3_Downloads/P/Pflegeversicherung_Leistungsbeitraege/Uebersicht_Leistungsbetraege_2026.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-1",
+  "beschreibung": "Pflegegrad 1: Entlastungsbetrag 131 €, kein Pflegegeld; Hilfsmittel 42 €, Wohnumfeld 4.180 €; kein Jahresbetrag",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "1",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "betrag": 131,
+    "betragAus": "pflege.pg1.ent",
+    "txNicht": [
+     "pflege.pg2",
+     "pflege.sach"
+    ]
+   },
+   "pflegeplus": {
+    "status": "ja",
+    "betrag": 42,
+    "betragAus": "pflegeplus.mittel.verbrauch",
+    "txNicht": [
+     "pflegeplus.budget"
+    ]
+   },
+   "lpg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§§ 36, 37, 39, 40, 41, 42a, 45b SGB XI; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025) – https://www.bundesgesundheitsministerium.de/fileadmin/Dateien/3_Downloads/P/Pflegeversicherung_Leistungsbeitraege/Uebersicht_Leistungsbetraege_2026.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-2g",
+  "beschreibung": "Pflegegrad 2: Pflegegeld 347 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "2",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "betrag": 347,
+    "betragAus": "pflege.pg2.geld"
+   },
+   "lpg": {
+    "status": "ja",
+    "betrag": 500,
+    "betragAus": "lpg.ja.betrag"
+   }
+  },
+  "quelle": "§§ 36, 37, 39, 40, 41, 42a, 45b SGB XI; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025) – https://www.bundesgesundheitsministerium.de/fileadmin/Dateien/3_Downloads/P/Pflegeversicherung_Leistungsbeitraege/Uebersicht_Leistungsbetraege_2026.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-2s",
+  "beschreibung": "Pflegegrad 2: Sachleistung 796 €, Tagespflege 721 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "2",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "betrag": 796,
+    "betragAus": "pflege.sach.sach"
+   }
+  },
+  "quelle": "§§ 36, 37, 39, 40, 41, 42a, 45b SGB XI; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025) – https://www.bundesgesundheitsministerium.de/fileadmin/Dateien/3_Downloads/P/Pflegeversicherung_Leistungsbeitraege/Uebersicht_Leistungsbetraege_2026.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-2t",
+  "beschreibung": "Pflegegrad 2: Tagespflege 721 €; Entlastungsbetrag 131 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "2",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "betrag": 721,
+    "betragAus": "pflege.sach.tages"
+   }
+  },
+  "quelle": "§§ 36, 37, 39, 40, 41, 42a, 45b SGB XI; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025) – https://www.bundesgesundheitsministerium.de/fileadmin/Dateien/3_Downloads/P/Pflegeversicherung_Leistungsbeitraege/Uebersicht_Leistungsbetraege_2026.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-2j",
+  "beschreibung": "Pflegegrad 2: Gemeinsamer Jahresbetrag 3.539 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "2",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflegeplus": {
+    "status": "ja",
+    "betrag": 3539,
+    "betragAus": "pflegeplus.budget.betrag"
+   }
+  },
+  "quelle": "§ 42a SGB XI",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-2p",
+  "beschreibung": "Pflegegrad 2: Pflege-Pauschbetrag 600 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "2",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "betrag": 600,
+    "betragAus": "pflege.pauschbetrag.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 6 EStG",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-3g",
+  "beschreibung": "Pflegegrad 3: Pflegegeld 599 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "betrag": 599,
+    "betragAus": "pflege.pg2.geld"
+   },
+   "lpg": {
+    "status": "ja",
+    "betrag": 500,
+    "betragAus": "lpg.ja.betrag"
+   }
+  },
+  "quelle": "§§ 36, 37, 39, 40, 41, 42a, 45b SGB XI; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025) – https://www.bundesgesundheitsministerium.de/fileadmin/Dateien/3_Downloads/P/Pflegeversicherung_Leistungsbeitraege/Uebersicht_Leistungsbetraege_2026.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-3s",
+  "beschreibung": "Pflegegrad 3: Sachleistung 1497 €, Tagespflege 1357 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "betrag": 1497,
+    "betragAus": "pflege.sach.sach"
+   }
+  },
+  "quelle": "§§ 36, 37, 39, 40, 41, 42a, 45b SGB XI; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025) – https://www.bundesgesundheitsministerium.de/fileadmin/Dateien/3_Downloads/P/Pflegeversicherung_Leistungsbeitraege/Uebersicht_Leistungsbetraege_2026.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-3t",
+  "beschreibung": "Pflegegrad 3: Tagespflege 1357 €; Entlastungsbetrag 131 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "betrag": 1357,
+    "betragAus": "pflege.sach.tages"
+   }
+  },
+  "quelle": "§§ 36, 37, 39, 40, 41, 42a, 45b SGB XI; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025) – https://www.bundesgesundheitsministerium.de/fileadmin/Dateien/3_Downloads/P/Pflegeversicherung_Leistungsbeitraege/Uebersicht_Leistungsbetraege_2026.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-3j",
+  "beschreibung": "Pflegegrad 3: Gemeinsamer Jahresbetrag 3.539 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflegeplus": {
+    "status": "ja",
+    "betrag": 3539,
+    "betragAus": "pflegeplus.budget.betrag"
+   }
+  },
+  "quelle": "§ 42a SGB XI",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-3p",
+  "beschreibung": "Pflegegrad 3: Pflege-Pauschbetrag 1100 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "betrag": 1100,
+    "betragAus": "pflege.pauschbetrag.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 6 EStG",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-4g",
+  "beschreibung": "Pflegegrad 4: Pflegegeld 800 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "4",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "betrag": 800,
+    "betragAus": "pflege.pg2.geld"
+   },
+   "lpg": {
+    "status": "ja",
+    "betrag": 500,
+    "betragAus": "lpg.ja.betrag"
+   }
+  },
+  "quelle": "§§ 36, 37, 39, 40, 41, 42a, 45b SGB XI; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025) – https://www.bundesgesundheitsministerium.de/fileadmin/Dateien/3_Downloads/P/Pflegeversicherung_Leistungsbeitraege/Uebersicht_Leistungsbetraege_2026.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-4s",
+  "beschreibung": "Pflegegrad 4: Sachleistung 1859 €, Tagespflege 1685 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "4",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "betrag": 1859,
+    "betragAus": "pflege.sach.sach"
+   }
+  },
+  "quelle": "§§ 36, 37, 39, 40, 41, 42a, 45b SGB XI; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025) – https://www.bundesgesundheitsministerium.de/fileadmin/Dateien/3_Downloads/P/Pflegeversicherung_Leistungsbeitraege/Uebersicht_Leistungsbetraege_2026.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-4t",
+  "beschreibung": "Pflegegrad 4: Tagespflege 1685 €; Entlastungsbetrag 131 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "4",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "betrag": 1685,
+    "betragAus": "pflege.sach.tages"
+   }
+  },
+  "quelle": "§§ 36, 37, 39, 40, 41, 42a, 45b SGB XI; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025) – https://www.bundesgesundheitsministerium.de/fileadmin/Dateien/3_Downloads/P/Pflegeversicherung_Leistungsbeitraege/Uebersicht_Leistungsbetraege_2026.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-4j",
+  "beschreibung": "Pflegegrad 4: Gemeinsamer Jahresbetrag 3.539 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "4",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflegeplus": {
+    "status": "ja",
+    "betrag": 3539,
+    "betragAus": "pflegeplus.budget.betrag"
+   }
+  },
+  "quelle": "§ 42a SGB XI",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-4p",
+  "beschreibung": "Pflegegrad 4: Pflege-Pauschbetrag 1800 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "4",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "betrag": 1800,
+    "betragAus": "pflege.pauschbetrag.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 6 EStG",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-5g",
+  "beschreibung": "Pflegegrad 5: Pflegegeld 990 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "5",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "betrag": 990,
+    "betragAus": "pflege.pg2.geld"
+   },
+   "lpg": {
+    "status": "ja",
+    "betrag": 500,
+    "betragAus": "lpg.ja.betrag"
+   }
+  },
+  "quelle": "§§ 36, 37, 39, 40, 41, 42a, 45b SGB XI; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025) – https://www.bundesgesundheitsministerium.de/fileadmin/Dateien/3_Downloads/P/Pflegeversicherung_Leistungsbeitraege/Uebersicht_Leistungsbetraege_2026.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-5s",
+  "beschreibung": "Pflegegrad 5: Sachleistung 2299 €, Tagespflege 2085 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "5",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "betrag": 2299,
+    "betragAus": "pflege.sach.sach"
+   }
+  },
+  "quelle": "§§ 36, 37, 39, 40, 41, 42a, 45b SGB XI; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025) – https://www.bundesgesundheitsministerium.de/fileadmin/Dateien/3_Downloads/P/Pflegeversicherung_Leistungsbeitraege/Uebersicht_Leistungsbetraege_2026.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-5t",
+  "beschreibung": "Pflegegrad 5: Tagespflege 2085 €; Entlastungsbetrag 131 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "5",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "betrag": 2085,
+    "betragAus": "pflege.sach.tages"
+   }
+  },
+  "quelle": "§§ 36, 37, 39, 40, 41, 42a, 45b SGB XI; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025) – https://www.bundesgesundheitsministerium.de/fileadmin/Dateien/3_Downloads/P/Pflegeversicherung_Leistungsbeitraege/Uebersicht_Leistungsbetraege_2026.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-5j",
+  "beschreibung": "Pflegegrad 5: Gemeinsamer Jahresbetrag 3.539 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "5",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflegeplus": {
+    "status": "ja",
+    "betrag": 3539,
+    "betragAus": "pflegeplus.budget.betrag"
+   }
+  },
+  "quelle": "§ 42a SGB XI",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pfl-5p",
+  "beschreibung": "Pflegegrad 5: Pflege-Pauschbetrag 1800 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "5",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "betrag": 1800,
+    "betragAus": "pflege.pauschbetrag.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 6 EStG",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-lpg-nw",
+  "beschreibung": "Landespflegegeld: Wohnsitz NRW",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "NW",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "lpg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "Art. 2 BayLPflGG – https://www.gesetze-bayern.de/Content/Document/BayLPflGG-2",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-lpg-unbekannt",
+  "beschreibung": "Landespflegegeld: Bundesland unbekannt – eine bayerische Leistung darf nicht „wahrscheinlich“ sein",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "lpg": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "Art. 2 BayLPflGG – https://www.gesetze-bayern.de/Content/Document/BayLPflGG-2",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-hzp-01",
+  "beschreibung": "PG 2, allein, Einkommen = Grenze 2×563+450 = 1.576 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1798,
+   "brutto2": "",
+   "netto": 1576,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "2",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "hzp": {
+    "status": "vielleicht",
+    "betrag": 1576,
+    "betragAus": "hzp.unter.grenze"
+   }
+  },
+  "quelle": "§§ 61, 63, 85 SGB XII – https://www.gesetze-im-internet.de/sgb_12/__85.html, https://www.gesetze-im-internet.de/sgb_12/__63.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-hzp-02",
+  "beschreibung": "PG 2, allein, Einkommen 1 € über der Grenze: Eigenanteil nach § 87, Anspruch weiter möglich",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1799,
+   "brutto2": "",
+   "netto": 1577,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "2",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "hzp": {
+    "status": "vielleicht",
+    "betrag": 1576,
+    "betragAus": "hzp.ueber.grenze"
+   }
+  },
+  "quelle": "§§ 61, 63, 85 SGB XII – https://www.gesetze-im-internet.de/sgb_12/__85.html, https://www.gesetze-im-internet.de/sgb_12/__63.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-hzp-03",
+  "beschreibung": "PG 2, Ehepaar: Grenze 1.126+450+395 (70 % RS1 aufgerundet) = 1.971 €",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "rente",
+   "brutto": 2249,
+   "brutto2": 800,
+   "netto": 1971,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "2",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "hzp": {
+    "status": "vielleicht",
+    "betrag": 1971,
+    "betragAus": "hzp.unter.grenze"
+   }
+  },
+  "quelle": "§§ 61, 63, 85 SGB XII – https://www.gesetze-im-internet.de/sgb_12/__85.html, https://www.gesetze-im-internet.de/sgb_12/__63.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-hzp-04",
+  "beschreibung": "PG 1: eingeschränkte Hilfe zur Pflege (Pflegehilfsmittel, Wohnumfeld, DiPA, Entlastungsbetrag) nach § 63 Abs. 2 SGB XII",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1027,
+   "brutto2": "",
+   "netto": 900,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "1",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "hzp": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "§ 63 Abs. 2 SGB XII – https://www.gesetze-im-internet.de/sgb_12/__63.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-hzp-05",
+  "beschreibung": "PG 3, Vermögen 10.001 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 10001,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "hzp": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 90 SGB XII",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-hzp-06",
+  "beschreibung": "PG 3, Vermögen 10.000 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 10000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "hzp": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "§ 90 SGB XII",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-hzp-07",
+  "beschreibung": "PG 3, EU ohne Arbeit unter 5 Jahre",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "eu",
+   "bezug": {},
+   "ohneWege": true,
+   "euArbeit": "nein",
+   "euJahre": "unter5"
+  },
+  "erwartet": {
+   "hzp": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 23 Abs. 3 SGB XII",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-hzp-08",
+  "beschreibung": "PG 3, Asyl/Duldung: nur § 6 AsylbLG bzw. nach 36 Monaten analog",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1960,
+   "heute": 2026.9,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "asyl",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "hzp": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "§ 23 Abs. 2 SGB XII, §§ 2, 6 AsylbLG",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-em-01",
+  "beschreibung": "voll erwerbsgemindert, Wartezeit erfüllt",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1980,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "emStd": "unter3",
+   "em5": true
+  },
+  "erwartet": {
+   "emrente": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 43 SGB VI; DRV „Erwerbsminderungsrente“ – https://www.deutsche-rentenversicherung.de/DRV/DE/Rente/Allgemeine-Informationen/Rentenarten-und-Leistungen/Erwerbsminderungsrente/erwerbsminderungsrente_node.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-em-02",
+  "beschreibung": "teilweise erwerbsgemindert, Wartezeit erfüllt (halbe Rente)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1200,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1980,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "emStd": "3bis6",
+   "em5": true
+  },
+  "erwartet": {
+   "emrente": {
+    "status": "ja",
+    "tx": [
+     "emrente.teil"
+    ]
+   }
+  },
+  "quelle": "§ 43 SGB VI; DRV „Erwerbsminderungsrente“ – https://www.deutsche-rentenversicherung.de/DRV/DE/Rente/Allgemeine-Informationen/Rentenarten-und-Leistungen/Erwerbsminderungsrente/erwerbsminderungsrente_node.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-em-03",
+  "beschreibung": "voll erwerbsgemindert, Wartezeit offen",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1980,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "emStd": "unter3"
+  },
+  "erwartet": {
+   "emrente": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "§ 43 SGB VI; DRV „Erwerbsminderungsrente“ – https://www.deutsche-rentenversicherung.de/DRV/DE/Rente/Allgemeine-Informationen/Rentenarten-und-Leistungen/Erwerbsminderungsrente/erwerbsminderungsrente_node.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-em-04",
+  "beschreibung": "Werkstatt 20 Jahre (§ 43 Abs. 6 SGB VI)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "wfbm",
+   "art2": "",
+   "brutto": 250,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1980,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "wfbm": true,
+   "wfbmJahre": 20
+  },
+  "erwartet": {
+   "emrente": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 43 Abs. 6 SGB VI",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-em-05",
+  "beschreibung": "Regelaltersgrenze erreicht (allein)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1027,
+   "brutto2": "",
+   "netto": 900,
+   "miete": 400,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "emStd": "unter3",
+   "em5": true
+  },
+  "erwartet": {
+   "emrente": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 43 Abs. 1 SGB VI",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-em-06",
+  "beschreibung": "keine Einschränkung",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2500,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1980,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "emrente": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 43 SGB VI; DRV „Erwerbsminderungsrente“ – https://www.deutsche-rentenversicherung.de/DRV/DE/Rente/Allgemeine-Informationen/Rentenarten-und-Leistungen/Erwerbsminderungsrente/erwerbsminderungsrente_node.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-em-07",
+  "beschreibung": "lange krank, unklar",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "kg",
+   "art2": "",
+   "brutto": 1500,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1980,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "emStd": "unklar"
+  },
+  "erwartet": {
+   "emrente": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "§ 43 SGB VI; DRV „Erwerbsminderungsrente“ – https://www.deutsche-rentenversicherung.de/DRV/DE/Rente/Allgemeine-Informationen/Rentenarten-und-Leistungen/Erwerbsminderungsrente/erwerbsminderungsrente_node.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-em-08",
+  "beschreibung": "Paar: ältere Person über der Regelaltersgrenze, eine Person voll erwerbsgemindert (kann die jüngere sein)",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "ohne",
+   "brutto": 1400,
+   "brutto2": 0,
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "emStd": "unter3",
+   "em5": true
+  },
+  "erwartet": {
+   "emrente": {
+    "status": "vielleicht|ja"
+   }
+  },
+  "quelle": "§ 43 SGB VI",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-sr-01",
+  "beschreibung": "GdB 50, Jahrgang 1964: abschlagsfrei 65, frühestens 62",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2500,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1964,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "50",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "srente": {
+    "status": "vielleicht",
+    "betrag": 65,
+    "betragAus": "srente.alter2.fj"
+   }
+  },
+  "quelle": "§§ 37, 236a SGB VI – https://www.gesetze-im-internet.de/sgb_6/__236a.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-sr-02",
+  "beschreibung": "GdB 50, Jahrgang 1962: abschlagsfrei 64 J. 8 M., frühestens 61 J. 8 M.",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2500,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1962,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "50",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "srente": {
+    "status": "vielleicht",
+    "betrag": 8,
+    "betragAus": "srente.alter2.fm"
+   }
+  },
+  "quelle": "§§ 37, 236a SGB VI – https://www.gesetze-im-internet.de/sgb_6/__236a.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-sr-03",
+  "beschreibung": "GdB 50, Jahrgang 1960: abschlagsfrei 64 J. 4 M.",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2500,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1960,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "50",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "srente": {
+    "status": "vielleicht",
+    "betrag": 4,
+    "betragAus": "srente.alter2.fm"
+   }
+  },
+  "quelle": "§§ 37, 236a SGB VI – https://www.gesetze-im-internet.de/sgb_6/__236a.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-sr-04",
+  "beschreibung": "GdB 40",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2500,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1964,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "40",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "srente": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§§ 37, 236a SGB VI – https://www.gesetze-im-internet.de/sgb_6/__236a.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-sr-05",
+  "beschreibung": "GdB 50, Regelaltersgrenze erreicht (allein)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "50",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "srente": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§§ 37, 236a SGB VI – https://www.gesetze-im-internet.de/sgb_6/__236a.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-sr-06",
+  "beschreibung": "Paar, ältere Person über der Regelaltersgrenze, GdB 50 kann die jüngere Person haben",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "lohn",
+   "brutto": 3000,
+   "brutto2": 1800,
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "50",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "srente": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "§§ 37, 236a SGB VI – https://www.gesetze-im-internet.de/sgb_6/__236a.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-aus-01",
+  "beschreibung": "GdB 50",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2500,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "50",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "ausweis": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 2, § 152, § 208, § 228 SGB IX; § 3a KraftStG – https://www.gesetze-im-internet.de/sgb_9_2018/__228.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-aus-02",
+  "beschreibung": "GdB 30: Gleichstellung möglich",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2500,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "30",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "ausweis": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "§ 2 Abs. 3 SGB IX",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-aus-03",
+  "beschreibung": "GdB 20",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2500,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "20",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "ausweis": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 2, § 152, § 208, § 228 SGB IX; § 3a KraftStG – https://www.gesetze-im-internet.de/sgb_9_2018/__228.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-aus-04",
+  "beschreibung": "GdB 80 mit aG (ohne H/Bl): Wertmarke NICHT kostenlos (§ 228 Abs. 4 SGB IX nennt nur blind, hilflos, Leistungsbezug); Kfz-Steuer frei",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2500,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "80",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "mz": {
+    "aG": true
+   }
+  },
+  "erwartet": {
+   "ausweis": {
+    "status": "ja",
+    "txNicht": [
+     "ausweis.frei"
+    ]
+   }
+  },
+  "quelle": "§ 2, § 152, § 208, § 228 SGB IX; § 3a KraftStG – https://www.gesetze-im-internet.de/sgb_9_2018/__228.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-aus-05",
+  "beschreibung": "Merkzeichen H",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2500,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "H",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "ausweis": {
+    "status": "ja",
+    "tx": [
+     "ausweis.frei"
+    ]
+   }
+  },
+  "quelle": "§ 2, § 152, § 208, § 228 SGB IX; § 3a KraftStG – https://www.gesetze-im-internet.de/sgb_9_2018/__228.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-20",
+  "beschreibung": "GdB 20: Pauschbetrag 384 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "20",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "betrag": 384,
+    "betragAus": "pausch.ja.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-30",
+  "beschreibung": "GdB 30: Pauschbetrag 620 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "30",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "betrag": 620,
+    "betragAus": "pausch.ja.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-40",
+  "beschreibung": "GdB 40: Pauschbetrag 860 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "40",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "betrag": 860,
+    "betragAus": "pausch.ja.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-50",
+  "beschreibung": "GdB 50: Pauschbetrag 1140 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "50",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "betrag": 1140,
+    "betragAus": "pausch.ja.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-60",
+  "beschreibung": "GdB 60: Pauschbetrag 1440 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "60",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "betrag": 1440,
+    "betragAus": "pausch.ja.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-70",
+  "beschreibung": "GdB 70: Pauschbetrag 1780 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "70",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "betrag": 1780,
+    "betragAus": "pausch.ja.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-80",
+  "beschreibung": "GdB 80: Pauschbetrag 2120 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "80",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "betrag": 2120,
+    "betragAus": "pausch.ja.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-90",
+  "beschreibung": "GdB 90: Pauschbetrag 2460 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "90",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "betrag": 2460,
+    "betragAus": "pausch.ja.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-100",
+  "beschreibung": "GdB 100: Pauschbetrag 2840 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "100",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "betrag": 2840,
+    "betragAus": "pausch.ja.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-H",
+  "beschreibung": "Merkzeichen H: 7.400 € und Fahrtkostenpauschale 4.500 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "H",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "betrag": 7400,
+    "betragAus": "pausch.hilflos.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-H-f",
+  "beschreibung": "Merkzeichen H: Fahrtkostenpauschale 4.500 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "H",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "betrag": 4500,
+    "betragAus": "pausch.fahrt.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-80-f",
+  "beschreibung": "GdB 80: Fahrtkostenpauschale 900 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "80",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "betrag": 900,
+    "betragAus": "pausch.fahrt.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-70G-f",
+  "beschreibung": "GdB 70 mit G: Fahrtkostenpauschale 900 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "70",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "mzG": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "betrag": 900,
+    "betragAus": "pausch.fahrt.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-70-f",
+  "beschreibung": "GdB 70 ohne G: keine Fahrtkostenpauschale",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "70",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "txNicht": [
+     "pausch.fahrt"
+    ]
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-bl-100",
+  "beschreibung": "blind, GdB 100 gewählt: Pauschbetrag 7.400 € (Blinde), nicht 2.840 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "100",
+   "blind": "blind",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "betrag": 7400,
+    "betragAus": "pausch.hilflos.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-bl-100-f",
+  "beschreibung": "blind, GdB 100: Fahrtkostenpauschale 4.500 € (Bl)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "100",
+   "blind": "blind",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "betrag": 4500,
+    "betragAus": "pausch.fahrt.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-bl-0",
+  "beschreibung": "blind, kein GdB eingetragen: Pauschbetrag 7.400 € mit Merkzeichen Bl",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja|vielleicht"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-pg4",
+  "beschreibung": "Pflegegrad 4 ohne GdB: gilt als hilflos (§ 65 Abs. 2 Satz 2 EStDV), Pauschbetrag 7.400 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 2054,
+   "brutto2": "",
+   "netto": 1800,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "4",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja|vielleicht"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-pg5-50",
+  "beschreibung": "Pflegegrad 5 und GdB 50: 7.400 € statt 1.140 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 2054,
+   "brutto2": "",
+   "netto": 1800,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "5",
+   "bhPerson": "",
+   "gdb": "50",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "betrag": 7400,
+    "betragAus": "pausch.hilflos.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-pa-0",
+  "beschreibung": "keine Behinderung",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "nein"
+   },
+   "ausweis": {
+    "status": "nein"
+   },
+   "blindengeld": {
+    "status": "nein"
+   },
+   "blh": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 EStDV, § 33 Abs. 2a EStG – https://www.gesetze-im-internet.de/estg/__33b.html, https://www.gesetze-im-internet.de/estdv_1955/__65.html, https://www.gesetze-im-internet.de/estg/__33.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-bl-01",
+  "beschreibung": "blind, Bayern: 809 € (85 % von 951,92 €)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 809,
+    "betragAus": "blindengeld.blind.betrag"
+   },
+   "blh": {
+    "status": "vielleicht",
+    "betrag": 951.92,
+    "betragAus": "blh.betrag.betrag"
+   }
+  },
+  "quelle": "Art. 1, 2, 4 BayBlindG; ZBFS Infoblatt Blindengeld Stand 01.07.2026 – https://www.gesetze-bayern.de/Content/Document/BayBlindG-4, https://www.zbfs.bayern.de/imperia/md/content/stmas/zbfs_2022/weitere_aufgaben/blindengeld_infoblatt_2026-07_comp.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-bl-02",
+  "beschreibung": "hochgradig sehbehindert, Bayern: 242,70 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "hoch",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 242.7,
+    "betragAus": "blindengeld.hoch.betrag"
+   },
+   "blh": {
+    "status": "nein"
+   }
+  },
+  "quelle": "Art. 1, 2, 4 BayBlindG; ZBFS Infoblatt Blindengeld Stand 01.07.2026 – https://www.gesetze-bayern.de/Content/Document/BayBlindG-4, https://www.zbfs.bayern.de/imperia/md/content/stmas/zbfs_2022/weitere_aufgaben/blindengeld_infoblatt_2026-07_comp.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-bl-03",
+  "beschreibung": "blind, PG 2: 809 − 46 % von 347 (159,62) = 649,38 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "2",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 649.38,
+    "betragAus": "blindengeld.pflege.rest"
+   }
+  },
+  "quelle": "Art. 1, 2, 4 BayBlindG; ZBFS Infoblatt Blindengeld Stand 01.07.2026 – https://www.gesetze-bayern.de/Content/Document/BayBlindG-4, https://www.zbfs.bayern.de/imperia/md/content/stmas/zbfs_2022/weitere_aufgaben/blindengeld_infoblatt_2026-07_comp.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-bl-04",
+  "beschreibung": "blind, PG 3: 809 − 33 % von 599 (197,67) = 611,33 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 611.33,
+    "betragAus": "blindengeld.pflege.rest"
+   }
+  },
+  "quelle": "Art. 1, 2, 4 BayBlindG; ZBFS Infoblatt Blindengeld Stand 01.07.2026 – https://www.gesetze-bayern.de/Content/Document/BayBlindG-4, https://www.zbfs.bayern.de/imperia/md/content/stmas/zbfs_2022/weitere_aufgaben/blindengeld_infoblatt_2026-07_comp.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-bl-05",
+  "beschreibung": "blind, PG 5: wie PG 3 = 611,33 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "5",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 611.33,
+    "betragAus": "blindengeld.pflege.rest"
+   }
+  },
+  "quelle": "Art. 1, 2, 4 BayBlindG; ZBFS Infoblatt Blindengeld Stand 01.07.2026 – https://www.gesetze-bayern.de/Content/Document/BayBlindG-4, https://www.zbfs.bayern.de/imperia/md/content/stmas/zbfs_2022/weitere_aufgaben/blindengeld_infoblatt_2026-07_comp.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-bl-06",
+  "beschreibung": "hochgradig sehbehindert, PG 2: 242,70 − 159,62 = 83,08 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "2",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "hoch",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 83.08,
+    "betragAus": "blindengeld.pflege.rest"
+   }
+  },
+  "quelle": "Art. 1, 2, 4 BayBlindG; ZBFS Infoblatt Blindengeld Stand 01.07.2026 – https://www.gesetze-bayern.de/Content/Document/BayBlindG-4, https://www.zbfs.bayern.de/imperia/md/content/stmas/zbfs_2022/weitere_aufgaben/blindengeld_infoblatt_2026-07_comp.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-bl-07",
+  "beschreibung": "hochgradig sehbehindert, PG 4: 242,70 − 197,67 = 45,03 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "4",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "hoch",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 45.03,
+    "betragAus": "blindengeld.pflege.rest"
+   }
+  },
+  "quelle": "Art. 1, 2, 4 BayBlindG; ZBFS Infoblatt Blindengeld Stand 01.07.2026 – https://www.gesetze-bayern.de/Content/Document/BayBlindG-4, https://www.zbfs.bayern.de/imperia/md/content/stmas/zbfs_2022/weitere_aufgaben/blindengeld_infoblatt_2026-07_comp.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-bl-08",
+  "beschreibung": "blind, NRW: Landesblindengeld ja (Betrag nach Landesrecht)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "NW",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja"
+   },
+   "blh": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "GHBG NRW; § 72 SGB XII",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-bl-09",
+  "beschreibung": "hochgradig sehbehindert, NRW",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "hoch",
+   "bundesland": "NW",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "vielleicht"
+   },
+   "blh": {
+    "status": "nein"
+   }
+  },
+  "quelle": "GHBG NRW",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-bl-10",
+  "beschreibung": "blind, Vermögen 10.001 €: Blindengeld ja (einkommens- und vermögensunabhängig), Blindenhilfe nein",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 10001,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja"
+   },
+   "blh": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 72, § 85, § 87 SGB XII – https://www.gesetze-im-internet.de/sgb_12/__72.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-bl-11",
+  "beschreibung": "blind, PG 3, Bayern: verbleibende Blindenhilfe = (951,92 − 40 % von 599 = 712,32) − 611,33 = 100,99 €, nicht 142,92 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1369,
+   "brutto2": "",
+   "netto": 1200,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blh": {
+    "status": "vielleicht",
+    "betrag": 100.99,
+    "toleranz": 1,
+    "betragAus": "blh.differenz.rest"
+   }
+  },
+  "quelle": "§ 72 Abs. 1 Satz 2 SGB XII; Art. 4 BayBlindG",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-bl-12",
+  "beschreibung": "blind, Bundesland unbekannt: bayerischer Betrag darf nicht als sicher gezeigt werden",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "txNicht": [
+     "blindengeld.blind"
+    ]
+   }
+  },
+  "quelle": "Art. 1, 2, 4 BayBlindG; ZBFS Infoblatt Blindengeld Stand 01.07.2026 – https://www.gesetze-bayern.de/Content/Document/BayBlindG-4, https://www.zbfs.bayern.de/imperia/md/content/stmas/zbfs_2022/weitere_aufgaben/blindengeld_infoblatt_2026-07_comp.pdf",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-zz-01",
+  "beschreibung": "Rentnerin ohne Behinderung und ohne Pflegegrad: Belastungsgrenze 2 % gilt für alle gesetzlich Versicherten",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1027,
+   "brutto2": "",
+   "netto": 900,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "zuzahl": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "§ 62 SGB V – https://www.gesetze-im-internet.de/sgb_5/__62.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-zz-02",
+  "beschreibung": "Pflegegrad 3: Chroniker 1 %",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1027,
+   "brutto2": "",
+   "netto": 900,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "zuzahl": {
+    "status": "vielleicht",
+    "tx": [
+     "zuzahl.chron"
+    ]
+   }
+  },
+  "quelle": "§ 62 SGB V – https://www.gesetze-im-internet.de/sgb_5/__62.html",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-rf-01",
+  "beschreibung": "Merkzeichen RF: Ermäßigung auf ein Drittel",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "80",
+   "blind": "",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true,
+   "mz": {
+    "RF": true
+   }
+  },
+  "erwartet": {
+   "rundfunk": {
+    "status": "vielleicht|ja",
+    "tx": [
+     "rundfunk.rf"
+    ]
+   }
+  },
+  "quelle": "§ 4 RBeitrStV – https://www.gesetze-bayern.de/Content/Document/RBeitrStV-4",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-rn-01",
+  "beschreibung": "Rente 1.000 € brutto, mit Kind: 1.000 × (1 − 0,073 − 0,0145 − 0,036) = 876,50 €",
+  "art": "funktion",
+  "funktion": "nettoRente",
+  "args": [
+   1000,
+   {
+    "heute": 2026.9
+   }
+  ],
+  "erwartet": {
+   "wert": 876.5,
+   "toleranz": 0.01
+  },
+  "quelle": "§ 247, § 249a SGB V (7,3 % + halber Zusatzbeitrag 2,9 %), § 55, § 59 SGB XI (3,6 %, kinderlos +0,6, ab 2. Kind −0,25); BBG KV 2026 5.812,50 €",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-rn-02",
+  "beschreibung": "Rente 1.000 € brutto, kinderlos: Pflege 4,2 % → 870,50 €",
+  "art": "funktion",
+  "funktion": "nettoRente",
+  "args": [
+   1000,
+   {
+    "heute": 2026.9,
+    "kinderlos": true
+   }
+  ],
+  "erwartet": {
+   "wert": 870.5,
+   "toleranz": 0.01
+  },
+  "quelle": "§ 247, § 249a SGB V (7,3 % + halber Zusatzbeitrag 2,9 %), § 55, § 59 SGB XI (3,6 %, kinderlos +0,6, ab 2. Kind −0,25); BBG KV 2026 5.812,50 €",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-rn-03",
+  "beschreibung": "Rente 1.000 € brutto, 3 Kinder unter 25: Pflege 3,1 % → 881,50 €",
+  "art": "funktion",
+  "funktion": "nettoRente",
+  "args": [
+   1000,
+   {
+    "heute": 2026.9,
+    "kinder": 3
+   }
+  ],
+  "erwartet": {
+   "wert": 881.5,
+   "toleranz": 0.01
+  },
+  "quelle": "§ 247, § 249a SGB V (7,3 % + halber Zusatzbeitrag 2,9 %), § 55, § 59 SGB XI (3,6 %, kinderlos +0,6, ab 2. Kind −0,25); BBG KV 2026 5.812,50 €",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-rn-04",
+  "beschreibung": "Rente 7.000 € brutto: Beiträge nur bis 5.812,50 € → 7.000 − 717,84 = 6.282,16 €",
+  "art": "funktion",
+  "funktion": "nettoRente",
+  "args": [
+   7000,
+   {
+    "heute": 2026.9
+   }
+  ],
+  "erwartet": {
+   "wert": 6282.16,
+   "toleranz": 0.01
+  },
+  "quelle": "§ 247, § 249a SGB V (7,3 % + halber Zusatzbeitrag 2,9 %), § 55, § 59 SGB XI (3,6 %, kinderlos +0,6, ab 2. Kind −0,25); BBG KV 2026 5.812,50 €",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-rn-05",
+  "beschreibung": "Rente 1.500 € am 1.1.2027 (bis zur Verkündung neuer Werte unverändert, Zusatzbeitrag 2,9 %): 1.314,75 €",
+  "art": "funktion",
+  "funktion": "nettoRente",
+  "args": [
+   1500,
+   {
+    "heute": 2027
+   }
+  ],
+  "erwartet": {
+   "wert": 1314.75,
+   "toleranz": 0.01
+  },
+  "quelle": "§ 247, § 249a SGB V (7,3 % + halber Zusatzbeitrag 2,9 %), § 55, § 59 SGB XI (3,6 %, kinderlos +0,6, ab 2. Kind −0,25); BBG KV 2026 5.812,50 €",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-ko-01",
+  "beschreibung": "Kombinationsleistung PG 2, Sachleistung zur Hälfte genutzt (398 €): 50 % Pflegegeld = 173,50 €",
+  "art": "funktion",
+  "funktion": "pflegeKombi",
+  "args": [
+   2,
+   398
+  ],
+  "erwartet": {
+   "wert": 173.5,
+   "toleranz": 0.01
+  },
+  "quelle": "§ 38 SGB XI",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-ko-02",
+  "beschreibung": "Kombinationsleistung PG 5, Sachleistung voll genutzt: 0 €",
+  "art": "funktion",
+  "funktion": "pflegeKombi",
+  "args": [
+   5,
+   2299
+  ],
+  "erwartet": {
+   "wert": 0,
+   "toleranz": 0.01
+  },
+  "quelle": "§ 38 SGB XI",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-ko-03",
+  "beschreibung": "Kombinationsleistung PG 3, Sachleistung 1.000 € von 1.497 €: 599 × (1 − 0,668) = 198,87 €",
+  "art": "funktion",
+  "funktion": "pflegeKombi",
+  "args": [
+   3,
+   1000
+  ],
+  "erwartet": {
+   "wert": 198.87,
+   "toleranz": 0.05
+  },
+  "quelle": "§ 38 SGB XI",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-ko-04",
+  "beschreibung": "Kombinationsleistung PG 4, Sachleistung 0 €: volles Pflegegeld 800 €",
+  "art": "funktion",
+  "funktion": "pflegeKombi",
+  "args": [
+   4,
+   0
+  ],
+  "erwartet": {
+   "wert": 800,
+   "toleranz": 0.01
+  },
+  "quelle": "§ 38 SGB XI",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-00",
+  "beschreibung": "alles selbständig",
+  "art": "nba",
+  "g": {
+   "alterJahre": 80,
+   "stufen": {}
+  },
+  "erwartet": {
+   "pg": 0,
+   "punkte": 0
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-01",
+  "beschreibung": "genau 12,5 Punkte: Modul 4 Summe 3 (10) + Modul 1 Summe 2 (2,5) → PG 1",
+  "art": "nba",
+  "g": {
+   "alterJahre": 80,
+   "stufen": {
+    "4.1": 3,
+    "1.1": 2
+   }
+  },
+  "erwartet": {
+   "pg": 1,
+   "punkte": 12.5
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-02",
+  "beschreibung": "10 Punkte: nur Modul 4 Summe 3 → kein Pflegegrad",
+  "art": "nba",
+  "g": {
+   "alterJahre": 80,
+   "stufen": {
+    "4.1": 3
+   }
+  },
+  "erwartet": {
+   "pg": 0,
+   "punkte": 10
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-03",
+  "beschreibung": "26,25 Punkte: M4 Summe 8 (20) + M1 Summe 2 (2,5) + M6 Summe 1 (3,75) → PG 1",
+  "art": "nba",
+  "g": {
+   "alterJahre": 80,
+   "stufen": {
+    "4.1": 3,
+    "4.2": 3,
+    "4.3": 2,
+    "1.1": 2,
+    "6.1": 1
+   }
+  },
+  "erwartet": {
+   "pg": 1,
+   "punkte": 26.25
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-04",
+  "beschreibung": "28,75 Punkte: M4 20 + M1 Summe 4 (5) + M6 3,75 → PG 2",
+  "art": "nba",
+  "g": {
+   "alterJahre": 80,
+   "stufen": {
+    "4.1": 3,
+    "4.2": 3,
+    "4.3": 2,
+    "1.1": 2,
+    "1.2": 2,
+    "6.1": 1
+   }
+  },
+  "erwartet": {
+   "pg": 2,
+   "punkte": 28.75
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-05",
+  "beschreibung": "genau 47,5: M4 Summe 19 (30) + M1 Summe 10 (10) + M6 Summe 4 (7,5) → PG 3",
+  "art": "nba",
+  "g": {
+   "alterJahre": 80,
+   "stufen": {
+    "4.8": 3,
+    "4.9": 3,
+    "4.1": 3,
+    "4.2": 1,
+    "1.1": 3,
+    "1.2": 3,
+    "1.3": 3,
+    "1.4": 1,
+    "6.1": 3,
+    "6.2": 1
+   }
+  },
+  "erwartet": {
+   "pg": 3,
+   "punkte": 47.5
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-06",
+  "beschreibung": "genau 70: M4 Summe 37 (40) + M1 10 + M2 Summe 17 (15) + M5 Summe 1 (5) → PG 4",
+  "art": "nba",
+  "g": {
+   "alterJahre": 80,
+   "stufen": {
+    "4.1": 3,
+    "4.2": 3,
+    "4.3": 3,
+    "4.4": 3,
+    "4.5": 3,
+    "4.6": 3,
+    "4.7": 3,
+    "4.8": 3,
+    "4.9": 3,
+    "4.10": 1,
+    "1.1": 3,
+    "1.2": 3,
+    "1.3": 3,
+    "1.4": 1,
+    "2.1": 3,
+    "2.2": 3,
+    "2.3": 3,
+    "2.4": 3,
+    "2.5": 3,
+    "2.6": 2
+   },
+   "m5": {
+    "5.1": {
+     "tag": 1
+    }
+   }
+  },
+  "erwartet": {
+   "pg": 4,
+   "punkte": 70
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-07",
+  "beschreibung": "92,5: M4 40 + M1 10 + M2 15 + M5 Summe 6 (20; tägliche Heimbeatmung) + M6 Summe 4 (7,5) → PG 5",
+  "art": "nba",
+  "g": {
+   "alterJahre": 80,
+   "stufen": {
+    "4.1": 3,
+    "4.2": 3,
+    "4.3": 3,
+    "4.4": 3,
+    "4.5": 3,
+    "4.6": 3,
+    "4.7": 3,
+    "4.8": 3,
+    "4.9": 3,
+    "4.10": 1,
+    "1.1": 3,
+    "1.2": 3,
+    "1.3": 3,
+    "1.4": 1,
+    "2.1": 3,
+    "2.2": 3,
+    "2.3": 3,
+    "2.4": 3,
+    "2.5": 3,
+    "2.6": 2,
+    "6.1": 3,
+    "6.2": 1
+   },
+   "m5": {
+    "5.12": {
+     "taeglich": true
+    }
+   }
+  },
+  "erwartet": {
+   "pg": 5,
+   "punkte": 92.5
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-08",
+  "beschreibung": "Module 2 und 3: nur der höhere zählt (M2 Summe 6 → 7,5; M3 täglich 1 Kriterium Summe 5 → 11,25) → 11,25",
+  "art": "nba",
+  "g": {
+   "alterJahre": 80,
+   "stufen": {
+    "2.1": 3,
+    "2.2": 3,
+    "3.2": 3
+   }
+  },
+  "erwartet": {
+   "pg": 0,
+   "punkte": 11.25
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-09",
+  "beschreibung": "Inkontinenz-Kriterien 4.11/4.12 zählen nur bei überwiegender/vollständiger Inkontinenz",
+  "art": "nba",
+  "g": {
+   "alterJahre": 80,
+   "stufen": {
+    "4.11": 3,
+    "4.12": 3
+   },
+   "inkontinenz": {
+    "harn": false,
+    "stuhl": false
+   }
+  },
+  "erwartet": {
+   "pg": 0,
+   "punkte": 0
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-10",
+  "beschreibung": "Sonde teilweise 6 Punkte (M4 Summe 6 → 10)",
+  "art": "nba",
+  "g": {
+   "alterJahre": 80,
+   "stufen": {
+    "4.13": 1
+   }
+  },
+  "erwartet": {
+   "pg": 0,
+   "punkte": 10
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-11",
+  "beschreibung": "Sonde vollständig 3 Punkte (M4 Summe 3 → 10)",
+  "art": "nba",
+  "g": {
+   "alterJahre": 80,
+   "stufen": {
+    "4.13": 2
+   }
+  },
+  "erwartet": {
+   "pg": 0,
+   "punkte": 10
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-12",
+  "beschreibung": "Modul 5: 3 Medikamentengaben am Tag = 1 Punkt (5), wöchentlicher Arztbesuch 4,3 = 1 Punkt → Summe 2 → 10",
+  "art": "nba",
+  "g": {
+   "alterJahre": 80,
+   "stufen": {},
+   "m5": {
+    "5.1": {
+     "tag": 3
+    },
+    "5.13": {
+     "woche": 1
+    }
+   }
+  },
+  "erwartet": {
+   "pg": 0,
+   "punkte": 10
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-13",
+  "beschreibung": "Besondere Bedarfskonstellation → PG 5",
+  "art": "nba",
+  "g": {
+   "alterJahre": 60,
+   "stufen": {},
+   "bedarfskonstellation": true
+  },
+  "erwartet": {
+   "pg": 5,
+   "punkte": 0
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-14",
+  "beschreibung": "Kind 12 Monate: 4.K (20 Einzelpunkte → 30) + Modul 3 Summe 7 (15) = 45 → Erwachsenen-PG 2, § 15 Abs. 7: PG 3",
+  "art": "nba",
+  "g": {
+   "alterJahre": 1,
+   "alterMonate": 12,
+   "stufen": {
+    "3.1": 3,
+    "3.2": 2
+   },
+   "k4K": true
+  },
+  "erwartet": {
+   "pg": 3,
+   "punkte": 45
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-15",
+  "beschreibung": "Kind 12 Monate, nur Module 1, 2, 6 eingetragen (alle „unselbständig“): entfallen nach BRi 5.6.1 → 0 Punkte, kein Pflegegrad",
+  "art": "nba",
+  "g": {
+   "alterJahre": 1,
+   "alterMonate": 12,
+   "stufen": {
+    "1.1": 3,
+    "1.2": 3,
+    "1.3": 3,
+    "1.4": 3,
+    "1.5": 3,
+    "2.1": 3,
+    "2.2": 3,
+    "2.3": 3,
+    "2.4": 3,
+    "2.5": 3,
+    "2.6": 3,
+    "2.7": 3,
+    "2.8": 3,
+    "2.9": 3,
+    "2.10": 3,
+    "2.11": 3,
+    "6.1": 3,
+    "6.2": 3,
+    "6.3": 3,
+    "6.4": 3,
+    "6.5": 3,
+    "6.6": 3
+   }
+  },
+  "erwartet": {
+   "pg": 0,
+   "punkte": 0
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-16",
+  "beschreibung": "Kind genau 18 Monate: keine Sonderregel mehr (12,5 Punkte → PG 1)",
+  "art": "nba",
+  "g": {
+   "alterJahre": 1,
+   "alterMonate": 18,
+   "stufen": {
+    "4.1": 3,
+    "1.1": 2
+   }
+  },
+  "erwartet": {
+   "pg": 1,
+   "punkte": 12.5
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "F-nba-17",
+  "beschreibung": "Kind 17 Monate, 12,5 Punkte aus Modul 3 (3,75)+Modul 5 (10)... = 13,75 → PG 2 (§ 15 Abs. 7)",
+  "art": "nba",
+  "g": {
+   "alterJahre": 1,
+   "alterMonate": 17,
+   "stufen": {
+    "3.1": 1
+   },
+   "m5": {
+    "5.1": {
+     "tag": 3
+    },
+    "5.13": {
+     "woche": 1
+    }
+   }
+  },
+  "erwartet": {
+   "pg": 2,
+   "punkte": 13.75
+  },
+  "quelle": "§ 15 SGB XI, Anlagen 1 und 2 – https://www.gesetze-im-internet.de/sgb_11/anlage_1.html, https://www.gesetze-im-internet.de/sgb_11/anlage_2.html; BRi Abschnitt 5.6.1 (Kinder bis 18 Monate)",
+  "pruefer": "Fable"
+ },
+ {
+  "id": "C-GSA-01",
+  "pruefer": "Claude",
+  "beschreibung": "Alleinlebende Seniorin (Jg. 1950), Rente netto 900 €, Warmmiete 500 €, Vermögen 2.000 €: Bedarf 563 + 500 = 1.063 €, Lücke 163 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 1030,
+     "n": 900
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "tx": [
+     "schaetz.eins"
+    ],
+    "betrag": 160,
+    "betragAus": "schaetz.eins.a",
+    "toleranz": 10
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__41.html; https://www.gesetze-im-internet.de/sgb_12/__42.html; RBSFV 2026, Anlage zu § 28 SGB XII (RS1 563, RS2 506)"
+ },
+ {
+  "id": "C-GSA-02",
+  "pruefer": "Claude",
+  "beschreibung": "Wie GSA-01, Rente netto 1.020 €: Lücke 43 € (unter 50 €) -> knapp, möglich",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 1165,
+     "n": 1020
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__41.html"
+ },
+ {
+  "id": "C-GSA-03",
+  "pruefer": "Claude",
+  "beschreibung": "Wie GSA-01, Rente netto 1.200 €: über dem Bedarf -> nein",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 1370,
+     "n": 1200
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__41.html"
+ },
+ {
+  "id": "C-GSA-04",
+  "pruefer": "Claude",
+  "beschreibung": "Vermögen genau 10.000 € (Schonbetrag) -> Anspruch bleibt",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 10000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 1030,
+     "n": 900
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__90.html + https://www.gesetze-im-internet.de/bshg_88abs2dv_1988/__1.html"
+ },
+ {
+  "id": "C-GSA-05",
+  "pruefer": "Claude",
+  "beschreibung": "Vermögen 10.001 € -> erst Vermögen einsetzen",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 10001,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 1030,
+     "n": 900
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__90.html + https://www.gesetze-im-internet.de/bshg_88abs2dv_1988/__1.html"
+ },
+ {
+  "id": "C-GSA-06",
+  "pruefer": "Claude",
+  "beschreibung": "Paar, beide Rente (900 + 600 netto), Miete 700, Vermögen 20.000 €: Bedarf 2 × 506 + 700 = 1.712 €, Lücke 212 €",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 20000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 1030,
+     "n": 900
+    },
+    {
+     "art": "rente",
+     "b": 685,
+     "n": 600,
+     "p": 2
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "tx": [
+     "schaetz.eins"
+    ],
+    "betrag": 210,
+    "betragAus": "schaetz.eins.a",
+    "toleranz": 10
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__41.html; https://www.gesetze-im-internet.de/sgb_12/__90.html + https://www.gesetze-im-internet.de/bshg_88abs2dv_1988/__1.html"
+ },
+ {
+  "id": "C-GSA-07",
+  "pruefer": "Claude",
+  "beschreibung": "Wie GSA-06, Vermögen 20.001 €",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 20001,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 1030,
+     "n": 900
+    },
+    {
+     "art": "rente",
+     "b": 685,
+     "n": 600,
+     "p": 2
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__90.html + https://www.gesetze-im-internet.de/bshg_88abs2dv_1988/__1.html"
+ },
+ {
+  "id": "C-GSA-08",
+  "pruefer": "Claude",
+  "beschreibung": "Grundrentenzeiten 33 Jahre: Bruttorente 1.000 € (netto 876), Miete 450: Freibetrag 100 + 30 % von 900 = 370, höchstens 281,50 € -> Lücke 418,50 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 1000,
+     "n": 876
+    }
+   ],
+   "grundrente33": true
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "tx": [
+     "schaetz.eins"
+    ],
+    "betrag": 420,
+    "betragAus": "schaetz.eins.a",
+    "toleranz": 10
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__82a.html"
+ },
+ {
+  "id": "C-GSA-09",
+  "pruefer": "Claude",
+  "beschreibung": "Mehrbedarf Merkzeichen G (17 % von 563 = 95,71 €): Rente netto 1.100, Miete 500 -> Bedarf 1.158,71, Lücke 58,71 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "50",
+   "blind": "",
+   "mzG": true,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 1250,
+     "n": 1100
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "tx": [
+     "schaetz.eins"
+    ],
+    "betrag": 60,
+    "betragAus": "schaetz.eins.a",
+    "toleranz": 10
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__30.html"
+ },
+ {
+  "id": "C-GSA-10",
+  "pruefer": "Claude",
+  "beschreibung": "Rentnerin mit Minijob: Rente 700 netto + Lohn 400; Freibetrag 30 % (120 €) -> Einkommen 980, Bedarf 1.013 -> knapp, möglich",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 800,
+     "n": 700
+    },
+    {
+     "art": "lohn",
+     "b": 400,
+     "n": 400
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__82.html (Abs. 3 Satz 1)"
+ },
+ {
+  "id": "C-GSA-11",
+  "pruefer": "Claude",
+  "beschreibung": "Jahrgang 1960 (Regelaltersgrenze 66 J. 4 M., je nach Geburtsmonat Mai 2026 bis April 2027 erreicht), Rente 500 -> möglich",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1960,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 570,
+     "n": 500
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "vielleicht",
+    "tx": [
+     "gsa.grenz"
+    ]
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__41.html Abs. 2; § 235 SGB VI"
+ },
+ {
+  "id": "C-GSA-12",
+  "pruefer": "Claude",
+  "beschreibung": "Jahrgang 1962, nicht erwerbsgemindert -> keine Grundsicherung im Alter (Jobcenter)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1962,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 570,
+     "n": 500
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__41.html"
+ },
+ {
+  "id": "C-GSA-13",
+  "pruefer": "Claude",
+  "beschreibung": "Junge Erwerbsminderung (Jg. 1985, unter 3 Stunden), allein, ohne Einkommen, Miete 450 -> Grundsicherung bei dauerhafter voller EM; befristet: Hilfe zum Lebensunterhalt (gleicher Betrag)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1985,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "emStd": "unter3",
+   "einkommen": [
+    {
+     "art": "ohne",
+     "b": 0,
+     "n": 0
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "tx": [
+     "schaetz.eins"
+    ],
+    "betrag": 1010,
+    "betragAus": "schaetz.eins.a",
+    "toleranz": 10
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__41.html Abs. 3; § 19 Abs. 1, § 27 SGB XII"
+ },
+ {
+  "id": "C-GSA-14",
+  "pruefer": "Claude",
+  "beschreibung": "Bezug Grundsicherung vom Sozialamt läuft schon -> schon vorhanden",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {
+    "sozialamt": true
+   },
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 1030,
+     "n": 900
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "na"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__41.html"
+ },
+ {
+  "id": "C-GSA-15",
+  "pruefer": "Claude",
+  "beschreibung": "EU-Bürgerin ohne Arbeit, unter 5 Jahren in Deutschland -> Ausschluss § 23 Abs. 3 SGB XII (Beratung)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "aufenthalt": "eu",
+   "euArbeit": "nein",
+   "euJahre": "unter5",
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 300,
+     "n": 270
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   },
+   "hzp": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__23.html"
+ },
+ {
+  "id": "C-GSA-16",
+  "pruefer": "Claude",
+  "beschreibung": "Asylbewerberleistungen -> keine Grundsicherung im Alter",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "aufenthalt": "asyl",
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 300,
+     "n": 270
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__41.html; § 23 Abs. 2 SGB XII"
+ },
+ {
+  "id": "C-GSA-17",
+  "pruefer": "Claude",
+  "beschreibung": "Rente netto 1.150, Miete 650 (Mietstufe III): Grundsicherung knapp, Wohngeld wahrscheinlich (nicht zusammen)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 650,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 1310,
+     "n": 1150
+    }
+   ]
+  },
+  "erwartet": {
+   "wohngeld": {
+    "status": "ja"
+   },
+   "gsa": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/wogg/__7.html"
+ },
+ {
+  "id": "C-PFL-01",
+  "pruefer": "Claude",
+  "beschreibung": "Pflegegrad 1: Entlastungsbetrag 131 €, kein Pflegegeld",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "1",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "tx": [
+     "pflege.pg1"
+    ],
+    "betrag": 131,
+    "betragAus": "pflege.pg1.ent"
+   },
+   "pflegeplus": {
+    "status": "ja"
+   },
+   "lpg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_11/__45b.html"
+ },
+ {
+  "id": "C-PFL-02",
+  "pruefer": "Claude",
+  "beschreibung": "Pflegegrad 2: Pflegegeld 347 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "2",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "tx": [
+     "pflege.pg2"
+    ],
+    "betrag": 347,
+    "betragAus": "pflege.pg2.geld"
+   },
+   "lpg": {
+    "status": "ja",
+    "tx": [
+     "lpg.ja"
+    ],
+    "betrag": 500,
+    "betragAus": "lpg.ja.betrag"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_11/__37.html; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025); https://www.gesetze-bayern.de/Content/Document/BayLPflGG-2 (Fassung ab 01.01.2026)"
+ },
+ {
+  "id": "C-PFL-03",
+  "pruefer": "Claude",
+  "beschreibung": "Pflegegrad 3: Pflegegeld 599 €, Sachleistung 1.497 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "tx": [
+     "pflege.pg2"
+    ],
+    "betrag": 599,
+    "betragAus": "pflege.pg2.geld"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_11/__37.html; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025)"
+ },
+ {
+  "id": "C-PFL-04",
+  "pruefer": "Claude",
+  "beschreibung": "Pflegegrad 4: Pflegegeld 800 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "4",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "tx": [
+     "pflege.pg2"
+    ],
+    "betrag": 800,
+    "betragAus": "pflege.pg2.geld"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_11/__37.html; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025)"
+ },
+ {
+  "id": "C-PFL-05",
+  "pruefer": "Claude",
+  "beschreibung": "Pflegegrad 5: Pflegegeld 990 €; Sachleistung 2.299 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "5",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "tx": [
+     "pflege.sach"
+    ],
+    "betrag": 2299,
+    "betragAus": "pflege.sach.sach"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_11/__37.html; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025)"
+ },
+ {
+  "id": "C-PFL-06",
+  "pruefer": "Claude",
+  "beschreibung": "Pflegegrad beantragt -> möglich",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "antrag",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "vielleicht"
+   },
+   "lpg": {
+    "status": "vielleicht"
+   },
+   "hzp": {
+    "status": "vielleicht"
+   },
+   "pflegeplus": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "SGB XI §§ 33, 37"
+ },
+ {
+  "id": "C-PFL-07",
+  "pruefer": "Claude",
+  "beschreibung": "Pflegegrad 3 in Nordrhein-Westfalen -> kein Bayerisches Landespflegegeld",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "NW",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "lpg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-bayern.de/Content/Document/BayLPflGG-2 (Fassung ab 01.01.2026)"
+ },
+ {
+  "id": "C-PFL-08",
+  "pruefer": "Claude",
+  "beschreibung": "Ohne Pflegegrad -> keine Pflegeleistungen",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "nein"
+   },
+   "pflegeplus": {
+    "status": "nein"
+   },
+   "hzp": {
+    "status": "nein"
+   }
+  },
+  "quelle": "SGB XI § 14, § 15"
+ },
+ {
+  "id": "C-PFL-09",
+  "pruefer": "Claude",
+  "beschreibung": "Gemeinsamer Jahresbetrag Verhinderungs-/Kurzzeitpflege 3.539 € ab Pflegegrad 2",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "2",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pflegeplus": {
+    "status": "ja",
+    "tx": [
+     "pflegeplus.budget"
+    ],
+    "betrag": 3539,
+    "betragAus": "pflegeplus.budget.betrag"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_11/__42a.html"
+ },
+ {
+  "id": "C-PFL-10",
+  "pruefer": "Claude",
+  "beschreibung": "Besondere Wohnform (Wohnheim, § 43a SGB XI), Pflegegrad 3: Pflegekasse zahlt nur pauschal bis 278 € an die Einrichtung, Pflegegeld nur anteilig für Tage zu Hause -> höchstens möglich, kein volles Pflegegeld",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": "",
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1990,
+   "heute": 2026.83,
+   "pflegegrad": "3",
+   "bhPerson": "erwNach25",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "wohnform": "heim",
+   "wfbm": true,
+   "einkommen": [
+    {
+     "art": "wfbm",
+     "b": 250,
+     "n": 250
+    }
+   ]
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "BMG Übersicht Leistungsbeträge 2026: § 43a 15 %, höchstens 278 €; § 38 Satz 5 SGB XI",
+  "befund": "B07"
+ },
+ {
+  "id": "C-PFL-11",
+  "pruefer": "Claude",
+  "beschreibung": "Pflege eines Kindes mit Behinderung (PG 3, GdB 80), Eltern berufstätig: Pflegegeld 599 €, Pauschbetrag GdB 80 = 2.120 €",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "lohn",
+   "miete": 900,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1985,
+   "heute": 2026.83,
+   "pflegegrad": "3",
+   "bhPerson": "minder",
+   "gdb": "80",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 5000,
+   "brutto2": 1500,
+   "netto": 4000
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "tx": [
+     "pflege.pg2"
+    ],
+    "betrag": 599,
+    "betragAus": "pflege.pg2.geld"
+   },
+   "pausch": {
+    "status": "ja",
+    "tx": [
+     "pausch.ja"
+    ],
+    "betrag": 2120,
+    "betragAus": "pausch.ja.betrag"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_11/__37.html; BMG Übersicht Leistungsbeträge 2026 (Stand 04.11.2025); https://www.gesetze-im-internet.de/estg/__33b.html; https://www.gesetze-im-internet.de/estdv_1955/__65.html (Abs. 2 Satz 2)"
+ },
+ {
+  "id": "C-HZP-01",
+  "pruefer": "Claude",
+  "beschreibung": "Pflegegrad 3, Rente netto 1.500, Miete 600, allein: Einkommensgrenze 2 × 563 + 600 = 1.726 € -> unter der Grenze, möglich",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 1710,
+     "n": 1500
+    }
+   ]
+  },
+  "erwartet": {
+   "hzp": {
+    "status": "vielleicht",
+    "tx": [
+     "hzp.unter"
+    ],
+    "betrag": 1726,
+    "betragAus": "hzp.unter.grenze"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__61.html, __63.html, __85.html"
+ },
+ {
+  "id": "C-HZP-02",
+  "pruefer": "Claude",
+  "beschreibung": "Paar, Pflegegrad 3, Miete 700: Grenze 1.126 + 700 + 395 (70 % von 563, aufgerundet) = 2.221 €",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 1030,
+     "n": 900
+    },
+    {
+     "art": "rente",
+     "b": 685,
+     "n": 600,
+     "p": 2
+    }
+   ]
+  },
+  "erwartet": {
+   "hzp": {
+    "status": "vielleicht",
+    "tx": [
+     "hzp.unter"
+    ],
+    "betrag": 2221,
+    "betragAus": "hzp.unter.grenze"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__61.html, __63.html, __85.html (§ 85 Abs. 1 Nr. 3)"
+ },
+ {
+  "id": "C-HZP-03",
+  "pruefer": "Claude",
+  "beschreibung": "Pflegegrad 3, Vermögen 15.000 € allein -> erst Vermögen einsetzen",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 15000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "hzp": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__90.html + https://www.gesetze-im-internet.de/bshg_88abs2dv_1988/__1.html"
+ },
+ {
+  "id": "C-HZP-04",
+  "pruefer": "Claude",
+  "beschreibung": "Pflegegrad 1, kleine Rente 600: Hilfe zur Pflege gibt es auch bei Pflegegrad 1 (Hilfsmittel, Wohnumfeld, Entlastungsbetrag, § 63 Abs. 2 SGB XII) -> möglich",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "1",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 685,
+     "n": 600
+    }
+   ]
+  },
+  "erwartet": {
+   "hzp": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__63.html",
+  "befund": "B06"
+ },
+ {
+  "id": "C-BEH-01",
+  "pruefer": "Claude",
+  "beschreibung": "Pflegegrad 4 ohne festgestellten GdB: Pflegegrad 4/5 steht dem Merkzeichen H gleich -> Behinderten-Pauschbetrag 7.400 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "4",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "tx": [
+     "pausch.hilflos"
+    ],
+    "betrag": 7400,
+    "betragAus": "pausch.hilflos.betrag"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/estg/__33b.html; https://www.gesetze-im-internet.de/estdv_1955/__65.html (Abs. 2 Satz 2)",
+  "befund": "B01"
+ },
+ {
+  "id": "C-BEH-02",
+  "pruefer": "Claude",
+  "beschreibung": "Pflegegrad 5 mit GdB 80 -> 7.400 € statt 2.120 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "5",
+   "bhPerson": "",
+   "gdb": "80",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "tx": [
+     "pausch.hilflos"
+    ],
+    "betrag": 7400,
+    "betragAus": "pausch.hilflos.betrag"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/estg/__33b.html; https://www.gesetze-im-internet.de/estdv_1955/__65.html (Abs. 2 Satz 2)",
+  "befund": "B01"
+ },
+ {
+  "id": "C-BEH-03",
+  "pruefer": "Claude",
+  "beschreibung": "Blind (Bl) mit GdB 100 -> 7.400 € Pauschbetrag und 4.500 € Fahrtkostenpauschale",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "100",
+   "blind": "blind",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "tx": [
+     "pausch.hilflos"
+    ],
+    "betrag": 7400,
+    "betragAus": "pausch.hilflos.betrag"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/estg/__33b.html; https://www.gesetze-im-internet.de/estdv_1955/__65.html (Abs. 2 Satz 2); https://www.gesetze-im-internet.de/estg/__33.html (Abs. 2a)",
+  "befund": "B02"
+ },
+ {
+  "id": "C-BEH-04",
+  "pruefer": "Claude",
+  "beschreibung": "Merkzeichen H -> 7.400 € und Fahrtkosten 4.500 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "H",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "tx": [
+     "pausch.hilflos"
+    ],
+    "betrag": 7400,
+    "betragAus": "pausch.hilflos.betrag"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/estg/__33b.html; https://www.gesetze-im-internet.de/estdv_1955/__65.html (Abs. 2 Satz 2)"
+ },
+ {
+  "id": "C-BEH-05",
+  "pruefer": "Claude",
+  "beschreibung": "GdB 30, Rentner -> Pauschbetrag 620 €; Gleichstellung (nur für Arbeitsplatz) für Rentner ohne Nutzen",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "30",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "tx": [
+     "pausch.ja"
+    ],
+    "betrag": 620,
+    "betragAus": "pausch.ja.betrag"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/estg/__33b.html; https://www.gesetze-im-internet.de/estdv_1955/__65.html (Abs. 2 Satz 2)"
+ },
+ {
+  "id": "C-BEH-06",
+  "pruefer": "Claude",
+  "beschreibung": "GdB 50, Jg. 1964, erwerbstätig: Altersrente für schwerbehinderte Menschen abschlagsfrei 65, frühestens 62",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1964,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "50",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 2500,
+   "netto": 1700
+  },
+  "erwartet": {
+   "srente": {
+    "status": "vielleicht"
+   },
+   "ausweis": {
+    "status": "ja"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_6/__43.html, __236a.html, __235.html"
+ },
+ {
+  "id": "C-BEH-07",
+  "pruefer": "Claude",
+  "beschreibung": "GdB 50, Jg. 1961: abschlagsfrei 64 J. 6 M., frühestens 61 J. 6 M.",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1961,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "50",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 2500,
+   "netto": 1700
+  },
+  "erwartet": {
+   "srente": {
+    "status": "vielleicht",
+    "tx": [
+     "srente.alter2"
+    ],
+    "betrag": 64,
+    "betragAus": "srente.alter2.fj"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_6/__43.html, __236a.html, __235.html (§ 236a Abs. 2)"
+ },
+ {
+  "id": "C-BEH-08",
+  "pruefer": "Claude",
+  "beschreibung": "GdB 50, über der Regelaltersgrenze -> normale Altersrente",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "50",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "srente": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_6/__43.html, __236a.html, __235.html"
+ },
+ {
+  "id": "C-BEH-09",
+  "pruefer": "Claude",
+  "beschreibung": "Pflegegrad 3 -> Zuzahlungsgrenze 1 % (Chroniker), Fahrten gelten als genehmigt",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "3",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "zuzahl": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_5/__62.html, __60.html"
+ },
+ {
+  "id": "C-BEH-10",
+  "pruefer": "Claude",
+  "beschreibung": "Merkzeichen RF, sonst nichts -> Ermäßigung auf ein Drittel",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "80",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "mz": {
+    "RF": true
+   },
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 1700,
+     "n": 1500
+    }
+   ]
+  },
+  "erwartet": {
+   "rundfunk": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "RBeitrStV § 4 Abs. 1, 2"
+ },
+ {
+  "id": "C-BEH-11",
+  "pruefer": "Claude",
+  "beschreibung": "Ohne Behinderung und Pflegegrad -> keine Karten zu Behinderung",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 1700,
+     "n": 1500
+    }
+   ]
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "nein"
+   },
+   "ausweis": {
+    "status": "nein"
+   },
+   "zuzahl": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/estg/__33b.html; https://www.gesetze-im-internet.de/estdv_1955/__65.html (Abs. 2 Satz 2)",
+  "korrigiert": "zuzahl: nein -> vielleicht (§ 62 Abs. 1 SGB V gilt für alle gesetzlich Versicherten)"
+ },
+ {
+  "id": "C-BLI-01",
+  "pruefer": "Claude",
+  "beschreibung": "Blind, Bayern, ohne Pflegegrad: Blindengeld 809 € (ab 1.7.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "100",
+   "blind": "blind",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "tx": [
+     "blindengeld.blind"
+    ],
+    "betrag": 809,
+    "betragAus": "blindengeld.blind.betrag"
+   }
+  },
+  "quelle": "ZBFS Infoblatt Blindengeld 07/2026; https://www.gesetze-bayern.de/Content/Document/BayBlindG-4"
+ },
+ {
+  "id": "C-BLI-02",
+  "pruefer": "Claude",
+  "beschreibung": "Blind, Bayern, Pflegegrad 2: Anrechnung 46 % von 347 = 159,62 € -> 649,38 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "2",
+   "bhPerson": "",
+   "gdb": "100",
+   "blind": "blind",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "tx": [
+     "blindengeld.pflege"
+    ],
+    "betrag": 649.38,
+    "betragAus": "blindengeld.pflege.rest",
+    "toleranz": 0.01
+   }
+  },
+  "quelle": "ZBFS Infoblatt Blindengeld 07/2026; https://www.gesetze-bayern.de/Content/Document/BayBlindG-4"
+ },
+ {
+  "id": "C-BLI-03",
+  "pruefer": "Claude",
+  "beschreibung": "Blind, Bayern, Pflegegrad 4: Anrechnung 33 % von 599 = 197,67 € -> 611,33 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "4",
+   "bhPerson": "",
+   "gdb": "100",
+   "blind": "blind",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "tx": [
+     "blindengeld.pflege"
+    ],
+    "betrag": 611.33,
+    "betragAus": "blindengeld.pflege.rest",
+    "toleranz": 0.01
+   }
+  },
+  "quelle": "ZBFS Infoblatt Blindengeld 07/2026; https://www.gesetze-bayern.de/Content/Document/BayBlindG-4"
+ },
+ {
+  "id": "C-BLI-04",
+  "pruefer": "Claude",
+  "beschreibung": "Hochgradig sehbehindert, Bayern: 242,70 €; keine Blindenhilfe",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "100",
+   "blind": "hoch",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "tx": [
+     "blindengeld.hoch"
+    ],
+    "betrag": 242.7,
+    "betragAus": "blindengeld.hoch.betrag",
+    "toleranz": 0.01
+   },
+   "blh": {
+    "status": "nein"
+   }
+  },
+  "quelle": "ZBFS Infoblatt Blindengeld 07/2026; https://www.gesetze-bayern.de/Content/Document/BayBlindG-4; https://www.gesetze-im-internet.de/sgb_12/__72.html, __87.html"
+ },
+ {
+  "id": "C-BLI-05",
+  "pruefer": "Claude",
+  "beschreibung": "Blind, kleine Rente, Bayern: Blindenhilfe 951,92 € minus Blindengeld 809 € = bis 142,92 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "100",
+   "blind": "blind",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 1030,
+     "n": 900
+    }
+   ]
+  },
+  "erwartet": {
+   "blh": {
+    "status": "vielleicht",
+    "tx": [
+     "blh.differenz"
+    ],
+    "betrag": 142.92,
+    "betragAus": "blh.differenz.rest",
+    "toleranz": 0.01
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__72.html, __87.html"
+ },
+ {
+  "id": "C-BLI-06",
+  "pruefer": "Claude",
+  "beschreibung": "Blind, Nordrhein-Westfalen: Landesblindengeld (Spanne), kein bayerischer Betrag",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "100",
+   "blind": "blind",
+   "mzG": false,
+   "bundesland": "NW",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "tx": [
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "Landesblindengeldgesetze; https://www.gesetze-im-internet.de/sgb_12/__72.html, __87.html"
+ },
+ {
+  "id": "C-EMR-01",
+  "pruefer": "Claude",
+  "beschreibung": "Allein, Jg. 1985, unter 3 Stunden, Wartezeit erfüllt -> volle EM-Rente möglich",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1985,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "emStd": "unter3",
+   "em5": true,
+   "einkommen": [
+    {
+     "art": "ohne",
+     "b": 0,
+     "n": 0
+    }
+   ]
+  },
+  "erwartet": {
+   "emrente": {
+    "status": "ja",
+    "tx": [
+     "emrente.ja"
+    ]
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_6/__43.html, __236a.html, __235.html (Stufe „ja“ = App-Logik bei eigener Angabe unter 3 Stunden und erfüllter Wartezeit; siehe Zu klären Z3)"
+ },
+ {
+  "id": "C-EMR-02",
+  "pruefer": "Claude",
+  "beschreibung": "Alleinstehend über der Regelaltersgrenze -> keine EM-Rente",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "emStd": "unter3"
+  },
+  "erwartet": {
+   "emrente": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_6/__43.html, __236a.html, __235.html"
+ },
+ {
+  "id": "C-EMR-03",
+  "pruefer": "Claude",
+  "beschreibung": "Paar: älteste Person Jg. 1950 (Rente), jüngere Person voll erwerbsgemindert (Wartezeit erfüllt) -> EM-Rente für die jüngere Person möglich, nicht „nein“",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "ohne",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1950,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "50",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 1470,
+     "n": 1300
+    }
+   ],
+   "emStd": "unter3",
+   "em5": true
+  },
+  "erwartet": {
+   "emrente": {
+    "status": "vielleicht"
+   },
+   "srente": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_6/__43.html, __236a.html, __235.html",
+  "befund": "B10"
+ },
+ {
+  "id": "C-EMR-04",
+  "pruefer": "Claude",
+  "beschreibung": "Alleinerziehend, Jg. 1985, voll erwerbsgemindert (unter 3 Std.), 2 Kinder (1 unter 6), Miete 500: Sozialamt; Kinder: Hilfe zum Lebensunterhalt",
+  "h": {
+   "adults": 1,
+   "kids": 2,
+   "kidsU6": 1,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1985,
+   "heute": 2026.83,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "emStd": "unter3",
+   "einkommen": [
+    {
+     "art": "ohne",
+     "b": 0,
+     "n": 0
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja"
+   },
+   "ggeld": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__41.html; § 7 Abs. 1 SGB II; § 27 SGB XII"
+ },
+ {
+  "id": "C-NBA-01",
+  "pruefer": "Claude",
+  "art": "nba",
+  "beschreibung": "Pflegegrad-Rechnung NBA-01",
+  "g": {
+   "alterJahre": 80,
+   "stufen": {}
+  },
+  "erwartet": {
+   "pg": 0
+  }
+ },
+ {
+  "id": "C-NBA-02",
+  "pruefer": "Claude",
+  "art": "nba",
+  "beschreibung": "Pflegegrad-Rechnung NBA-02",
+  "g": {
+   "alterJahre": 80,
+   "stufen": {
+    "4.8": 3,
+    "4.10": 3,
+    "4.4": 3,
+    "4.6": 3,
+    "1.4": 3,
+    "1.5": 3
+   }
+  },
+  "erwartet": {
+   "pg": 2,
+   "punkte": 37.5
+  }
+ },
+ {
+  "id": "C-NBA-03",
+  "pruefer": "Claude",
+  "art": "nba",
+  "beschreibung": "Pflegegrad-Rechnung NBA-03",
+  "g": {
+   "alterJahre": 82,
+   "stufen": {
+    "3.1": 3,
+    "3.2": 3,
+    "2.3": 3
+   }
+  },
+  "erwartet": {
+   "pg": 1,
+   "punkte": 15
+  }
+ },
+ {
+  "id": "C-NBA-04",
+  "pruefer": "Claude",
+  "art": "nba",
+  "beschreibung": "Pflegegrad-Rechnung NBA-04",
+  "g": {
+   "alterJahre": 70,
+   "stufen": {
+    "4.13": 1
+   }
+  },
+  "erwartet": {
+   "modul4": 6
+  }
+ },
+ {
+  "id": "C-NBA-05",
+  "pruefer": "Claude",
+  "art": "nba",
+  "beschreibung": "Pflegegrad-Rechnung NBA-05",
+  "g": {
+   "alterJahre": 70,
+   "stufen": {
+    "4.13": 2
+   }
+  },
+  "erwartet": {
+   "modul4": 3
+  }
+ },
+ {
+  "id": "C-NBA-06",
+  "pruefer": "Claude",
+  "art": "nba",
+  "beschreibung": "Pflegegrad-Rechnung NBA-06",
+  "g": {
+   "alterJahre": 70,
+   "m5": {
+    "5.13": {
+     "woche": 1
+    }
+   }
+  },
+  "erwartet": {
+   "punkte": 5
+  }
+ },
+ {
+  "id": "C-NBA-07",
+  "pruefer": "Claude",
+  "art": "nba",
+  "beschreibung": "Pflegegrad-Rechnung NBA-07",
+  "g": {
+   "alterJahre": 0,
+   "alterMonate": 10,
+   "stufen": {
+    "1.1": 3,
+    "1.2": 3,
+    "1.3": 3,
+    "1.4": 3,
+    "1.5": 3,
+    "6.1": 3,
+    "6.2": 3,
+    "6.3": 3
+   }
+  },
+  "erwartet": {
+   "pg": 0
+  }
+ },
+ {
+  "id": "C-NBA-08",
+  "pruefer": "Claude",
+  "art": "nba",
+  "beschreibung": "Pflegegrad-Rechnung NBA-08",
+  "g": {
+   "alterJahre": 0,
+   "alterMonate": 10,
+   "k4K": true
+  },
+  "erwartet": {
+   "pg": 3
+  }
+ },
+ {
+  "id": "C-NBA-09",
+  "pruefer": "Claude",
+  "art": "nba",
+  "beschreibung": "Pflegegrad-Rechnung NBA-09",
+  "g": {
+   "alterJahre": 60,
+   "stufen": {
+    "1.4": 3
+   },
+   "bedarfskonstellation": true
+  },
+  "erwartet": {
+   "pg": 5
+  }
+ },
+ {
+  "id": "C-RN-01",
+  "pruefer": "Claude",
+  "art": "funktion",
+  "beschreibung": "Renten-Netto RN-01",
+  "funktion": "nettoRente",
+  "args": [
+   1000,
+   {
+    "heute": 2026
+   }
+  ],
+  "erwartet": {
+   "wert": 876.5,
+   "toleranz": 0.01
+  }
+ },
+ {
+  "id": "C-RN-02",
+  "pruefer": "Claude",
+  "art": "funktion",
+  "beschreibung": "Renten-Netto RN-02",
+  "funktion": "nettoRente",
+  "args": [
+   1000,
+   {
+    "heute": 2026,
+    "kinderlos": true
+   }
+  ],
+  "erwartet": {
+   "wert": 870.5,
+   "toleranz": 0.01
+  }
+ },
+ {
+  "id": "C-RN-03",
+  "pruefer": "Claude",
+  "art": "funktion",
+  "beschreibung": "Renten-Netto RN-03",
+  "funktion": "nettoRente",
+  "args": [
+   1000,
+   {
+    "heute": 2026,
+    "kinder": 2
+   }
+  ],
+  "erwartet": {
+   "wert": 879,
+   "toleranz": 0.01
+  }
+ },
+ {
+  "id": "X-hzp-pg1",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Pflegegrad 1, kleine Rente: Hilfe zur Pflege möglich (Hilfsmittel, Wohnumfeld, DiPA, Entlastungsbetrag)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "pflegegrad": "1",
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "hzp": {
+    "status": "vielleicht",
+    "tx": [
+     "hzp.pg1"
+    ]
+   }
+  },
+  "quelle": "§ 63 Abs. 2 SGB XII – https://www.buzer.de/63_SGB_XII.htm (Abruf 24.11.2026)"
+ },
+ {
+  "id": "X-hzp-pg0",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Ohne Pflegegrad: keine Hilfe zur Pflege",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "pflegegrad": "",
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "hzp": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 61a SGB XII"
+ },
+ {
+  "id": "X-lpg-ohneLand",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Pflegegrad 3 ohne Bundesland: Landespflegegeld nur möglich",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "pflegegrad": "3"
+  },
+  "erwartet": {
+   "lpg": {
+    "status": "vielleicht",
+    "tx": [
+     "lpg.ohneLand"
+    ],
+    "betrag": 500,
+    "betragAus": "lpg.ohneLand.betrag"
+   }
+  },
+  "quelle": "Art. 2 BayLPflGG"
+ },
+ {
+  "id": "X-lpg-by",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Pflegegrad 3 in Bayern: Landespflegegeld 500 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "pflegegrad": "3",
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "lpg": {
+    "status": "ja",
+    "tx": [
+     "lpg.ja"
+    ]
+   }
+  },
+  "quelle": "Art. 2 BayLPflGG"
+ },
+ {
+  "id": "X-bg-ohneLand",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Blind ohne Bundesland: Spanne, bayerischer Betrag nur als Beispiel",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "blind": "blind",
+   "gdb": "100"
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "tx": [
+     "blindengeld.landJa",
+     "blindengeld.ohneLand"
+    ],
+    "txNicht": [
+     "blindengeld.blind"
+    ]
+   }
+  },
+  "quelle": "Landesblindengeldgesetze; Art. 1 BayBlindG"
+ },
+ {
+  "id": "X-sb-ohneLand",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Hochgradig sehbehindert ohne Bundesland: nur möglich",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "blind": "hoch",
+   "gdb": "100"
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "vielleicht",
+    "tx": [
+     "blindengeld.hochLand"
+    ]
+   }
+  },
+  "quelle": "Art. 1 Abs. 3 BayBlindG"
+ },
+ {
+  "id": "X-blh-pg2",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Blind, Pflegegrad 2, Bayern: Rest (951,92 − 173,50) − (809 − 159,62) = 129,04 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 700,
+   "netto": 600,
+   "blind": "blind",
+   "gdb": "100",
+   "pflegegrad": "2",
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "blh": {
+    "status": "vielleicht",
+    "betrag": 129.04,
+    "betragAus": "blh.differenz.rest",
+    "toleranz": 0.01
+   }
+  },
+  "quelle": "§ 72 Abs. 1 Satz 2 SGB XII; Art. 4 Abs. 1 BayBlindG"
+ },
+ {
+  "id": "X-blh-pg3-nw",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Blind, Pflegegrad 3, Nordrhein-Westfalen: kein Restbetrag genannt",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 700,
+   "netto": 600,
+   "blind": "blind",
+   "gdb": "100",
+   "pflegegrad": "3",
+   "bundesland": "NW"
+  },
+  "erwartet": {
+   "blh": {
+    "status": "vielleicht",
+    "txNicht": [
+     "blh.differenz"
+    ]
+   }
+  },
+  "quelle": "§ 72 Abs. 1 Satz 2 SGB XII (Landesrecht abweichend)"
+ },
+ {
+  "id": "X-pausch-pg4",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Pflegegrad 4 ohne GdB: 7.400 € und 4.500 € Fahrtkosten",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "pflegegrad": "4",
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "tx": [
+     "pausch.hilflos",
+     "pausch.fahrt"
+    ],
+    "betrag": 7400,
+    "betragAus": "pausch.hilflos.betrag"
+   }
+  },
+  "quelle": "§ 33b Abs. 3 EStG, § 65 Abs. 2 Satz 2 EStDV"
+ },
+ {
+  "id": "X-pausch-pg4-fahrt",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Pflegegrad 4: Fahrtkostenpauschale 4.500 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "pflegegrad": "4",
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "ja",
+    "betrag": 4500,
+    "betragAus": "pausch.fahrt.betrag"
+   }
+  },
+  "quelle": "§ 33 Abs. 2a Satz 4 EStG; Finanzverwaltung NRW"
+ },
+ {
+  "id": "X-pausch-blind0",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Blind ohne GdB-Angabe: möglich (Nachweis Merkzeichen Bl)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "blind": "blind",
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "vielleicht",
+    "tx": [
+     "pausch.hilflos"
+    ]
+   }
+  },
+  "quelle": "§ 65 Abs. 2 Satz 1 EStDV"
+ },
+ {
+  "id": "X-pausch-pg3",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Pflegegrad 3 ohne GdB: kein Pauschbetrag",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "pflegegrad": "3",
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "pausch": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 33b EStG"
+ },
+ {
+  "id": "X-ausweis-ag",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "GdB 80 mit aG: Kfz-Steuer frei, Wertmarke nicht kostenlos",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1980,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "gdb": "80",
+   "mz": {
+    "aG": true
+   },
+   "mzG": true,
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "ausweis": {
+    "status": "ja",
+    "tx": [
+     "ausweis.ag",
+     "ausweis.park"
+    ],
+    "txNicht": [
+     "ausweis.frei"
+    ]
+   }
+  },
+  "quelle": "§ 228 Abs. 4 SGB IX; § 3a Abs. 1 KraftStG"
+ },
+ {
+  "id": "X-ausweis-bl",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "GdB 100 blind: Wertmarke kostenlos",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1980,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "gdb": "100",
+   "blind": "blind",
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "ausweis": {
+    "status": "ja",
+    "tx": [
+     "ausweis.frei"
+    ]
+   }
+  },
+  "quelle": "§ 228 Abs. 4 Nr. 1 SGB IX"
+ },
+ {
+  "id": "X-ausweis-kind",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Kind unter 18 mit GdB 60: kein Zusatzurlaub, kein Kündigungsschutz",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1985,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "gdb": "60",
+   "bhPerson": "minder",
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "ausweis": {
+    "status": "ja",
+    "tx": [
+     "ausweis.schwerKind"
+    ],
+    "txNicht": [
+     "ausweis.schwer",
+     "ausweis.kuendigung"
+    ]
+   }
+  },
+  "quelle": "§§ 168, 208 SGB IX"
+ },
+ {
+  "id": "X-ausweis-rente40",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Allein, über der Regelaltersgrenze, GdB 40: keine Gleichstellung",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "gdb": "40",
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "ausweis": {
+    "status": "nein",
+    "tx": [
+     "ausweis.niedrigRente"
+    ]
+   }
+  },
+  "quelle": "§ 2 Abs. 3 SGB IX"
+ },
+ {
+  "id": "X-ausweis-jung40",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Unter der Regelaltersgrenze, GdB 40: Gleichstellung möglich",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1980,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "gdb": "40",
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "ausweis": {
+    "status": "vielleicht",
+    "tx": [
+     "ausweis.gleich"
+    ]
+   }
+  },
+  "quelle": "§ 2 Abs. 3 SGB IX"
+ },
+ {
+  "id": "X-pflege-heim",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Besondere Wohnform, Pflegegrad 3: nur möglich, 15 %, höchstens 278 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1980,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "pflegegrad": "3",
+   "wohnform": "heim",
+   "bhPerson": "erwNach25",
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "vielleicht",
+    "tx": [
+     "pflege.wohnform"
+    ],
+    "betrag": 278,
+    "betragAus": "pflege.wohnform.max"
+   }
+  },
+  "quelle": "§ 43a SGB XI; BMG Übersicht 2026"
+ },
+ {
+  "id": "X-pflege-renteAlt",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Rentnerin pflegt (Pflegegrad 3): Hinweis keine Rentenbeiträge bei Vollrente",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "pflegegrad": "3",
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "tx": [
+     "pflege.renteAlt"
+    ]
+   }
+  },
+  "quelle": "§ 5 Abs. 4 Satz 1 Nr. 1 SGB VI"
+ },
+ {
+  "id": "X-pflege-jung",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Pflegegrad 3, Haushalt unter der Regelaltersgrenze: kein Rentner-Hinweis",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1980,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "pflegegrad": "3",
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "pflege": {
+    "status": "ja",
+    "txNicht": [
+     "pflege.renteAlt"
+    ]
+   }
+  },
+  "quelle": "§ 44 SGB XI"
+ },
+ {
+  "id": "X-zz-jung",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Junge Person ohne Behinderung: Belastungsgrenze eher nicht erreicht, Text nennt Gültigkeit für alle",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 3000,
+   "netto": 2000,
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "zuzahl": {
+    "status": "nein",
+    "tx": [
+     "zuzahl.keine"
+    ]
+   }
+  },
+  "quelle": "§ 62 Abs. 1 SGB V"
+ },
+ {
+  "id": "X-zz-fahrt",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Pflegegrad 4: Krankenfahrten-Text",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 1100,
+   "netto": 950,
+   "pflegegrad": "4",
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "zuzahl": {
+    "status": "vielleicht",
+    "tx": [
+     "zuzahl.fahrt",
+     "zuzahl.chron"
+    ]
+   }
+  },
+  "quelle": "§ 60 Abs. 1 Satz 5 SGB V"
+ },
+ {
+  "id": "X-gsa-emDauer",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Voll erwerbsgemindert (eigene Angabe), unter der Altersgrenze: Hinweis dauerhaft/befristet",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1975,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 700,
+   "netto": 620,
+   "emStd": "unter3",
+   "em5": true,
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja|vielleicht",
+    "tx": [
+     "gsa.emDauer"
+    ]
+   }
+  },
+  "quelle": "§ 41 Abs. 3, § 45 SGB XII"
+ },
+ {
+  "id": "X-gsa-alt-ohne",
+  "pruefer": "Fix 24.11.2026",
+  "beschreibung": "Über der Regelaltersgrenze: kein Hinweis zur Erwerbsminderung",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 1000,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "brutto": 800,
+   "netto": 700,
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja|vielleicht",
+    "txNicht": [
+     "gsa.emDauer"
+    ]
+   }
+  },
+  "quelle": "§ 41 Abs. 2 SGB XII"
+ },
+ {
+  "id": "X-nba-bk",
+  "pruefer": "Fix 24.11.2026",
+  "art": "nba",
+  "beschreibung": "Kind 10 Monate, besondere Bedarfskonstellation: Pflegegrad 5",
+  "g": {
+   "alterJahre": 0,
+   "alterMonate": 10,
+   "stufen": {},
+   "bedarfskonstellation": true
+  },
+  "erwartet": {
+   "pg": 5
+  }
+ },
+ {
+  "id": "X-nba-s3",
+  "pruefer": "Fix 24.11.2026",
+  "art": "nba",
+  "beschreibung": "Kind 12 Monate, 4.K (20 Punkte -> 20 gewichtet) plus Modul 1 und 6 voll: nur 4.K zählt -> 20 Punkte, eine Stufe höher = Pflegegrad 3",
+  "g": {
+   "alterJahre": 1,
+   "alterMonate": 12,
+   "stufen": {
+    "1.1": 3,
+    "1.2": 3,
+    "1.3": 3,
+    "1.4": 3,
+    "1.5": 3,
+    "6.1": 3,
+    "6.2": 3
+   },
+   "k4K": true
+  },
+  "erwartet": {
+   "pg": 3
+  }
+ }
+]

@@ -91,7 +91,9 @@ function pruefe(e) {
   if (e2) zukZahl[e2._art] = (zukZahl[e2._art] || 0) + 1;
   const lev = (jetzt, f) => (e2 ? Ref.zusammen(jetzt.level, f(h2).level) : jetzt.level);
   // Grundsicherungsgeld
-  const gg0 = Ref.grundsicherungsgeld(h);
+  // Seit 1.7.2026 höchstens das Eineinhalbfache der angemessenen Unterkunftskosten (§ 22 Abs. 1 Satz 6 SGB II, § 35 Abs. 1 Satz 7 SGB XII)
+  const k15 = Ref.kdu15(e), eK = k15 && (Number(e.miete) || 0) > k15 ? { ...e, miete: k15 } : e;
+  const gg0 = Ref.grundsicherungsgeld(eK === e ? h : Ref.haushalt(eK));
   const gg = { ...gg0, level: lev(gg0, Ref.grundsicherungsgeld) };
   // Miete über der Angemessenheitsgrenze: zusätzlich mit der Grenze gerechnet, Einstufung aus beiden
   const kduG = Ref.kduGrenze(e);
@@ -103,7 +105,9 @@ function pruefe(e) {
   }
   if (r.ggeld.level !== gg.level) melde('Grundsicherungsgeld: Einstufung', e, { app: r.ggeld.level, ref: gg.level, ref2: gg });
   else if (gg.bedarf != null) {
-    const bApp = r.ggeld.tx[0][1] && r.ggeld.tx[0][1].bedarf ? r.ggeld.tx[0][1].bedarf.eur : null;
+    // Bedarfszeile auch hinter Hinweisen, die „höchstens möglich“ vorn einfügt (seit 24.11.2026)
+    const tB = r.ggeld.tx.find((t) => /^bedarf/.test(t[0]) && t[1] && t[1].bedarf);
+    const bApp = tB ? tB[1].bedarf.eur : null;
     if (bApp !== Math.round(gg.bedarf)) melde('Grundsicherungsgeld: Bedarf', e, { app: bApp, ref: Math.round(gg.bedarf) });
     const s = zahlAus(r.ggeld, 'schaetz.eins', 'a');
     if (gg0.level === 'ja' && s !== Math.round(gg.luecke / 10) * 10) melde('Grundsicherungsgeld: geschätzter Betrag', e, { app: s, ref: gg.luecke });
@@ -156,7 +160,8 @@ function pruefe(e) {
 }
 
 function vergleicheGSA(e, r) {
-  const g = { ...Ref.grundsicherungAlter(e) };
+  const k15 = Ref.kdu15(e);
+  const g = { ...Ref.grundsicherungAlter(k15 && (Number(e.miete) || 0) > k15 ? { ...e, miete: k15 } : e) };
   const kduG = Ref.kduGrenze(e);
   if (kduG && (Number(e.miete) || 0) > kduG) g.level = Ref.zusammen(g.level, Ref.grundsicherungAlter({ ...e, miete: kduG }).level);
   g.level = Ref.kappe(e, 'gsa', g.level);
@@ -283,7 +288,8 @@ for (let i = 0; i < 20000; i++) {
   }
   const a = Rules.evaluate({ ...e, aufenthalt: 'asyl' }).results;
   Ref.ASYL_NEIN.forEach((id) => { const x = a.find((y) => y.id === id); if (x.level !== 'nein' && x.level !== 'na') melde('Asyl: ' + id + ' muss ausgeschlossen sein', e, { app: x.level }); });
-  if (a.find((y) => y.id === 'asylblg').level !== 'ja') melde('Asyl: Asylbewerberleistungen', e, {});
+  // § 7 AsylbLG: Einkommen und Vermögen zuerst (Vollprüfung 24.11.2026, Befunde B-15 / Fable 3)
+  { const al = a.find((y) => y.id === 'asylblg').level, ar = Ref.asylbewerber({ ...e, aufenthalt: 'asyl' }).level; if (al !== ar) melde('Asyl: Asylbewerberleistungen', e, { app: al, ref: ar }); }
   // Höchstens „möglich“, sonst dieselbe Einstufung wie ohne Asyl (Gesetz trennt Gestattung und Duldung oder ist unklar)
   // (Wohngeld: ohne den Ausblick auf künftige Leistungen, den die App bei Asyl nicht rechnet, daher nur „nie wahrscheinlich“ und Hinweis vorn)
   Ref.ASYL_MOEGLICH.forEach((id) => {

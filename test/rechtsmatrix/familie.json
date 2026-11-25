@@ -1,0 +1,6237 @@
+[
+ {
+  "id": "kg-01",
+  "beschreibung": "Keine Kinder: kein Kindergeld",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2500,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/estg/__62.html, __63.html, __66.html (Kindergeld 259 € seit 1.1.2026), __32.html Abs. 4",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kg-02",
+  "beschreibung": "Alleinerziehend, 1 Kind unter 6, deutsch",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/estg/__62.html, __63.html, __66.html (Kindergeld 259 € seit 1.1.2026), __32.html Abs. 4",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kg-03",
+  "beschreibung": "Nur junger Erwachsener 18-24 in Ausbildung",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 1,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "kindBetrieb",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "kindEink": 900
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/estg/__62.html, __63.html, __66.html (Kindergeld 259 € seit 1.1.2026), __32.html Abs. 4 (§ 32 Abs. 4 Satz 1 Nr. 2 a)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kg-04",
+  "beschreibung": "Asylverfahren/Duldung: nur mit Beschäftigungsduldung",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "asyl",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/estg/__62.html, __63.html, __66.html (Kindergeld 259 € seit 1.1.2026), __32.html Abs. 4 (§ 62 Abs. 2 Nr. 5)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kg-05",
+  "beschreibung": "EU-Bürgerin ohne Arbeit, unter 5 Jahren in DE: Kindergeld nur bei Freizügigkeit (nicht allein Arbeitsuche) bzw. erste 3 Monate nur mit Inlandseinkünften",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "eu",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "nein",
+   "euJahre": "unter5",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/estg/__62.html, __63.html, __66.html (Kindergeld 259 € seit 1.1.2026), __32.html Abs. 4 (§ 62 Abs. 1a)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kg-06",
+  "beschreibung": "EU-Bürgerin mit Arbeit: Kindergeld",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2200,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "eu",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "ja",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/estg/__62.html, __63.html, __66.html (Kindergeld 259 € seit 1.1.2026), __32.html Abs. 4",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kg-07",
+  "beschreibung": "Kindergeld wird schon bezogen",
+  "h": {
+   "adults": 1,
+   "kids": 2,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {
+    "kindergeld": true
+   }
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "na"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/estg/__62.html, __63.html, __66.html (Kindergeld 259 € seit 1.1.2026), __32.html Abs. 4",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kg-08",
+  "beschreibung": "Familiengeld-Hinweis Bayern: nur 14-17-Jährige im Haushalt -> kein Hinweis (Familiengeld nur bis 3. Geburtstag, Geburt vor 2025)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 1,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja",
+    "texteNicht": [
+     "kindergeld.familiengeld"
+    ]
+   }
+  },
+  "quelle": "Art. 9a BayFamGG (GVBl. 2025 S. 570), https://www.verkuendung-bayern.de/gvbl/2025-570/",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kg-09",
+  "beschreibung": "Familiengeld-Hinweis Bayern: Kind unter 6 -> Hinweis",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja",
+    "texteEnthalten": [
+     "kindergeld.familiengeld"
+    ]
+   }
+  },
+  "quelle": "Art. 9a BayFamGG",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kg-10",
+  "beschreibung": "Erwachsenes Kind mit Behinderung vor 25, kann sich nicht selbst unterhalten",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "erwVor25",
+   "gdb": "80",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": true,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kgBeh": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 32 Abs. 4 Satz 1 Nr. 3 EStG",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kg-11",
+  "beschreibung": "Erwachsenes Kind, Behinderung nach 25 eingetreten",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "erwNach25",
+   "gdb": "80",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kgBeh": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 32 Abs. 4 Satz 1 Nr. 3 EStG",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kiz-01",
+  "beschreibung": "Paar, 2 Kinder (0-5, 6-13), Alleinverdiener netto 2056,60 €, Miete 900 €: Elternbedarf 1012 + 71 % × 900 = 1651; bereinigt 2056,60 − 378 = 1678,60; Überschuss 27,60 × 45 % = 12,42; KiZ 594 − 12,42 = 581,58",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2600,
+   "brutto2": 0,
+   "netto": 2056.6,
+   "miete": 900,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "ja",
+    "betrag": 580,
+    "toleranz": 10
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; DA-KiZ Stand 20.02.2026 (https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf) C.3.1.1, C.3.1.2",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kiz-02",
+  "beschreibung": "Paar Mindesteinkommen knapp unter 900 € brutto",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 899,
+   "brutto2": 0,
+   "netto": 760,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; DA-KiZ Stand 20.02.2026 (https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf) C.3.1.1, C.3.1.2 (Abs. 1 Nr. 2)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kiz-03",
+  "beschreibung": "Paar Mindesteinkommen genau 900 € brutto: kein Ausschluss wegen Mindesteinkommen",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 900,
+   "brutto2": 0,
+   "netto": 760,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; DA-KiZ Stand 20.02.2026 (https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf) C.3.1.1, C.3.1.2",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kiz-04",
+  "beschreibung": "Alleinerziehend 599 € brutto",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 599,
+   "brutto2": "",
+   "netto": 599,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; DA-KiZ Stand 20.02.2026 (https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf) C.3.1.1, C.3.1.2",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kiz-05",
+  "beschreibung": "Alleinerziehend 600 € brutto: Mindesteinkommen erreicht (Ergebnis offen, eher zu niedrig)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 600,
+   "brutto2": "",
+   "netto": 600,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; DA-KiZ Stand 20.02.2026 (https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf) C.3.1.1, C.3.1.2",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kiz-06",
+  "beschreibung": "Vermögen über 85.000 € (4 Personen: 40.000 + 3 × 15.000) um mehr als einen Monatsbetrag",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2600,
+   "brutto2": 0,
+   "netto": 2056.6,
+   "miete": 900,
+   "mietstufe": "3",
+   "vermoegen": 86000,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; DA-KiZ Stand 20.02.2026 (https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf) C.3.1.1, C.3.1.2 (Abs. 3, Vermögen)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kiz-07",
+  "beschreibung": "Vermögen 85.000 € genau an der Grenze",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2600,
+   "brutto2": 0,
+   "netto": 2056.6,
+   "miete": 900,
+   "mietstufe": "3",
+   "vermoegen": 85000,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "ja"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; DA-KiZ Stand 20.02.2026 (https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf) C.3.1.1, C.3.1.2",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kiz-08",
+  "beschreibung": "Vermögen 85.400 €: Überschuss 400 € < Monatsbetrag -> nur 1. Monat gekürzt",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2600,
+   "brutto2": 0,
+   "netto": 2056.6,
+   "miete": 900,
+   "mietstufe": "3",
+   "vermoegen": 85400,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; DA-KiZ Stand 20.02.2026 (https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf) C.3.1.1, C.3.1.2 (Abs. 3; KiZ-Merkblatt Nr. 2.3)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kiz-09",
+  "beschreibung": "Grundsicherungsgeld-Bezug schließt KiZ aus",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1500,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {
+    "grundsicherungsgeld": true
+   }
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; DA-KiZ Stand 20.02.2026 (https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf) C.3.1.1, C.3.1.2",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kiz-10",
+  "beschreibung": "Asyl: kein Kindergeld -> kein KiZ",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1500,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "asyl",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; DA-KiZ Stand 20.02.2026 (https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf) C.3.1.1, C.3.1.2 (Abs. 1 Nr. 1)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kiz-11",
+  "beschreibung": "Hohes Einkommen Paar 6000 € brutto, 1 Kind: KiZ aufgezehrt",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 6000,
+   "brutto2": 0,
+   "netto": "",
+   "miete": 900,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; DA-KiZ Stand 20.02.2026 (https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf) C.3.1.1, C.3.1.2 (Abs. 6)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kiz-12",
+  "beschreibung": "Keine Kinder",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1500,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; DA-KiZ Stand 20.02.2026 (https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf) C.3.1.1, C.3.1.2",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "kiz-13",
+  "beschreibung": "Wechselmodell: Mehrbedarf Alleinerziehung nur hälftig (BSG 3.3.2009, B 4 AS 50/07 R; DA-KiZ C.3.1.1 Abs. 2) -> höchstens möglich",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1500,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": true,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "uvgWechsel": true
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; DA-KiZ Stand 20.02.2026 (https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf) C.3.1.1, C.3.1.2",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "uvg-01",
+  "beschreibung": "AE, 1 Kind unter 6, kein Unterhalt",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1800,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": true,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "ja"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/uhvorschg/__1.html, __2.html; Mindestunterhalt 2026 486/558/653 € (MinUhV), Kindergeld 259 €",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "uvg-02",
+  "beschreibung": "AE, 1 Kind unter 6, Unterhalt 227 € = UVG-Betrag -> nichts übrig",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1800,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": true,
+   "unterhalt": 227,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/uhvorschg/__1.html, __2.html; Mindestunterhalt 2026 486/558/653 € (MinUhV), Kindergeld 259 € (§ 2 Abs. 3 Nr. 1)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "uvg-03",
+  "beschreibung": "AE, 1 Kind unter 6, Unterhalt 226 € -> 1 € UVG",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1800,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": true,
+   "unterhalt": 226,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/uhvorschg/__1.html, __2.html; Mindestunterhalt 2026 486/558/653 € (MinUhV), Kindergeld 259 €",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "uvg-04",
+  "beschreibung": "AE, 1 Kind 14-17 (Haken „12 oder älter\" NICHT gesetzt), kein eigenes Einkommen, Grundsicherungsgeld: § 1 Abs. 1a UVG gilt trotzdem (14-17 ist immer ab 12) -> höchstens möglich",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 1,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": true,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "vielleicht"
+   },
+   "ggeld": {
+    "status": "ja",
+    "betrag": 1570,
+    "toleranz": 10
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/uhvorschg/__1.html, __2.html; Mindestunterhalt 2026 486/558/653 € (MinUhV), Kindergeld 259 €; https://www.gesetze-im-internet.de/sgb_2/__20.html, __21.html, __72.html (Sofortzuschlag 25 € je Kind), RBSFV 2026 (Bedarf 563+471+700+12 % Mehrbedarf 67,56 − Kindergeld 259 = 1542,56 + Sofortzuschlag 25)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "uvg-05",
+  "beschreibung": "AE, Kind 12+ (Haken gesetzt), Elternteil 599 € brutto",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 1,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 599,
+   "brutto2": "",
+   "netto": 599,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": true,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "kidsAlter": true,
+   "kinder12": true
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/uhvorschg/__1.html, __2.html; Mindestunterhalt 2026 486/558/653 € (MinUhV), Kindergeld 259 € (§ 1 Abs. 1a Nr. 2)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "uvg-06",
+  "beschreibung": "AE, Kind 12+ (Haken gesetzt), Elternteil 600 € brutto",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 1,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 600,
+   "brutto2": "",
+   "netto": 600,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": true,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "kidsAlter": true,
+   "kinder12": true
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "ja"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/uhvorschg/__1.html, __2.html; Mindestunterhalt 2026 486/558/653 € (MinUhV), Kindergeld 259 € (§ 1 Abs. 1a Nr. 2)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "uvg-07",
+  "beschreibung": "Wechselmodell (ab 40 %), 1 Kind: kein UVG",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1800,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": true,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "uvgWechsel": true
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "BVerwG 12.12.2023, 5 C 9.22; § 1 Abs. 1 Nr. 2 UVG",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "uvg-08",
+  "beschreibung": "Neue Partnerschaft ohne Trauschein: UVG bleibt",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "lohn",
+   "brutto": 3000,
+   "brutto2": 1500,
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": true,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "uvgPartner": "neu"
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "ja"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/uhvorschg/__1.html, __2.html; Mindestunterhalt 2026 486/558/653 € (MinUhV), Kindergeld 259 € (§ 1 Abs. 1 Nr. 2: ledig)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "uvg-09",
+  "beschreibung": "Mit neuem Partner verheiratet: kein UVG",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "lohn",
+   "brutto": 3000,
+   "brutto2": 1500,
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": true,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "uvgPartner": "ehe"
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/uhvorschg/__1.html, __2.html; Mindestunterhalt 2026 486/558/653 € (MinUhV), Kindergeld 259 €",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "uvg-10",
+  "beschreibung": "Lebt mit anderem Elternteil (1 Kind): kein UVG",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "lohn",
+   "brutto": 3000,
+   "brutto2": 1500,
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": true,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "uvgPartner": "eltern"
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/uhvorschg/__1.html, __2.html; Mindestunterhalt 2026 486/558/653 € (MinUhV), Kindergeld 259 € (§ 1 Abs. 3)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "uvg-11",
+  "beschreibung": "Nur volljährige Kinder: kein UVG",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 1,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1800,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": true,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/uhvorschg/__1.html, __2.html; Mindestunterhalt 2026 486/558/653 € (MinUhV), Kindergeld 259 €",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "uvg-12",
+  "beschreibung": "Unterhalt wird gezahlt (Haken nicht gesetzt)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1800,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/uhvorschg/__1.html, __2.html; Mindestunterhalt 2026 486/558/653 € (MinUhV), Kindergeld 259 €",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "uvg-13",
+  "beschreibung": "Waisenrente 300 € bei 1 Kind 6-11 (299 €) -> nichts übrig",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1800,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": true,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "waisen": 300
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/uhvorschg/__1.html, __2.html; Mindestunterhalt 2026 486/558/653 € (MinUhV), Kindergeld 259 € (§ 2 Abs. 3 Nr. 2)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "uvg-14",
+  "beschreibung": "Azubi 16 J. (einziges Kind), Ausbildungsvergütung 1000 € -> (1000 − 102,50 − 100)/2 = 398,75 ≥ 394 -> nichts",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 1,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1800,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": true,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "kindBetrieb",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "kidsAlter": true,
+   "kinder12": true,
+   "kindEink": 1000
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/uhvorschg/__1.html, __2.html; Mindestunterhalt 2026 486/558/653 € (MinUhV), Kindergeld 259 € (§ 2 Abs. 4)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "eg-01",
+  "beschreibung": "Baby bald, kein Einkommen vor der Geburt: Mindestbetrag 300 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "bald",
+   "egVor": 0,
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "ja",
+    "betrag": 300,
+    "toleranz": 0
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/beeg/__2.html, __2a.html, __2c.html, __4a.html, __1.html (Abs. 8: 175.000 €), __10.html",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "eg-02",
+  "beschreibung": "Baby bald, Netto 1200 € (Brutto im Übergangsbereich -> Netto bleibt): (1200 − 102,50) × 67 % = 735,33",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1640,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "bald",
+   "egVor": 1200,
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "ja",
+    "betrag": 740,
+    "toleranz": 10
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/beeg/__2.html, __2a.html, __2c.html, __4a.html, __1.html (Abs. 8: 175.000 €), __10.html",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "eg-03",
+  "beschreibung": "Baby bald, Netto 400 €: 297,50 × 100 % < 300 -> 300",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 400,
+   "brutto2": "",
+   "netto": 400,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "bald",
+   "egVor": 400,
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "ja",
+    "betrag": 300,
+    "toleranz": 0
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/beeg/__2.html, __2a.html, __2c.html, __4a.html, __1.html (Abs. 8: 175.000 €), __10.html (§ 2 Abs. 2, 4)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "eg-04",
+  "beschreibung": "Baby bald, sehr hohes Netto: Höchstbetrag 1800 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 7000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "bald",
+   "egVor": 4500,
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "ja",
+    "betrag": 1800,
+    "toleranz": 0
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/beeg/__2.html, __2a.html, __2c.html, __4a.html, __1.html (Abs. 8: 175.000 €), __10.html",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "eg-05",
+  "beschreibung": "Zwillinge da, kein Einkommen: 300 + 300 Mehrlingszuschlag",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 2,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2600,
+   "brutto2": 0,
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "da",
+   "egVor": 0,
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "egKinder": 2
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "ja",
+    "betrag": 600,
+    "toleranz": 0
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/beeg/__2.html, __2a.html, __2c.html, __4a.html, __1.html (Abs. 8: 175.000 €), __10.html (§ 2a Abs. 4)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "eg-06",
+  "beschreibung": "Geschwisterbonus sicher: Baby bald, 2 weitere Kinder unter 6, Netto 1200: 735,33 × 1,1 = 808,86",
+  "h": {
+   "adults": 1,
+   "kids": 2,
+   "kidsU6": 2,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1640,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "bald",
+   "egVor": 1200,
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "ja",
+    "betrag": 810,
+    "toleranz": 10
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/beeg/__2.html, __2a.html, __2c.html, __4a.html, __1.html (Abs. 8: 175.000 €), __10.html (§ 2a Abs. 1)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "eg-07",
+  "beschreibung": "Paar mit 25.000 € brutto im Monat (300.000 €/Jahr): zu versteuerndes Einkommen sicher über 175.000 € -> kein Elterngeld – korrigiert 25.11.2026 (Gegenprüfung Nr. 1): höchstens „möglich“, weil zu versteuerndes Einkommen und Vorjahr nicht bekannt",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "lohn",
+   "brutto": 25000,
+   "brutto2": 12000,
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "bald",
+   "egVor": 5000,
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "vielleicht",
+    "texteEnthalten": [
+     "eg.grenze"
+    ]
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/beeg/__2.html, __2a.html, __2c.html, __4a.html, __1.html (Abs. 8: 175.000 €), __10.html (§ 1 Abs. 8)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "eg-08",
+  "beschreibung": "Kein Baby",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "nein"
+   },
+   "mutter": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/beeg/__2.html, __2a.html, __2c.html, __4a.html, __1.html (Abs. 8: 175.000 €), __10.html",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "eg-09",
+  "beschreibung": "Elterngeld wird schon bezogen",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "eg",
+   "art2": "",
+   "brutto": 900,
+   "brutto2": "",
+   "netto": 900,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "da",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "na"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/beeg/__2.html, __2a.html, __2c.html, __4a.html, __1.html (Abs. 8: 175.000 €), __10.html",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "eg-10",
+  "beschreibung": "Asyl/Duldung: höchstens möglich",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "asyl",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "bald",
+   "egVor": 0,
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/beeg/__2.html, __2a.html, __2c.html, __4a.html, __1.html (Abs. 8: 175.000 €), __10.html (§ 1 Abs. 7)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "eg-11",
+  "beschreibung": "Teilzeit: vor 1200, nach 600 -> 67 % × (1097,50 − 497,50) = 402",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1640,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "bald",
+   "egVor": 1200,
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "egNach": 600
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "ja",
+    "betrag": 400,
+    "toleranz": 10
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/beeg/__2.html, __2a.html, __2c.html, __4a.html, __1.html (Abs. 8: 175.000 €), __10.html (§ 2 Abs. 3)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "egz-01",
+  "beschreibung": "AE, Baby da + Geschwister unter 3, Elterngeld 375 € NUR aus Mindestbetrag + Geschwisterbonus (kein Einkommen vor der Geburt): kein Freibetrag nach § 10 Abs. 5 BEEG. Bedarf 563+2×357+700+36 % (202,68) = 2179,68; Einkommen 375 − 30 + 518 = 863; Lücke 1316,68 + Sofortzuschlag 50",
+  "h": {
+   "adults": 1,
+   "kids": 2,
+   "kidsU6": 2,
+   "kids14": 0,
+   "young": 0,
+   "art1": "eg",
+   "art2": "",
+   "brutto": 375,
+   "brutto2": "",
+   "netto": 375,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "da",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "egKinder": 1
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 1370,
+    "toleranz": 10
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/beeg/__2.html, __2a.html, __2c.html, __4a.html, __1.html (Abs. 8: 175.000 €), __10.html (§ 10 Abs. 5); https://www.gesetze-im-internet.de/sgb_2/__20.html, __21.html, __72.html (Sofortzuschlag 25 € je Kind), RBSFV 2026",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "egz-02",
+  "beschreibung": "Wie egz-01, aber Elterngeld 300 € (Mindestbetrag): voll angerechnet",
+  "h": {
+   "adults": 1,
+   "kids": 2,
+   "kidsU6": 2,
+   "kids14": 0,
+   "young": 0,
+   "art1": "eg",
+   "art2": "",
+   "brutto": 300,
+   "brutto2": "",
+   "netto": 300,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "da",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "egKinder": 1
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 1440,
+    "toleranz": 10
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/beeg/__2.html, __2a.html, __2c.html, __4a.html, __1.html (Abs. 8: 175.000 €), __10.html; https://www.gesetze-im-internet.de/sgb_2/__20.html, __21.html, __72.html (Sofortzuschlag 25 € je Kind), RBSFV 2026 (1391,68 + 50)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "sgb2-01",
+  "beschreibung": "Paar, 2 Kinder (0-5, 6-13), kein Einkommen, Miete 900: 1012+357+390+900 − 518 = 2141 + Sofortzuschlag 2 × 25",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "ohne",
+   "brutto": 0,
+   "brutto2": 0,
+   "netto": "",
+   "miete": 900,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 2190,
+    "toleranz": 10
+   },
+   "kiz": {
+    "status": "nein"
+   },
+   "but": {
+    "status": "ja"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_2/__20.html, __21.html, __72.html (Sofortzuschlag 25 € je Kind), RBSFV 2026",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "mu-01",
+  "beschreibung": "Angestellt, allein, Baby bald",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2600,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "bald",
+   "egVor": 1800,
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "mutter": {
+    "status": "ja"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_5/__24i.html; § 19 MuSchG",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "mu-02",
+  "beschreibung": "Selbständig: nur mit Krankengeld-Anspruch (Wahlerklärung) -> möglich, kein Arbeitgeberzuschuss",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "selbst",
+   "art2": "",
+   "brutto": 3000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "bald",
+   "egVor": 2000,
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "mutter": {
+    "status": "vielleicht",
+    "texteNicht": [
+     "mu.lohn"
+    ]
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_5/__24i.html; § 19 MuSchG (Abs. 1 Satz 1, Abs. 2 letzter Satz: Höhe des Krankengeldes)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "mu-03",
+  "beschreibung": "Krankengeld-Bezieherin, Baby bald: Mutterschaftsgeld in Höhe des Krankengeldes",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "kg",
+   "art2": "",
+   "brutto": 1400,
+   "brutto2": "",
+   "netto": 1400,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "bald",
+   "egVor": 1600,
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "mutter": {
+    "status": "ja"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_5/__24i.html; § 19 MuSchG",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "mu-04",
+  "beschreibung": "Arbeitslosengeld I, Baby bald",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "alg",
+   "art2": "",
+   "brutto": 1100,
+   "brutto2": "",
+   "netto": 1100,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "bald",
+   "egVor": 1600,
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "mutter": {
+    "status": "ja"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_5/__24i.html; § 19 MuSchG",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "mu-05",
+  "beschreibung": "Ohne Einkommen (Grundsicherungsgeld): kein Mutterschaftsgeld",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "bald",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {
+    "grundsicherungsgeld": true
+   }
+  },
+  "erwartet": {
+   "mutter": {
+    "status": "nein"
+   }
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_5/__24i.html; § 19 MuSchG",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "but-01",
+  "beschreibung": "Wohngeld-Bezug mit Kind",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {
+    "wohngeld": true
+   }
+  },
+  "erwartet": {
+   "but": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 28 SGB II, § 6b BKGG, § 34 SGB XII, § 3 Abs. 4 AsylbLG; Schulbedarf 2026 130 + 65 € (betanet.de, Teilhabe- und Bildungspaket)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "but-02",
+  "beschreibung": "Asylbewerberleistungen mit Kind",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "asylblg",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "asyl",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "but": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 28 SGB II, § 6b BKGG, § 34 SGB XII, § 3 Abs. 4 AsylbLG; Schulbedarf 2026 130 + 65 € (betanet.de, Teilhabe- und Bildungspaket)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "but-03",
+  "beschreibung": "Junger Erwachsener 19, Schülerjob 300 € (keine Ausbildungsvergütung), Haushalt ohne Elterneinkommen -> Grundsicherungsgeld -> BuT – korrigiert 24.11.2026: Ob das Kind zur Schule geht oder studiert, fragt die App nicht: „möglich“ (§ 28 Abs. 1 Satz 2 SGB II; Fable Nr. 18)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 1,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "kindEink": 300
+  },
+  "erwartet": {
+   "but": {
+    "status": "vielleicht",
+    "texteEnthalten": [
+     "but.azubi",
+     "but.inhaltJung"
+    ]
+   }
+  },
+  "quelle": "§ 28 SGB II, § 6b BKGG, § 34 SGB XII, § 3 Abs. 4 AsylbLG; Schulbedarf 2026 130 + 65 € (betanet.de, Teilhabe- und Bildungspaket) (§ 28 Abs. 1 Satz 2 SGB II: nur Ausbildungsvergütung schließt aus)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "but-04",
+  "beschreibung": "Junger Erwachsener Azubi (Ausbildungsvergütung): kein BuT",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 1,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "kindBetrieb",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {},
+   "kindEink": 900
+  },
+  "erwartet": {
+   "but": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 28 SGB II, § 6b BKGG, § 34 SGB XII, § 3 Abs. 4 AsylbLG; Schulbedarf 2026 130 + 65 € (betanet.de, Teilhabe- und Bildungspaket)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "but-05",
+  "beschreibung": "Hohes Einkommen, kein Bezug: kein BuT",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 6000,
+   "brutto2": 0,
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "but": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 28 SGB II, § 6b BKGG, § 34 SGB XII, § 3 Abs. 4 AsylbLG; Schulbedarf 2026 130 + 65 € (betanet.de, Teilhabe- und Bildungspaket)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "but-06",
+  "beschreibung": "Kein Kind",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1000,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "unterhaltFehlt": false,
+   "unterhalt": "",
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "",
+   "mzG": false,
+   "ausbildung": "",
+   "aufenthalt": "",
+   "babBetrieb": false,
+   "babWohnt": false,
+   "bhSelbst": false,
+   "wfbm": false,
+   "kindKrank": false,
+   "baby": "",
+   "egVor": "",
+   "wohnart": "",
+   "hhAndere": "",
+   "autoWert": "",
+   "autoBraucht": false,
+   "euArbeit": "",
+   "euJahre": "",
+   "arbeitSit": "",
+   "algZeit": false,
+   "krankWochen": "",
+   "lohnVorher": "",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "but": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 28 SGB II, § 6b BKGG, § 34 SGB XII, § 3 Abs. 4 AsylbLG; Schulbedarf 2026 130 + 65 € (betanet.de, Teilhabe- und Bildungspaket)",
+  "quelleTest": "Vollprüfung familie (Claude) 24.11.2026"
+ },
+ {
+  "id": "F-KG-01",
+  "beschreibung": "Paar, 1 Kind (9)",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 3000,
+   "brutto2": 0,
+   "netto": 2300,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§§ 62, 63, 66 EStG (259 €), https://www.gesetze-im-internet.de/estg/__62.html, __66.html",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KG-02",
+  "beschreibung": "Alleinstehend ohne Kind",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": 1480,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "nein"
+   },
+   "kiz": {
+    "status": "nein"
+   },
+   "but": {
+    "status": "nein"
+   },
+   "uvg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§§ 62, 63, 66 EStG (259 €), https://www.gesetze-im-internet.de/estg/__62.html, __66.html",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KG-03",
+  "beschreibung": "Alleinerziehend, nur Kind 18-24 in Ausbildung",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 1,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja"
+   },
+   "uvg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§§ 62, 63, 66 EStG (259 €), https://www.gesetze-im-internet.de/estg/__62.html, __66.html; § 32 Abs. 4 EStG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KG-04",
+  "beschreibung": "Kindergeld wird schon bezogen",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {
+    "kindergeld": true
+   }
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "na"
+   }
+  },
+  "quelle": "§§ 62, 63, 66 EStG (259 €), https://www.gesetze-im-internet.de/estg/__62.html, __66.html",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KG-05",
+  "beschreibung": "Asylverfahren/Duldung mit Kind",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "asyl"
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   },
+   "kiz": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 62 Abs. 2 EStG (Gestattung nicht genannt, Duldung nur Beschäftigungsduldung)",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KG-06",
+  "beschreibung": "Ausreisepflichtig ohne Duldung mit Kind",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "ausreise"
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "nein",
+    "auchOk": [
+     "vielleicht"
+    ]
+   },
+   "kiz": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 62 Abs. 2 EStG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KG-07",
+  "beschreibung": "EU-Bürger mit Arbeit, 1 Kind",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2500,
+   "brutto2": 0,
+   "netto": 1950,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "eu",
+   "euArbeit": "ja",
+   "euJahre": "unter5"
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 62 Abs. 1a EStG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KG-08",
+  "beschreibung": "EU-Bürger ohne Arbeit, unter 5 Jahre, 1 Kind",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "eu",
+   "euArbeit": "nein",
+   "euJahre": "unter5"
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   },
+   "ggeld": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 62 Abs. 1a Satz 3 EStG (kein Kindergeld ohne Freizügigkeitsrecht oder nur zur Arbeitsuche), § 7 Abs. 1 Satz 2 Nr. 2 SGB II",
+  "befund": 9,
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KG-09",
+  "beschreibung": "Baby ist da (unter 14 Monate), aber kein Kind gezählt",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1500,
+   "brutto2": "",
+   "netto": 1190,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "baby": "da",
+   "egVor": 1100
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja"
+   },
+   "elterngeld": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§§ 62, 63, 66 EStG (259 €), https://www.gesetze-im-internet.de/estg/__62.html, __66.html (Kindergeld ab Geburt)",
+  "befund": 11,
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KIZ-01",
+  "beschreibung": "Paar, 2 Kinder (4 und 9), Lohn 2.800 brutto / 2.196 netto, Miete 950 (III)",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2800,
+   "brutto2": 0,
+   "netto": 2196,
+   "miete": 950,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja"
+   },
+   "kiz": {
+    "status": "ja",
+    "betrag": 535,
+    "toleranz": 20
+   },
+   "wohngeld": {
+    "status": "ja",
+    "betrag": 552,
+    "toleranz": 15
+   },
+   "ggeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   },
+   "but": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 6a BKGG, https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; KiZ-Merkblatt 7/2026, https://www.arbeitsagentur.de/datei/kiz2-merkblattkinderzuschlag_ba015395.pdf; Vorrang § 12a SGB II; Wohngeld § 19 WoGG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KIZ-02",
+  "beschreibung": "Paar, 2 Kinder, Lohn 899 (unter Mindesteinkommen 900)",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 899,
+   "brutto2": 0,
+   "netto": 899,
+   "miete": 950,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "nein"
+   },
+   "ggeld": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 6a Abs. 1 Nr. 2 BKGG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KIZ-03a",
+  "beschreibung": "Alleinerziehend, Kind 15, Lohn 600 (Mindesteinkommen erreicht), Unterhalt fehlt, Miete 400",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 1,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 600,
+   "brutto2": "",
+   "netto": 600,
+   "miete": 400,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "kinder12": true,
+   "unterhaltFehlt": true
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ],
+    "betrag": 120,
+    "toleranz": 15
+   },
+   "uvg": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 6a Abs. 1 Nr. 2, Abs. 1a, Abs. 3 BKGG; § 1 Abs. 1a Nr. 2 UVG (600 €)",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KIZ-03b",
+  "beschreibung": "wie KIZ-03a, Lohn 599",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 1,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 599,
+   "brutto2": "",
+   "netto": 599,
+   "miete": 400,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "kinder12": true,
+   "unterhaltFehlt": true
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "nein"
+   },
+   "uvg": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   },
+   "ggeld": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 6a Abs. 1 Nr. 2 BKGG; § 1 Abs. 1a UVG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KIZ-04",
+  "beschreibung": "Alleinerziehend, Kind 4, Lohn 1.800/1.420, Unterhalt fehlt (UVG 227), Miete 700",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1800,
+   "brutto2": "",
+   "netto": 1420,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "unterhaltFehlt": true
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ],
+    "betrag": 195,
+    "toleranz": 15
+   },
+   "uvg": {
+    "status": "ja"
+   },
+   "wohngeld": {
+    "status": "ja",
+    "auchOk": [
+     "vielleicht"
+    ]
+   },
+   "ggeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   },
+   "kindergeld": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 6a BKGG, https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; KiZ-Merkblatt 7/2026, https://www.arbeitsagentur.de/datei/kiz2-merkblattkinderzuschlag_ba015395.pdf; UVG zählt zu 45 % (§ 6a Abs. 3)",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KIZ-05",
+  "beschreibung": "Paar, 2 Kinder (8, 10), Lohn 4.000/3.000, Miete 950",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 4000,
+   "brutto2": 0,
+   "netto": 3000,
+   "miete": 950,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "ja",
+    "betrag": 173,
+    "toleranz": 20
+   },
+   "ggeld": {
+    "status": "nein"
+   },
+   "but": {
+    "status": "ja",
+    "auchOk": [
+     "vielleicht"
+    ]
+   }
+  },
+  "quelle": "§ 6a BKGG, https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; KiZ-Merkblatt 7/2026, https://www.arbeitsagentur.de/datei/kiz2-merkblattkinderzuschlag_ba015395.pdf",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KIZ-06",
+  "beschreibung": "Paar, 2 Kinder, Lohn 6.000/4.200",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 6000,
+   "brutto2": 0,
+   "netto": 4200,
+   "miete": 950,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "nein"
+   },
+   "wohngeld": {
+    "status": "nein"
+   },
+   "ggeld": {
+    "status": "nein"
+   },
+   "but": {
+    "status": "nein"
+   },
+   "rundfunk": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 6a BKGG, https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; KiZ-Merkblatt 7/2026, https://www.arbeitsagentur.de/datei/kiz2-merkblattkinderzuschlag_ba015395.pdf",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KIZ-07",
+  "beschreibung": "Bezug von Grundsicherungsgeld, 1 Kind",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {
+    "grundsicherungsgeld": true
+   }
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "nein"
+   },
+   "wohngeld": {
+    "status": "nein"
+   },
+   "ggeld": {
+    "status": "na"
+   },
+   "but": {
+    "status": "ja"
+   },
+   "rundfunk": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 6a Abs. 1 Nr. 3 BKGG, § 7 Abs. 1 Nr. 1 WoGG, § 4 Abs. 1 Nr. 3 RBeitrStV",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KIZ-08",
+  "beschreibung": "Bezug von Kinderzuschlag",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2800,
+   "brutto2": 0,
+   "netto": 2196,
+   "miete": 950,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {
+    "kiz": true
+   },
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "na"
+   },
+   "but": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 6b Abs. 1 Nr. 1 BKGG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KIZ-10a",
+  "beschreibung": "Paar, 1 Kind, Vermögen 70.000 (Grenze 40.000 + 2 × 15.000)",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2500,
+   "brutto2": 0,
+   "netto": 1980,
+   "miete": 900,
+   "mietstufe": "3",
+   "vermoegen": 70000,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ]
+   }
+  },
+  "quelle": "§ 6a Abs. 3 Satz 5 BKGG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KIZ-10b",
+  "beschreibung": "wie KIZ-10a, Vermögen 71.000 (übersteigt um mehr als einen Monatsbetrag)",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2500,
+   "brutto2": 0,
+   "netto": 1980,
+   "miete": 900,
+   "mietstufe": "3",
+   "vermoegen": 71000,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 6a Abs. 3 Satz 6 BKGG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KIZ-11",
+  "beschreibung": "Rentner (Regelaltersgrenze) allein mit Kind 10",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 900,
+   "brutto2": "",
+   "netto": 789,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1955,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "nein"
+   },
+   "ggeld": {
+    "status": "nein"
+   },
+   "gsa": {
+    "status": "ja"
+   },
+   "kindergeld": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 6a Abs. 1 Nr. 3 BKGG i. V. m. § 7 Abs. 1, § 7a SGB II; DA-KiZ D.2",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KIZ-12",
+  "beschreibung": "Rentner allein mit Kind 16",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 1,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 900,
+   "brutto2": "",
+   "netto": 789,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1955,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ]
+   }
+  },
+  "quelle": "DA-KiZ D.2 (Kind ab 15 erwerbsfähig)",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KIZ-13",
+  "beschreibung": "Alleinerziehend, 2 Kinder (8, 10), Lohn 2.200/1.700, Unterhalt 500, Miete 800",
+  "h": {
+   "adults": 1,
+   "kids": 2,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2200,
+   "brutto2": "",
+   "netto": 1700,
+   "miete": 800,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "unterhalt": 500
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "ja",
+    "betrag": 345,
+    "toleranz": 20
+   },
+   "uvg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 6a BKGG, https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; KiZ-Merkblatt 7/2026, https://www.arbeitsagentur.de/datei/kiz2-merkblattkinderzuschlag_ba015395.pdf",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KIZ-14",
+  "beschreibung": "Alleinerziehend, Kind 19 in betrieblicher Ausbildung (900 € Vergütung), Lohn 1.800/1.400, Miete 700",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 1,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1800,
+   "brutto2": "",
+   "netto": 1400,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "ausbildung": "kindBetrieb",
+   "kindEink": 900
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "ja",
+    "betrag": 215,
+    "toleranz": 30
+   },
+   "bafoeg": {
+    "status": "nein"
+   },
+   "bab": {
+    "status": "vielleicht"
+   },
+   "but": {
+    "status": "nein"
+   },
+   "kindergeld": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 6a Abs. 3 BKGG; § 11b Abs. 2b und Abs. 3 Satz 4 SGB II (603 € + 30 % von 520 bis 1.000 €); DA-KiZ C.2.2.1",
+  "befund": 23,
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-GG-06",
+  "beschreibung": "wie GG-05, Unterhalt 300 (Kind bleibt bedürftig) – korrigiert 24.11.2026: + 25 € Sofortzuschlag (§ 72 SGB II)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "unterhalt": 300
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 1087,
+    "toleranz": 15
+   }
+  },
+  "quelle": "§§ 7, 9, 11, 11b, 12, 12a, 19-22 SGB II; RBSFV 2026, https://www.gesetze-im-internet.de/sgb_2/",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-GG-07",
+  "beschreibung": "Alleinerziehend, Kind 15 (Angabe „14 bis 17“, Haken „12 oder älter“ NICHT gesetzt), kein Einkommen, Unterhalt fehlt – korrigiert 24.11.2026: + 25 € Sofortzuschlag (§ 72 SGB II)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 1,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "unterhaltFehlt": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 1468,
+    "toleranz": 15
+   },
+   "uvg": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   }
+  },
+  "quelle": "§ 1 Abs. 1a UVG: ab 12 Jahren kein UVG, wenn das Kind SGB-II-Leistungen bezieht und der Elternteil unter 600 € verdient",
+  "befund": 5,
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-GG-08",
+  "beschreibung": "wie GG-07, Haken „12 oder älter“ gesetzt – korrigiert 24.11.2026: + 25 € Sofortzuschlag (§ 72 SGB II)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 1,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "kinder12": true,
+   "unterhaltFehlt": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 1468,
+    "toleranz": 15
+   },
+   "uvg": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   }
+  },
+  "quelle": "§ 1 Abs. 1a UVG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-GG-32",
+  "beschreibung": "Alleinerziehend, 4 Kinder (2 × 6-13, 2 × 14-17), kein Einkommen, Miete 1.000 – korrigiert 24.11.2026: + 100 € Sofortzuschlag (§ 72 SGB II)",
+  "h": {
+   "adults": 1,
+   "kids": 4,
+   "kidsU6": 0,
+   "kids14": 2,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 1000,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "kinder12": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 2619,
+    "toleranz": 15
+   }
+  },
+  "quelle": "§ 21 Abs. 3 Nr. 2 SGB II (4 × 12 %), RBSFV 2026",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-UV-01",
+  "beschreibung": "Alleinerziehend, Kind 4, Unterhalt fehlt, Lohn 1.800/1.420",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1800,
+   "brutto2": "",
+   "netto": 1420,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "unterhaltFehlt": true
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§§ 1, 2 UVG, https://www.gesetze-im-internet.de/uhvorschg/__1.html, __2.html (227 €)",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-UV-02a",
+  "beschreibung": "Kind 9, gezahlter Unterhalt 299 (= UVG-Betrag)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "unterhaltFehlt": true,
+   "unterhalt": 299
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 2 Abs. 3 Nr. 1 UVG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-UV-02b",
+  "beschreibung": "Kind 9, gezahlter Unterhalt 200",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "unterhaltFehlt": true,
+   "unterhalt": 200
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ]
+   }
+  },
+  "quelle": "§ 2 Abs. 3 Nr. 1 UVG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-UV-03a",
+  "beschreibung": "Mit neuem Partner verheiratet",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "lohn",
+   "brutto": 3000,
+   "brutto2": 1000,
+   "netto": 2300,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "unterhaltFehlt": true,
+   "uvgPartner": "ehe"
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 1 Abs. 1 Nr. 2 UVG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-UV-03b",
+  "beschreibung": "Neue Partnerschaft ohne Trauschein",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "lohn",
+   "brutto": 3000,
+   "brutto2": 1000,
+   "netto": 2300,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "unterhaltFehlt": true,
+   "uvgPartner": "neu"
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 1 Abs. 1 Nr. 2 UVG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-UV-03c",
+  "beschreibung": "Lebt mit dem anderen Elternteil zusammen (1 Kind)",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "lohn",
+   "brutto": 3000,
+   "brutto2": 1000,
+   "netto": 2300,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "unterhaltFehlt": true,
+   "uvgPartner": "eltern"
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 1 Abs. 3 UVG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-UV-03d",
+  "beschreibung": "Zwei Erwachsene, unbekannt wer",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "lohn",
+   "brutto": 3000,
+   "brutto2": 1000,
+   "netto": 2300,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "unterhaltFehlt": true
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "§ 1 Abs. 1 Nr. 2, Abs. 3 UVG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-UV-04",
+  "beschreibung": "Wechselmodell (Kind mindestens 40 % beim anderen Elternteil)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "unterhaltFehlt": true,
+   "uvgWechsel": true
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "BVerwG 12.12.2023, 5 C 9.22",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-UV-06",
+  "beschreibung": "Kind 15, Elternteil Lohn 600, Unterhalt fehlt",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 1,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 600,
+   "brutto2": "",
+   "netto": 600,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "kinder12": true,
+   "unterhaltFehlt": true
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 1 Abs. 1a Nr. 2 UVG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-UV-07",
+  "beschreibung": "Duldung, Kind 4, Unterhalt fehlt",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1500,
+   "brutto2": "",
+   "netto": 1190,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "asyl",
+   "unterhaltFehlt": true
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   }
+  },
+  "quelle": "§ 1 Abs. 2a UVG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-UV-09",
+  "beschreibung": "Alleinerziehend, kein Haken „Unterhalt fehlt“",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "uvg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 1 Abs. 1 Nr. 3 UVG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-BT-03",
+  "beschreibung": "Asylbewerberleistungen mit Kindern",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "asylblg",
+   "art2": "ohne",
+   "brutto": 0,
+   "brutto2": 0,
+   "netto": "",
+   "miete": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "asyl"
+  },
+  "erwartet": {
+   "but": {
+    "status": "ja"
+   },
+   "rundfunk": {
+    "status": "ja"
+   },
+   "wohngeld": {
+    "status": "nein"
+   },
+   "kiz": {
+    "status": "nein"
+   },
+   "ggeld": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 3 Abs. 4 AsylbLG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-BT-05",
+  "beschreibung": "Paar, nur Kind 18-24 „in Ausbildung oder Studium“, Lohn 2.000/1.590, Miete 800",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 1,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2000,
+   "brutto2": 0,
+   "netto": 1590,
+   "miete": 800,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "but": {
+    "status": "vielleicht"
+   },
+   "kindergeld": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 28 Abs. 1 Satz 2 SGB II: nur Schülerinnen und Schüler ohne Ausbildungsvergütung; Teilhabe nur unter 18",
+  "befund": 18,
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-BT-06",
+  "beschreibung": "Wohngeld wird bezogen, 2 Kinder",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2800,
+   "brutto2": 0,
+   "netto": 2196,
+   "miete": 950,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {
+    "wohngeld": true
+   },
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "but": {
+    "status": "ja"
+   },
+   "wohngeld": {
+    "status": "na"
+   }
+  },
+  "quelle": "§ 6b Abs. 1 Nr. 2 BKGG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-EG-01",
+  "beschreibung": "Alleinstehend, Baby kommt, Netto vor der Geburt 1.150",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1500,
+   "brutto2": "",
+   "netto": 1190,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "baby": "bald",
+   "egVor": 1150
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "ja",
+    "betrag": 702,
+    "toleranz": 10
+   },
+   "mutter": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§§ 1, 2, 2a, 2c BEEG, https://www.gesetze-im-internet.de/beeg/__2.html",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-EG-02",
+  "beschreibung": "Paar, Baby kommt, Netto vor der Geburt 0 (Mindestbetrag)",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2500,
+   "brutto2": 0,
+   "netto": 1980,
+   "miete": 800,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "baby": "bald",
+   "egVor": 0
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "ja",
+    "betrag": 300,
+    "toleranz": 1
+   },
+   "mutter": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   }
+  },
+  "quelle": "§ 2 Abs. 4 BEEG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-EG-03",
+  "beschreibung": "Netto vor der Geburt 500 (Geringverdiener-Zuschlag)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 500,
+   "brutto2": "",
+   "netto": 500,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "baby": "bald",
+   "egVor": 500
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "ja",
+    "betrag": 386,
+    "toleranz": 10
+   }
+  },
+  "quelle": "§ 2 Abs. 2 BEEG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-EG-04",
+  "beschreibung": "Netto vor der Geburt 3.000 (Höchstbetrag 1.800)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 4300,
+   "brutto2": "",
+   "netto": 3000,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "baby": "bald",
+   "egVor": 3000
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "ja",
+    "betrag": 1800,
+    "toleranz": 1
+   }
+  },
+  "quelle": "§ 2 Abs. 1 BEEG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-EG-05",
+  "beschreibung": "Zwillinge sind da, Netto vor der Geburt 1.300",
+  "h": {
+   "adults": 2,
+   "kids": 2,
+   "kidsU6": 2,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2500,
+   "brutto2": 0,
+   "netto": 1980,
+   "miete": 800,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "baby": "da",
+   "egKinder": 2,
+   "egVor": 1300
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "ja",
+    "betrag": 1102,
+    "toleranz": 12
+   }
+  },
+  "quelle": "§ 2a Abs. 4 BEEG (300 € je weiterem Mehrling)",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-EG-06",
+  "beschreibung": "Baby da, zwei weitere Kinder unter 6 (Geschwisterbonus), Netto vor der Geburt 1.300",
+  "h": {
+   "adults": 2,
+   "kids": 3,
+   "kidsU6": 3,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "ohne",
+   "brutto": 2500,
+   "brutto2": 0,
+   "netto": 1980,
+   "miete": 800,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "baby": "da",
+   "egVor": 1300
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "ja",
+    "betrag": 883,
+    "toleranz": 12
+   }
+  },
+  "quelle": "§ 2a Abs. 1 BEEG (10 %, mindestens 75 €)",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-EG-07",
+  "beschreibung": "Asylverfahren, Baby kommt",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1300,
+   "brutto2": "",
+   "netto": 1050,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "aufenthalt": "asyl",
+   "baby": "bald",
+   "egVor": 1000
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   }
+  },
+  "quelle": "§ 1 Abs. 7 BEEG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-EG-08",
+  "beschreibung": "Kein Baby",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1500,
+   "brutto2": "",
+   "netto": 1190,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "nein"
+   },
+   "mutter": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§§ 1, 2, 2a, 2c BEEG, https://www.gesetze-im-internet.de/beeg/__2.html",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-EG-09",
+  "beschreibung": "Elterngeld wird schon bezogen (Einkommensart)",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "eg",
+   "brutto": 3300,
+   "brutto2": 800,
+   "netto": "",
+   "miete": 900,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "baby": "da"
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "na"
+   }
+  },
+  "quelle": "§§ 1, 2, 2a, 2c BEEG, https://www.gesetze-im-internet.de/beeg/__2.html",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-MU-02",
+  "beschreibung": "Selbstständige, schwanger, allein",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "selbst",
+   "art2": "",
+   "brutto": 1500,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "baby": "bald"
+  },
+  "erwartet": {
+   "mutter": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "§ 24i Abs. 1 SGB V (nur mit Anspruch auf Krankengeld), § 20 MuSchG (kein Arbeitgeberzuschuss)",
+  "befund": 10,
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-MU-03",
+  "beschreibung": "Schwanger, ohne Einkommen",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "baby": "bald"
+  },
+  "erwartet": {
+   "mutter": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 19 MuSchG, § 24i SGB V",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-MU-04",
+  "beschreibung": "Schwanger, Arbeitslosengeld I",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "alg",
+   "art2": "",
+   "brutto": 1100,
+   "brutto2": "",
+   "netto": "",
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "baby": "bald"
+  },
+  "erwartet": {
+   "mutter": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 24i Abs. 1 Satz 2 SGB V",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-EGI-01",
+  "beschreibung": "Paar, Baby da, Lohn 1.500/1.250 und Elterngeld 900 (mit Arbeit vor der Geburt), Miete 800",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "eg",
+   "brutto": 2400,
+   "brutto2": 900,
+   "netto": 2150,
+   "miete": 800,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "baby": "da"
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ],
+    "betrag": 297,
+    "toleranz": 10
+   },
+   "wohngeld": {
+    "status": "ja",
+    "betrag": 390,
+    "toleranz": 15
+   },
+   "elterngeld": {
+    "status": "na"
+   },
+   "ggeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   }
+  },
+  "quelle": "§ 10 Abs. 1 und Abs. 5 BEEG (300 € frei); § 6a BKGG; § 12a SGB II",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-EG-10",
+  "beschreibung": "Elterngeld-Netto genau 1.200 (Netto vor der Geburt 1.302,50): 67 %",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1700,
+   "brutto2": "",
+   "netto": 1302.5,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "baby": "bald",
+   "egVor": 1302.5
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "ja",
+    "betrag": 804,
+    "toleranz": 8
+   }
+  },
+  "quelle": "§ 2 Abs. 1 und 2 BEEG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-EG-11",
+  "beschreibung": "Elterngeld-Netto 1.240 (Netto vor der Geburt 1.342,50): 65 %",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1760,
+   "brutto2": "",
+   "netto": 1342.5,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "baby": "bald",
+   "egVor": 1342.5
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "ja",
+    "betrag": 806,
+    "toleranz": 8
+   }
+  },
+  "quelle": "§ 2 Abs. 2 Satz 2 BEEG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-EG-12",
+  "beschreibung": "Elterngeld-Netto 1.000 (Netto vor der Geburt 1.102,50): 67 %",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1400,
+   "brutto2": "",
+   "netto": 1102.5,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "baby": "bald",
+   "egVor": 1102.5
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "ja",
+    "betrag": 670,
+    "toleranz": 8
+   }
+  },
+  "quelle": "§ 2 Abs. 1 BEEG",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "F-KIZ-15",
+  "beschreibung": "Alleinerziehend, Kind 9, Lohn 2.400/1.780, Unterhalt fehlt (UVG 299), Miete 700: oberer Rand",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2400,
+   "brutto2": "",
+   "netto": 1780,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "kidsAlter": true,
+   "unterhaltFehlt": true
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "vielleicht",
+    "auchOk": [
+     "ja"
+    ],
+    "betrag": 58,
+    "toleranz": 35
+   },
+   "ggeld": {
+    "status": "nein"
+   },
+   "uvg": {
+    "status": "ja"
+   }
+  },
+  "quelle": "§ 6a BKGG, https://www.gesetze-im-internet.de/bkgg_1996/__6a.html; KiZ-Merkblatt 7/2026, https://www.arbeitsagentur.de/datei/kiz2-merkblattkinderzuschlag_ba015395.pdf (Mehrbedarf 12 % oder 36 %, je nachdem ob das Kind unter 7 ist)",
+  "quelleTest": "Vollprüfung Fable (blind) 24.11.2026"
+ },
+ {
+  "id": "neu-01",
+  "beschreibung": "Wechselmodell, AE, 1 Kind 0-5, kein Einkommen: Grundsicherungsgeld höchstens „möglich“ mit Hinweis, Betrag nur „bis“",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "uvgWechsel": true,
+   "unterhaltFehlt": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht",
+    "texteEnthalten": [
+     "ggeld.wechsel"
+    ]
+   }
+  },
+  "quelle": "BSG 3.3.2009, B 4 AS 50/07 R; DA-KiZ Stand 20.02.2026 C.3.1.1 Abs. 2, S. 50 (Temporäre BG)",
+  "quelleTest": "Korrektur familie 24.11.2026"
+ },
+ {
+  "id": "neu-02",
+  "beschreibung": "Wechselmodell, AE, 1 Kind, Lohn 1.800/1.350: Kinderzuschlag höchstens „möglich“ mit Hinweis",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1800,
+   "brutto2": "",
+   "netto": 1350,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "uvgWechsel": true
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ],
+    "texteNicht": [
+     "kiz.ja"
+    ]
+   }
+  },
+  "quelle": "DA-KiZ Stand 20.02.2026 C.3.1.1 Abs. 2",
+  "quelleTest": "Korrektur familie 24.11.2026"
+ },
+ {
+  "id": "neu-03",
+  "beschreibung": "Selbstständige AE, Gewinn 400 € (unter 600 €): Kinderzuschlag „möglich“ (Einnahmen vor Ausgaben zählen)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "selbst",
+   "art2": "",
+   "brutto": 400,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "kiz": {
+    "status": "vielleicht",
+    "texteEnthalten": [
+     "kiz.minEinkSelbst"
+    ]
+   }
+  },
+  "quelle": "DA-KiZ Stand 20.02.2026 C.1 Abs. 2 (Betriebseinnahmen ohne Bereinigung)",
+  "quelleTest": "Korrektur familie 24.11.2026"
+ },
+ {
+  "id": "neu-04",
+  "beschreibung": "EU-Bürgerin ohne Arbeit, unter 5 Jahren: Kindergeld „möglich“ mit Hinweis Freizügigkeit",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "aufenthalt": "eu",
+   "euArbeit": "nein",
+   "euJahre": "unter5"
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "vielleicht",
+    "texteEnthalten": [
+     "kindergeld.euOhne"
+    ],
+    "texteNicht": [
+     "kg.eu"
+    ]
+   }
+  },
+  "quelle": "§ 62 Abs. 1a Satz 3 EStG, https://www.gesetze-im-internet.de/estg/__62.html (Abruf 24.11.2026)",
+  "quelleTest": "Korrektur familie 24.11.2026"
+ },
+ {
+  "id": "neu-05",
+  "beschreibung": "Paar, Lohn zusammen 16.000 € im Monat (192.000 € im Jahr, zu versteuern evtl. unter 175.000 €): Elterngeld höchstens „möglich“, Grenze vorn",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "lohn",
+   "brutto": 16000,
+   "brutto2": 6000,
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "baby": "bald",
+   "egVor": 5000
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "vielleicht",
+    "texteEnthalten": [
+     "eg.grenze"
+    ]
+   }
+  },
+  "quelle": "§ 1 Abs. 8 BEEG, https://www.gesetze-im-internet.de/beeg/__1.html (Abruf 24.11.2026)",
+  "quelleTest": "Korrektur familie 24.11.2026"
+ },
+ {
+  "id": "neu-06",
+  "beschreibung": "Baby kommt bald, noch kein Kind: Kindergeld „nein“ (kein Kind), mit Hinweis „nach der Geburt beantragen“",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": 1450,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "baby": "bald",
+   "egVor": 1500
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "nein",
+    "texteEnthalten": [
+     "kindergeld.babyBald"
+    ]
+   }
+  },
+  "quelle": "§§ 62, 63, 67 EStG",
+  "quelleTest": "Korrektur familie 24.11.2026"
+ },
+ {
+  "id": "neu-07",
+  "beschreibung": "Erwachsenes Kind mit Behinderung (vor 25), keine Kinder unter 25: Kindergeld-Karte verweist auf die Karte für erwachsene Kinder mit Behinderung",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": 1450,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "bhPerson": "erwVor25"
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "nein",
+    "texteEnthalten": [
+     "kindergeld.sieheBeh"
+    ],
+    "texteNicht": [
+     "kindergeld.keinKind"
+    ]
+   }
+  },
+  "quelle": "§ 32 Abs. 4 Satz 1 Nr. 3 EStG",
+  "quelleTest": "Korrektur familie 24.11.2026"
+ },
+ {
+  "id": "neu-08",
+  "beschreibung": "Elterngeld 200 € (unter 300 €: sicher ElterngeldPlus; über dem Plus-Mindestbetrag 150 €, also mit Einkommen vor der Geburt), AE mit Baby, Miete 700: 150 € frei",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "eg",
+   "art2": "",
+   "brutto": 200,
+   "brutto2": "",
+   "netto": 200,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "baby": "da",
+   "egKinder": 1
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "betrag": 1570,
+    "toleranz": 10
+   }
+  },
+  "quelle": "§ 10 Abs. 5 Satz 2, 3 BEEG (buzer.de/10_BEEG.htm, Abruf 24.11.2026); § 72 SGB II. Bedarf 563 + 357 + 700 + 202,68 = 1.822,68; Einkommen 200 − 150 − 30 + 259 = 279; Lücke 1.543,68 + 25 = 1.568,68",
+  "quelleTest": "Korrektur familie 24.11.2026"
+ },
+ {
+  "id": "gp-01",
+  "beschreibung": "Paar 2 × 110.000 € brutto im Jahr mit Kind, Baby kommt: zu versteuerndes Einkommen kann unter 175.000 € liegen: Elterngeld „möglich“, nicht „eher nicht“",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "lohn",
+   "brutto": 18334,
+   "brutto2": 9167,
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "baby": "bald",
+   "egVor": 5000
+  },
+  "erwartet": {
+   "elterngeld": {
+    "status": "vielleicht",
+    "texteEnthalten": [
+     "eg.grenze"
+    ]
+   }
+  },
+  "quelle": "§ 1 Abs. 8 BEEG; § 2 Abs. 5 EStG",
+  "quelleTest": "Gegenprüfung 25.11.2026"
+ },
+ {
+  "id": "gp-02",
+  "beschreibung": "AE, Kind 6-13, kein Einkommen, Miete 700, Unterhalt 800 € (deckt den Bedarf des Kindes 390 + 350): kein Sofortzuschlag, kein Text",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "unterhalt": 800,
+   "ohneWege": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "texteNicht": [
+     "ggeld.sofort"
+    ]
+   }
+  },
+  "quelle": "§ 72 Abs. 1 SGB II",
+  "quelleTest": "Gegenprüfung 25.11.2026"
+ },
+ {
+  "id": "gp-03",
+  "beschreibung": "AE, Kind 6-13, kein Einkommen, Miete 700, Unterhalt 300: Sofortzuschlag bleibt (Text vorhanden)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "unterhalt": 300,
+   "ohneWege": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "ja",
+    "texteEnthalten": [
+     "ggeld.sofort"
+    ]
+   }
+  },
+  "quelle": "§ 72 Abs. 1 SGB II",
+  "quelleTest": "Gegenprüfung 25.11.2026"
+ },
+ {
+  "id": "gp-04",
+  "beschreibung": "Wechselmodell, AE, Kind unter 6, kein Einkommen: Betrag nur „bis“, Sofortzuschlag-Text bleibt nur mit Betrag",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "ohne",
+   "art2": "",
+   "brutto": 0,
+   "brutto2": "",
+   "netto": "",
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "uvgWechsel": true
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht",
+    "texteEnthalten": [
+     "ggeld.wechsel"
+    ]
+   }
+  },
+  "quelle": "§ 72 SGB II; BSG B 4 AS 50/07 R",
+  "quelleTest": "Gegenprüfung 25.11.2026"
+ },
+ {
+  "id": "gp-05",
+  "beschreibung": "Bayern, nur das Baby (da) als Kind unter 6: kein Familiengeld-Hinweis (ab 2025 geboren)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": 1450,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "baby": "da",
+   "egKinder": 1
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja",
+    "texteNicht": [
+     "kindergeld.familiengeld"
+    ]
+   }
+  },
+  "quelle": "Art. 9a BayFamGG",
+  "quelleTest": "Gegenprüfung 25.11.2026"
+ },
+ {
+  "id": "gp-06",
+  "beschreibung": "Bayern, Baby (da) und ein weiteres Kind unter 6: Familiengeld-Hinweis",
+  "h": {
+   "adults": 1,
+   "kids": 2,
+   "kidsU6": 2,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": 1450,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "baby": "da",
+   "egKinder": 1
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja",
+    "texteEnthalten": [
+     "kindergeld.familiengeld"
+    ]
+   }
+  },
+  "quelle": "Art. 9a BayFamGG",
+  "quelleTest": "Gegenprüfung 25.11.2026"
+ },
+ {
+  "id": "gp-07",
+  "beschreibung": "„Kind in Ausbildung“ angegeben, einziges Kind ist das Baby: BAföG „eher nicht“ (kein Kind in Ausbildung)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": 1450,
+   "miete": 700,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bundesland": "BY",
+   "bezug": {},
+   "baby": "da",
+   "egKinder": 1,
+   "ausbildung": "kind"
+  },
+  "erwartet": {
+   "bafoeg": {
+    "status": "nein",
+    "texteEnthalten": [
+     "bafoeg.keinKind"
+    ]
+   }
+  },
+  "quelle": "§ 2 BAföG",
+  "quelleTest": "Gegenprüfung 25.11.2026"
+ }
+]

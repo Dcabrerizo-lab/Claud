@@ -35,6 +35,22 @@ ok('Zahlbetrag erwartet 1.322,68', r.erwartet.zahlbetrag === 1322.68, r.erwartet
 ok('Zahlbetrag-Differenz 160 (Bescheid 1.162,56)', r.zahlbetrag.diff === 160.12, r.zahlbetrag);
 ok('Zwei Gründe für den Widerspruch', r.gruende.length === 2, r.gruende.map((g) => g.key));
 
+// 2a. Sofortzuschlag (§ 72 Abs. 1 SGB II i. d. F. ab 1.7.2026, https://www.buzer.de/72_SGB_II.htm, abgerufen 24.11.2026): 25 € je Kind (Stufen 3–6)
+ok('Sofortzuschlag aus rules.js = 25 €', R.sofortzuschlag === 25);
+ok('Sofortzuschlag zwei Kinder = 50 €', r.erwartet.sofortzuschlag === 50 && r.erwartet.zahlbetragMitSofortzuschlag === 1372.68, r.erwartet);
+ok('Bescheid passt zu keiner Variante: vorsichtig ohne Sofortzuschlag, 50 € als möglich', r.zahlbetrag.erwartet === 1322.68 && r.zahlbetrag.sofortzuschlagMoeglich === 50, r.zahlbetrag);
+const richtig = (zahl, extra) => B.pruefe(Object.assign({}, fall, { bescheid: Object.assign({ regel: 1310, mehrAE: 202.68, kdu: 800, einkommen: 472, kindergeld: 518, zahlbetrag: zahl }, extra || {}) }), Rules);
+const rMit = richtig(1372.68), rOhne = richtig(1322.68);
+ok('Korrekter Bescheid mit Sofortzuschlag im Zahlbetrag: Differenz 0', rMit.zahlbetrag.diff === 0 && rMit.zahlbetrag.mitSofortzuschlag === true && rMit.zuWenigImMonat === 0, rMit.zahlbetrag);
+ok('Korrekter Bescheid ohne Sofortzuschlag im Zahlbetrag (gesondert): Differenz 0', rOhne.zahlbetrag.diff === 0 && rOhne.zahlbetrag.mitSofortzuschlag === false && rOhne.zahlbetrag.sofortzuschlagMoeglich === 0, rOhne.zahlbetrag);
+ok('Kein Posten Sofortzuschlag ohne Eintrag', !rMit.posten.some((x) => x.key === 'sofort'));
+const rSZ = richtig(1347.68, { sofortzuschlag: 25 });
+ok('Sofortzuschlag gesondert eingetragen, nur 25 € statt 50 € → zu wenig 25', rSZ.posten.find((x) => x.key === 'sofort').wirkung === 'zuWenig' && rSZ.posten.find((x) => x.key === 'sofort').diff === 25, rSZ.posten);
+ok('Kein Sofortzuschlag für Erwachsene (Stufe 1/2)', B.pruefe({ personen: [{ rolle: 'erw' }, { rolle: 'erw' }], miete: { tatsaechlich: 500, heizung: 0 } }, Rules).erwartet.sofortzuschlag === 0);
+ok('Sofortzuschlag für volljähriges Kind unter 25 (Stufe 3)', B.pruefe({ personen: [{ rolle: 'erw' }, { rolle: 'kind', alter: 20 }], miete: { tatsaechlich: 500, heizung: 0 } }, Rules).erwartet.sofortzuschlag === 25);
+ok('Sofortzuschlag auch, wenn nur das Kindergeld den Anspruch entfallen lässt (§ 72 Abs. 1 Satz 2 Nr. 2)', (() => { const x = B.pruefe({ personen: [{ rolle: 'erw', sonstiges: 1500 }, { rolle: 'kind', alter: 8 }], miete: { tatsaechlich: 600, heizung: 0 } }, Rules).erwartet; return x.zahlbetrag === 0 && x.sofortzuschlag === 25; })());
+ok('Kein Sofortzuschlag, wenn das Einkommen ohne Kindergeld den Bedarf deckt', B.pruefe({ personen: [{ rolle: 'erw', sonstiges: 3000 }, { rolle: 'kind', alter: 8 }], miete: { tatsaechlich: 600, heizung: 0 } }, Rules).erwartet.sofortzuschlag === 0);
+
 // 3. Einzelregeln
 const nurRegel = (personen) => B.pruefe({ personen, bescheid: {} }, Rules).erwartet.regel;
 ok('Paar: 2 × 506', nurRegel([{ rolle: 'erw' }, { rolle: 'erw' }]) === 1012);

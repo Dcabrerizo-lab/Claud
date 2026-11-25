@@ -51,3 +51,8 @@ node test/test-variante-nativ.js
 node test/test-sie-ebene.js
 node test/test-alter-paar.js
 node test/test-kind-werkstatt.js
+node test/test-rechtsmatrix-texte.js
+node test/test-rechtsmatrix-grusi.js
+node test/test-rechtsmatrix-schulden.js
+node test/test-rechtsmatrix-pflege.js
+node test/test-rechtsmatrix-familie.js

@@ -1,0 +1,5910 @@
+{
+ "_info": "Rechtsmatrix Schulden, Pfändung, Fristen, Brief prüfen (Vollprüfung 24.11.2026). claude = Prüfer schulden-briefe, fable = Blindprüfung, eigen = Ergänzungen der Korrektur. Läufer: test/test-rechtsmatrix-schulden.js. Soll = Rechtslage 24.11.2026; Quellen je Fall, Übersicht docs/rechtsmatrix/schulden.md.",
+ "claude": [
+  {
+   "id": "PF-0-0",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 0 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 0,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-1000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1000 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1000,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-1587.4",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1587.4 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1587.4,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-1589.99",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1589.99 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1589.99,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-1590",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1590 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1590,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-1599.99",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1599.99 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1599.99,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-2000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2000 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2000,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 288.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-2184.82",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2184.82 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2184.82,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 414.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-2190",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2190 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2190,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 421.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-2517.65",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2517.65 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2517.65,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 645.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-2520",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2520 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2520,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 652.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-2850.48",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2850.48 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2850.48,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 883.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-2860",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2860 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2860,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 890.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-3183.31",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3183.31 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3183.31,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1114.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-3190",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3190 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3190,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1121.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-3500",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3500 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3500,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1338.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-3516.14",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3516.14 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3516.14,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1345.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-3520",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3520 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3520,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1352.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-4000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4000 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4000,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1688.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-4860",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4860 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4860,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 2290.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-4866.3",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4866.3 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4866.3,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 2290.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-4866.31",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4866.31 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4866.31,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 2290.83,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-5000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 5000 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 5000,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 2424.52,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-6500",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 6500 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 6500,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 3924.52,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-1587.4",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1587.4 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1587.4,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-0-1597.39",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1597.39 €, 0 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1597.39,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1.82,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-0",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 0 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 0,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-1000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1000 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1000,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-1587.4",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1587.4 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1587.4,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-1589.99",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1589.99 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1589.99,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-1590",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1590 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1590,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-1599.99",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1599.99 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1599.99,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-2000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2000 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2000,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-2184.82",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2184.82 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2184.82,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-2190",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2190 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2190,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 2.59,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-2517.65",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2517.65 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2517.65,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 162.59,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-2520",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2520 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2520,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 167.59,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-2850.48",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2850.48 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2850.48,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 332.59,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-2860",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2860 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2860,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 337.59,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-3183.31",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3183.31 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3183.31,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 497.59,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-3190",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3190 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3190,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 502.59,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-3500",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3500 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3500,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 657.59,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-3516.14",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3516.14 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3516.14,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 662.59,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-3520",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3520 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3520,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 667.59,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-4000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4000 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4000,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 907.59,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-4860",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4860 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4860,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1337.59,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-4866.3",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4866.3 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4866.3,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1337.59,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-4866.31",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4866.31 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4866.31,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1337.6,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-5000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 5000 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 5000,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1471.29,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-6500",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 6500 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 6500,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 2971.29,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-2184.82",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2184.82 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2184.82,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-1-2194.81",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2194.81 €, 1 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2194.81,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 2.59,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-0",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 0 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 0,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-1000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1000 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1000,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-1587.4",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1587.4 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1587.4,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-1589.99",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1589.99 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1589.99,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-1590",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1590 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1590,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-1599.99",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1599.99 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1599.99,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-2000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2000 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2000,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-2184.82",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2184.82 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2184.82,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-2190",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2190 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2190,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-2517.65",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2517.65 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2517.65,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-2520",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2520 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2520,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 0.94,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-2850.48",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2850.48 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2850.48,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 132.94,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-2860",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2860 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2860,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 136.94,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-3183.31",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3183.31 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3183.31,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 264.94,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-3190",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3190 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3190,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 268.94,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-3500",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3500 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3500,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 392.94,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-3516.14",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3516.14 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3516.14,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 396.94,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-3520",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3520 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3520,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 400.94,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-4000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4000 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4000,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 592.94,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-4860",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4860 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4860,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 936.94,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-4866.3",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4866.3 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4866.3,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 936.94,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-4866.31",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4866.31 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4866.31,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 936.95,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-5000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 5000 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 5000,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1070.64,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-6500",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 6500 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 6500,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 2570.64,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-2517.65",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2517.65 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2517.65,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-2-2527.64",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2527.64 €, 2 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2527.64,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 0.94,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-0",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 0 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 0,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-1000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1000 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1000,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-1587.4",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1587.4 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1587.4,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-1589.99",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1589.99 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1589.99,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-1590",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1590 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1590,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-1599.99",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1599.99 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1599.99,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-2000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2000 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2000,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-2184.82",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2184.82 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2184.82,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-2190",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2190 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2190,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-2517.65",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2517.65 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2517.65,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-2520",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2520 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2520,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-2850.48",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2850.48 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2850.48,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-2860",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2860 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2860,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 2.86,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-3183.31",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3183.31 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3183.31,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 98.86,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-3190",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3190 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3190,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 101.86,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-3500",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3500 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3500,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 194.86,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-3516.14",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3516.14 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3516.14,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 197.86,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-3520",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3520 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3520,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 200.86,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-4000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4000 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4000,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 344.86,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-4860",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4860 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4860,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 602.86,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-4866.3",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4866.3 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4866.3,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 602.86,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-4866.31",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4866.31 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4866.31,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 602.87,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-5000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 5000 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 5000,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 736.56,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-6500",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 6500 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 6500,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 2236.56,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-2850.48",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2850.48 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2850.48,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-3-2860.47",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2860.47 €, 3 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2860.47,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 2.86,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-0",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 0 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 0,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-1000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1000 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1000,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-1587.4",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1587.4 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1587.4,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-1589.99",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1589.99 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1589.99,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-1590",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1590 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1590,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-1599.99",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1599.99 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1599.99,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-2000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2000 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2000,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-2184.82",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2184.82 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2184.82,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-2190",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2190 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2190,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-2517.65",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2517.65 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2517.65,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-2520",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2520 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2520,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-2850.48",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2850.48 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2850.48,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-2860",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2860 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2860,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-3183.31",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3183.31 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3183.31,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-3190",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3190 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3190,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1.34,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-3500",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3500 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3500,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 63.34,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-3516.14",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3516.14 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3516.14,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 65.34,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-3520",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3520 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3520,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 67.34,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-4000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4000 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4000,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 163.34,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-4860",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4860 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4860,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 335.34,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-4866.3",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4866.3 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4866.3,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 335.34,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-4866.31",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4866.31 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4866.31,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 335.35,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-5000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 5000 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 5000,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 469.04,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-6500",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 6500 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 6500,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1969.04,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-3183.31",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3183.31 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3183.31,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-4-3193.3",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3193.3 €, 4 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3193.3,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1.34,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-0",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 0 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 0,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-1000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1000 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1000,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-1587.4",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1587.4 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1587.4,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-1589.99",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1589.99 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1589.99,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-1590",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1590 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1590,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-1599.99",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 1599.99 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 1599.99,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-2000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2000 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2000,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-2184.82",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2184.82 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2184.82,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-2190",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2190 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2190,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-2517.65",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2517.65 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2517.65,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-2520",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2520 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2520,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-2850.48",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2850.48 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2850.48,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-2860",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 2860 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 2860,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-3183.31",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3183.31 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3183.31,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-3190",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3190 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3190,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-3500",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3500 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3500,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-3516.14",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3516.14 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3516.14,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-3520",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3520 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3520,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 0.39,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-4000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4000 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4000,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 48.39,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-4860",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4860 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4860,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 134.39,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-4866.3",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4866.3 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4866.3,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 134.39,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-4866.31",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 4866.31 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 4866.31,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 134.4,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-5000",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 5000 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 5000,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 268.09,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-6500",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 6500 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 6500,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 1768.09,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-3516.14",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3516.14 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3516.14,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0.0,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-5-3526.13",
+   "fn": "pfaendung",
+   "beschreibung": "Lohnpfändung § 850c ZPO, Netto 3526.13 €, 5 Unterhaltspflicht(en)",
+   "h": {
+    "netto": 3526.13,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "ja",
+     "betrag": 0.39,
+     "toleranz": 0.01
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Tabelle + § 850c Abs. 3, 5 ZPO)"
+  },
+  {
+   "id": "PF-7-3500",
+   "fn": "pfaendung",
+   "beschreibung": "7 Unterhaltspflichten zählen wie 5 (§ 850c Abs. 2: Erhöhung nur für 2.-5. Person)",
+   "h": {
+    "netto": 3500,
+    "personen": 7
+   },
+   "erwartet": {
+    "pfaendung": {
+     "status": "nein",
+     "betrag": 0
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html"
+  },
+  {
+   "id": "PK-0-0",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 0 Unterhaltspflicht(en), 0 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 0,
+    "kindergeldKinder": 0
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 1590.0
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-0-1",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 0 Unterhaltspflicht(en), 1 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 0,
+    "kindergeldKinder": 1
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 1849.0
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-0-2",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 0 Unterhaltspflicht(en), 2 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 0,
+    "kindergeldKinder": 2
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 2108.0
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-0-3",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 0 Unterhaltspflicht(en), 3 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 0,
+    "kindergeldKinder": 3
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 2367.0
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-0-4",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 0 Unterhaltspflicht(en), 4 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 0,
+    "kindergeldKinder": 4
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 2626.0
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-0-5",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 0 Unterhaltspflicht(en), 5 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 0,
+    "kindergeldKinder": 5
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 2885.0
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-1-0",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 1 Unterhaltspflicht(en), 0 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 1,
+    "kindergeldKinder": 0
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 2187.42
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-1-1",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 1 Unterhaltspflicht(en), 1 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 1,
+    "kindergeldKinder": 1
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 2446.42
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-1-2",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 1 Unterhaltspflicht(en), 2 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 1,
+    "kindergeldKinder": 2
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 2705.42
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-1-3",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 1 Unterhaltspflicht(en), 3 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 1,
+    "kindergeldKinder": 3
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 2964.42
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-1-4",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 1 Unterhaltspflicht(en), 4 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 1,
+    "kindergeldKinder": 4
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 3223.42
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-1-5",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 1 Unterhaltspflicht(en), 5 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 1,
+    "kindergeldKinder": 5
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 3482.42
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-2-0",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 2 Unterhaltspflicht(en), 0 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 2,
+    "kindergeldKinder": 0
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 2520.25
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-2-1",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 2 Unterhaltspflicht(en), 1 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 2,
+    "kindergeldKinder": 1
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 2779.25
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-2-2",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 2 Unterhaltspflicht(en), 2 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 2,
+    "kindergeldKinder": 2
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 3038.25
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-2-3",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 2 Unterhaltspflicht(en), 3 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 2,
+    "kindergeldKinder": 3
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 3297.25
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-2-4",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 2 Unterhaltspflicht(en), 4 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 2,
+    "kindergeldKinder": 4
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 3556.25
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-2-5",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 2 Unterhaltspflicht(en), 5 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 2,
+    "kindergeldKinder": 5
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 3815.25
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-3-0",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 3 Unterhaltspflicht(en), 0 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 3,
+    "kindergeldKinder": 0
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 2853.08
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-3-1",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 3 Unterhaltspflicht(en), 1 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 3,
+    "kindergeldKinder": 1
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 3112.08
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-3-2",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 3 Unterhaltspflicht(en), 2 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 3,
+    "kindergeldKinder": 2
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 3371.08
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-3-3",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 3 Unterhaltspflicht(en), 3 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 3,
+    "kindergeldKinder": 3
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 3630.08
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-3-4",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 3 Unterhaltspflicht(en), 4 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 3,
+    "kindergeldKinder": 4
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 3889.08
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-3-5",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 3 Unterhaltspflicht(en), 5 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 3,
+    "kindergeldKinder": 5
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 4148.08
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-4-0",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 4 Unterhaltspflicht(en), 0 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 4,
+    "kindergeldKinder": 0
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 3185.91
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-4-1",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 4 Unterhaltspflicht(en), 1 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 4,
+    "kindergeldKinder": 1
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 3444.91
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-4-2",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 4 Unterhaltspflicht(en), 2 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 4,
+    "kindergeldKinder": 2
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 3703.91
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-4-3",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 4 Unterhaltspflicht(en), 3 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 4,
+    "kindergeldKinder": 3
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 3962.91
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-4-4",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 4 Unterhaltspflicht(en), 4 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 4,
+    "kindergeldKinder": 4
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 4221.91
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-4-5",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 4 Unterhaltspflicht(en), 5 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 4,
+    "kindergeldKinder": 5
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 4480.91
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-5-0",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 5 Unterhaltspflicht(en), 0 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 5,
+    "kindergeldKinder": 0
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 3518.74
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-5-1",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 5 Unterhaltspflicht(en), 1 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 5,
+    "kindergeldKinder": 1
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 3777.74
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-5-2",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 5 Unterhaltspflicht(en), 2 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 5,
+    "kindergeldKinder": 2
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 4036.74
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-5-3",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 5 Unterhaltspflicht(en), 3 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 5,
+    "kindergeldKinder": 3
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 4295.74
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-5-4",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 5 Unterhaltspflicht(en), 4 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 5,
+    "kindergeldKinder": 4
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 4554.74
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-5-5",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto: 5 Unterhaltspflicht(en), 5 Kind(er) mit Kindergeld (259 €)",
+   "h": {
+    "personen": 5,
+    "kindergeldKinder": 5
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 4813.74
+    }
+   },
+   "quelle": "§ 899 Abs. 1, § 902 Satz 1 Nr. 1 a, Nr. 5 ZPO https://www.gesetze-im-internet.de/zpo/__902.html; § 66 EStG (259 € ab 1.1.2026)"
+  },
+  {
+   "id": "PK-1-1-kiz",
+   "fn": "pkonto",
+   "beschreibung": "P-Konto mit Kinderzuschlag 297 € (§ 902 S. 1 Nr. 5 ZPO: andere Geldleistungen für Kinder); Oberfläche fragt seit 24.11.2026 danach",
+   "h": {
+    "personen": 1,
+    "kindergeldKinder": 1,
+    "kiz": 297
+   },
+   "erwartet": {
+    "pkonto": {
+     "status": "ja",
+     "betrag": 2743.42
+    }
+   },
+   "quelle": "https://www.gesetze-im-internet.de/zpo/__902.html"
+  },
+  {
+   "id": "W1",
+   "fn": "widerspruch",
+   "beschreibung": "Widerspruchsfrist Bescheid per Post: Bescheid Fr 20.11.2026, Bekanntgabe Di 24.11.",
+   "h": {
+    "datum": "2026-11-20"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "gerechnet",
+     "datum": "2026-12-24"
+    }
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, seit 1.1.2025) https://www.gesetze-im-internet.de/sgb_10/__37.html; § 84 Abs. 1, § 64 Abs. 2, 3 SGG https://www.gesetze-im-internet.de/sgg/__64.html"
+  },
+  {
+   "id": "W2",
+   "fn": "widerspruch",
+   "beschreibung": "Widerspruchsfrist Bescheid per Post: Fristende Neujahr (Fr) -> Mo 4.1.2027",
+   "h": {
+    "datum": "2026-11-27"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "gerechnet",
+     "datum": "2027-01-04"
+    }
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, seit 1.1.2025) https://www.gesetze-im-internet.de/sgb_10/__37.html; § 84 Abs. 1, § 64 Abs. 2, 3 SGG https://www.gesetze-im-internet.de/sgg/__64.html"
+  },
+  {
+   "id": "W3",
+   "fn": "widerspruch",
+   "beschreibung": "Widerspruchsfrist Bescheid per Post: Bekanntgabe fällt auf 1. Weihnachtstag, wird nicht verschoben (BSG B 14 AS 12/09 R)",
+   "h": {
+    "datum": "2026-12-21"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "gerechnet",
+     "datum": "2027-01-25"
+    }
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, seit 1.1.2025) https://www.gesetze-im-internet.de/sgb_10/__37.html; § 84 Abs. 1, § 64 Abs. 2, 3 SGG https://www.gesetze-im-internet.de/sgg/__64.html"
+  },
+  {
+   "id": "W4",
+   "fn": "widerspruch",
+   "beschreibung": "Widerspruchsfrist Bescheid per Post: Bekanntgabe 31.1., Monatsende 28.2.2027 (So) -> Mo 1.3.",
+   "h": {
+    "datum": "2027-01-27"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "gerechnet",
+     "datum": "2027-03-01"
+    }
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, seit 1.1.2025) https://www.gesetze-im-internet.de/sgb_10/__37.html; § 84 Abs. 1, § 64 Abs. 2, 3 SGG https://www.gesetze-im-internet.de/sgg/__64.html"
+  },
+  {
+   "id": "W5",
+   "fn": "widerspruch",
+   "beschreibung": "Widerspruchsfrist Bescheid per Post: Fristende Karfreitag 26.3.2027 -> über Ostern -> Di 30.3.",
+   "h": {
+    "datum": "2027-02-22"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "gerechnet",
+     "datum": "2027-03-30"
+    }
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, seit 1.1.2025) https://www.gesetze-im-internet.de/sgb_10/__37.html; § 84 Abs. 1, § 64 Abs. 2, 3 SGG https://www.gesetze-im-internet.de/sgg/__64.html"
+  },
+  {
+   "id": "W6",
+   "fn": "widerspruch",
+   "beschreibung": "Widerspruchsfrist Bescheid per Post: Bescheid an einem Samstag datiert",
+   "h": {
+    "datum": "2026-10-31"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "gerechnet",
+     "datum": "2026-12-04"
+    }
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, seit 1.1.2025) https://www.gesetze-im-internet.de/sgb_10/__37.html; § 84 Abs. 1, § 64 Abs. 2, 3 SGG https://www.gesetze-im-internet.de/sgg/__64.html"
+  },
+  {
+   "id": "W8",
+   "fn": "widerspruch",
+   "beschreibung": "Widerspruchsfrist Bescheid per Post: Fristende Pfingstmontag 17.5.2027 -> Di 18.5.",
+   "h": {
+    "datum": "2027-04-13"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "gerechnet",
+     "datum": "2027-05-18"
+    }
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, seit 1.1.2025) https://www.gesetze-im-internet.de/sgb_10/__37.html; § 84 Abs. 1, § 64 Abs. 2, 3 SGG https://www.gesetze-im-internet.de/sgg/__64.html"
+  },
+  {
+   "id": "W9",
+   "fn": "widerspruch",
+   "beschreibung": "Widerspruchsfrist Bescheid per Post: Bekanntgabe 31.12., Ende 31.1.2027 (So) -> Mo 1.2.",
+   "h": {
+    "datum": "2026-12-27"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "gerechnet",
+     "datum": "2027-02-01"
+    }
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, seit 1.1.2025) https://www.gesetze-im-internet.de/sgb_10/__37.html; § 84 Abs. 1, § 64 Abs. 2, 3 SGG https://www.gesetze-im-internet.de/sgg/__64.html"
+  },
+  {
+   "id": "W7",
+   "fn": "widerspruch",
+   "beschreibung": "Zustellung/persönliche Übergabe 30.11.2026 (Zugang = Bekanntgabe)",
+   "h": {
+    "datum": "2026-11-20",
+    "zugang": "2026-11-30"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "gerechnet",
+     "datum": "2026-12-30"
+    }
+   },
+   "quelle": "§ 37 Abs. 1 SGB X, § 64 SGG"
+  },
+  {
+   "id": "W10",
+   "fn": "widerspruch",
+   "beschreibung": "Nur Erhalt bekannt (kein Briefdatum): ab Erhalt, Wort 'ungefaehr'",
+   "h": {
+    "erhalten": "2026-11-23"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "ungefaehr",
+     "datum": "2026-12-23"
+    }
+   },
+   "quelle": "§ 37 Abs. 2 Satz 3 SGB X"
+  },
+  {
+   "id": "M1-mb",
+   "fn": "mahnbescheid",
+   "beschreibung": "Mahnbescheid Widerspruch: Ende 25.12. (Feiertag), 26.12., 27.12. (So) -> Mo 28.12.",
+   "h": {
+    "zugestellt": "2026-12-11",
+    "art": "mb"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "gerechnet",
+     "datum": "2026-12-28"
+    }
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO; §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "M1-vb",
+   "fn": "mahnbescheid",
+   "beschreibung": "Vollstreckungsbescheid Einspruch (Notfrist): Ende 25.12. (Feiertag), 26.12., 27.12. (So) -> Mo 28.12.",
+   "h": {
+    "zugestellt": "2026-12-11",
+    "art": "vb"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "gerechnet",
+     "datum": "2026-12-28"
+    }
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO; §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "M2-mb",
+   "fn": "mahnbescheid",
+   "beschreibung": "Mahnbescheid Widerspruch: normal",
+   "h": {
+    "zugestellt": "2026-11-24",
+    "art": "mb"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "gerechnet",
+     "datum": "2026-12-08"
+    }
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO; §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "M2-vb",
+   "fn": "mahnbescheid",
+   "beschreibung": "Vollstreckungsbescheid Einspruch (Notfrist): normal",
+   "h": {
+    "zugestellt": "2026-11-24",
+    "art": "vb"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "gerechnet",
+     "datum": "2026-12-08"
+    }
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO; §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "M3-mb",
+   "fn": "mahnbescheid",
+   "beschreibung": "Mahnbescheid Widerspruch: Ende Karfreitag -> Di nach Ostern",
+   "h": {
+    "zugestellt": "2027-03-12",
+    "art": "mb"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "gerechnet",
+     "datum": "2027-03-30"
+    }
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO; §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "M3-vb",
+   "fn": "mahnbescheid",
+   "beschreibung": "Vollstreckungsbescheid Einspruch (Notfrist): Ende Karfreitag -> Di nach Ostern",
+   "h": {
+    "zugestellt": "2027-03-12",
+    "art": "vb"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "gerechnet",
+     "datum": "2027-03-30"
+    }
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO; §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "M4-mb",
+   "fn": "mahnbescheid",
+   "beschreibung": "Mahnbescheid Widerspruch: Ende 3.10. (Sa, Feiertag) -> Mo 5.10.",
+   "h": {
+    "zugestellt": "2026-09-19",
+    "art": "mb"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "gerechnet",
+     "datum": "2026-10-05"
+    }
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO; §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "M4-vb",
+   "fn": "mahnbescheid",
+   "beschreibung": "Vollstreckungsbescheid Einspruch (Notfrist): Ende 3.10. (Sa, Feiertag) -> Mo 5.10.",
+   "h": {
+    "zugestellt": "2026-09-19",
+    "art": "vb"
+   },
+   "erwartet": {
+    "frist": {
+     "status": "gerechnet",
+     "datum": "2026-10-05"
+    }
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO; §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "RA-1",
+   "fn": "rate",
+   "beschreibung": "Single, nur Lohn 2.500 € netto, Ausgaben 1.800 €: Rate = frei 700 − Puffer 250 = 450 € (unter pfändbar 638,82 €) pfBasis = nur pfändbares eigenes Einkommen (Haushalt.pfaendbarBasis).",
+   "h": {
+    "hh": {
+     "ein": 250000,
+     "aus": 180000,
+     "wesentlich": true,
+     "kindergeld": 0,
+     "personen": 0,
+     "pfBasis": 250000
+    }
+   },
+   "erwartet": {
+    "rate": {
+     "status": "rate",
+     "betrag": 45000
+    }
+   },
+   "quelle": "SoLo-Faustregel (src/geld.js), Obergrenze § 850c ZPO"
+  },
+  {
+   "id": "RA-2",
+   "fn": "rate",
+   "beschreibung": "Alleinerziehend, 1 Kind: Lohn 1.700 €, Wohngeld 300 €, Kinderzuschlag 297 €, Unterhaltsvorschuss 227 €, Kindergeld 259 €; Ausgaben 1.800 €. Pfändbar ist nur der Lohn (1.700 € < Freibetrag 2.184,82 €) -> 'unpfaendbar'. pfBasis = nur pfändbares eigenes Einkommen (Haushalt.pfaendbarBasis).",
+   "h": {
+    "hh": {
+     "ein": 278300,
+     "aus": 180000,
+     "wesentlich": true,
+     "kindergeld": 25900,
+     "personen": 1,
+     "pfBasis": 170000
+    }
+   },
+   "erwartet": {
+    "rate": {
+     "status": "unpfaendbar"
+    }
+   },
+   "quelle": "§ 54 Abs. 3 Nr. 2a, Abs. 5, § 48 Abs. 1 Satz 2 SGB I https://www.gesetze-im-internet.de/sgb_1/__54.html; § 850c ZPO"
+  },
+  {
+   "id": "RA-3",
+   "fn": "rate",
+   "beschreibung": "Paar, 3 Kinder: Lohn 2.000 € + Grundsicherungsgeld 1.500 € (+ Kindergeld 777 €), Ausgaben 3.000 €. Grundsicherungsgeld ist unpfändbar (§ 42 Abs. 4 SGB II); Lohn 2.000 € < Freibetrag 3.183,31 € -> 'unpfaendbar'. pfBasis = nur pfändbares eigenes Einkommen (Haushalt.pfaendbarBasis).",
+   "h": {
+    "hh": {
+     "ein": 427700,
+     "aus": 300000,
+     "wesentlich": true,
+     "kindergeld": 77700,
+     "personen": 4,
+     "pfBasis": 200000
+    }
+   },
+   "erwartet": {
+    "rate": {
+     "status": "unpfaendbar"
+    }
+   },
+   "quelle": "§ 42 Abs. 4 SGB II https://www.gesetze-im-internet.de/sgb_2/__42.html; § 850c ZPO"
+  },
+  {
+   "id": "RA-4",
+   "fn": "rate",
+   "beschreibung": "Rentner allein: Rente 1.200 € + Grundsicherung im Alter 400 €, Ausgaben 1.300 €. GSA unpfändbar (§ 17 Abs. 1 Satz 2 SGB XII); Rente < 1.587,40 € -> 'unpfaendbar'. pfBasis = nur pfändbares eigenes Einkommen (Haushalt.pfaendbarBasis).",
+   "h": {
+    "hh": {
+     "ein": 160000,
+     "aus": 130000,
+     "wesentlich": true,
+     "kindergeld": 0,
+     "personen": 0,
+     "pfBasis": 120000
+    }
+   },
+   "erwartet": {
+    "rate": {
+     "status": "unpfaendbar"
+    }
+   },
+   "quelle": "§ 17 Abs. 1 Satz 2 SGB XII https://www.gesetze-im-internet.de/sgb_12/__17.html"
+  },
+  {
+   "id": "BS-1",
+   "fn": "bescheidSGB2",
+   "beschreibung": "Alleinerziehend mit Kind 4 und Kind 15 (Regelbedarfe 563+357+471, Mehrbedarf AE 36 % = 202,68, Kindergeld 2×259)",
+   "h": {
+    "personen": [
+     {
+      "rolle": "erw",
+      "alter": 35
+     },
+     {
+      "rolle": "kind",
+      "alter": 4
+     },
+     {
+      "rolle": "kind",
+      "alter": 15
+     }
+    ],
+    "bescheid": {}
+   },
+   "erwartet": {
+    "regel": {
+     "betrag": 1391
+    },
+    "mehrAE": {
+     "betrag": 202.68
+    },
+    "kindergeld": {
+     "betrag": 518
+    }
+   },
+   "quelle": "§§ 20, 21 Abs. 3, § 11 Abs. 1 SGB II; RBSFV 2026 (Regelbedarfe unverändert)"
+  },
+  {
+   "id": "BS-2",
+   "fn": "bescheidSGB2",
+   "beschreibung": "Paar mit volljährigem Kind 19 (Schule): Kindergeld des volljährigen Kindes nur abzüglich 30 € Versicherungspauschale anzurechnen (229 €)",
+   "h": {
+    "personen": [
+     {
+      "rolle": "erw",
+      "alter": 45
+     },
+     {
+      "rolle": "erw",
+      "alter": 44
+     },
+     {
+      "rolle": "kind",
+      "alter": 19
+     }
+    ],
+    "bescheid": {}
+   },
+   "erwartet": {
+    "regel": {
+     "betrag": 1463
+    },
+    "kindergeld": {
+     "betrag": 229
+    }
+   },
+   "quelle": "§ 11b Abs. 1 Satz 1 Nr. 3 SGB II i. V. m. § 6 Abs. 1 Nr. 1 Grundsicherungsgeld-Verordnung (30 € für volljährige Leistungsberechtigte), https://www.gesetze-im-internet.de/algiiv_2008/__6.html"
+  },
+  {
+   "id": "BS-3",
+   "fn": "bescheidSGB2",
+   "beschreibung": "Alleinerziehend mit 3 Kindern 8, 10, 12 (12 % × 3 = 36 %) und dezentralem Warmwasser",
+   "h": {
+    "personen": [
+     {
+      "rolle": "erw",
+      "alter": 40
+     },
+     {
+      "rolle": "kind",
+      "alter": 8
+     },
+     {
+      "rolle": "kind",
+      "alter": 10
+     },
+     {
+      "rolle": "kind",
+      "alter": 12
+     }
+    ],
+    "warmwasserDezentral": true,
+    "bescheid": {}
+   },
+   "erwartet": {
+    "mehrAE": {
+     "betrag": 202.68
+    },
+    "mehrWW": {
+     "betrag": 26.99,
+     "toleranz": 0.03
+    }
+   },
+   "quelle": "§ 21 Abs. 3, 7 SGB II"
+  }
+ ],
+ "fable": [
+  {
+   "id": "pf-1589.99-0",
+   "beschreibung": "Lohnpfändung netto 1589.99 €, 0 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1589.99,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1589.99-1",
+   "beschreibung": "Lohnpfändung netto 1589.99 €, 1 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1589.99,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1589.99-2",
+   "beschreibung": "Lohnpfändung netto 1589.99 €, 2 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1589.99,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1589.99-3",
+   "beschreibung": "Lohnpfändung netto 1589.99 €, 3 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1589.99,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1589.99-4",
+   "beschreibung": "Lohnpfändung netto 1589.99 €, 4 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1589.99,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1589.99-5",
+   "beschreibung": "Lohnpfändung netto 1589.99 €, 5 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1589.99,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1590-0",
+   "beschreibung": "Lohnpfändung netto 1590 €, 0 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1590,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendbar": 1.82,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1590-1",
+   "beschreibung": "Lohnpfändung netto 1590 €, 1 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1590,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1590-2",
+   "beschreibung": "Lohnpfändung netto 1590 €, 2 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1590,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1590-3",
+   "beschreibung": "Lohnpfändung netto 1590 €, 3 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1590,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1590-4",
+   "beschreibung": "Lohnpfändung netto 1590 €, 4 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1590,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1590-5",
+   "beschreibung": "Lohnpfändung netto 1590 €, 5 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1590,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1599.99-0",
+   "beschreibung": "Lohnpfändung netto 1599.99 €, 0 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1599.99,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendbar": 1.82,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1599.99-1",
+   "beschreibung": "Lohnpfändung netto 1599.99 €, 1 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1599.99,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1599.99-2",
+   "beschreibung": "Lohnpfändung netto 1599.99 €, 2 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1599.99,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1599.99-3",
+   "beschreibung": "Lohnpfändung netto 1599.99 €, 3 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1599.99,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1599.99-4",
+   "beschreibung": "Lohnpfändung netto 1599.99 €, 4 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1599.99,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1599.99-5",
+   "beschreibung": "Lohnpfändung netto 1599.99 €, 5 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1599.99,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1600-0",
+   "beschreibung": "Lohnpfändung netto 1600 €, 0 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1600,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendbar": 8.82,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1600-1",
+   "beschreibung": "Lohnpfändung netto 1600 €, 1 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1600,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1600-2",
+   "beschreibung": "Lohnpfändung netto 1600 €, 2 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1600,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1600-3",
+   "beschreibung": "Lohnpfändung netto 1600 €, 3 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1600,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1600-4",
+   "beschreibung": "Lohnpfändung netto 1600 €, 4 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1600,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-1600-5",
+   "beschreibung": "Lohnpfändung netto 1600 €, 5 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 1600,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2000-0",
+   "beschreibung": "Lohnpfändung netto 2000 €, 0 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2000,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendbar": 288.82,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2000-1",
+   "beschreibung": "Lohnpfändung netto 2000 €, 1 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2000,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2000-2",
+   "beschreibung": "Lohnpfändung netto 2000 €, 2 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2000,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2000-3",
+   "beschreibung": "Lohnpfändung netto 2000 €, 3 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2000,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2000-4",
+   "beschreibung": "Lohnpfändung netto 2000 €, 4 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2000,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2000-5",
+   "beschreibung": "Lohnpfändung netto 2000 €, 5 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2000,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2190-0",
+   "beschreibung": "Lohnpfändung netto 2190 €, 0 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2190,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendbar": 421.82,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2190-1",
+   "beschreibung": "Lohnpfändung netto 2190 €, 1 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2190,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendbar": 2.59,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2190-2",
+   "beschreibung": "Lohnpfändung netto 2190 €, 2 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2190,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2190-3",
+   "beschreibung": "Lohnpfändung netto 2190 €, 3 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2190,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2190-4",
+   "beschreibung": "Lohnpfändung netto 2190 €, 4 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2190,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2190-5",
+   "beschreibung": "Lohnpfändung netto 2190 €, 5 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2190,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2520-0",
+   "beschreibung": "Lohnpfändung netto 2520 €, 0 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2520,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendbar": 652.82,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2520-1",
+   "beschreibung": "Lohnpfändung netto 2520 €, 1 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2520,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendbar": 167.59,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2520-2",
+   "beschreibung": "Lohnpfändung netto 2520 €, 2 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2520,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendbar": 0.94,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2520-3",
+   "beschreibung": "Lohnpfändung netto 2520 €, 3 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2520,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2520-4",
+   "beschreibung": "Lohnpfändung netto 2520 €, 4 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2520,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2520-5",
+   "beschreibung": "Lohnpfändung netto 2520 €, 5 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2520,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2860-0",
+   "beschreibung": "Lohnpfändung netto 2860 €, 0 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2860,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendbar": 890.82,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2860-1",
+   "beschreibung": "Lohnpfändung netto 2860 €, 1 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2860,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendbar": 337.59,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2860-2",
+   "beschreibung": "Lohnpfändung netto 2860 €, 2 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2860,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendbar": 136.94,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2860-3",
+   "beschreibung": "Lohnpfändung netto 2860 €, 3 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2860,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendbar": 2.86,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2860-4",
+   "beschreibung": "Lohnpfändung netto 2860 €, 4 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2860,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-2860-5",
+   "beschreibung": "Lohnpfändung netto 2860 €, 5 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 2860,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3000-0",
+   "beschreibung": "Lohnpfändung netto 3000 €, 0 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3000,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendbar": 988.82,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3000-1",
+   "beschreibung": "Lohnpfändung netto 3000 €, 1 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3000,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendbar": 407.59,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3000-2",
+   "beschreibung": "Lohnpfändung netto 3000 €, 2 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3000,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendbar": 192.94,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3000-3",
+   "beschreibung": "Lohnpfändung netto 3000 €, 3 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3000,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendbar": 44.86,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3000-4",
+   "beschreibung": "Lohnpfändung netto 3000 €, 4 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3000,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3000-5",
+   "beschreibung": "Lohnpfändung netto 3000 €, 5 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3000,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3190-0",
+   "beschreibung": "Lohnpfändung netto 3190 €, 0 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3190,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendbar": 1121.82,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3190-1",
+   "beschreibung": "Lohnpfändung netto 3190 €, 1 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3190,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendbar": 502.59,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3190-2",
+   "beschreibung": "Lohnpfändung netto 3190 €, 2 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3190,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendbar": 268.94,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3190-3",
+   "beschreibung": "Lohnpfändung netto 3190 €, 3 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3190,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendbar": 101.86,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3190-4",
+   "beschreibung": "Lohnpfändung netto 3190 €, 4 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3190,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendbar": 1.34,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3190-5",
+   "beschreibung": "Lohnpfändung netto 3190 €, 5 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3190,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendbar": 0,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3520-0",
+   "beschreibung": "Lohnpfändung netto 3520 €, 0 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3520,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendbar": 1352.82,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3520-1",
+   "beschreibung": "Lohnpfändung netto 3520 €, 1 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3520,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendbar": 667.59,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3520-2",
+   "beschreibung": "Lohnpfändung netto 3520 €, 2 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3520,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendbar": 400.94,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3520-3",
+   "beschreibung": "Lohnpfändung netto 3520 €, 3 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3520,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendbar": 200.86,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3520-4",
+   "beschreibung": "Lohnpfändung netto 3520 €, 4 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3520,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendbar": 67.34,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3520-5",
+   "beschreibung": "Lohnpfändung netto 3520 €, 5 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3520,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendbar": 0.39,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3850-0",
+   "beschreibung": "Lohnpfändung netto 3850 €, 0 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3850,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendbar": 1583.82,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3850-1",
+   "beschreibung": "Lohnpfändung netto 3850 €, 1 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3850,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendbar": 832.59,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3850-2",
+   "beschreibung": "Lohnpfändung netto 3850 €, 2 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3850,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendbar": 532.94,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3850-3",
+   "beschreibung": "Lohnpfändung netto 3850 €, 3 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3850,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendbar": 299.86,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3850-4",
+   "beschreibung": "Lohnpfändung netto 3850 €, 4 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3850,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendbar": 133.34,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-3850-5",
+   "beschreibung": "Lohnpfändung netto 3850 €, 5 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 3850,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendbar": 33.39,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4000-0",
+   "beschreibung": "Lohnpfändung netto 4000 €, 0 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4000,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendbar": 1688.82,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4000-1",
+   "beschreibung": "Lohnpfändung netto 4000 €, 1 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4000,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendbar": 907.59,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4000-2",
+   "beschreibung": "Lohnpfändung netto 4000 €, 2 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4000,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendbar": 592.94,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4000-3",
+   "beschreibung": "Lohnpfändung netto 4000 €, 3 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4000,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendbar": 344.86,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4000-4",
+   "beschreibung": "Lohnpfändung netto 4000 €, 4 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4000,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendbar": 163.34,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4000-5",
+   "beschreibung": "Lohnpfändung netto 4000 €, 5 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4000,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendbar": 48.39,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4500-0",
+   "beschreibung": "Lohnpfändung netto 4500 €, 0 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4500,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendbar": 2038.82,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4500-1",
+   "beschreibung": "Lohnpfändung netto 4500 €, 1 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4500,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendbar": 1157.59,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4500-2",
+   "beschreibung": "Lohnpfändung netto 4500 €, 2 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4500,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendbar": 792.94,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4500-3",
+   "beschreibung": "Lohnpfändung netto 4500 €, 3 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4500,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendbar": 494.86,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4500-4",
+   "beschreibung": "Lohnpfändung netto 4500 €, 4 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4500,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendbar": 263.34,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4500-5",
+   "beschreibung": "Lohnpfändung netto 4500 €, 5 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4500,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendbar": 98.39,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4860-0",
+   "beschreibung": "Lohnpfändung netto 4860 €, 0 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4860,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendbar": 2290.82,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4860-1",
+   "beschreibung": "Lohnpfändung netto 4860 €, 1 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4860,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendbar": 1337.59,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4860-2",
+   "beschreibung": "Lohnpfändung netto 4860 €, 2 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4860,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendbar": 936.94,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4860-3",
+   "beschreibung": "Lohnpfändung netto 4860 €, 3 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4860,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendbar": 602.86,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4860-4",
+   "beschreibung": "Lohnpfändung netto 4860 €, 4 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4860,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendbar": 335.34,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4860-5",
+   "beschreibung": "Lohnpfändung netto 4860 €, 5 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4860,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendbar": 134.39,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4866.3-0",
+   "beschreibung": "Lohnpfändung netto 4866.3 €, 0 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4866.3,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendbar": 2290.82,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4866.3-1",
+   "beschreibung": "Lohnpfändung netto 4866.3 €, 1 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4866.3,
+    "personen": 1
+   },
+   "erwartet": {
+    "pfaendbar": 1337.59,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4866.3-2",
+   "beschreibung": "Lohnpfändung netto 4866.3 €, 2 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4866.3,
+    "personen": 2
+   },
+   "erwartet": {
+    "pfaendbar": 936.94,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4866.3-3",
+   "beschreibung": "Lohnpfändung netto 4866.3 €, 3 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4866.3,
+    "personen": 3
+   },
+   "erwartet": {
+    "pfaendbar": 602.86,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4866.3-4",
+   "beschreibung": "Lohnpfändung netto 4866.3 €, 4 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4866.3,
+    "personen": 4
+   },
+   "erwartet": {
+    "pfaendbar": 335.34,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-4866.3-5",
+   "beschreibung": "Lohnpfändung netto 4866.3 €, 5 Unterhaltsberechtigte",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4866.3,
+    "personen": 5
+   },
+   "erwartet": {
+    "pfaendbar": 134.39,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-ueber-hoechst",
+   "beschreibung": "Netto 5.000 €, 0 Personen: Mehrbetrag über 4.866,30 € voll pfändbar (2.290,82 + 133,70)",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 5000,
+    "personen": 0
+   },
+   "erwartet": {
+    "pfaendbar": 2424.52,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pf-7-personen",
+   "beschreibung": "7 Unterhaltsberechtigte zählen wie 5 (§ 850c Abs. 2: höchstens fünf Personen)",
+   "funktion": "Rules.pfaendung",
+   "eingabe": {
+    "netto": 4000,
+    "personen": 7
+   },
+   "erwartet": {
+    "pfaendbar": 48.39,
+    "toleranz": 0.005
+   },
+   "quelle": "Pfändungsfreigrenzenbekanntmachung 2026 v. 19.3.2026 (BGBl. 2026 I Nr. 80), Anlage Monatstabelle, https://www.gesetze-im-internet.de/pf_ndfreigrbek_2026/BJNR0500A0026.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "pk-0",
+   "beschreibung": "P-Konto geschützter Betrag {\"personen\":0,\"kindergeldKinder\":0}",
+   "funktion": "Rules.pkonto",
+   "eingabe": {
+    "personen": 0,
+    "kindergeldKinder": 0
+   },
+   "erwartet": {
+    "gesamt": 1590,
+    "toleranz": 0.005
+   },
+   "quelle": "§ 899 Abs. 1, § 902 S. 1 Nr. 1 und 5 ZPO i. V. m. § 850c ZPO, PfändfreiGrBek 2026; Kindergeld 259 € (§ 66 EStG 2026)"
+  },
+  {
+   "id": "pk-1",
+   "beschreibung": "P-Konto geschützter Betrag {\"personen\":1,\"kindergeldKinder\":1}",
+   "funktion": "Rules.pkonto",
+   "eingabe": {
+    "personen": 1,
+    "kindergeldKinder": 1
+   },
+   "erwartet": {
+    "gesamt": 2446.42,
+    "toleranz": 0.005
+   },
+   "quelle": "§ 899 Abs. 1, § 902 S. 1 Nr. 1 und 5 ZPO i. V. m. § 850c ZPO, PfändfreiGrBek 2026; Kindergeld 259 € (§ 66 EStG 2026)"
+  },
+  {
+   "id": "pk-2",
+   "beschreibung": "P-Konto geschützter Betrag {\"personen\":2,\"kindergeldKinder\":2}",
+   "funktion": "Rules.pkonto",
+   "eingabe": {
+    "personen": 2,
+    "kindergeldKinder": 2
+   },
+   "erwartet": {
+    "gesamt": 3038.25,
+    "toleranz": 0.005
+   },
+   "quelle": "§ 899 Abs. 1, § 902 S. 1 Nr. 1 und 5 ZPO i. V. m. § 850c ZPO, PfändfreiGrBek 2026; Kindergeld 259 € (§ 66 EStG 2026)"
+  },
+  {
+   "id": "pk-3",
+   "beschreibung": "P-Konto geschützter Betrag {\"personen\":5,\"kindergeldKinder\":0}",
+   "funktion": "Rules.pkonto",
+   "eingabe": {
+    "personen": 5,
+    "kindergeldKinder": 0
+   },
+   "erwartet": {
+    "gesamt": 3518.74,
+    "toleranz": 0.005
+   },
+   "quelle": "§ 899 Abs. 1, § 902 S. 1 Nr. 1 und 5 ZPO i. V. m. § 850c ZPO, PfändfreiGrBek 2026; Kindergeld 259 € (§ 66 EStG 2026)"
+  },
+  {
+   "id": "pk-4",
+   "beschreibung": "P-Konto geschützter Betrag {\"personen\":3,\"kindergeldKinder\":3,\"kiz\":297}",
+   "funktion": "Rules.pkonto",
+   "eingabe": {
+    "personen": 3,
+    "kindergeldKinder": 3,
+    "kiz": 297
+   },
+   "erwartet": {
+    "gesamt": 3927.08,
+    "toleranz": 0.005
+   },
+   "quelle": "§ 899 Abs. 1, § 902 S. 1 Nr. 1 und 5 ZPO i. V. m. § 850c ZPO, PfändfreiGrBek 2026; Kindergeld 259 € (§ 66 EStG 2026)"
+  },
+  {
+   "id": "wid-2026-01-28",
+   "beschreibung": "Widerspruchsfrist, Bescheid vom 2026-01-28: Bekanntgabe 1.2., Monatsende 1.3. = Sonntag → Mo 2.3.",
+   "funktion": "FristenOrdner.widerspruch",
+   "eingabe": {
+    "datum": "2026-01-28"
+   },
+   "erwartet": {
+    "bis": "2026-03-02"
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, Fassung seit 1.1.2025), § 84 Abs. 1, § 64 SGG; https://www.gesetze-im-internet.de/sgb_10/__37.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "wid-2027-01-27",
+   "beschreibung": "Widerspruchsfrist, Bescheid vom 2027-01-27: Bekanntgabe 31.1., Februar hat keinen 31. → 28.2. (Sonntag) → 1.3.",
+   "funktion": "FristenOrdner.widerspruch",
+   "eingabe": {
+    "datum": "2027-01-27"
+   },
+   "erwartet": {
+    "bis": "2027-03-01"
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, Fassung seit 1.1.2025), § 84 Abs. 1, § 64 SGG; https://www.gesetze-im-internet.de/sgb_10/__37.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "wid-2028-01-27",
+   "beschreibung": "Widerspruchsfrist, Bescheid vom 2028-01-27: Schaltjahr: 31.1. → 29.2.",
+   "funktion": "FristenOrdner.widerspruch",
+   "eingabe": {
+    "datum": "2028-01-27"
+   },
+   "erwartet": {
+    "bis": "2028-02-29"
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, Fassung seit 1.1.2025), § 84 Abs. 1, § 64 SGG; https://www.gesetze-im-internet.de/sgb_10/__37.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "wid-2026-11-21",
+   "beschreibung": "Widerspruchsfrist, Bescheid vom 2026-11-21: Ende 25.12. (Feiertag), 26.12. (Sa, Feiertag), 27.12. (So) → 28.12.",
+   "funktion": "FristenOrdner.widerspruch",
+   "eingabe": {
+    "datum": "2026-11-21"
+   },
+   "erwartet": {
+    "bis": "2026-12-28"
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, Fassung seit 1.1.2025), § 84 Abs. 1, § 64 SGG; https://www.gesetze-im-internet.de/sgb_10/__37.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "wid-2026-11-24",
+   "beschreibung": "Widerspruchsfrist, Bescheid vom 2026-11-24: Bescheid von heute: 28.11. (Samstag, wird nicht verschoben) + 1 Monat = Mo 28.12.2026",
+   "funktion": "FristenOrdner.widerspruch",
+   "eingabe": {
+    "datum": "2026-11-24"
+   },
+   "erwartet": {
+    "bis": "2026-12-28"
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, Fassung seit 1.1.2025), § 84 Abs. 1, § 64 SGG; https://www.gesetze-im-internet.de/sgb_10/__37.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "wid-2026-12-28",
+   "beschreibung": "Widerspruchsfrist, Bescheid vom 2026-12-28: Bekanntgabe 1.1.2027 (Feiertag, nicht verschoben) → 1.2.2027",
+   "funktion": "FristenOrdner.widerspruch",
+   "eingabe": {
+    "datum": "2026-12-28"
+   },
+   "erwartet": {
+    "bis": "2027-02-01"
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, Fassung seit 1.1.2025), § 84 Abs. 1, § 64 SGG; https://www.gesetze-im-internet.de/sgb_10/__37.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "wid-2026-08-27",
+   "beschreibung": "Widerspruchsfrist, Bescheid vom 2026-08-27: Bekanntgabe 31.8. → 30.9.",
+   "funktion": "FristenOrdner.widerspruch",
+   "eingabe": {
+    "datum": "2026-08-27"
+   },
+   "erwartet": {
+    "bis": "2026-09-30"
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, Fassung seit 1.1.2025), § 84 Abs. 1, § 64 SGG; https://www.gesetze-im-internet.de/sgb_10/__37.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "wid-2026-03-02",
+   "beschreibung": "Widerspruchsfrist, Bescheid vom 2026-03-02: Bekanntgabe 6.3. → 6.4.2026 Ostermontag → 7.4.",
+   "funktion": "FristenOrdner.widerspruch",
+   "eingabe": {
+    "datum": "2026-03-02"
+   },
+   "erwartet": {
+    "bis": "2026-04-07"
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, Fassung seit 1.1.2025), § 84 Abs. 1, § 64 SGG; https://www.gesetze-im-internet.de/sgb_10/__37.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "wid-zugang",
+   "beschreibung": "Zustellung/persönliche Übergabe 2026-11-02 → 2.12.2026",
+   "funktion": "FristenOrdner.widerspruch",
+   "eingabe": {
+    "zugang": "2026-11-02"
+   },
+   "erwartet": {
+    "bis": "2026-12-02"
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, Fassung seit 1.1.2025), § 84 Abs. 1, § 64 SGG; https://www.gesetze-im-internet.de/sgb_10/__37.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "wid-erw",
+   "beschreibung": "Erweiterung Fristen.widerspruch gleicher Tag",
+   "funktion": "Fristen.widerspruch",
+   "eingabe": {
+    "datum": "2026-11-21"
+   },
+   "erwartet": {
+    "fristende": "2026-12-28",
+    "bekanntgabe": "2026-11-25"
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, Fassung seit 1.1.2025), § 84 Abs. 1, § 64 SGG; https://www.gesetze-im-internet.de/sgb_10/__37.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "mb-2026-11-10",
+   "beschreibung": "Mahnbescheid zugestellt 2026-11-10: 2 Wochen, Ende ggf. nächster Werktag",
+   "funktion": "FristenOrdner.rechne",
+   "eingabe": {
+    "art": "mb",
+    "basis": {
+     "zugang": "2026-11-10"
+    }
+   },
+   "erwartet": {
+    "bis": "2026-11-24"
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO, §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "sl-mb-2026-11-10",
+   "beschreibung": "Schulden-Liste, gleiche Frist",
+   "funktion": "Schulden.fristEnde",
+   "eingabe": {
+    "zu": "2026-11-10",
+    "tage": 14
+   },
+   "erwartet": {
+    "bis": "2026-11-24"
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO, §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "vb-2026-12-11",
+   "beschreibung": "Vollstreckungsbescheid zugestellt 2026-12-11: 2 Wochen, Ende ggf. nächster Werktag",
+   "funktion": "FristenOrdner.rechne",
+   "eingabe": {
+    "art": "vb",
+    "basis": {
+     "zugang": "2026-12-11"
+    }
+   },
+   "erwartet": {
+    "bis": "2026-12-28"
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO, §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "sl-vb-2026-12-11",
+   "beschreibung": "Schulden-Liste, gleiche Frist",
+   "funktion": "Schulden.fristEnde",
+   "eingabe": {
+    "zu": "2026-12-11",
+    "tage": 14
+   },
+   "erwartet": {
+    "bis": "2026-12-28"
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO, §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "mb-2026-12-18",
+   "beschreibung": "Mahnbescheid zugestellt 2026-12-18: 2 Wochen, Ende ggf. nächster Werktag",
+   "funktion": "FristenOrdner.rechne",
+   "eingabe": {
+    "art": "mb",
+    "basis": {
+     "zugang": "2026-12-18"
+    }
+   },
+   "erwartet": {
+    "bis": "2027-01-04"
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO, §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "sl-mb-2026-12-18",
+   "beschreibung": "Schulden-Liste, gleiche Frist",
+   "funktion": "Schulden.fristEnde",
+   "eingabe": {
+    "zu": "2026-12-18",
+    "tage": 14
+   },
+   "erwartet": {
+    "bis": "2027-01-04"
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO, §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "vb-2026-03-23",
+   "beschreibung": "Vollstreckungsbescheid zugestellt 2026-03-23: 2 Wochen, Ende ggf. nächster Werktag",
+   "funktion": "FristenOrdner.rechne",
+   "eingabe": {
+    "art": "vb",
+    "basis": {
+     "zugang": "2026-03-23"
+    }
+   },
+   "erwartet": {
+    "bis": "2026-04-07"
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO, §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "sl-vb-2026-03-23",
+   "beschreibung": "Schulden-Liste, gleiche Frist",
+   "funktion": "Schulden.fristEnde",
+   "eingabe": {
+    "zu": "2026-03-23",
+    "tage": 14
+   },
+   "erwartet": {
+    "bis": "2026-04-07"
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO, §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "brief-frist-0",
+   "beschreibung": "Frist aus Brieftext: „Sie haben Gelegenheit, sich bis zum 15.12.2026 zu äußern.“",
+   "funktion": "FristenOrdner.ausBrief",
+   "eingabe": {
+    "text": "Jobcenter Musterstadt\nMusterstadt, 20.11.2026\nAnhörung nach § 24 SGB X\nSie haben Gelegenheit, sich bis zum 15.12.2026 zu äußern.",
+    "art": "anh",
+    "erhalten": "2026-11-23"
+   },
+   "erwartet": {
+    "bis": "2026-12-15"
+   },
+   "quelle": "§ 26 SGB X, §§ 187-193 BGB"
+  },
+  {
+   "id": "brief-frist-1",
+   "beschreibung": "Frist aus Brieftext: „Bitte reichen Sie die Unterlagen bis 15.12.2026 ein.“",
+   "funktion": "FristenOrdner.ausBrief",
+   "eingabe": {
+    "text": "Jobcenter Musterstadt\nMusterstadt, 20.11.2026\nAnhörung nach § 24 SGB X\nBitte reichen Sie die Unterlagen bis 15.12.2026 ein.",
+    "art": "anh",
+    "erhalten": "2026-11-23"
+   },
+   "erwartet": {
+    "bis": "2026-12-15"
+   },
+   "quelle": "§ 26 SGB X, §§ 187-193 BGB"
+  },
+  {
+   "id": "brief-frist-2",
+   "beschreibung": "Frist aus Brieftext: „Bitte reichen Sie die Unterlagen innerhalb von zwei Wochen ein.“",
+   "funktion": "FristenOrdner.ausBrief",
+   "eingabe": {
+    "text": "Jobcenter Musterstadt\nMusterstadt, 20.11.2026\nAnhörung nach § 24 SGB X\nBitte reichen Sie die Unterlagen innerhalb von zwei Wochen ein.",
+    "art": "anh",
+    "erhalten": "2026-11-23"
+   },
+   "erwartet": {
+    "bis": "2026-12-07"
+   },
+   "quelle": "§ 26 SGB X, §§ 187-193 BGB"
+  },
+  {
+   "id": "brief-frist-3",
+   "beschreibung": "Frist aus Brieftext: „Sie können sich innerhalb einer Woche äußern.“",
+   "funktion": "FristenOrdner.ausBrief",
+   "eingabe": {
+    "text": "Jobcenter Musterstadt\nMusterstadt, 20.11.2026\nAnhörung nach § 24 SGB X\nSie können sich innerhalb einer Woche äußern.",
+    "art": "anh",
+    "erhalten": "2026-11-23"
+   },
+   "erwartet": {
+    "bis": "2026-11-30"
+   },
+   "quelle": "§ 26 SGB X, §§ 187-193 BGB"
+  },
+  {
+   "id": "brief-frist-4",
+   "beschreibung": "Frist aus Brieftext: „Bitte äußern Sie sich binnen 14 Tagen nach Zugang dieses Schreibens.“",
+   "funktion": "FristenOrdner.ausBrief",
+   "eingabe": {
+    "text": "Jobcenter Musterstadt\nMusterstadt, 20.11.2026\nAnhörung nach § 24 SGB X\nBitte äußern Sie sich binnen 14 Tagen nach Zugang dieses Schreibens.",
+    "art": "anh",
+    "erhalten": "2026-11-23"
+   },
+   "erwartet": {
+    "bis": "2026-12-07"
+   },
+   "quelle": "§ 26 SGB X, §§ 187-193 BGB"
+  },
+  {
+   "id": "brief-frist-5",
+   "beschreibung": "Frist aus Brieftext: „Bitte legen Sie die Nachweise innerhalb von 10 Tagen ab Datum dieses Schreibens vor.“",
+   "funktion": "FristenOrdner.ausBrief",
+   "eingabe": {
+    "text": "Jobcenter Musterstadt\nMusterstadt, 20.11.2026\nAnhörung nach § 24 SGB X\nBitte legen Sie die Nachweise innerhalb von 10 Tagen ab Datum dieses Schreibens vor.",
+    "art": "anh",
+    "erhalten": "2026-11-23"
+   },
+   "erwartet": {
+    "bis": "2026-11-30"
+   },
+   "quelle": "§ 26 SGB X, §§ 187-193 BGB"
+  },
+  {
+   "id": "brief-frist-6",
+   "beschreibung": "Frist aus Brieftext: „Reichen Sie die Unterlagen bis zum 15. Dezember 2026 ein.“",
+   "funktion": "FristenOrdner.ausBrief",
+   "eingabe": {
+    "text": "Jobcenter Musterstadt\nMusterstadt, 20.11.2026\nAnhörung nach § 24 SGB X\nReichen Sie die Unterlagen bis zum 15. Dezember 2026 ein.",
+    "art": "anh",
+    "erhalten": "2026-11-23"
+   },
+   "erwartet": {
+    "bis": "2026-12-15"
+   },
+   "quelle": "§ 26 SGB X, §§ 187-193 BGB"
+  },
+  {
+   "id": "brief-frist-7",
+   "beschreibung": "Frist aus Brieftext: „Bitte reichen Sie die Unterlagen bis spätestens 03.01.2027 ein.“",
+   "funktion": "FristenOrdner.ausBrief",
+   "eingabe": {
+    "text": "Jobcenter Musterstadt\nMusterstadt, 20.11.2026\nAnhörung nach § 24 SGB X\nBitte reichen Sie die Unterlagen bis spätestens 03.01.2027 ein.",
+    "art": "anh",
+    "erhalten": "2026-11-23"
+   },
+   "erwartet": {
+    "bis": "2027-01-03"
+   },
+   "quelle": "§ 26 SGB X, §§ 187-193 BGB"
+  },
+  {
+   "id": "brief-frist-8",
+   "beschreibung": "Frist aus Brieftext: „Äußern Sie sich innerhalb von 3 Wochen.“",
+   "funktion": "FristenOrdner.ausBrief",
+   "eingabe": {
+    "text": "Jobcenter Musterstadt\nMusterstadt, 20.11.2026\nAnhörung nach § 24 SGB X\nÄußern Sie sich innerhalb von 3 Wochen.",
+    "art": "anh",
+    "erhalten": "2026-11-23"
+   },
+   "erwartet": {
+    "bis": "2026-12-14"
+   },
+   "quelle": "§ 26 SGB X, §§ 187-193 BGB"
+  },
+  {
+   "id": "brief-datum-aenderungsbescheid",
+   "beschreibung": "Änderungsbescheid mit Briefkopf 20.11.2026, der im Text „mein Bescheid vom 12.03.2026“ nennt: Bescheiddatum ist das Kopfdatum",
+   "funktion": "BriefLesen.lies.datum",
+   "eingabe": {
+    "text": "Jobcenter Musterstadt\nMusterstadt, 20.11.2026\nÄnderungsbescheid\nmein Bescheid vom 12.03.2026 wird wie folgt geändert\nRegelbedarf 563,00 €",
+    "art": "jc"
+   },
+   "erwartet": {
+    "datum": "2026-11-20"
+   },
+   "quelle": "§ 37 Abs. 2 SGB X (4. Tag, Fassung seit 1.1.2025), § 84 Abs. 1, § 64 SGG; https://www.gesetze-im-internet.de/sgb_10/__37.html (Abruf 24.11.2026)"
+  },
+  {
+   "id": "brief-mb",
+   "beschreibung": "Mahnbescheid wird erkannt",
+   "funktion": "BriefLesen.andere",
+   "eingabe": {
+    "text": "Amtsgericht Coburg – Zentrales Mahngericht\nMahnbescheid\nSie können binnen zwei Wochen seit der Zustellung Widerspruch erheben."
+   },
+   "erwartet": {
+    "mahnbescheid": true,
+    "vollstreckungsbescheid": false
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO, §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "brief-vb",
+   "beschreibung": "Vollstreckungsbescheid wird erkannt",
+   "funktion": "BriefLesen.andere",
+   "eingabe": {
+    "text": "Amtsgericht Hagen\nVollstreckungsbescheid\nauf der Grundlage des Mahnbescheids vom 01.10.2026. Einspruch binnen zwei Wochen."
+   },
+   "erwartet": {
+    "mahnbescheid": false,
+    "vollstreckungsbescheid": true
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO, §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "brief-inkasso-drohung",
+   "beschreibung": "Inkasso droht nur mit Mahnbescheid: kein Mahnbescheid",
+   "funktion": "BriefLesen.andere",
+   "eingabe": {
+    "text": "Inkasso GmbH\nSollten Sie nicht bis zum 01.12.2026 zahlen, werden wir einen Mahnbescheid beantragen."
+   },
+   "erwartet": {
+    "mahnbescheid": false,
+    "vollstreckungsbescheid": false,
+    "inkasso": true
+   },
+   "quelle": "§ 692 Abs. 1 Nr. 3, §§ 700, 339, 222 ZPO, §§ 187 Abs. 1, 188 Abs. 2 BGB"
+  },
+  {
+   "id": "bs-kg-volljaehrig",
+   "beschreibung": "Bescheid-Check Grundsicherungsgeld: Elternteil + Kind 19 J.; anzurechnendes Kindergeld des volljährigen Kindes = 259 − 30 = 229 €",
+   "funktion": "BescheidSGB2.pruefe",
+   "eingabe": {
+    "personen": [
+     {
+      "rolle": "erw",
+      "alter": 45
+     },
+     {
+      "rolle": "kind",
+      "alter": 19
+     }
+    ],
+    "miete": {
+     "tatsaechlich": 500,
+     "heizung": 80
+    },
+    "bescheid": {
+     "regel": 1014,
+     "kdu": 580,
+     "kindergeld": 229,
+     "zahlbetrag": 1365
+    }
+   },
+   "erwartet": {
+    "erwartet.kindergeld": 229,
+    "erwartet.zahlbetrag": 1365,
+    "toleranz": 0.5
+   },
+   "quelle": "§ 11b Abs. 1 Nr. 3 SGB II, § 6 Abs. 1 Nr. 1 Grundsicherungsgeld-V (30 € Versicherungspauschale für volljährige Leistungsberechtigte), https://www.gesetze-im-internet.de/algiiv_2008/__6.html"
+  },
+  {
+   "id": "bs-ae-36",
+   "beschreibung": "Alleinerziehend, Kinder 8 und 5: Mehrbedarf 36 % von 563 € = 202,68 €; Regelbedarf 563+390+357",
+   "funktion": "BescheidSGB2.pruefe",
+   "eingabe": {
+    "personen": [
+     {
+      "rolle": "erw",
+      "alter": 40
+     },
+     {
+      "rolle": "kind",
+      "alter": 8
+     },
+     {
+      "rolle": "kind",
+      "alter": 5
+     }
+    ],
+    "bescheid": {
+     "regel": 1310,
+     "mehrAE": 202.68,
+     "kindergeld": 518
+    }
+   },
+   "erwartet": {
+    "erwartet.regel": 1310,
+    "erwartet.mehrAE": 202.68,
+    "erwartet.kindergeld": 518,
+    "toleranz": 0.01
+   },
+   "quelle": "§ 20, § 21 Abs. 3 Nr. 1 SGB II; RBSFV 2026 (563/390/357 €)"
+  },
+  {
+   "id": "ga-frei",
+   "beschreibung": "Grundsicherung im Alter: gesetzl. Rente netto 700/brutto 790 mit 33 Jahren, Betriebsrente 150: Freibeträge 281,50 (Deckel 50 % RBS 1) und 115 → anrechenbar 453,50",
+   "funktion": "BescheidGSA.pruefe",
+   "eingabe": {
+    "personen": [
+     {
+      "mzG": true,
+      "renteNetto": 700,
+      "renteBrutto": 790,
+      "grundrente33": true,
+      "zusatzRente": 150
+     }
+    ],
+    "miete": {
+     "tatsaechlich": 400,
+     "heizung": 60
+    },
+    "bescheid": {
+     "regel": 563,
+     "mehrG": 95.71,
+     "kdu": 460,
+     "einkommen": 453.5
+    }
+   },
+   "erwartet": {
+    "erwartet.einkommen": 453.5,
+    "erwartet.mehrG": 95.71,
+    "toleranz": 0.01
+   },
+   "quelle": "§ 82a, § 82 Abs. 4, § 30 Abs. 1 SGB XII; RBS 1 2026 = 563 €"
+  }
+ ],
+ "eigen": [
+  {
+   "id": "PB-1",
+   "fn": "pfBasis",
+   "beschreibung": "Alleinerziehend: Lohn 1.700 € (ek1); Unterhalt für die Kinder und „Andere Leistungen“ (Wohngeld, KiZ) zählen nicht",
+   "h": {
+    "g": {
+     "ek1": 170000,
+     "ek1Art": "lohn",
+     "ek1b": null,
+     "ek1bArt": "",
+     "ek2": null,
+     "ek2Art": "",
+     "zwei": false,
+     "uh": 22700
+    }
+   },
+   "erwartet": {
+    "pfBasis": 170000
+   },
+   "quelle": "§ 850 ZPO; § 54 Abs. 3 Nr. 2a, Abs. 5 SGB I"
+  },
+  {
+   "id": "PB-2",
+   "fn": "pfBasis",
+   "beschreibung": "Paar: Lohn Person 1 2.000 €, Lohn Partner 1.500 € → nur Person 1 (Partner haftet nicht)",
+   "h": {
+    "g": {
+     "ek1": 200000,
+     "ek1Art": "lohn",
+     "ek2": 150000,
+     "ek2Art": "lohn",
+     "zwei": true
+    }
+   },
+   "erwartet": {
+    "pfBasis": 200000
+   },
+   "quelle": "§ 850c ZPO (Arbeitseinkommen des Schuldners)"
+  },
+  {
+   "id": "PB-3",
+   "fn": "pfBasis",
+   "beschreibung": "Rente 1.200 € + Elterngeld 500 € als zweites Einkommen → 1.200 + (500 − 300) = 1.400 €",
+   "h": {
+    "g": {
+     "ek1": 120000,
+     "ek1Art": "rente",
+     "ek1b": 50000,
+     "ek1bArt": "eg"
+    }
+   },
+   "erwartet": {
+    "pfBasis": 140000
+   },
+   "quelle": "§ 54 Abs. 3 Nr. 1, Abs. 4 SGB I i. V. m. § 10 BEEG"
+  },
+  {
+   "id": "PB-4",
+   "fn": "pfBasis",
+   "beschreibung": "Unterhalt für sich selbst 800 € (nur bedingt pfändbar) → 0",
+   "h": {
+    "g": {
+     "ek1": 80000,
+     "ek1Art": "unt"
+    }
+   },
+   "erwartet": {
+    "pfBasis": 0
+   },
+   "quelle": "§ 850b Abs. 1 Nr. 2 ZPO"
+  },
+  {
+   "id": "PB-5",
+   "fn": "pfBasis",
+   "beschreibung": "Krankengeld 1.400 € + Minijob-Lohn 300 € → 1.700 €",
+   "h": {
+    "g": {
+     "ek1": 140000,
+     "ek1Art": "kg",
+     "ek1b": 30000,
+     "ek1bArt": "lohn"
+    }
+   },
+   "erwartet": {
+    "pfBasis": 170000
+   },
+   "quelle": "§ 54 Abs. 4 SGB I; § 850 ZPO"
+  },
+  {
+   "id": "BL-KG-1",
+   "fn": "erkenne",
+   "beschreibung": "Kindergeld-Bescheid (Aufhebung § 70 EStG, Einspruch) wird als Kindergeld erkannt, nicht als Kinderzuschlag",
+   "h": {
+    "text": "Familienkasse Bayern Nord\nBescheid\nDie Festsetzung des Kindergeldes wird nach § 70 Abs. 2 EStG ab Januar 2026 aufgehoben.\nRechtsbehelfsbelehrung: Gegen diesen Bescheid kann innerhalb eines Monats Einspruch eingelegt werden."
+   },
+   "erwartet": {
+    "art": "kg"
+   },
+   "quelle": "§§ 347, 355 AO, https://www.gesetze-im-internet.de/ao_1977/__347.html"
+  },
+  {
+   "id": "BL-KG-2",
+   "fn": "erkenne",
+   "beschreibung": "Kinderzuschlag-Bescheid bleibt Kinderzuschlag, auch wenn Kindergeld erwähnt wird",
+   "h": {
+    "text": "Familienkasse Bayern Nord\nBescheid über Kinderzuschlag nach § 6a BKGG\nKindergeld wird bei der Berechnung nicht berücksichtigt.\nGegen diesen Bescheid kann Widerspruch eingelegt werden."
+   },
+   "erwartet": {
+    "art": "fk"
+   },
+   "quelle": "§ 6a BKGG; § 84 SGG"
+  },
+  {
+   "id": "BL-KG-3",
+   "fn": "erkenne",
+   "beschreibung": "Anhörung der Familienkasse zum Kindergeld bleibt Anhörung",
+   "h": {
+    "text": "Familienkasse Bayern Nord\nAnhörung\nWir beabsichtigen, die Festsetzung des Kindergeldes nach § 70 EStG aufzuheben.\nSie haben Gelegenheit, sich bis zum 15.12.2026 zu äußern."
+   },
+   "erwartet": {
+    "art": "anh"
+   },
+   "quelle": "§ 91 AO"
+  },
+  {
+   "id": "BL-F-1",
+   "fn": "andere",
+   "beschreibung": "Bewilligungszeitraum „01.01.2026 bis 30.06.2026“ ist keine Frist",
+   "h": {
+    "text": "Jobcenter Musterstadt\nLeistungen werden für die Zeit vom 01.01.2026 bis 30.06.2026 bewilligt."
+   },
+   "erwartet": {
+    "anzahlFristen": 0
+   },
+   "quelle": "–"
+  },
+  {
+   "id": "BL-F-2",
+   "fn": "andere",
+   "beschreibung": "„Frist: 4 Wochen“ wird erkannt",
+   "h": {
+    "text": "Stadtwerke\nBitte zahlen Sie den offenen Betrag. Frist: 4 Wochen"
+   },
+   "erwartet": {
+    "frist0": "4 Wochen"
+   },
+   "quelle": "–"
+  },
+  {
+   "id": "BL-F-3",
+   "fn": "andere",
+   "beschreibung": "Monatsname: „bis zum 15. Dezember 2026“",
+   "h": {
+    "text": "Inkasso GmbH\nBitte zahlen Sie bis zum 15. Dezember 2026."
+   },
+   "erwartet": {
+    "frist0": "15.12.2026"
+   },
+   "quelle": "–"
+  },
+  {
+   "id": "BL-D-2",
+   "fn": "datum",
+   "beschreibung": "Bescheid ohne Briefkopf-Datum: „Bescheid vom 03.11.2026“ als Überschrift gilt weiter",
+   "h": {
+    "text": "Jobcenter Musterstadt\nBescheid vom 03.11.2026 über Grundsicherungsgeld\nRegelbedarf 563,00 €"
+   },
+   "erwartet": {
+    "datum": "2026-11-03"
+   },
+   "quelle": "§ 37 Abs. 2 SGB X"
+  },
+  {
+   "id": "FO-AW-1",
+   "fn": "formulare",
+   "beschreibung": "Antragsmappe Grundsicherungsgeld: Kind 14–17 im Haushalt → Hinweis Anlage WEP",
+   "h": {
+    "s": {
+     "adults": 1,
+     "kids": 1,
+     "kids14": 1,
+     "young": 0,
+     "miete": 500
+    }
+   },
+   "erwartet": {
+    "wep": true
+   },
+   "quelle": "BA-Vordrucke Anlage WEP (weitere Person ab 15), https://www.arbeitsagentur.de/arbeitslos-arbeit-finden/downloads-arbeitslos-arbeit-finden"
+  },
+  {
+   "id": "FO-AW-2",
+   "fn": "formulare",
+   "beschreibung": "Antragsmappe Grundsicherungsgeld: nur Kind unter 14 → keine Anlage WEP für Kinder",
+   "h": {
+    "s": {
+     "adults": 1,
+     "kids": 1,
+     "kids14": 0,
+     "young": 0,
+     "miete": 500
+    }
+   },
+   "erwartet": {
+    "wep": false
+   },
+   "quelle": "BA-Vordrucke"
+  },
+  {
+   "id": "UN-RF-1",
+   "fn": "unterlagen",
+   "beschreibung": "Antragsmappe Rundfunkbeitrag: Nachweis ist der Bescheid über die befreiende Leistung, nicht „Pflegegeld“",
+   "h": {
+    "karte": "rundfunk"
+   },
+   "erwartet": {
+    "enthaelt": "u.bescheidBefreiung",
+    "nicht": "u.bescheide"
+   },
+   "quelle": "§ 4 Abs. 1, 7 RBeitrStV"
+  }
+ ]
+}

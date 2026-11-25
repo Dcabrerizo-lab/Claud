@@ -132,7 +132,9 @@ for (let i = 0; i < N; i++) {
     }
   }
   // ---------- Monotonie: ein Kind mehr, mehr Miete ----------
-  const k = ev({ ...e, kids: e.kids + 1 });
+  // Baby ist da: es zählt schon als Kind, auch wenn es bei „Kinder“ fehlt (Vollprüfung familie 24.11.2026) – ein Kind mehr heißt dann eins über dem Baby
+  const babyDa = e.baby === 'da' ? Math.min(3, Math.max(1, Number(e.egKinder) | 0)) : 0;
+  const k = ev({ ...e, kids: Math.max(e.kids, babyDa) + 1 });
   if (bedarf(a.ggeld) !== null && bedarf(k.ggeld) !== null && bedarf(k.ggeld) <= bedarf(a.ggeld)) melde('Ein Kind mehr, Bedarf nicht höher', e, [bedarf(a.ggeld), bedarf(k.ggeld)]);
   if (e.miete > 0) {
     const mm = ev({ ...e, miete: e.miete + 100 });

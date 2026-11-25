@@ -80,7 +80,7 @@ setTimeout(() => {
   const hinweise = [...d.querySelectorAll('#form .hint')].filter(sichtbar);
   check('Formular leer: höchstens 8 sichtbare Feldhinweise', hinweise.length <= 8, hinweise.map((x) => x.textContent.slice(0, 30)));
   check('Alle ⓘ-Bauteile zu, Überschrift als Frage', [...d.querySelectorAll('#form details.mehr')].every((x) => !x.open && /\?$/.test(x.querySelector('summary').textContent)), [...d.querySelectorAll('#form details.mehr summary')].map((x) => x.textContent));
-  check('Beträge nie hinter Aufklappen: Freibetrag der Zusatzrente sichtbar', !$('zusatzRenteHint').closest('details') && /281,50/.test(de['ek.zusatzRente.hint']));
+  check('Beträge nie hinter Aufklappen: Freibetrag der Zusatzrente sichtbar', !$('zusatzRenteHint').closest('details') && /281,50\s€/.test($('zusatzRenteHint').textContent), $('zusatzRenteHint').textContent);
   check('Geburtsjahr: Beispiel als Platzhalter', $('gebJahr').getAttribute('placeholder') === de['geb.ph']);
   check('Gelöschte Hinweise sind aus allen Sprachen entfernt', ['briefe.t', 'briefe.hinweis', 'lg.gesund.hint', 'plz.hint', 'ausb.hint', 'auto.hint', 'geb.hint', 'miete.hint'].every((k) => Object.keys(I18N).every((l) => !(k in I18N[l]))));
   check('Neue Texte in allen 13 Sprachen', ['mehr.warum', 'mehr.wo', 'mehr.wer', 'mehr.was', 'rb.satz', 'geb.ph', 'heiz.kurz', 'unterh.kurz', 'uz.kurz', 'beh.quelle', 'f.empfAendern', 'f.empfPlatz', 'f.mehrWege', 'f.auf.angaben', 'f.auf.antraege', 'f.unt.alle', 'f.weg.offen', 'fw.wg.by', 'f.auf.4.t'].every((k) => Object.keys(I18N).every((l) => typeof I18N[l][k] === 'string' && I18N[l][k].length > 2)));

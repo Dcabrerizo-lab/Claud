@@ -33,9 +33,9 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Schüler und Azubis unter 25: Einkommen bis zur Minijob-Grenze frei (§ 11b Abs. 2b) | ✓ | `gg-azubi` |
 | Minijob-Grenze ab 1.1.2027: 633 € (Mindestlohn 14,60 €), die App schaltet am Stichtag selbst um (auch Krankengeld und Arbeitslosengeld) | ✓ | `minijob-2027` |
 | Weitere Beträge 2027 (Kindergeld 267 €, Grundfreibetrag 12.564 €, Regelsätze, Wohngeld, Pflegegeld) | ○ (Stand 20.11.2026 nur Entwürfe; werden nicht angezeigt, auch nicht als „geplant“ (Nutzerregel 20.11.2026: nur geltendes Recht); erst nach Verkündung und ab Stichtag einarbeiten; die App weist ab 1.1.2027 auf veraltete Regeln hin) | |
-| Schüler und Azubis über der Minijob-Grenze: auf den Teil darüber zusätzlich der Freibetrag nach Abs. 3 | ○ (die App rechnet vorsichtig ohne diesen Zusatz, der Betrag fällt also eher zu niedrig aus; von einer Fachperson bestätigen lassen) | |
+| Schüler, Studierende, Azubis und Freiwilligendienst unter 25 (Person selbst): Minijob-Grenze statt 100 € frei, dazu 30 % (520–1.000 €) und 10 % (bis 1.200/1.500 €), ohne die Stufe 20 % (§ 11b Abs. 2b, Abs. 3 Satz 4); Alter unbekannt: nur gegen ein falsches „eher nicht“ (Vollprüfung 24.11.2026, buzer.de, Abruf 24.11.2026) | ✓ | `rechtsmatrix-grusi` |
 | Elterngeld 300 € frei bei Einkommen vor der Geburt (§ 10 Abs. 5 BEEG) | ✓ | `gg-eg300` |
-| Unterhalt und Unterhaltsvorschuss als Einkommen der Kinder, gedeckelt auf ihren Bedarf | ✓ | `gg-unterhalt` |
+| Unterhalt und Unterhaltsvorschuss als Einkommen der Kinder, gedeckelt auf ihren Bedarf; Kindergeld nur, soweit das Kind es noch braucht, der Rest zählt beim Elternteil (minus 30 € Versicherungspauschale), § 11 Abs. 1 Satz 5; mehrere Kinder: für „eher nicht“ auch die kleinere Anrechnung (Vollprüfung 24.11.2026) | ✓ | `gg-unterhalt`, `rechtsmatrix-grusi` |
 | Selbst gezahlter Unterhalt: Abzug vom Einkommen, wenn festgelegt (Unterhaltstitel, Jugendamtsurkunde, notarielle Vereinbarung) und gezahlt (§ 11b Abs. 1 Satz 1 Nr. 7); ohne Titel kein Abzug, Hinweis | ✓ | `uz-sgb2` |
 | Unterhalt für die Person selbst (Trennungs- oder Ehegattenunterhalt, Unterhalt von den Eltern; Einkommensart „Unterhalt für dich“): voll Einkommen (§ 11 Abs. 1), kein Freibetrag für Arbeit, nur Versicherungspauschale 30 € (§ 6 Abs. 1 Nr. 1 Bürgergeld-V); Netto = Zahlbetrag ohne Steuer-/Beitragsschätzung | ✓ | `unt-sgb2` |
 | Zweites Einkommen je Person (auch bei Paaren, Liste mit Person 1/2): Freibetrag für Arbeit je erwerbstätiger Person aus der Summe ihrer Löhne (§ 11b Abs. 3; BA-FW Rz. 11.144, 11.15); Versicherungspauschale 30 € je Person ohne Lohn, bei Lohn unter 30 € nur der Rest (§ 6 Abs. 1 Nr. 1 GrusiGV; Rz. 11.155); beim Wohngeld Werbungskosten-Pauschbetrag einmal je Person (§ 9a EStG) und § 16-Abzug je Person; SGB-XII-Freibetrag für Arbeit je Person (§ 82 Abs. 3 SGB XII); KiZ-Mindesteinkommen aus allen Einkommen beider Eltern; Familienversicherung aus allen Einkommen von Person 2 | ✓ | `paar-ek` |
@@ -52,15 +52,23 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Mehrbedarf Schulbücher (§ 21 Abs. 6a); in Bayern Lernmittelfreiheit | ◐ | `gg-schulbuch` |
 | Angemessenheit der Miete nach örtlicher Richtlinie | ◐ | `gg-kdu` |
 | Ausschluss: Rentenalter oder volle Erwerbsminderung (Sozialamt zuständig, § 7 Abs. 1) | ✓ | `gg-alter` |
-| Ausschluss: Studium und förderfähige Ausbildung (§ 7 Abs. 5) | ✓ | `gg-studium` |
+| Ausschluss: Studium und förderfähige Ausbildung (§ 7 Abs. 5) dem Grunde nach, auch ab 45 ohne BAföG wegen des Alters (BSG 19.08.2010, B 14 AS 24/09 R); Schüler mit Schüler-BAföG auch mit eigener Wohnung nicht (§ 7 Abs. 6 Nr. 2, § 12 BAföG) – die App trennt Schule und Studium nicht: allein „möglich“ ohne Betrag (Gegenprüfung 25.11.2026); nur die Person selbst: mit Partner oder Kind „möglich“ ohne Betrag; bei den Eltern (§ 7 Abs. 6 Nr. 2) „möglich“; betriebliche Ausbildung: BAB geht vor, höchstens „möglich“; volljähriges Kind in Schule/Studium: höchstens „möglich“ (Vollprüfung 24.11.2026) | ✓ | `gg-studium`, `rechtsmatrix-grusi` |
+| Wohnen bei den Eltern (einfache Version): unter 25 ohne Kind Bedarfsgemeinschaft der Eltern, Regelbedarfsstufe 3 (§ 7 Abs. 3 Nr. 4, § 20 Abs. 2 Satz 2 Nr. 1); ab 25 Vermutung der Unterstützung (§ 9 Abs. 5): höchstens „möglich“ (Vollprüfung 24.11.2026) | ✓ | `rechtsmatrix-grusi` |
+| EU-Bürger, früher in Deutschland gearbeitet, jetzt ohne Arbeit, unter 5 Jahren: höchstens „möglich“ (Fortwirken des Arbeitnehmerstatus nur bei unfreiwilliger Arbeitslosigkeit, § 2 Abs. 3 FreizügG/EU) | ✓ | `rechtsmatrix-grusi` |
+| Schonvermögen ohne Geburtsjahr (unter 30 nur 5.000 €, „eher nicht“ erst über 20.000 € je Erwachsenem) und im Jahr des 30., 40. oder 50. Geburtstags (höherer Betrag erst ab dem Geburtsmonat, § 12 Abs. 2 Satz 2): zwischen kleinster und größter möglicher Grenze höchstens „möglich“ (Vollprüfung 24.11.2026) | ✓ | `rechtsmatrix-grusi` |
+| Unterkunftskosten über dem Eineinhalbfachen der angemessenen Grenze auch im ersten Jahr nicht anerkannt (§ 22 Abs. 1 Satz 6 SGB II, § 35 Abs. 1 Satz 7 SGB XII): Betrag mit höchstens 1,5 × Orientierungsgrenze gerechnet (Abruf 24.11.2026) | ✓ | `rechtsmatrix-grusi` |
 | Ausschluss: Asylbewerberleistungen (§ 7 Abs. 1 Satz 2 Nr. 3) | ✓ | `asyl-ausschluss` |
 | Unterhaltsvorschuss als Einkommen des Kindes (§ 11 Abs. 1 Satz 1, § 9 Abs. 2 SGB II; vorrangig § 12a): sicher erwarteter UVG mindert die Lücke (allein, Kind unter 6, 1.800 € Lohn: 640 -> 410 €); möglicher, nicht sicherer UVG (zweite Person ohne Angabe, anderer Elternteil bei mehreren Kindern) -> höchstens „möglich“ (Befund G2, Rechenplan; abgerufen 21.11.2026) | ✓ | `rechenbefunde-g2` |
+| Sofortzuschlag 25 € je Kind bzw. jungem Erwachsenen (Regelbedarfsstufe 3 bis 6) im angezeigten Betrag (nicht, wenn die Kinder ihren Bedarf mit eigenem Einkommen decken; Text nur mit Betrag), nicht im Vergleich der zwei Wege und nicht in der Hilfebedürftigkeit beim Kinderzuschlag (§ 72 SGB II, Fassung ab 1.7.2026, Abruf 24.11.2026) | ✓ | `rechtsmatrix-familie` |
+| Wechselmodell: Mehrbedarf für Alleinerziehende vorsichtig zur Hälfte (BSG 3.3.2009, B 4 AS 50/07 R), Kind nur zeitweise in der Bedarfsgemeinschaft: höchstens „möglich“, Betrag als obere Grenze (Abruf DA-KiZ 24.11.2026) | ◐ (Betreuungstage werden nicht abgefragt) | `rechtsmatrix-familie` |
+| Elterngeld als Einkommen: frei höchstens 300 €, nur bis zum Einkommen vor der Geburt, ElterngeldPlus die Hälfte (§ 10 Abs. 5 BEEG); Basis oder Plus unbekannt: vorsichtig 150 €, für „eher nicht“ 300 € | ◐ (Basis oder Plus wird nicht abgefragt) | `rechtsmatrix-familie` |
 
 ## Grundsicherung im Alter und bei Erwerbsminderung (SGB XII)
 <!-- karten: gsa -->
 
 | Regel | Status | Test |
 |---|---|---|
+| Voll erwerbsgemindert (eigene Angabe), unter der Altersgrenze: Hinweis, dass Grundsicherung nur bei dauerhafter Erwerbsminderung gilt, sonst Hilfe zum Lebensunterhalt (§ 41 Abs. 3, § 45 SGB XII); Elternunterhalt erst über 100.000 € je Kind (Vollprüfung Pflege & Rente 24.11.2026, docs/rechtsmatrix/pflege.md) | ✓ | `vp-pflege` |
 | Angemessene Unterkunftskosten (§ 35 SGB XII) wie beim Grundsicherungsgeld | ◐ | `kdu-grenze` |
 | Angemessenes Auto geschützt (§ 90 Abs. 2 Nr. 10 SGB XII); über 15.000 € nur „möglich“; gebraucht (Behinderung, Arbeit) ohne Einschränkung | ◐ | `auto` |
 | EU-Staatsangehörige: Ausschluss wie § 7 SGB II (§ 23 Abs. 3 SGB XII) | ✓ | `eu` |
@@ -74,14 +82,15 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Freibetrag für Betriebs-, Riester- und private Rente (§ 82 Abs. 4), Grundrentenfreibetrag nur auf die gesetzliche Rente | ✓ | `gsa-zusatzrente` |
 | Kinderzuschlag: anderes Elterneinkommen über dem Bedarf voll, Arbeitseinkommen zu 45 % (§ 6a Abs. 6 BKGG) | ✓ | `kiz-anderes` |
 | Versicherungspauschale 30 € einmal je Person, nicht neben Arbeitseinkommen (§ 6 Bürgergeld-V, § 11b Abs. 2 SGB II) | ✓ | `vpausch-person` |
-| Rundfunkbeitrag: Befreiung auch bei Blindenhilfe, Hilfe zur Pflege, BAföG nicht bei den Eltern (§ 4 Abs. 1 RBeitrStV) | ✓ | `rf-weitere` |
+| Rundfunkbeitrag: Befreiung auch bei Blindenhilfe, Hilfe zur Pflege, BAföG oder Berufsausbildungsbeihilfe nicht bei den Eltern (§ 4 Abs. 1 Nr. 5 RBeitrStV; BAB seit 24.11.2026) | ✓ | `rf-weitere`, `rechtsmatrix-grusi` |
 | Rundfunkbeitrag: Befreiung ab dem Monat, in dem der Bescheid gilt, rückwirkend höchstens 3 Jahre vor dem Antragsmonat, keine Zwei-Monats-Frist (§ 4 Abs. 4 RBeitrStV, abgerufen 21.11.2026; Text s.rundfunk.tip) | ✓ | `rf-frist` |
 | Grundrentenfreibetrag höchstens so hoch wie die Rente | ✓ | `gsa-grundrente-klein` |
 | Mehrbedarf G 17 % (§ 30 Abs. 1) | ✓ | `gsa-mb-g` |
 | Mehrbedarf Alleinerziehende (§ 30 Abs. 3) | ✓ | `gsa-mb-ae` |
 | Mehrbedarf 35 % bei Eingliederungshilfe für Schule oder Ausbildung (§ 30 Abs. 4), nicht neben G | ✓ | `gsa-mb-teilhabe` |
 | Mittagessen in der Werkstatt (§ 42b Abs. 2) | ◐ | `gsa-essen` |
-| Bei den Eltern: eigene Grundsicherung, Stufe 1, Wohnkosten anteilig (§ 42a Abs. 3); Einkommen der Eltern erst ab 100.000 € (§ 94 Abs. 1a) | ✓ / ◐ Wohnkosten | `gsa-eltern` |
+| Bei den Eltern: eigene Grundsicherung, Stufe 1, Wohnkosten anteilig (§ 42a Abs. 3); Einkommen der Eltern erst bei mehr als 100.000 € (§ 94 Abs. 1a); nur bei dauerhafter voller Erwerbsminderung, befristet: Hilfe zum Lebensunterhalt oder Sozialgeld, Einkommen der Eltern kann zählen (Text, seit 24.11.2026) | ✓ / ◐ Wohnkosten | `gsa-eltern` |
+| Gemischtes Paar: zweite Person mit Lohn oder Arbeitslosengeld, Kinder ab 14 oder volljährig -> sie gehören meist zum Jobcenter; Grundsicherung nur für die Person im Rentenalter bzw. voll erwerbsgemindert (§ 43 Abs. 1 SGB XII, § 7 Abs. 2, 3 SGB II): höchstens „möglich“ ohne Betrag (Vollprüfung 24.11.2026) | ◐ | `rechtsmatrix-grusi` |
 | Wohnheim: Stufe 2, Wohnkosten (§ 42a Abs. 5) | ✓ / ◐ Wohnkosten | `gsa-heim` |
 | Schonvermögen 10.000 € je Erwachsenem (Barbetragsverordnung) | ✓ | `gsa-verm` |
 | Merkzeichen G nur für eine Person abgefragt; bei Paaren Hinweis, dass der Mehrbedarf (17 %) mit zwei Ausweisen für jede Person gilt (§ 30 Abs. 1 SGB XII; Merkblatt Bochum Beispiel b); Bescheid-Check rechnet beide; abgerufen 21.11.2026 | ✓ | `gsa-g-paar` |
@@ -150,6 +159,9 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Unterhalt für einen Elternteil selbst: zählt für das Mindesteinkommen (§ 6a Abs. 1 Nr. 2 BKGG: Einkommen nach § 11 Abs. 1 Satz 1 und 2 SGB II, nur Wohngeld, Kindergeld, Kinderzuschlag ausgenommen); mindert als „anderes Einkommen“ in voller Höhe, die Überschreitung gilt zuerst als Erwerbseinkommen (§ 6a Abs. 6 BKGG) | ✓ | `unt-kiz` |
 | Geschätztes Arbeitslosengeld, Krankengeld oder Elterngeld als künftiges Einkommen der Eltern, zweite Rechnung | ✓ | `zuk-einkommen` |
 | Unterhaltsvorschuss mindert den Kinderzuschlag zu 45 % (§ 6a Abs. 3 Satz 1 und 3 BKGG; Satz 4: wer ihn nicht geltend macht, riskiert den KiZ; abgerufen 21.11.2026): allein, Kind unter 6, 1.800 € Lohn: 300 -> 190 €; möglicher UVG (zweite Person ohne Angabe usw.) -> „wahrscheinlich“ nur, wenn es auch damit mindestens 60 € sind (Befund K1) | ✓ | `rechenbefunde-k1` |
+| Mindesteinkommen: Unterhalt für den Elternteil und das Kind zählen zusammen, reiner Kindesunterhalt nicht; Selbstständige: Einnahmen vor Ausgaben, mit Gewinn darunter „möglich“ (DA-KiZ Stand 20.02.2026 C.1 Abs. 2, Abruf 24.11.2026) | ◐ (Einnahmen Selbstständiger werden nicht abgefragt) | `rechtsmatrix-familie` |
+| Lohn eines einzigen Kindes ab 14: 603 € und zusätzlich 30 %/10 % Freibetrag ohne die erste Stufe (DA-KiZ C.2.2.1 Abs. 3 Satz 9-11) | ✓ | `rechtsmatrix-familie` |
+| Wechselmodell: nur der Elternteil mit Kindergeld, Kind ggf. anteilig (DA-KiZ C.3.1.1 Abs. 2): höchstens „möglich“; Unterhaltsvorschuss zuerst beantragen (§ 6a Abs. 3 Satz 4 BKGG, Hinweis im Zusammenspiel) | ◐ | `rechtsmatrix-familie` |
 
 ## Kindergeld (EStG, BKGG)
 <!-- karten: kindergeld -->
@@ -160,8 +172,11 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | 259 € je Kind und Monat (2026); bis 18, bis 25 in Ausbildung oder Studium (§ 32 Abs. 4 Nr. 2) | ✓ | `kg-betrag` |
 | Bis 21 ohne Arbeit und bei der Agentur für Arbeit arbeitsuchend gemeldet (§ 32 Abs. 4 Satz 1 Nr. 1 EStG, gesetze-im-internet.de, abgerufen 21.11.2026; Text t.kindergeld.mehr), bis 25 Freiwilligendienst, Ausbildungsplatzsuche, Übergangszeit bis 4 Monate; nach erster Ausbildung höchstens 20 Stunden Arbeit (§ 32 Abs. 4) | ◐ | `kg-mehr` |
 | Ausländer: nur mit bestimmten Aufenthaltstiteln (§ 62 Abs. 2) | ◐ | `kg-asyl` |
-| Bayern: Familiengeld (250 €, ab dem 3. Kind 300 €, 13. bis 36. Lebensmonat) und Krippengeld (bis 100 €) nur noch für Kinder, die bis Ende 2024 geboren sind | ◐ (Geburtsdatum der Kinder wird nicht abgefragt, daher Hinweis) | `kg-familiengeld` |
+| Bayern: Familiengeld (250 €, ab dem 3. Kind 300 €, 13. bis 36. Lebensmonat) und Krippengeld (bis 100 €) nur noch für Kinder, die bis Ende 2024 geboren sind; Hinweis nur mit Kind unter 6 und nur bis Ende 2027 (Vollprüfung 24.11.2026) | ◐ (Geburtsdatum der Kinder wird nicht abgefragt, daher Hinweis) | `kg-familiengeld` |
 | Bayern: angekündigtes Kinderstartgeld | ○ (nach neueren Berichten nicht eingeführt; ohne amtliche Bestätigung nicht erwähnt) | |
+| EU-Bürger ohne Arbeit, unter 5 Jahren: nach 3 Monaten nur mit Freizügigkeitsrecht, nicht allein zur Arbeitsuche: „möglich“ (§ 62 Abs. 1a EStG, Abruf 24.11.2026) | ◐ | `rechtsmatrix-familie` |
+| Drittstaatsangehörige: Hinweis auf den nötigen Aufenthaltstitel bei Kindergeld und Elterngeld (§ 62 Abs. 2 EStG, § 1 Abs. 7 BEEG) | ◐ | `rechtsmatrix-familie` |
+| Baby ist da (unter 14 Monate): zählt als Kind unter 6, auch wenn es bei „Kinder“ fehlt; Baby kommt bald: Hinweis „nach der Geburt beantragen“; volljähriges Kind mit Behinderung: Verweis auf die eigene Karte | ✓ | `rechtsmatrix-familie` |
 
 ## Kindergeld für erwachsene Kinder mit Behinderung (§ 32 Abs. 4 Satz 1 Nr. 3 EStG)
 <!-- karten: kgBeh -->
@@ -184,6 +199,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Junge Erwachsene nur in der Schule, nicht mit Ausbildungsvergütung | ✓ | `but-azubi` |
 | Kita und Tagespflege ohne Kostenbeitrag bei Grundsicherung, Wohngeld, Kinderzuschlag, Asylbewerberleistungen (§ 90 Abs. 4 SGB VIII) | ✓ | `but-kita` |
 | Hort für Schulkinder ebenso ohne Kostenbeitrag, auf Antrag beim Jugendamt; nicht Mittagsbetreuung/Offener Ganztag der Schule (§ 90 Abs. 4, § 22 Abs. 1 SGB VIII, Abruf 20.11.2026) | ✓ | `but-hort` |
+| Nur junge Erwachsene (18 bis 24): nur Schülerinnen und Schüler ohne Ausbildungsvergütung, 15 € Teilhabe nur bis 18 (§ 28 Abs. 1 Satz 2, Abs. 7 SGB II): höchstens „möglich“; Schülerjob schließt nicht aus (Abruf 24.11.2026) | ◐ (Schule oder Studium wird nicht abgefragt) | `rechtsmatrix-familie` |
 
 ## Unterhaltsvorschuss (UVG)
 <!-- karten: uvg -->
@@ -210,6 +226,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Änderungen sofort melden, sonst Rückzahlung (§§ 5, 6); verheiratet und dauernd getrennt, auch bei mindestens 6 Monaten Klinik, Heim oder Haft des Ehepartners (§ 1 Abs. 2) – Hinweise | ✓ | `uvg-hinweise` |
 | Nur volljährige Kinder: kein Unterhaltsvorschuss, Hinweis auf Unterhalt, Beratung des Jugendamts bis 21 (§ 18 Abs. 4 SGB VIII), BAföG/Berufsausbildungsbeihilfe; Kind im Heim oder in Pflegefamilie: kein Anspruch (Hinweis) | ✓ | `uvg-volljaehrig` |
 | Unterhaltsvorschuss zählt als Einkommen der Kinder bei Grundsicherungsgeld (voll, bis zum Bedarf), Kinderzuschlag (45 %) und Wohngeld, auch bei neuer Partnerschaft ohne Trauschein | ✓ | `uvg-einkommen`, `gg-unterhalt` |
+| Kind von 14 bis 17 ist immer 12 oder älter: 600-€-Grenze (§ 1 Abs. 1a UVG) auch ohne den Haken „Ein Kind ist 12 oder älter“ (Abruf 24.11.2026) | ✓ | `rechtsmatrix-familie` |
 
 ## BAföG
 <!-- karten: bafoeg -->
@@ -227,7 +244,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Vermögen über dem Freibetrag: nur der Rest, geteilt durch 12 Monate Bewilligungszeitraum, mindert das BAföG (§ 30 BAföG, bafög.de Beispiel „Stefan“): „möglich“ mit Hinweis und Betrag im Monat, „eher nicht“ erst über 12 × 1.088 €, Befund 11 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-bafoeg`, `bafoeg-verm`, `auto` |
 | Altersgrenze bei Beginn: 45. Lebensjahr noch nicht vollendet, also unter 45 (§ 10 Abs. 3, Abruf 21.11.2026), Ausnahmen möglich | ✓ | `bafoeg-alter` |
 | Grob geschätzter Betrag (nur Studium): Bedarf 475 € + 59/380 € Wohnen (§ 13), + 0 / 102 + 35 / bis 185 + 48 € KV/PV (§ 13a), + 160 € je eigenem Kind unter 14 (§ 14b) minus Anrechnung: Eltern §§ 21, 25 (Einkommen über 2.540/1.690 € + 770 € je Kind, davon 50 % − 5 % je Kind), Geschwister in Ausbildung § 11 Abs. 4 (Spanne über alle Fälle), eigenes Einkommen § 23 (389 € frei, Bek. 18.11.2025, BGBl. 2025 I Nr. 279), Ehegatte § 25 Abs. 1 Nr. 2, Vermögen §§ 29, 30; § 51 Abs. 3, 4 (Rundung, unter 10 € nichts). Unbekanntes als Spanne; Elternteil allein und Studierende unter 37 (§ 11 Abs. 3 Nr. 2: maßgeblich ist das Alter bei Beginn des Ausbildungsabschnitts, die App kennt nur das Alter heute): nur „bis etwa“. Annahme im Text `bafoeg.kindHinweis`: Erwachsene im Haushalt sind die Eltern, Einkommen wie heute. Amtlicher Abgleich (BAföG Digital, 200 Fälle, 21.11.2026): alle amtlichen Beträge in SoLos Spanne (`tools/amtlich-vergleich-bafoeg-eg.js`) | ✓ | `bafoeg-betrag` |
-| Betriebliche Ausbildung: kein BAföG, sondern Berufsausbildungsbeihilfe | ✓ | `bafoeg-betrieb` |
+| Betriebliche Ausbildung (Kind oder Person selbst, seit 24.11.2026 auch „Ich bin in Ausbildung“ mit Haken Ausbildungsberuf): kein BAföG, sondern Berufsausbildungsbeihilfe (§ 2 Abs. 1 BAföG, § 56 SGB III) | ✓ | `bafoeg-betrieb`, `rechtsmatrix-grusi` |
 | Einstufung beim Kind mit dem Einkommen nach § 21 BAföG statt Netto: Lohn mit Brutto = (Brutto − 102,50 €) − Sozialpauschale 22,3 % (höchstens 17.200 €/Jahr) − Steuer (Brutto − Netto − Beiträge); ohne Brutto „wahrscheinlich“ weiter mit dem Netto; für „wahrscheinlich“ als Steuer höchstens die Lohnsteuer nach Splitting (verheiratete Eltern, § 25 Abs. 1 Nr. 1) bzw. Steuerklasse II/I (§ 21 Abs. 1, 2 BAföG, abgerufen 21.11.2026; Befund B1, Prüfung 21.11.2026) | ✓ | `rechenbefunde-b1` |
 
 ## Berufsausbildungsbeihilfe (§§ 56 ff. SGB III)
@@ -261,6 +278,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Pflege-Übersicht aufgeräumt (21.11.2026): Einleitung ein Satz, Rest zum Aufklappen; grüner Hauptknopf „Pflegegrad selbst einschätzen“ unter den Leistungen (nicht bei Grad 5 und nicht aus der Ergebnisseite); Hinweis als Tipp mit Symbol „Kostenlose Hilfe: Pflegekasse oder Pflegestützpunkt“ (§ 7a Abs. 1, § 7c SGB XI, abgerufen 21.11.2026) | ✓ | `pu-aufr` |
 | Pflege-Korrekturen (abgerufen 20.11.2026): Beratungsbesuch Pflicht halbjährlich bei PG 2–5, PG 4/5 auf Wunsch vierteljährlich (§ 37 Abs. 3 SGB XI); Verhinderungspflege durch nahe Angehörige/Haushalt nicht beruflich höchstens doppeltes Pflegegeld plus nachgewiesene Kosten bis zum Jahresbetrag (§ 39 Abs. 3 SGB XI); aufs Konto Pflegegeld und Wohngruppenzuschlag; ohne Pflegegrad 10 Arbeitstage auch bei voraussichtlicher Pflegebedürftigkeit (§ 2, § 7 Abs. 4 PflegeZG) | ✓ | `pu-korr` |
 | Pflegegrad selbst einschätzen, Ergebnisseite: groß „Wahrscheinlich Pflegegrad X“, Hinweis „Das ist eine Einschätzung. Entscheiden tut die Pflegekasse.“, wichtigste Leistungen mit Beträgen nur aus den Rechenregeln (Rules.pflegeFuer), Punkte je Bereich zum Aufklappen; höchstens 3 Kacheln in dieser Reihenfolge (Pflegegrad beantragen bzw. Höherstufung beantragen, Mit dem Gutachten vergleichen, Was steht mir zu?); Ergebnis automatisch gespeichert, „← Zurück“ von den Unterseiten zur Ergebnisseite, Pflege-Startseite zeigt die letzte Einschätzung; in den Leistungs-Check nur, wenn man von dort kam | ✓ | `pflege-ergebnis` |
+| Pflege im Heim als Information auf der Übersicht und der Erklärseite (keine Karte): § 43 SGB XI 131 / 805 / 1.319 / 1.855 / 2.096 €, Zuschlag § 43c 15 / 30 / 50 / 75 %, besondere Wohnform § 43a 15 %, höchstens 278 € (BMG Übersicht 2026); Karte Pflegegeld bei besonderer Wohnform nur „möglich“; Rentenbeiträge nicht bei Vollrente nach der Regelaltersgrenze (§ 5 Abs. 4 SGB VI); Einschätzung für Kinder bis 18 Monate nur Module 3, 5 und 4.K (Begutachtungs-Richtlinien), Frage nach Gebrauchsunfähigkeit beider Arme und Beine (§ 15 Abs. 4 SGB XI) (Vollprüfung Pflege & Rente 24.11.2026, docs/rechtsmatrix/pflege.md) | ✓ | `vp-pflege` |
 | Kachel „Mit dem Gutachten vergleichen“ öffnet die Gutachten-Prüfung (Brief → Pflegekasse) mit der Selbsteinschätzung; nach Eingabe der Gutachten-Werte Tabelle Bereich / Deine Punkte / Gutachten / Unterschied (gewichtet nach § 15 SGB XI, Rechnung aus pflege.js), Bereiche mit weniger Punkten im Gutachten fett; Texte in 13 Sprachen und Einfacher Sprache | ✓ | `pflege-vergleich` |
 
 ## Bayerisches Landespflegegeld (BayLPflGG)
@@ -271,6 +289,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Auszahlung bis 31. Januar des Folgejahres (Art. 2 Abs. 4 Satz 2 BayLPflGG), Satz im Antragshinweis in allen Sprachen, als „in der Regel“ (Antrag bis 3 Monate nach Jahresende möglich, Art. 3 Abs. 1 Satz 1); PG 2 in Bayern 500 €, anderes Land nein, Hinweis H3 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-lpg` |
 | Ab Pflegegrad 2, Hauptwohnsitz Bayern, unabhängig vom Einkommen; ab dem Pflegegeldjahr 2026 500 € im Jahr (vorher 1.000 €) | ✓ | `lpg-ja` |
 | Nur in Bayern; ohne Pflegegrad 2 nein, bei laufendem Pflegegrad-Antrag möglich | ✓ | `lpg-voraus` |
+| Ohne Bundesland nur „möglich“ (Hauptwohnsitz in Bayern, Art. 2 BayLPflGG) (Vollprüfung Pflege & Rente 24.11.2026, docs/rechtsmatrix/pflege.md) | ✓ | `vp-pflege` |
 | Antrag einmal beim Bayerischen Landesamt für Pflege; Antragsfrist | ◐ (Fristangaben der Quellen widersprüchlich; die App rät zum baldigen Antrag) | `lpg-ja` |
 | Empfänger des Antrags: Bayerisches Landesamt für Pflege, Postfach 13 65, 92203 Amberg (Hausanschrift Mildred-Scheel-Str. 4, 92224 Amberg); Quelle lfp.bayern.de (Seite Landespflegegeld und Impressum), abgerufen 19.11.2026; nicht für Wohnorte außerhalb Bayerns | ✓ | `lpg-stelle` |
 
@@ -281,11 +300,11 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 |---|---|---|
 | Asylverfahren oder Duldung: keine Sozialhilfe (§ 23 Abs. 2 SGB XII), nach 36 Monaten § 2 AsylbLG, davor Einzelfall § 6 AsylbLG: „möglich“ mit eigenem Hinweis (Abruf 20.11.2026) | ◐ | `hzp-asyl` |
 | EU-Bürger ohne Arbeit, unter 5 Jahren: keine Leistungen nach § 23 Abs. 1 SGB XII, Ausnahmen Härte und nach 5 Jahren (§ 23 Abs. 3 Satz 1, 6, 7 SGB XII): „unwahrscheinlich“ wie Grundsicherung im Alter, Hinweis Sozialhilfe (Abruf 20.11.2026) | ✓ | `sh-eu` |
-| Voraussetzung Pflegegrad 2–5 oder laufender Antrag (§ 61a) | ✓ | `hzp-voraus` |
+| Voraussetzung Pflegegrad 2–5 oder laufender Antrag (§ 61a); Pflegegrad 1 eingeschränkt „möglich“ (§ 63 Abs. 2: Hilfsmittel, Wohnumfeld, DiPA, Entlastungsbetrag) | ✓ | `hzp-voraus` |
 | Einkommensgrenze: 2 × Regelsatz Stufe 1 + Wohnkosten + 70 % Familienzuschlag (§ 85) | ✓ | `hzp-grenze` |
 | Einkommensgrenze: Unterkunft mit Heizung, also ganze Warmmiete (BSG 30.04.2020, B 8 SO 1/19 R, Leitsatz; § 85 nennt die Heizung nicht; manche Träger rechnen ohne Heizung, z. B. Infoblatt Nr. 37 Pflegestützpunkte Berlin 12/2025, deshalb Karte „möglich“ und „etwa“), Familienzuschlag auf volle Euro aufgerundet (395 €, § 85 Abs. 1 Nr. 3), Befund 15 (Abgleich 2 und Prüfung, Abruf 21.11.2026) | ✓ | `mb2-hzp` |
 | Schonvermögen 10.000 € je Erwachsenem, 500 € je unterhaltener Person | ✓ | `hzp-verm` |
-| Heim: Eigenanteil; Unterhalt der Kinder erst ab 100.000 € (§ 94 Abs. 1a) | ◐ | `hzp-heim` |
+| Heim: Eigenanteil; Unterhalt der Kinder erst bei mehr als 100.000 € Jahreseinkommen je Kind, Schwiegerkinder zählen nicht (§ 94 Abs. 1a); Antrag wirkt ab dem Tag der Kenntnis (§ 18 Abs. 1) | ◐ | `hzp-heim` |
 | Höhe: hängt von den tatsächlichen Pflegekosten ab | ○ (Kosten werden nicht abgefragt; Karte zeigt „möglich“) | |
 
 ## Steuer (EStG)
@@ -296,6 +315,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Pauschbeträge § 33b Abs. 3 EStG (384 bis 2.840 €, 7.400 €) (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-pausch` |
 | Behinderten-Pauschbetrag (§ 33b Abs. 3), Übertragung auf die Eltern (§ 33b Abs. 5) | ✓ | `st-pausch` |
 | Fahrtkostenpauschale 900 / 4.500 € (§ 33 Abs. 2a) | ✓ | `st-fahrt` |
+| 7.400 € auch bei Blindheit und bei Pflegegrad 4 oder 5 ohne GdB (§ 33b Abs. 3 Satz 3 EStG, § 65 Abs. 2 Satz 2 EStDV), dazu Fahrtkostenpauschale 4.500 €; blind ohne GdB-Angabe nur „möglich“ (Vollprüfung Pflege & Rente 24.11.2026, docs/rechtsmatrix/pflege.md) | ✓ | `vp-pflege` |
 | Pflege-Pauschbetrag 600 / 1.100 / 1.800 € (§ 33b Abs. 6) | ✓ | `st-pflege` |
 | Steuerermäßigung haushaltsnahe Dienstleistungen und Pflege (§ 35a) | ◐ | `st-35a` |
 
@@ -307,8 +327,9 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Asylverfahren oder Duldung: Eingliederungshilfe ausgeschlossen (§ 100 Abs. 2 SGB IX), nach 36 Monaten § 2 AsylbLG, davor Einzelfall; Kinder mit seelischer Behinderung § 6 Abs. 2 SGB VIII: eigener Hinweis (Abruf 20.11.2026) | ◐ | `eingl-asyl` |
 | Asylverfahren oder Duldung: Schwerbehinderteneigenschaft verlangt „rechtmäßigen“ Wohnsitz oder Arbeitsplatz (§ 2 Abs. 2 SGB IX); mit Duldung Anspruch auf Feststellung, wenn der Aufenthalt voraussichtlich länger als 6 Monate dauert (BSG 29.04.2010, B 9 SB 2/09 R, rechtsprechung-im-internet.de). Die Prognose fragt die App nicht ab: höchstens „möglich“ (Abruf 20.11.2026) | ◐ | `ausweis-asyl` |
 | Schwerbehindertenausweis ab GdB 50, Gleichstellung ab 30, Zusatzurlaub 5 Tage (§ 2, § 208) | ✓ | `sb-ausweis` |
-| Wertmarke kostenlos bei H/Bl/TBl/aG und mit G bei Grundsicherung (§ 228); Kfz-Steuer-Ermäßigung bei G, Befreiung bei H/Bl/aG | ✓ | `sb-frei` |
+| Wertmarke kostenlos bei H/Bl/TBl und mit G oder aG bei Grundsicherung (§ 228 Abs. 4); mit aG sonst gegen Eigenbeteiligung (bis 24.11.2026 fälschlich „kostenlos“); Kfz-Steuer-Ermäßigung bei G, Befreiung bei H/Bl/aG | ✓ | `sb-frei` |
 | Besonderer Kündigungsschutz (§ 168) | ◐ | `sb-kuendigung` |
+| Kind unter 18 mit GdB ab 50: eigener Text ohne Zusatzurlaub und Kündigungsschutz (§§ 168, 208 SGB IX nur für Beschäftigte); allein lebend über der Regelaltersgrenze mit GdB 30/40: keine Gleichstellung (§ 2 Abs. 3 SGB IX) (Vollprüfung Pflege & Rente 24.11.2026, docs/rechtsmatrix/pflege.md) | ✓ | `vp-pflege` |
 | Parkerleichterungen bei aG/Bl | ◐ | `sb-park` |
 | Eingliederungshilfe (SGB IX Teil 2, § 35a SGB VIII für Kinder mit seelischer Behinderung) | ◐ | `sb-eingl` |
 | Budget für Arbeit statt Werkstatt, Lohnkostenzuschuss bis 75 % (§ 61) | ◐ | `sb-budget` |
@@ -333,6 +354,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 
 | Regel | Status | Test |
 |---|---|---|
+| Ohne Bundesland: Spanne der Länder, bayerischer Betrag nur als Beispiel; Sehbehindertengeld nur „möglich“ (Vollprüfung Pflege & Rente 24.11.2026, docs/rechtsmatrix/pflege.md) | ✓ | `vp-pflege` |
 | Asylverfahren oder Duldung: § 9 Abs. 1 AsylbLG schließt Leistungen nach „vergleichbaren Landesgesetzen“ aus; ob das Landesblindengeld darunter fällt, ist offen (Art. 1, 3 BayBlindG ohne Regel): höchstens „möglich“ (Abruf 20.11.2026) | ◐ | `blindengeld-asyl` |
 | Blindengeld und Sehbehindertengeld, Beträge Stand 7/2026 | ✓ | `bg-betrag` |
 | Anrechnung von Pflegegeld: 46 % bei Pflegegrad 2, 33 % ab 3, mindestens 20 € (Art. 4) | ✓ | `bg-pflege` |
@@ -355,6 +377,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Unter 18 Jahren halber Betrag (§ 72 Abs. 2), Anrechnung von Pflegegeld (§ 72 Abs. 1 Satz 3), Kürzung im Heim (§ 72 Abs. 4) | ◐ | `blh-hinweise` |
 | Asylbewerber: erst mit Analogleistungen (§ 2 AsylbLG) | ◐ | `blh-asyl` |
 | Höhe der Blindenhilfe 951,92 €, unter 18 Jahren 476,78 € (ab 1.7.2026); Unterschied zum Landesblindengeld, wo dieses belegt ist | ✓ | `blh-betrag` |
+| Mit Pflegegrad 2–5 in Bayern: Rest nach beiden Anrechnungen (§ 72 Abs. 1 Satz 2 SGB XII 50 % bzw. 40 %, Art. 4 BayBlindG 46 % bzw. 33 %), z. B. PG 3: 100,99 €; andere Länder mit Pflegegrad ohne Restbetrag; ohne Bundesland kein Landesbetrag (Vollprüfung Pflege & Rente 24.11.2026, docs/rechtsmatrix/pflege.md) | ✓ | `vp-pflege` |
 | Zuständig in Bayern: Bezirk | ○ (bitte von einer Beratungsstelle bestätigen lassen) | |
 
 ## Arbeitslosengeld I (SGB III)
@@ -386,7 +409,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Minijob ohne Krankengeld | ✓ | `kv-minijob` |
 | Rente (erste Person): Vollrente wegen Alters oder volle Erwerbsminderungsrente beendet den Anspruch, Teilrente kürzt ihn (§ 50 Abs. 1 Satz 1 Nr. 1, Abs. 2 SGB V). Welche Rente, fragt die App nicht: höchstens „möglich“, Hinweis vorn (Abruf 20.11.2026) | ◐ | `krank-rente` |
 | Belastungsgrenze 2 % / 1 % bei chronisch Kranken (GdB ab 60 oder Pflegegrad 3–5) | ✓ | `kv-zuzahl` |
-| Fahrtkosten zur ambulanten Behandlung bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5 (§ 60) | ◐ | `kv-fahrt` |
+| Belastungsgrenze gilt für alle gesetzlich Versicherten (§ 62 Abs. 1 SGB V): „möglich“ auch ohne Behinderung bei Rente oder Grundsicherung, sonst „eher nicht“ mit Hinweis, dass sie gilt (Vollprüfung Pflege & Rente 24.11.2026, docs/rechtsmatrix/pflege.md) | ✓ | `vp-pflege` |
+| Fahrtkosten zur ambulanten Behandlung bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5 (§ 60); Genehmigung für Krankenfahrten gilt als erteilt (§ 60 Abs. 1 Satz 5), Krankentransport vorher genehmigen | ◐ | `kv-fahrt` |
 
 ## Rundfunkbeitrag (RBeitrStV)
 <!-- karten: rundfunk -->
@@ -405,7 +429,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Regel | Status | Test |
 |---|---|---|
 | Asylverfahren oder Duldung: WBS nur bei Möglichkeit eines dauerhaften Wohnsitzes (§ 27 Abs. 2 WoFG, Art. 14 Abs. 2 BayWoFG): „unwahrscheinlich“ mit Hinweis auf Ausnahmen (z. B. Ausbildungsduldung: VG Berlin, Urteil vom 25.06.2019, VG 8 K 202.18) und Wohnungsamt (Entscheidung David 20.11.2026; Abruf 20.11.2026) | ◐ | `wbs-asyl` |
-| Einkommensgrenzen nach Haushaltsgröße und Kindern; höhere Grenzen per Gebietsverordnung | ✓ | `wbs-grenze` |
+| Einkommensgrenzen nach Haushaltsgröße und Kindern; höhere Grenzen per Gebietsverordnung; Bayern: Schwangerschaft zählt wie ein Kind (Art. 4 Abs. 1 Satz 4 BayWoBindG, Abruf 24.11.2026) | ✓ | `wbs-grenze`, `rechtsmatrix-grusi` |
 | Freibetrag Schwerbehinderte: Bayern 4.000 € je Person mit GdB ab 50 (Art. 5 Abs. 2 Nr. 1 BayWoFG); andere Länder nach dem Muster § 24 WoFG (4.500 € / 2.100 €) | ✓ | `wbs-schwerb` |
 | Arbeitnehmer-Pauschbetrag 1.230 € je Person mit Lohn (und einmal für Einkommen der Kinder) vor den pauschalen 30 % abgezogen (Art. 6 Abs. 1 und 3 BayWoFG über Art. 4 Abs. 1 BayWoBindG; § 21, § 23 WoFG; § 9a Satz 1 Nr. 1 Buchst. a EStG; abgerufen 21.11.2026); nur für „möglich“ und „unwahrscheinlich“, „wahrscheinlich“ bleibt beim Brutto (Abgleich Runde 2, H2; SH-Tabelle ab 06.01.2026, Fußnote) | ✓ | `wbs-werbung` |
 | Freibetrag Schwerbehinderte nach § 24 WoFG (4.500 € / 2.100 €) | ✓ | `wbs-schwerb` |
@@ -432,6 +456,8 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Teilzeit nach der Geburt: Prozentsatz nach dem Einkommen vorher auf den Unterschied, Einkommen vorher höchstens 2.770 € (§ 2 Abs. 3), mindestens 300 € (§ 2 Abs. 4); ElterngeldPlus höchstens die Hälfte des Basiselterngelds ohne Einkommen, Mindestbetrag und Mindest-Geschwisterbonus halbiert (§ 4a Abs. 2) (Abruf 21.11.2026) | ✓ | `eg-teilzeit` |
 | Teilzeit: Hinweis auf höchstens 32 Wochenstunden (§ 1 Abs. 6 Nr. 1); schon laufendes Elterngeld bei Mehrlingen: Freibetrag beim Wohngeld 300 € je Kind der Geburt (§ 10 Abs. 4), bei Grundsicherung, Sozialhilfe und Kinderzuschlag nicht vervielfacht und nur über Mindestbetrag plus Mehrlingszuschlag (§ 10 Abs. 5; Richtlinien zum BEEG 07/2026 Nr. 10.4, 10.5.2) (Abruf 21.11.2026) | ✓ | `eg-mehrlinge-frei` |
 | Elterngeld-Netto nach §§ 2e, 2f BEEG aus dem eingegebenen Netto: Brutto zurückgerechnet, echte Beiträge durch die Pauschale 21 % (9 + 10 + 2 %) ersetzt (2.000 € netto, kinderlos: 2.021,78 € -> 1.248 € statt 1.233 €); Minijob und Übergangsbereich unverändert; Pauschbetrag § 2c bleibt 1.230 €/12 (abgerufen 21.11.2026; Befund E2) | ◐ | `rechenbefunde-e2` |
+| Einkommensgrenze: Brutto aus Arbeit über 175.000 € im Jahr höchstens „möglich“ mit Hinweis; kein „eher nicht“, weil zu versteuerndes Einkommen (Kinderfreibeträge u. a., § 2 Abs. 5 EStG) und Vorjahr nicht bekannt sind (§ 1 Abs. 8 BEEG; Gegenprüfung 25.11.2026) | ◐ (zu versteuerndes Einkommen des Vorjahres wird nicht abgefragt) | `rechtsmatrix-familie` |
+| Paare: gleichzeitiges Basiselterngeld nur 1 Monat in den ersten 12 Lebensmonaten (§ 4 Abs. 6), Partnerschaftsbonus 2 bis 4 Monate bei 24 bis 32 Wochenstunden (§ 4b) (Abruf 24.11.2026) | ✓ | `rechtsmatrix-familie` |
 
 ## Mutterschaftsgeld (MuSchG, § 24i SGB V)
 <!-- karten: mutter -->
@@ -443,8 +469,10 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Nicht gesetzlich versichert oder Minijob ohne eigene Versicherung: Bundesamt für Soziale Sicherung einmalig höchstens 210 € | ◐ (Versicherungsart wird nicht abgefragt, daher Hinweis) | `mu-lohn` |
 | Arbeitslosengeld: Mutterschaftsgeld in Höhe des Arbeitslosengeldes | ✓ | `mu-alg` |
 | Schutzfrist 6 Wochen vor, 8 (12) Wochen nach der Geburt | ✓ | `mu-lohn` |
-| Ohne Arbeit oder Arbeitslosengeld kein Mutterschaftsgeld, Hinweis auf Mehrbedarf und Erstausstattung | ✓ | `mu-ohne` |
+| Ohne Arbeit, Arbeitslosengeld oder Krankengeld kein Mutterschaftsgeld, Hinweis auf Mehrbedarf und Erstausstattung | ✓ | `mu-ohne` |
 | Bei zwei Erwachsenen unbekannt, wer schwanger ist: nur „möglich“ | ✓ | `mu-ohne` |
+| Krankengeld: Mutterschaftsgeld, meist in Höhe des Krankengeldes; Selbstständige nur gesetzlich versichert mit Krankengeld-Anspruch, ohne Arbeitgeberzuschuss: „möglich“ (§ 24i Abs. 1, 2 SGB V, Abruf 24.11.2026) | ✓ | `rechtsmatrix-familie` |
+| Schutzfrist nach einer Fehlgeburt ab der 13. Woche: 2, 6 oder 8 Wochen (§ 3 Abs. 5 MuSchG, seit 1.6.2025, Abruf 24.11.2026) | ✓ | `rechtsmatrix-familie` |
 
 ## Kinderkrankengeld (§ 45 SGB V)
 <!-- karten: kkg -->
@@ -465,6 +493,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Ausschluss vom Grundsicherungsgeld, von der Grundsicherung im Alter und vom Kinderzuschlag; Wohnberechtigungsschein „unwahrscheinlich“; Wohngeld nur ohne AsylbLG-Bezug (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG) | ✓ | `asyl-ausschluss` |
 | Einkommensart „Asylbewerberleistungen“ (nur bei Aufenthalt „asyl“ wählbar): Karte „bekommst du schon“, Wohngeld „unwahrscheinlich“ (§ 7 Abs. 1 Satz 1 Nr. 8 WoGG), Bildung und Teilhabe „bekommst du“ über das Sozialamt (§ 3 Abs. 4 AsylbLG), Kita ohne Beitrag (§ 90 Abs. 4 Satz 2 SGB VIII), Rundfunkbeitrag befreit (§ 4 Abs. 1 Nr. 4 RBeitrStV); Zuzahlung unverändert „möglich“ (Abruf 20.11.2026) | ✓ | `asyl-bezug` |
 | Höhe der Leistungen (Bedarfsstufen, Sachleistungen in Unterkünften) | ○ (hängt von der Unterbringung ab; die Stelle rechnet) | |
+| Einkommen und Vermögen zuerst (§ 7 AsylbLG): frei 25 % vom Lohn (höchstens 50 % der Bedarfsstufe), 200 € Vermögen je Person; grobe Rechnung mit Regelbedarfen plus Miete: mit Einkommen oder Vermögen höchstens „möglich“, nur bei klar deckendem Einkommen „eher nicht“ (Vermögen allein nie, Gegenprüfung 25.11.2026) (Vollprüfung 24.11.2026, buzer.de, Abruf 24.11.2026) | ◐ | `rechtsmatrix-grusi` |
 
 ## Zuständige Stellen außerhalb Bayerns
 <!-- karten: -->
@@ -523,10 +552,10 @@ Wird nur das Brutto eingetragen, schätzt die App das Netto. Gilt für alle Kart
 |---|---|---|
 | Pfändbarer Betrag nach § 850c ZPO und Pfändungsfreigrenzenbekanntmachung 2026 vom 19.3.2026 (BGBl. 2026 I Nr. 80; nicht Nr. 160, das ist die Bekanntmachung 2024): Netto auf 10 € abgerundet, 70/50/40/30/20/10 % des Mehrbetrags, wie die amtliche Tabelle | ✓ | `pfaendung-tabelle` |
 | Über der Höchstgrenze 4.866,30 € voll pfändbar | ✓ | `pfaendung-hoechst` |
-| P-Konto: 1.590 € automatisch (§ 899 ZPO), Unterhalt und Kindergeld mit Bescheinigung (§§ 902, 903 ZPO) | ✓ | `pkonto` |
+| P-Konto: 1.590 € automatisch (§ 899 ZPO), Unterhalt, Kindergeld und Kinderzuschlag (Frage nur mit Kindergeld-Kindern, § 902 Satz 1 Nr. 5 ZPO) mit Bescheinigung (§§ 902, 903 ZPO); Tipp Bescheinigung immer, auch mit weiteren Erhöhungen (Bedarfsgemeinschaft ohne Unterhaltspflicht, Pflegegeld, Blindengeld, einmalige Sozialleistungen, Grundsicherungsgeld über dem Sockel; § 902 Satz 1 Nr. 1 b, 2, 4 ZPO, abgerufen 24.11.2026) | ✓ | `pkonto` |
 | Pfändung wegen Unterhalt (§ 850d ZPO): andere Freibeträge, Hinweis | ◐ | `pfaendung-tabelle` |
 | Unpfändbare Bezüge (§ 850a ZPO), Kindergeld (§ 76 EStG), Erhöhung durch das Gericht (§§ 850f, 906 ZPO), Übertrag (§ 899 ZPO), Nachzahlungen (§ 904 ZPO): Hinweise | ◐ | `pkonto` |
-| Wöchentliche oder tägliche Auszahlung, Kinderzuschlag auf dem P-Konto, Unterhaltsberechtigte mit eigenem Einkommen (§ 850c Abs. 6 ZPO) | ○ (Monatslohn ist der Regelfall; die übrigen Fälle entscheidet das Vollstreckungsgericht im Einzelfall) | |
+| Wöchentliche oder tägliche Auszahlung, Unterhaltsberechtigte mit eigenem Einkommen (§ 850c Abs. 6 ZPO) | ○ (Monatslohn ist der Regelfall; die übrigen Fälle entscheidet das Vollstreckungsgericht im Einzelfall) | |
 | Startkachel „Geld und Schulden“ (Entscheidung David 20.11.2026, docs/entwuerfe/schulden-bereich.md) mit 6 Kacheln in der Form der Startseite, neue Reihenfolge nach dem Ablauf der Schuldnerberatung (Konzept geld-schulden-konzept.md, Entscheidung David 20.11.2026): Es ist dringend (Krisen-Check als erste Karte; Konto gepfändet, Strom-/Gassperre, Mahnbescheid, Wohnung gekündigt/Mietschulden, Geldstrafe – je Frist und erster Schritt, Einzelheiten zum Aufklappen; Konto mit Knopf zum Pfändungsrechner und zur P-Konto-Bescheinigung, Strom mit „Abschlag prüfen“, Mahnbescheid mit „In die Schulden-Liste eintragen“), Was bleibt mir? (Pfändungsrechner, Bescheinigung P-Konto), Meine Schulden-Liste, Post vom Inkasso (Prüfliste, Musterschreiben, Raten anbieten, Gelber Umschlag → Mahnbescheid), Mein Geld planen (Haushaltsplan, darunter Sparen im Alltag: Strom und Heizen je mit den Kacheln „Abschlag prüfen“ und „Tarife vergleichen“, Essen mit Link zur Verbraucherzentrale (Seite in einfacher Sprache), Verträge – ohne Sperre/Schulden), Schuldnerberatung (Beratungsstelle finden, Bis zum Termin, Beratungsmappe, Ablauf und Privatinsolvenz, unseriöse Anbieter); jeder Text nur an einer Stelle; „← Zurück“ oben führt eine Ebene hoch; Frist P-Konto: Umwandlung binnen eines Monats schützt gesperrtes Guthaben (§ 899 Abs. 1 ZPO), Bank ab dem 4. Geschäftstag (§ 850k ZPO); Tipps sinngemäß nach Verbraucherzentralen, BAG-SB (meine-schulden.de), Caritas/Diakonie, AG SBV (abgerufen 20.11.2026); Fristen: Widerspruch Mahnbescheid möglichst in 2 Wochen (§ 692 Abs. 1 Nr. 3 ZPO), später noch, solange kein Vollstreckungsbescheid verfügt ist (§ 694 Abs. 1 ZPO); Einspruch Vollstreckungsbescheid 2 Wochen, Notfrist (§§ 700, 339 ZPO); Vollstreckungsbescheid: Pfändung sofort möglich (§ 700 ZPO), Einspruch stoppt sie nicht von selbst (§ 719 Abs. 1 ZPO; Text in allen Sprachen angeglichen 20.11.2026); Schonfrist Räumungsklage 2 Monate, einmal in 2 Jahren (§ 569 Abs. 3 Nr. 2 BGB), gilt nicht für eine zusätzliche ordentliche Kündigung; Strom-/Gassperre erst ab 2 Abschlägen und 100 €, Androhung 4 Wochen, Ankündigung 8 Werktage (§ 41f EnWG), Grundversorgung: zinsfreie Raten (§ 41g EnWG, abgerufen 20.11.2026); Verjährung 3 Jahre ab Jahresende (§§ 195, 199 BGB), Neubeginn bei Anerkenntnis z. B. durch Ratenzahlung (§ 212 Abs. 1 Nr. 1 BGB), 30 Jahre nach Vollstreckungsbescheid oder Urteil (§ 197 Abs. 1 Nr. 3 BGB; abgerufen 20.11.2026), Restschuldbefreiung in der Regel nach 3 Jahren (§ 287 InsO), Geldstrafen bleiben (§ 302 InsO); Beratungsstellen nur als Art der Stelle | ✓ | `schulden`, `geld` |
 | Pfändungsrechner: Knopf „Schuldnerberatung“ erst unter dem Ergebnis, nicht vor dem Rechnen; Zurück von dort führt zu den 6 Kacheln (kein Kreis); dritte Karte „Bescheinigung für das P-Konto“ (Musterschreiben nach § 903 Abs. 1 und 3 ZPO, abgerufen 20.11.2026) | ✓ | `geld`, `pfaendung` |
 | Krisen-Check „Was ist zuerst dran?“: 7 Ja/Nein-Fragen, eine je Bildschirm, überspringbar; Ergebnis höchstens 3 „zuerst“ in fester Reihenfolge (Gerichtspost, Geldstrafe, Miete, Strom/Gas, Konto, Essen, Inkasso – Existenzsicherung zuerst nach AG SBV 2018, S. 11–12), Rest „danach“, ohne Ja die Schulden-Liste, immer „Beratungsstelle finden“ am Ende; nur Reihenfolge, keine Prüfung des Falls; Fall „Kein Geld für Essen“ nicht gebaut (keine geprüfte Quelle), stattdessen Leistungs-Check | ✓ | `kc`, `krisencheck` |
@@ -534,7 +563,7 @@ Wird nur das Brutto eingetragen, schätzt die App das Netto. Gilt für alle Kart
 | Prüfliste „Stimmt der Brief?“: 6 Haken nach § 13a Abs. 1 RDG (Nr. 1 Auftraggeber, Nr. 2 Forderungsgrund, Nr. 3+4 Zinsen, Nr. 5+6 Inkassokosten, Nr. 8 Aufsichtsbehörde, Nr. 7 Herkunft der Anschrift; Wortlaut abgerufen 20.11.2026); Ergebnis nur „fehlt im Brief“ bzw. „alle Punkte stehen drin – sagt nichts über die Forderung“, Knopf zum Schreiben „Forderungsaufstellung“; Warnungen Schuldanerkenntnis (§ 13a Abs. 4 RDG), Kosten von Raten (§ 13a Abs. 3 RDG), gelber Umschlag 2 Wochen (§ 692 ZPO); nicht angehakte Punkte heißen „nicht angehakt“ (bedingte Punkte gelten nur, wenn sie zutreffen), darunter immer „Erste Einschätzung, keine Rechtsberatung“ (Prüfung 20.11.2026) | ✓ | `ip`, `inkasso` |
 | Musterschreiben (immer Deutsch, als Vorlage): Bitte um Geduld, Forderungsaufstellung (§ 13a Abs. 1 und 2 RDG, für Rechtsanwälte § 43d BRAO; ohne Zahlungsverweigerung), Widerspruch (unbekannt/bezahlt, mit Warnung), P-Konto-Bescheinigung (§ 903 ZPO); Gläubiger, Anschrift, Aktenzeichen nur aus Eingabe oder Schulden-Liste, sonst Lücke [ … ]; Eingaben nur als Text; Pflicht-Hinweis „Allgemeines Muster, keine Rechtsberatung. Bei Post vom Gericht läuft eine Frist“; keine Wertung des Einzelfalls; Ausgabe nur Drucken/Teilen | ✓ | `ms`, `schreiben` |
 | Raten anbieten: Ratenempfehlung als SoLo-Faustregel (keine Rechtsaussage): frei = Einnahmen − Ausgaben aus dem Haushaltsplan (nur gelesen), Puffer 10 % der Einnahmen (auf den Cent aufgerundet), mind. 50 €, Rate abgerundet auf volle 5 €, unter 5 € keine Rate (Verweis Schuldnerberatung); ohne ausgefüllten Plan nur Vermerk mit Knopf zum Plan; mehrere offene Schulden mit Betrag: Aufteilung nach Forderung, je Gläubiger auf ganze Euro abgerundet, Gläubiger des Schreibens hervorgehoben; „Übernehmen“ setzt die Rate ins Schreiben „Ratenzahlung anbieten“ (fragt nach Kosten, vgl. § 13a Abs. 3 RDG); Hinweis: Ratenangebot kann Anerkenntnis sein (§ 212 Abs. 1 Nr. 1 BGB); Schreiben mit Vorbehalt „ohne Anerkennung einer Rechtspflicht“, kein Anerkenntnis von Zinsen und Kosten | ✓ | `rate`, `rate-dom` |
-| Ratenvorschlag (Prüfung Richtigkeit 21.11.2026): nur wenn Einnahmen, Miete und Essen im Plan stehen; Rate höchstens der pfändbare Betrag nach § 850c ZPO (Werte 2026, Einnahmen ohne Kindergeld, Unterhaltsberechtigte aus Pfändungsrechner oder Check); nichts pfändbar: kein Vorschlag, Hinweis Pfändungstabelle und Schuldnerberatung, Miete/Strom zuerst, Geldstrafe: Raten bei der Staatsanwaltschaft; „Übernehmen“ setzt nie 0 € ins Schreiben | ✓ | `rate-pf` |
+| Ratenvorschlag (Prüfung Richtigkeit 21.11.2026): nur wenn Einnahmen, Miete und Essen im Plan stehen; Rate höchstens der pfändbare Betrag nach § 850c ZPO (Werte 2026; nur pfändbares eigenes Einkommen der Person 1: Lohn, Rente, ALG, Krankengeld, Werkstattlohn, Elterngeld über 300 €, Sonstige Einnahmen – ohne Partner-Einkommen, Kindergeld, Unterhalt für die Kinder und „Andere Leistungen“ wie Wohngeld, Kinderzuschlag, Grundsicherungsgeld; § 54 SGB I, § 42 Abs. 4 SGB II, § 17 Abs. 1 SGB XII, Prüfung 24.11.2026; Unterhaltsberechtigte aus Pfändungsrechner oder Check); nichts pfändbar: kein Vorschlag, Hinweis Pfändungstabelle und Schuldnerberatung, Miete/Strom zuerst, Geldstrafe: Raten bei der Staatsanwaltschaft; „Übernehmen“ setzt nie 0 € ins Schreiben | ✓ | `rate-pf` |
 | Aufteilung der Rate nach Vorrang wie die Schulden-Liste (Stufe 1 Miete, Strom, Unterhalt, Geldstrafe, Krankenversicherung; 2 Bußgeld, Amt; 3 Banken, Inkasso), innerhalb der Stufe anteilig, je Gläubiger höchstens die Forderung; Hinweis, vorrangige Raten direkt abzusprechen | ✓ | `rate-vor` |
 | Antragsmappe: bei Entweder-oder (Grundsicherungsgeld oder Wohngeld/Kinderzuschlag; bei Rente Grundsicherung im Alter oder Wohngeld; § 7 Abs. 1 WoGG, § 6a BKGG, § 12a SGB II) Optionsfelder mit beschreibenden Namen und „Ich weiß es noch nicht“ statt leerer Haken; vorbelegt nach `out.wege` der Regeln (aVor → Wohngeld/Kinderzuschlag, bUeblich → Grundsicherung, knapp/unklar → „Ich weiß es noch nicht“ mit Lage-Satz und Notfall-Satz); Satz „Beträge der zwei Wege nicht zusammenzählen“; je nach Wahl passende Anträge, Formulare und Unterlagen (docs/entwuerfe/entweder-oder.md, 21.11.2026) | ✓ | `weg` |
 | Antragsmappe: Vorauswahl – Geld-Leistungen mit Betrag (und wahrscheinliche Leistungen) vorab angehakt und zuerst; WBS, Rundfunk, Zuzahlungen zugeklappt unter „Weitere Hilfen“; kein Satz „siehe Tipp oben“ | ✓ | `vorauswahl` |
