@@ -1103,11 +1103,11 @@ const Rules = (function () {
     return mk(id, 'ja', 'ja', tx.concat(!h.eu ? [['familie.titel']] : []));
   }
 
-  // Sächsisches Landeserziehungsgeld (R.lerzg): Hinweis bei einem Kind unter 6 (Bezug im 2. oder 3. Lebensjahr), nur in Sachsen;
-  // ohne Bundesland als „falls du in Sachsen wohnst“
+  // Sächsisches Landeserziehungsgeld (R.lerzg): Hinweis bei einem Kind unter 6 (Bezug im 2. oder 3. Lebensjahr),
+  // nur wenn das Bundesland (aus der Postleitzahl) Sachsen ist (Entscheidung David 25.11.2026)
   function lerzg(h) {
-    if (!(h.kidsU6 > 0) || (h.land && h.land !== 'SN')) return [];
-    return [[h.land === 'SN' ? 'kindergeld.lerzg' : 'kindergeld.lerzgFalls', { a: eur(R.lerzg.k1), b: eur(R.lerzg.k2), c: eur(R.lerzg.k3) }]];
+    if (!(h.kidsU6 > 0) || h.land !== 'SN') return [];
+    return [['kindergeld.lerzg', { a: eur(R.lerzg.k1), b: eur(R.lerzg.k2), c: eur(R.lerzg.k3) }]];
   }
 
   // ---------------------------------------------------------------
