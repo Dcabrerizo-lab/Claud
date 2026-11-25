@@ -8189,7 +8189,6 @@
      "kindergeld.lerzg"
     ],
     "txNicht": [
-     "kindergeld.lerzgFalls",
      "kindergeld.familiengeld"
     ],
     "betrag": 150,
@@ -8201,7 +8200,7 @@
  {
   "id": "LERZG-02",
   "pruefer": "Claude (neue Karte 25.11.2026)",
-  "beschreibung": "Ohne Bundesland, Kind unter 6: „falls du in Sachsen wohnst“",
+  "beschreibung": "Ohne Bundesland (keine Postleitzahl), Kind unter 6: kein Sachsen-Hinweis (nur bei sächsischer PLZ, Entscheidung David 25.11.2026)",
   "h": {
    "adults": 2,
    "kids": 1,
@@ -8219,8 +8218,8 @@
   "erwartet": {
    "kindergeld": {
     "status": "ja",
-    "tx": [
-     "kindergeld.lerzgFalls"
+    "txNicht": [
+     "kindergeld.lerzg"
     ]
    }
   },
@@ -8249,8 +8248,7 @@
    "kindergeld": {
     "status": "ja",
     "txNicht": [
-     "kindergeld.lerzg",
-     "kindergeld.lerzgFalls"
+     "kindergeld.lerzg"
     ]
    }
   },
@@ -8279,8 +8277,7 @@
    "kindergeld": {
     "status": "ja",
     "txNicht": [
-     "kindergeld.lerzg",
-     "kindergeld.lerzgFalls"
+     "kindergeld.lerzg"
     ]
    }
   },
