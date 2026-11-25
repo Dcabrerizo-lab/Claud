@@ -25,6 +25,9 @@ const Behoerden = (function () {
   var ZUST = {
     wohngeld: { typ: 'kreis', abt: 'Wohngeldstelle' },
     gsa: { typ: 'kreis', abt: 'Sozialamt, Grundsicherung im Alter und bei Erwerbsminderung' },
+    // Hilfe zum Lebensunterhalt außerhalb von Einrichtungen: örtlicher Träger der Sozialhilfe wie bei der Grundsicherung (§ 97 Abs. 1 SGB XII;
+    // in Bayern die Landkreise und kreisfreien Städte als örtliche Träger; in Einrichtungen kann der Bezirk zuständig sein)
+    hlu: { typ: 'kreis', abt: 'Sozialamt, Hilfe zum Lebensunterhalt' },
     uvg: { typ: 'kreis', abt: 'Jugendamt, Unterhaltsvorschussstelle' },
     but: { typ: 'kreis', abt: 'Bildung und Teilhabe' },
     wbs: { typ: 'kreis', abt: 'Wohnungsamt', wbs: true },
@@ -69,7 +72,7 @@ const Behoerden = (function () {
     // Jugendamt (Unterhaltsvorschuss) und Bildung und Teilhabe bleiben ohne Anschrift (teils eigene Ämter großer Städte).
     if (ags && !has(D.kreise, ags) && D.de && has(D.de.kreise, ags)) {
       var e = D.de.kreise[ags];
-      if (z.typ !== 'kreis' || (e.typ !== 'stadt' && id !== 'gsa' && id !== 'wohngeld')) return null;
+      if (z.typ !== 'kreis' || (e.typ !== 'stadt' && id !== 'gsa' && id !== 'hlu' && id !== 'wohngeld')) return null;
       // Anschrift nur aus amtlicher Quelle (Impressum der Behörde). Aus Wikipedia übernommene Anschriften zeigt die App nicht (Projektregel: jede
       // Anschrift braucht eine amtliche Quelle; Prüfung Richtigkeit 21.11.2026) – dann nur Name und Website der Behörde (beh.ohneAdr).
       // Am 21.11.2026 wurden die 60 früheren Wikipedia-Anschriften gegen die Website der Behörde geprüft: 47 mit Impressum/Kontaktseite als

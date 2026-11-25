@@ -104,6 +104,17 @@ ck('Unterlagen: Ausweis, Kontoauszüge, Mietvertrag, Lohnabrechnungen', ['Person
     ['fw.kg1', satz({ kids: 1 }, ja('kindergeld'), 'kg1')], ['fw.kg18', satz({ young: 1 }, ja('kindergeld'), 'kg18')], ['fw.kg4', satz({}, ja('kgBeh'), 'kg4')],
     ['fw.gsa', satz({}, ja('gsa'), 'gsa')], ['fw.wbs.BY', satz({ bundesland: 'BY' }, ja('wbs'), 'wbs')], ['fw.wbs.sonst', satz({ bundesland: 'HE' }, ja('wbs'), 'wbs')], ['fw.wbs.leer', satz({}, ja('wbs'), 'wbs')]];
   paare.forEach(([k, w]) => ck('Mappe: ' + k + ' gleich dem Satz in formulare.js', de[k] === w, [de[k], w]));
+  // Neue Karte Hilfe zum Lebensunterhalt (25.11.2026): Text in src/lang/karten/de.json
+  const kd = require('../src/lang/karten/de.json');
+  ck('Mappe: fw.hlu gleich dem Satz in formulare.js', kd['fw.hlu'] === satz({}, ja('hlu'), 'hlu'), [kd['fw.hlu'], satz({}, ja('hlu'), 'hlu')]);
+}
+// [hlu-mappe] Hilfe zum Lebensunterhalt: Hinweis Sozialamt, Unterhaltsgrenze mit Ausnahme für Kinder unter 18 (§ 94 Abs. 1a SGB XII), § 39; nicht bei laufendem Bezug
+{
+  const h1 = finde(plan({ adults: 1 }, [{ id: 'hlu', level: 'vielleicht' }]), 'hlu');
+  ck('[hlu-mappe] Hinweis für Hilfe zum Lebensunterhalt', !!h1 && h1.art === 'hinweis' && /Sozialamt/.test(h1.warum) && /§ 18 SGB XII/.test(h1.warum), h1);
+  ck('[hlu-mappe] Unterhalt: 100.000 € und Ausnahme unter 18', !!h1 && h1.hilfe.some((x) => /100\.000 €/.test(x) && /unter 18/.test(x)) && h1.hilfe.some((x) => /§ 39 SGB XII/.test(x)));
+  ck('[hlu-mappe] kein Hinweis bei laufendem Bezug vom Sozialamt', !finde(plan({ adults: 1, bezug: { sozialamt: true } }, [{ id: 'hlu', level: 'vielleicht' }]), 'hlu'));
+  ck('[hlu-mappe] kein Hinweis bei „eher nicht“', !finde(plan({ adults: 1 }, [{ id: 'hlu', level: 'nein' }]), 'hlu'));
 }
 
 console.log(fails ? fails + ' von ' + n + ' Formular-Prüfungen FALSCH' : 'Formulare: alle ' + n + ' Prüfungen bestanden (nur geprüfte amtliche Links und Hinweise)');
