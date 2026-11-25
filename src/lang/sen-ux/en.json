@@ -46,5 +46,13 @@
   "l.einsKurz": "Your details, deadlines and ticks in this app. Other saved cases remain.",
   "l.kurzZurueck": "After that you can still undo it for half a minute.",
   "sux.brief.t": "Check a decision from the care insurance fund (Pflegekasse), the pension insurance or an authority and write an objection.",
-  "sux.briefA.t": "Check letters from the care insurance fund (Pflegekasse) or an authority for the person you care for and write an objection."
+  "sux.briefA.t": "Check letters from the care insurance fund (Pflegekasse) or an authority for the person you care for and write an objection.",
+  "sux.q.kinder": "Do children under 25 live in your household?",
+  "sux.h.kinder": "This means your children or your partner's children who live with you. Children change, for example, housing benefit and basic security.",
+  "sux.h.young": "Only children in school, training or university. If another adult child lives with you, enter this a little later with the other adults in your home.",
+  "sux.q.kindLage": "Does any of this apply to the children?",
+  "sux.h.kindLage": "Only if something applies will the app ask a short question about it.",
+  "sux.g.kUnterhalt": "A child receives maintenance from the other parent",
+  "sux.g.kWaisen": "A child receives an orphan's pension",
+  "sux.g.kEink": "A child has income of their own, for example from training or a Minijob"
 }

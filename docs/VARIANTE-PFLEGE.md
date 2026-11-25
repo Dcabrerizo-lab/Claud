@@ -59,3 +59,13 @@ cd app/ios/App && xcodebuild -project App.xcodeproj -scheme App -configuration R
 - `tools/paket-bauen.sh` kennt die Variante noch nicht.
 - Das Vorlese-Plugin (`@capacitor-community/text-to-speech`) steckt auch in der SoLo-App (gemeinsame `app/package.json`), wird dort aber nie aufgerufen.
 - Startbild (Splash) ist das von SoLo (Petrol-Logo).
+
+## Kinder unter 25 im Haushalt (Auftrag David 25.11.2026)
+- Frage „Leben Kinder unter 25 Jahren in Ihrem Haushalt?“ direkt nach der Haushaltsfrage (`senKinder` in `varFragen`, `src/app.js`).
+- Bei „Ja“: Zahl der Kinder unter 18, davon unter 6 und 14 bis 17, Kinder 18 bis 24 in Schule/Ausbildung/Studium, Sammelfrage
+  „Trifft etwas davon auf die Kinder zu?“ (Unterhalt, Waisenrente, eigenes Einkommen; Betrag wird erst bei Haken gefragt).
+  „Ein Kind unter 18“ bei der Behinderungsfrage nur mit Kindern unter 18. „Nein“ löscht alle Angaben zu Kindern.
+- Die Regeln rechnen die Kinder wie in SoLo (Wohngeld, Grundsicherung, Kinderzuschlag). Mit Kindern zeigt die Variante zusätzlich
+  Kindergeld, Kindergeld für erwachsene Kinder mit Behinderung, Kinderzuschlag, Bildung und Teilhabe (`VAR_KARTEN_KINDER`).
+  Unterhaltsvorschuss bleibt draußen (Fragen zum anderen Elternteil für die Zielgruppe meist überflüssig; Entscheidung offen für David).
+- Tests: `test/test-variante-pfad.js` (Fall „EM-Rente mit 2 Kindern“: Wohngeld gleich SoLo, etwa 660 €), `test/e2e-variante-kinder.js` (Browser).

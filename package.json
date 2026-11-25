@@ -16,7 +16,7 @@
     "test:dom:parallel": "node tools/tests.js oberflaeche -j 3",
     "test:vor-push": "npm run lint && npm run build:web && node tools/tests.js regeln -j 2 && node tools/test-betroffen.js",
     "test:betroffen": "node tools/test-betroffen.js",
-    "test:e2e": "npm run build:web && node test/e2e-beh.js && node test/e2e-einfach.js && node test/e2e-klein.js && node test/e2e-briefe.js && node test/e2e-pflege.js && node test/e2e-pdf.js && node test/e2e-rundgang.js && node test/e2e-zufall.js 400 && node test/a11y.js",
+    "test:e2e": "npm run build:web && node test/e2e-beh.js && node test/e2e-einfach.js && node test/e2e-klein.js && node test/e2e-briefe.js && node test/e2e-pflege.js && node test/e2e-variante-kinder.js && node test/e2e-pdf.js && node test/e2e-rundgang.js && node test/e2e-zufall.js 400 && node test/a11y.js",
     "test:app": "node scripts/build-app.js && node test/app-test.js",
     "test:mutation": "npm run build:web && node tools/mutationstest.js",
     "e2e:basis": "node test/e2e-beh.js && node test/e2e-einfach.js && node test/e2e-klein.js && node test/e2e-briefe.js && node test/e2e-pflege.js && node test/e2e-pdf.js && node test/e2e-rundgang.js && node test/a11y.js",

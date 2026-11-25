@@ -46,5 +46,13 @@
   "l.einsKurz": "Dane, terminy i zaznaczenia w tej aplikacji. Inne zapisane sprawy pozostają.",
   "l.kurzZurueck": "Potem przez pół minuty można jeszcze cofnąć usunięcie.",
   "sux.brief.t": "Sprawdzenie decyzji kasy ubezpieczenia pielęgnacyjnego (Pflegekasse), ubezpieczenia emerytalnego lub urzędu i napisanie sprzeciwu.",
-  "sux.briefA.t": "Sprawdzenie pism z kasy ubezpieczenia pielęgnacyjnego (Pflegekasse) lub urzędu do osoby, którą się Pan/Pani opiekuje, i napisanie sprzeciwu."
+  "sux.briefA.t": "Sprawdzenie pism z kasy ubezpieczenia pielęgnacyjnego (Pflegekasse) lub urzędu do osoby, którą się Pan/Pani opiekuje, i napisanie sprzeciwu.",
+  "sux.q.kinder": "Czy w Pana/Pani gospodarstwie domowym mieszkają dzieci poniżej 25 lat?",
+  "sux.h.kinder": "Chodzi o Pana/Pani dzieci lub dzieci partnera albo partnerki, które mieszkają razem z Panem/Panią. Dzieci zmieniają na przykład dodatek mieszkaniowy i zabezpieczenie podstawowe.",
+  "sux.h.young": "Tylko dzieci, które chodzą do szkoły, uczą się zawodu lub studiują. Jeśli mieszka z Panem/Panią inne dorosłe dziecko, proszę podać to nieco później razem z innymi dorosłymi w mieszkaniu.",
+  "sux.q.kindLage": "Czy coś z tego dotyczy dzieci?",
+  "sux.h.kindLage": "Tylko jeśli coś się zgadza, aplikacja zada krótkie pytanie.",
+  "sux.g.kUnterhalt": "Dziecko dostaje alimenty od drugiego rodzica",
+  "sux.g.kWaisen": "Dziecko dostaje rentę sierocą",
+  "sux.g.kEink": "Dziecko ma własny dochód, na przykład z nauki zawodu lub z Minijob"
 }

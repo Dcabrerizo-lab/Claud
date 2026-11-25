@@ -110,8 +110,12 @@ const warte = (ms) => new Promise((r) => setTimeout(r, ms || 5));
   check('Leistungs-Check: Frage für Frage als Standard (erste Frage)', !!$('sfFrage') && $('sfFrage').textContent === de['sf.q.adults'], ($('sfFrage') || {}).textContent);
   const opt = [...$('schritte').querySelectorAll('[data-i]')].find((x) => x.textContent.trim() === de['sux.a.allein']);
   opt.click(); await warte(20);
-  check('Nach „allein“: keine Fragen zu Kindern oder jungen Erwachsenen, weiter mit dem Geburtsjahr', $('sfFrage').textContent === de['sf.q.geb'], $('sfFrage').textContent);
-  check('Formular: Felder zu Kindern, Schwangerschaft, Elterngeld ausgeblendet', ['kids', 'young', 'schwanger', 'baby', 'egVor'].every((id) => $(id).closest('.var-aus')));
+  // Seit 25.11.2026: eine Frage nach Kindern unter 25 (Auftrag David); bei „Nein“ weiter mit dem Geburtsjahr
+  check('Nach „allein“: Frage nach Kindern unter 25', $('sfFrage').textContent === de['sux.q.kinder'], $('sfFrage').textContent);
+  [...$('schritte').querySelectorAll('[data-i]')].find((x) => x.textContent.trim() === de['sf.a.nein']).click(); await warte(20);
+  check('Kinder „Nein“: weiter mit dem Geburtsjahr', $('sfFrage').textContent === de['sf.q.geb'], $('sfFrage').textContent);
+  check('Formular: Felder zu Schwangerschaft, Elterngeld ausgeblendet', ['schwanger', 'baby', 'egVor', 'kindKrank', 'unterhaltFehlt', 'uvgWechsel'].every((id) => $(id).closest('.var-aus')));
+  check('Formular: Felder zu Kindern sichtbar', ['kids', 'kidsU6', 'kids14', 'young', 'waisen', 'kindEink'].every((id) => !$(id).closest('.var-aus')));
   check('Formular: Abschnitte Arbeit und Ausbildung ausgeblendet', $('arbeitSit').closest('fieldset').classList.contains('var-aus') && $('ausbildung').closest('fieldset').classList.contains('var-aus'));
   check('Formular: Pflegegrad, Erwerbsminderung, Geburtsjahr bleiben', ['pflegegrad', 'emStd', 'gebJahr', 'miete'].every((id) => !$(id).closest('.var-aus')));
 

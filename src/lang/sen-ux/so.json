@@ -46,5 +46,13 @@
   "l.einsKurz": "Xogtaada, waqtiyada iyo calaamadaha app-kan. Kiisaska kale ee la kaydiyay way harayaan.",
   "l.kurzZurueck": "Kadib weli nus daqiiqo ayaad dib u celin kartaa.",
   "sux.brief.t": "Hubi go'aan (Bescheid) ka yimid Pflegekasse, caymiska hawlgabka ama xafiis, oo qor Widerspruch.",
-  "sux.briefA.t": "Hubi warqadaha Pflegekasse ama xafiis ee qofka aad daryeesho, oo qor Widerspruch."
+  "sux.briefA.t": "Hubi warqadaha Pflegekasse ama xafiis ee qofka aad daryeesho, oo qor Widerspruch.",
+  "sux.q.kinder": "Ma jiraan carruur ka yar 25 sano oo gurigaaga kula nool?",
+  "sux.h.kinder": "Waxaa loola jeedaa carruurtaada ama carruurta lammaanahaaga ee kula nool. Carruurtu waxay saameyn ku leeyihiin, tusaale ahaan, kaalmada kirada iyo taageerada aasaasiga ah.",
+  "sux.h.young": "Kaliya carruurta dugsiga, tababarka xirfadeed ama jaamacadda dhigta. Haddii ilmo kale oo weyn kula nool yahay, wax yar ka dib ku qor dadka kale ee waaweyn ee guriga.",
+  "sux.q.kindLage": "Ma jiraa wax ka mid ah kuwan oo carruurta khuseeya?",
+  "sux.h.kindLage": "Kaliya haddii wax khuseeyo, app-ku wuxuu weydiinayaa su'aal gaaban oo ku saabsan.",
+  "sux.g.kUnterhalt": "Ilmo ayaa nafaqo ka hela waalidka kale",
+  "sux.g.kWaisen": "Ilmo ayaa hela hawlgab agoonimo",
+  "sux.g.kEink": "Ilmo ayaa leh dakhli u gaar ah, tusaale ahaan tababar xirfadeed ama Minijob"
 }

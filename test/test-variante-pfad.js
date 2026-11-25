@@ -35,8 +35,9 @@ const warte = (ms) => new Promise((r) => setTimeout(r, ms || 5));
   check('Keine Skriptfehler beim Laden', errors.length === 0, errors);
   const V = w.__soloVariante;
   const FR = V.fragen(w.Schritte.FRAGEN.slice());
-  const AUS = new Set(['kids', 'kidsU6', 'kids14', 'kinderMehr', 'uvgWechsel', 'uvgPartner', 'young', 'schwanger', 'baby', 'egVor', 'egKinder', 'egNach', 'arbeitSit', 'algZeit', 'algMonate', 'krankWochen', 'lohnVorher', 'ausbildung', 'babMehr', 'unterhalt', 'waisen', 'kindEink']);
-  const GATE_FELD = { eigentum: 'wohnart', warmwasser: 'warmwasser', ernaehrung: 'ernaehrung', grundrente: 'grundrente33' };
+  // Seit 25.11.2026 fragt die Variante nach Kindern unter 25 (senKinder); weg bleiben Schwangerschaft, Elterngeld, Arbeit, Ausbildung
+  const AUS = new Set(['kinderMehr', 'schwanger', 'baby', 'egVor', 'egKinder', 'egNach', 'arbeitSit', 'algZeit', 'algMonate', 'krankWochen', 'lohnVorher', 'ausbildung', 'babMehr']);
+  const GATE_FELD = { eigentum: 'wohnart', warmwasser: 'warmwasser', ernaehrung: 'ernaehrung', grundrente: 'grundrente33', unterhaltFehlt: 'unterhaltFehlt', kinder12: 'kinder12' };
   // Aktive Fragen für einen fertigen Fall (Merker aus den Werten abgeleitet, wie nach dem Laden eines gespeicherten Falls)
   const aktiv = (s) => FR.filter((f) => !AUS.has(f.id) && (!f.wenn || f.wenn(s)));
   const erreichbar = (s) => {
@@ -58,9 +59,13 @@ const warte = (ms) => new Promise((r) => setTimeout(r, ms || 5));
     ['Rentnerpaar, Witwenrente als zweites Einkommen, Auto, Eigentum', { adults: 2, gebJahr: 1950, ek1Art: 'rente', ek1Brutto: 1100, ek1Netto: 980, ek1bArt: 'rente', ek1bBetrag: 400, ek2Art: 'rente', ek2Brutto: 700, ek2Netto: 620, wohnart: 'eigentum', miete: 350, heizkosten: 120, mietstufe: '2', autoWert: 6000, autoBraucht: true, vermoegen: 12000 }],
     ['Dauerhaft voll erwerbsgemindert, 52 Jahre, Werkstatt, Grundsicherung', { gebJahr: 1974, emStd: 'unter3', em5: true, bhPerson: 'erwVor25', gdb: '100', mzG: true, wfbm: true, ek1Art: 'wfbm', ek1Netto: 260, ek1bArt: 'rente', ek1bBetrag: 650, wfbmEssen: true, miete: 420, heizkosten: 60, mietstufe: '3', vermoegen: 1500, bezug: { sozialamt: true } }],
     ['Rentnerin, blind, Boiler, teure Ernährung, zahlt Unterhalt, Mitbewohner', { gebJahr: 1945, bhPerson: 'erwNach25', gdb: '100', blind: 'blind', ek1Art: 'rente', ek1Brutto: 900, ek1Netto: 800, warmwasser: true, ernaehrung: true, uzBetrag: 150, uzAn: 'ex', hhAndere: 'verwandte', miete: 500, heizkosten: 80, mietstufe: '3', vermoegen: 500 }],
+    ['EM-Rente mit 2 Kindern (eins 14 bis 17), Waisenrente', { gebJahr: 1980, senKinder: 'ja', kids: 2, kids14: 1, emStd: 'unter3', em5: true, ek1Art: 'rente', ek1Brutto: 1100, ek1Netto: 970, waisen: 180, miete: 750, heizkosten: 90, mietstufe: '3', vermoegen: 1000 }],
+    ['Rentner-Paar mit Kind 19 in Ausbildung, eigenes Einkommen', { adults: 2, gebJahr: 1958, senKinder: 'ja', young: 1, kindEink: 700, ek1Art: 'rente', ek1Brutto: 1400, ek1Netto: 1230, ek2Art: 'ohne', miete: 700, heizkosten: 100, mietstufe: '4', vermoegen: 5000 }],
+    ['Alleinerziehend, EM-Rente, Kind 8 mit Behinderung', { gebJahr: 1984, senKinder: 'ja', kids: 1, bhPerson: 'minder', gdb: '50', emStd: 'unter3', em5: true, ek1Art: 'rente', ek1Brutto: 900, ek1Netto: 790, miete: 600, heizkosten: 80, mietstufe: '3', vermoegen: 500 }],
     ['Rentnerin ohne deutschen Pass (EU)', { gebJahr: 1955, aufenthalt: 'eu', euArbeit: 'nein', euJahre: 'ab5', ek1Art: 'rente', ek1Brutto: 600, ek1Netto: 530, miete: 450, heizkosten: 60, mietstufe: '3', vermoegen: 300 }]
   ];
-  const kurz = (r) => r.results.filter((x) => V.karten.includes(x.id)).map((x) => x.id + ':' + x.level + ':' + JSON.stringify(x.tx)).sort().join('|');
+  const KARTEN = V.karten.concat(V.kartenKinder);
+  const kurz = (r) => r.results.filter((x) => KARTEN.includes(x.id)).map((x) => x.id + ':' + x.level + ':' + JSON.stringify(x.tx)).sort().join('|');
   FAELLE.forEach(([name, f]) => {
     const voll = Object.assign(JSON.parse(JSON.stringify(leer)), f);
     const er = erreichbar(voll);
@@ -75,7 +80,23 @@ const warte = (ms) => new Promise((r) => setTimeout(r, ms || 5));
   // Typischer Fall: Zahl der Fragen
   const typ = Object.assign(JSON.parse(JSON.stringify(leer)), FAELLE[0][1]);
   const n = aktiv(typ).length;
-  check('Rentnerin allein: höchstens 15 Fragen (vorher etwa 25)', n <= 15, n + ': ' + aktiv(typ).map((x) => x.id).join(','));
+  // 16 seit der Frage nach Kindern unter 25 (Auftrag David 25.11.2026); ohne Kinder nur diese eine Frage mehr
+  check('Rentnerin allein: höchstens 16 Fragen (vorher etwa 25)', n <= 16, n + ': ' + aktiv(typ).map((x) => x.id).join(','));
+  check('Ohne Kinder: keine Folgefragen zu Kindern', !aktiv(typ).some((x) => ['kids', 'kidsU6', 'kids14', 'young', 'senKindLage', 'unterhalt', 'waisen', 'kindEink', 'uvgWechsel'].includes(x.id)));
+
+  // EM-Rente mit 2 Kindern: Wohngeld wie in SoLo (Rechnung mit den Kindern), nicht wie für eine Person allein
+  const emKinder = Object.assign(JSON.parse(JSON.stringify(leer)), FAELLE.find((x) => /^EM-Rente mit 2 Kindern/.test(x[0]))[1], { waisen: '' });
+  w.__solo.set(emKinder);
+  const rohK = w.__solo.eval(), gefK = V.filter(rohK);
+  const wgK = gefK.results.find((r) => r.id === 'wohngeld'), wgRoh = rohK.results.find((r) => r.id === 'wohngeld');
+  const wgEur = (r) => { const x = r && r.tx.find((t) => /^schaetz\./.test(t[0])); return x ? Number(x[1].a && x[1].a.eur != null ? x[1].a.eur : String(x[1].a).replace(/\D/g, '')) : NaN; };
+  check('EM-Rente mit 2 Kindern: Wohngeld in der Variante gleich wie in SoLo', !!wgK && JSON.stringify(wgK.tx) === JSON.stringify(wgRoh.tx));
+  check('EM-Rente mit 2 Kindern: Wohngeld etwa 620–670 € (nicht 180–240 €)', wgEur(wgK) >= 620 && wgEur(wgK) <= 670, wgK && wgK.tx);
+  check('EM-Rente mit 2 Kindern: Kindergeld-Karte erscheint', gefK.results.some((r) => r.id === 'kindergeld' && r.level === 'ja'));
+  check('EM-Rente mit 2 Kindern: Grundsicherung rechnet mit den Kindern', JSON.stringify(gefK.results.find((r) => r.id === 'gsa').tx) === JSON.stringify(rohK.results.find((r) => r.id === 'gsa').tx));
+  check('EM-Rente mit 2 Kindern: zwei Wege (Wohngeld oder Grundsicherung) bleiben sichtbar', !!gefK.wege === !!rohK.wege);
+  w.__solo.set(Object.assign({}, emKinder, { kids: 0, kids14: 0 }));
+  check('Ohne Kinder: keine Kinder-Karten', !V.filter(w.__solo.eval()).results.some((r) => V.kartenKinder.includes(r.id)));
 
   // Ablauf in der Oberfläche: Sammelfrage
   w.__solo.set({}); store['lotse.state'] = undefined;
@@ -84,7 +105,30 @@ const warte = (ms) => new Promise((r) => setTimeout(r, ms || 5));
   const frage = () => ($('sfFrage') || {}).textContent;
   const de = new Function(gebaut.i18n.replace('if (typeof module !== "undefined") module.exports = I18N;', '') + '; return I18N;')().de;
   [...$('schritte').querySelectorAll('[data-i]')].find((x) => x.textContent.trim() === de['sux.a.allein']).click(); await warte(20);
-  check('Nach „Allein“: Geburtsjahr', frage() === de['sf.q.geb'], frage());
+  check('Nach „Allein“: Frage nach Kindern unter 25', frage() === de['sux.q.kinder'], frage());
+  check('Kinder-Frage: Vorlesen-Knopf unter der Frage', !!$('schritte').querySelector('.vl-leiste'));
+  const wahl = (txt) => [...$('schritte').querySelectorAll('[data-i]')].find((x) => x.textContent.trim() === txt).click();
+  wahl(de['sf.a.ja']); await warte(20);
+  check('„Ja“ → Wie viele Kinder unter 18', frage() === de['sf.q.kids'], frage());
+  $('sfPlus').click(); $('sfPlus').click(); $('sfWeiter').click(); await warte(20);
+  check('Zwei Kinder → davon unter 6', frage() === de['sf.q.kidsU6'] && w.__solo.state().kids === 2, frage());
+  $('sfWeiter').click(); await warte(20);
+  check('… dann 14 bis 17', frage() === de['sf.q.kids14'], frage());
+  $('sfPlus').click(); $('sfWeiter').click(); await warte(20);
+  check('… dann 18 bis 24 mit Hinweis', frage() === de['sf.q.young'] && $('schritte').textContent.includes(de['sux.h.young']), frage());
+  $('sfWeiter').click(); await warte(20);
+  check('… dann Sammelfrage zu den Kindern', frage() === de['sux.q.kindLage'], frage());
+  [...$('schritte').querySelectorAll('[data-k]')].find((b) => b.getAttribute('data-k') === 'kWaisen').click(); await warte(5);
+  $('sfWeiter').click(); await warte(20);
+  check('Haken „Waisenrente“ → Frage kommt später bei den Einkommen (nächste Frage: Geburtsjahr)', frage() === de['sf.q.geb'], frage());
+  check('Waisenrente-Frage im Pfad aktiv', FR.some((f) => f.id === 'waisen' && f.wenn(w.__solo.state())));
+  check('Kind unter 18 mit Behinderung wählbar', (() => { const f = FR.find((x) => x.id === 'bhPerson'); return f.opts(w.__solo.state()).some((o) => o[0] === 'minder'); })());
+  // Zurück zur Kinder-Frage, „Nein“ löscht alle Angaben zu Kindern
+  for (let i = 0; i < 8 && frage() !== de['sux.q.kinder']; i++) { $('sfZurueck').click(); await warte(20); }
+  wahl(de['sf.a.nein']); await warte(30);
+  const sk = w.__solo.state();
+  check('„Nein“ → Kinder gelöscht, weiter mit dem Geburtsjahr', frage() === de['sf.q.geb'] && sk.kids === 0 && sk.kids14 === 0 && sk.young === 0 && !(Number(sk.waisen) > 0), [frage(), sk.kids, sk.waisen]);
+  check('Ohne Kinder: „Kind unter 18“ nicht wählbar', !FR.find((x) => x.id === 'bhPerson').opts(sk).some((o) => o[0] === 'minder'));
   $('sfIn').value = '1950'; $('sfWeiter').click(); await warte(20);
   check('Danach Sammelfrage „Trifft etwas davon zu?“', frage() === de['sux.q.lage'], frage());
   check('Sammelfrage: Vorlesen-Knopf unter der Frage', !!$('schritte').querySelector('.vl-leiste'));

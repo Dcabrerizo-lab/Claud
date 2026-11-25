@@ -46,5 +46,13 @@
   "l.einsKurz": "Datele, termenele și bifele dumneavoastră din această aplicație. Alte cazuri salvate rămân.",
   "l.kurzZurueck": "După aceea mai puteți anula timp de jumătate de minut.",
   "sux.brief.t": "Verificați decizia casei de îngrijire (Pflegekasse), a asigurării de pensii sau a unei autorități și scrieți o contestație.",
-  "sux.briefA.t": "Verificați scrisorile de la casa de îngrijire (Pflegekasse) sau de la o autoritate pentru persoana îngrijită și scrieți o contestație."
+  "sux.briefA.t": "Verificați scrisorile de la casa de îngrijire (Pflegekasse) sau de la o autoritate pentru persoana îngrijită și scrieți o contestație.",
+  "sux.q.kinder": "Locuiesc în gospodăria dumneavoastră copii sub 25 de ani?",
+  "sux.h.kinder": "Este vorba de copiii dumneavoastră sau de copiii partenerului ori partenerei dumneavoastră care locuiesc cu dumneavoastră. Copiii schimbă, de exemplu, ajutorul pentru locuință și asigurarea de bază.",
+  "sux.h.young": "Doar copiii care merg la școală, sunt în formare profesională sau la studii. Dacă locuiește cu dumneavoastră un alt copil adult, indicați acest lucru puțin mai târziu, împreună cu ceilalți adulți din locuință.",
+  "sux.q.kindLage": "Se aplică ceva din acestea copiilor?",
+  "sux.h.kindLage": "Doar dacă ceva se aplică, aplicația vă pune o întrebare scurtă.",
+  "sux.g.kUnterhalt": "Un copil primește pensie alimentară de la celălalt părinte",
+  "sux.g.kWaisen": "Un copil primește pensie de urmaș",
+  "sux.g.kEink": "Un copil are venit propriu, de exemplu din formare profesională sau dintr-un Minijob"
 }
