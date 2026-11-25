@@ -63,6 +63,7 @@ Grundlage für künftige Aktualitätsprüfungen. Zusammengeführt aus zwei unabh
 | Paar, ältere Person über Regelaltersgrenze, jüngere erwerbsgemindert | emrente, srente, ggeld | möglich (nicht „nein“) | C-EMR-03, F-em-08, F-sr-06 (schon in main, PR #189) |
 | Kind unter 18 mit Werkstatt-Haken | gsa | nein, `gsa.kindU18` | F-gsa-23 (schon in main) |
 | Rente nur als Zahlbetrag (Wohngeld) | wohngeld | untere Schätzung ≤ Schätzung mit Brutto | fest im Läufer |
+| Volle Erwerbsminderung unter der Altersgrenze (nicht Werkstatt) | gsa, hlu | Grundsicherung „wahrscheinlich“ mit Hinweis + Verweis; Hilfe zum Lebensunterhalt „möglich“ (nur bei befristeter Erwerbsminderung, § 19 Abs. 2, § 27, § 41 Abs. 3, 3a SGB XII), ohne doppelten Betrag; bei den Eltern Hinweis § 39 SGB XII (seit 25.11.2026) | HLU-P01 bis HLU-P05 |
 
 ## 3. Offen / zu klären (nicht als harte Erwartung im Test)
 

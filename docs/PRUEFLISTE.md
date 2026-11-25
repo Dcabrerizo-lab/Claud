@@ -100,6 +100,25 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Mehrbedarf dezentrale Warmwasserbereitung (§ 30 Abs. 7) | ✓ | `gsa-warmwasser` |
 | Ausschluss: Asylbewerberleistungen (§ 23 Abs. 2) | ✓ | `asyl-ausschluss` |
 
+
+## Hilfe zum Lebensunterhalt (SGB XII, 3. Kapitel)
+<!-- karten: hlu -->
+
+Neue Karte seit 25.11.2026 (Auftrag David). Matrix: docs/rechtsmatrix/grusi.md, Abschnitt „Hilfe zum Lebensunterhalt“.
+
+| Regel | Status | Test |
+|---|---|---|
+| Nur ohne Grundsicherungsgeld (§ 21 SGB XII, § 5 Abs. 2 SGB II) und ohne Grundsicherung im Alter (geht vor, § 19 Abs. 2 SGB XII); erwerbsfähig, jung: „eher nicht“ | ✓ | `rechtsmatrix-grusi` (HLU-*) |
+| Altersrente vor der Regelaltersgrenze (§ 7 Abs. 4 SGB II): allein „möglich“ mit Betrag wie Grundsicherung im Alter; Paar oder Kinder ab 15 ohne Betrag | ✓ | `rechtsmatrix-grusi` |
+| Volle Erwerbsminderung (nicht Werkstatt, § 41 Abs. 3a): „möglich“, nur wenn befristet; Betrag steht auf der Grundsicherungs-Karte (entweder oder) | ✓ / ◐ (Dauer wird nicht abgefragt) | `vp-pflege` |
+| Kinder eines alleinstehenden Elternteils mit Grundsicherung im Alter; Partner mit Altersrente unter der Regelaltersgrenze | ◐ | `rechtsmatrix-grusi` |
+| Verwandte im Haushalt: Vermutung der Bedarfsdeckung (§ 39 SGB XII, nicht bei Eingliederungshilfe/Pflege): höchstens „möglich“ ohne Betrag | ✓ | `vp-pflege` |
+| Mehrbedarf G nur ab Altersgrenze oder bei voller Erwerbsminderung (§ 30 Abs. 1): bei vorgezogener Altersrente nicht eingerechnet, Hinweis | ✓ | `rechtsmatrix-grusi` |
+| Unterhalt: 100.000-€-Grenze für Eltern und Kinder, nicht bei Hilfe an minderjährige Kinder (§ 94 Abs. 1a Satz 6 SGB XII) | ✓ (Text) | `rechtsmatrix-grusi` |
+| Kein Antrag nötig, Beginn ab Kenntnis (§ 18 SGB XII); Antragsmappe: Hinweis Sozialamt, Anschreiben | ✓ | `hlu-mappe` |
+| Rundfunkbeitrag: Befreiung (§ 4 Abs. 1 Nr. 1 RBeitrStV); Wohngeld nicht zusammen (§ 7 Abs. 1 Satz 1 Nr. 6 WoGG) | ✓ | `rechtsmatrix-grusi` |
+| Längerer Klinik- oder Heimaufenthalt (§ 7 Abs. 4 SGB II, § 27b SGB XII) | ○ (nicht abgefragt) | |
+
 ## Wohngeld (WoGG)
 <!-- karten: wohngeld -->
 
@@ -177,6 +196,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | EU-Bürger ohne Arbeit, unter 5 Jahren: nach 3 Monaten nur mit Freizügigkeitsrecht, nicht allein zur Arbeitsuche: „möglich“ (§ 62 Abs. 1a EStG, Abruf 24.11.2026) | ◐ | `rechtsmatrix-familie` |
 | Drittstaatsangehörige: Hinweis auf den nötigen Aufenthaltstitel bei Kindergeld und Elterngeld (§ 62 Abs. 2 EStG, § 1 Abs. 7 BEEG) | ◐ | `rechtsmatrix-familie` |
 | Baby ist da (unter 14 Monate): zählt als Kind unter 6, auch wenn es bei „Kinder“ fehlt; Baby kommt bald: Hinweis „nach der Geburt beantragen“; volljähriges Kind mit Behinderung: Verweis auf die eigene Karte | ✓ | `rechtsmatrix-familie` |
+| Sachsen: Hinweis Landeserziehungsgeld (§§ 1–4 SächsLErzGG, 150/200/300 €, 1. bis 3. Geburtstag, ohne geförderten Kita-Platz, höchstens 30 Std./Woche, Einkommensgrenze bis zum 2. Kind) bei Kind unter 6; ohne Bundesland „falls du in Sachsen wohnst“; bei laufendem Kindergeld nur mit Sachsen (Abruf revosax.sachsen.de 25.11.2026) | ✓ | `vp-pflege` |
 
 ## Kindergeld für erwachsene Kinder mit Behinderung (§ 32 Abs. 4 Satz 1 Nr. 3 EStG)
 <!-- karten: kgBeh -->

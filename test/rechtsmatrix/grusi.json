@@ -2095,6 +2095,10 @@
     "status": "ja",
     "betrag": 449,
     "toleranz": 15
+   },
+   "hlu": {
+    "status": "vielleicht",
+    "ohneBetrag": true
    }
   }
  },
@@ -2530,7 +2534,7 @@
   "id": "FA-GG-28",
   "pruefer": "fable-familie-grundsicherung",
   "beschreibung": "Vorgezogene Altersrente mit 64 (Rente 700/614): kein Grundsicherungsgeld, sondern Hilfe zum Lebensunterhalt",
-  "quelle": "§ 7 Abs. 4 SGB II; § 27 SGB XII (keine Karte „Hilfe zum Lebensunterhalt“ in der App: Befund 14)",
+  "quelle": "§ 7 Abs. 4 SGB II; § 27 SGB XII (seit 25.11.2026 eigene Karte „Hilfe zum Lebensunterhalt“, Befund Fable 14)",
   "h": {
    "adults": 1,
    "kids": 0,
@@ -2558,6 +2562,11 @@
    },
    "gsa": {
     "status": "nein"
+   },
+   "hlu": {
+    "status": "vielleicht",
+    "betrag": 449,
+    "toleranz": 15
    }
   }
  },
@@ -4562,6 +4571,408 @@
   "erwartet": {
    "ggeld": {
     "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "HLU-01",
+  "pruefer": "eigene Fälle (neue Karte 25.11.2026)",
+  "beschreibung": "Altersrente mit 64 (Jg. 1962), allein, Rente 700/614, Miete 500: Hilfe zum Lebensunterhalt möglich, Betrag 563 + 500 − 614 ≈ 449",
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__27.html, __19.html, __21.html; sgb_2/__7.html (Abruf 25.11.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 700,
+   "brutto2": "",
+   "netto": 614,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1962
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "vielleicht",
+    "betrag": 449,
+    "toleranz": 15
+   },
+   "gsa": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "HLU-02",
+  "pruefer": "eigene Fälle (neue Karte 25.11.2026)",
+  "beschreibung": "Wie HLU-01, ohne Geburtsjahr: Rentenart unbekannt -> möglich",
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__27.html, __19.html, __21.html; sgb_2/__7.html (Abruf 25.11.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 700,
+   "brutto2": "",
+   "netto": 614,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "HLU-03",
+  "pruefer": "eigene Fälle (neue Karte 25.11.2026)",
+  "beschreibung": "Paar, beide Rente, Jg. 1962: Partner kann erwerbsfähig sein -> möglich ohne Betrag",
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__27.html, __19.html, __21.html; sgb_2/__7.html (Abruf 25.11.2026)",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "rente",
+   "brutto": 1100,
+   "brutto2": 400,
+   "netto": 980,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1962
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "vielleicht",
+    "ohneBetrag": true
+   }
+  }
+ },
+ {
+  "id": "HLU-04",
+  "pruefer": "eigene Fälle (neue Karte 25.11.2026)",
+  "beschreibung": "36 J., Lohn 1.000/800: erwerbsfähig -> Jobcenter, keine Hilfe zum Lebensunterhalt (§ 21 SGB XII)",
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__27.html, __19.html, __21.html; sgb_2/__7.html (Abruf 25.11.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 1000,
+   "brutto2": "",
+   "netto": 800,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1990
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "nein"
+   },
+   "ggeld": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "HLU-05",
+  "pruefer": "eigene Fälle (neue Karte 25.11.2026)",
+  "beschreibung": "Jg. 1955 (über der Regelaltersgrenze), allein, 2 Kinder unter 14: Kinder bekommen Hilfe zum Lebensunterhalt, Betrag in der GSA-Karte",
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__27.html, __19.html, __21.html; sgb_2/__7.html (Abruf 25.11.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 2,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 700,
+   "brutto2": "",
+   "netto": 614,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1955
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "ja",
+    "ohneBetrag": true
+   },
+   "gsa": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "HLU-06",
+  "pruefer": "eigene Fälle (neue Karte 25.11.2026)",
+  "beschreibung": "Paar Jg. 1955, beide Rente: jüngerer Partner evtl. Altersrente vor der Regelaltersgrenze -> möglich ohne Betrag",
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__27.html, __19.html, __21.html; sgb_2/__7.html (Abruf 25.11.2026)",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "rente",
+   "brutto": 1200,
+   "brutto2": 500,
+   "netto": 1080,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1955
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "vielleicht",
+    "ohneBetrag": true
+   },
+   "gsa": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "HLU-07",
+  "pruefer": "eigene Fälle (neue Karte 25.11.2026)",
+  "beschreibung": "Altersrente mit 64, Vermögen 15.000 € > 10.000 € (§ 90 SGB XII + VO)",
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__27.html, __19.html, __21.html; sgb_2/__7.html (Abruf 25.11.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 700,
+   "brutto2": "",
+   "netto": 614,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 15000,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1962
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "HLU-08",
+  "pruefer": "eigene Fälle (neue Karte 25.11.2026)",
+  "beschreibung": "Altersrente mit 64, Merkzeichen G: kein Mehrbedarf G ohne volle Erwerbsminderung (§ 30 Abs. 1 SGB XII), Betrag wie HLU-01",
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__27.html, __19.html, __21.html; sgb_2/__7.html (Abruf 25.11.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 700,
+   "brutto2": "",
+   "netto": 614,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1962,
+   "mzG": true
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "vielleicht",
+    "betrag": 449,
+    "toleranz": 15
+   }
+  }
+ },
+ {
+  "id": "HLU-09",
+  "pruefer": "eigene Fälle (neue Karte 25.11.2026)",
+  "beschreibung": "Altersrente mit 64, Bezug Grundsicherungsgeld: schließt Hilfe zum Lebensunterhalt aus (§ 5 Abs. 2 SGB II)",
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__27.html, __19.html, __21.html; sgb_2/__7.html (Abruf 25.11.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 700,
+   "brutto2": "",
+   "netto": 614,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {
+    "grundsicherungsgeld": true
+   },
+   "gebJahr": 1962
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "HLU-10",
+  "pruefer": "eigene Fälle (neue Karte 25.11.2026)",
+  "beschreibung": "Altersrente mit 64, Asylverfahren: AsylbLG (§ 23 Abs. 2 SGB XII)",
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__27.html, __19.html, __21.html; sgb_2/__7.html (Abruf 25.11.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 700,
+   "brutto2": "",
+   "netto": 614,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1962,
+   "aufenthalt": "asyl"
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "HLU-11",
+  "pruefer": "eigene Fälle (neue Karte 25.11.2026)",
+  "beschreibung": "Altersrente mit 64, Bezug vom Sozialamt: bekommst du schon",
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__27.html, __19.html, __21.html; sgb_2/__7.html (Abruf 25.11.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 700,
+   "brutto2": "",
+   "netto": 614,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {
+    "sozialamt": true
+   },
+   "gebJahr": 1962
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "na"
+   }
+  }
+ },
+ {
+  "id": "HLU-12",
+  "pruefer": "eigene Fälle (neue Karte 25.11.2026)",
+  "beschreibung": "Altersrente mit 64, Rente 1.600/1.400: Einkommen deckt den Bedarf",
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__27.html, __19.html, __21.html; sgb_2/__7.html (Abruf 25.11.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1600,
+   "brutto2": "",
+   "netto": 1400,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1962
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "nein"
+   }
+  }
+ },
+ {
+  "id": "HLU-13",
+  "pruefer": "eigene Fälle (neue Karte 25.11.2026)",
+  "beschreibung": "Altersrente mit 64, 1 Kind 14–17: Kind erwerbsfähig -> Jobcenter für das Kind, möglich ohne Betrag",
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__27.html, __19.html, __21.html; sgb_2/__7.html (Abruf 25.11.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "kids14": 1,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 700,
+   "brutto2": "",
+   "netto": 614,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1962
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "vielleicht",
+    "ohneBetrag": true
    }
   }
  }
