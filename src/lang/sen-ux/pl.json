@@ -54,5 +54,6 @@
   "sux.h.kindLage": "Tylko jeśli coś się zgadza, aplikacja zada krótkie pytanie.",
   "sux.g.kUnterhalt": "Dziecko dostaje alimenty od drugiego rodzica",
   "sux.g.kWaisen": "Dziecko dostaje rentę sierocą",
-  "sux.g.kEink": "Dziecko ma własny dochód, na przykład z nauki zawodu lub z Minijob"
+  "sux.g.kEink": "Dziecko ma własny dochód, na przykład z nauki zawodu lub z Minijob",
+  "sux.kinder.solo": "W sprawie świadczeń na dzieci (na przykład Kindergeld, Kinderzuschlag, pakiet edukacyjny) prosimy skorzystać z aplikacji SoLo."
 }

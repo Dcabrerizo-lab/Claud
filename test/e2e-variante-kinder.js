@@ -1,6 +1,6 @@
 // Klicktest im Browser: „SoLo Pflege & Rente“ (VARIANTE=pflege), Frage „Leben Kinder unter 25 Jahren in Ihrem Haushalt?“ (Auftrag David 25.11.2026)
 // - Fragepfad: Ja → Zahl unter 18, davon unter 6 / 14 bis 17, 18 bis 24, Sammelfrage zu den Kindern; Nein → weiter mit dem Geburtsjahr
-// - Fall „EM-Rente mit 2 Kindern“ bis zum Ergebnis: Wohngeld wie in SoLo (etwa 620–670 €), Kindergeld-Karte sichtbar
+// - Fall „EM-Rente mit 2 Kindern“ bis zum Ergebnis: Wohngeld wie in SoLo (etwa 620–670 €), keine Kindergeld-Karte, dafür Hinweis auf die App SoLo
 // - Vorlesen-Leiste unter der Frage, Sie-Form in Französisch und Polnisch, kein seitliches Scrollen bei 320 px
 // Baut die Variante selbst in einen temporären Ordner (dist/ bleibt unberührt). Aufruf: node test/e2e-variante-kinder.js
 'use strict';
@@ -96,7 +96,8 @@ const ok = (name, c, info) => { n++; if (!c) { f++; console.log('FEHLER', name, 
   const wg = await p.textContent('#cards article[data-id="wohngeld"]').catch(() => '');
   ok('Ergebnis: Wohngeld-Karte da', !!wg, wg.slice(0, 120));
   ok('EM-Rente mit 2 Kindern: Wohngeld etwa 620–670 € (nicht 180–240 €)', /6[2-6]\d\s*€|670\s*€/.test(wg), wg.replace(/\s+/g, ' ').slice(0, 300));
-  ok('Kindergeld-Karte sichtbar', await p.isVisible('#cards article[data-id="kindergeld"]'));
+  ok('Hinweis auf die App SoLo unter den Karten', await p.isVisible('#varKinderHinweis') && (await p.textContent('#varKinderHinweis')) === de['sux.kinder.solo']);
+  ok('Keine Kindergeld-, Kinderzuschlag- oder Bildungspaket-Karte (Fokus Rente und Pflege)', !(await p.$('#cards article[data-id="kindergeld"], #cards article[data-id="kiz"], #cards article[data-id="but"]')));
   ok('Keine Unterhaltsvorschuss-Karte (nicht in der Variante)', !(await p.$('#cards article[data-id="uvg"]')));
   ok('Ergebnis ohne seitliches Scrollen', await breit());
 

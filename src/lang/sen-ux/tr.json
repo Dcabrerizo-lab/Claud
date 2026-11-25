@@ -54,5 +54,6 @@
   "sux.h.kindLage": "Sadece bir şey geçerliyse uygulama bununla ilgili kısa bir soru sorar.",
   "sux.g.kUnterhalt": "Bir çocuk diğer ebeveynden nafaka alıyor",
   "sux.g.kWaisen": "Bir çocuk yetim aylığı alıyor",
-  "sux.g.kEink": "Bir çocuğun kendi geliri var, örneğin meslek eğitiminden veya Minijob'dan"
+  "sux.g.kEink": "Bir çocuğun kendi geliri var, örneğin meslek eğitiminden veya Minijob'dan",
+  "sux.kinder.solo": "Çocuklarınız için yardımlar (örneğin Kindergeld, Kinderzuschlag, eğitim paketi) için lütfen SoLo uygulamasını kullanın."
 }

@@ -15,9 +15,12 @@
   var VAR_KARTEN = ['pflege', 'pflegeplus', 'hzp', 'lpg', 'gsa', 'hlu', 'wohngeld', 'emrente', 'srente', 'ausweis', 'pausch', 'rundfunk', 'zuzahl', 'blindengeld', 'blh'];
   // Fragen (src/schritte.js) und Formularfelder, die nur weggefallene Leistungen betreffen (Kinder, Elterngeld, Arbeit, Ausbildung)
   // Kinder unter 25 im Haushalt (Auftrag David 25.11.2026): eigene Frage „Leben Kinder unter 25 Jahren in Ihrem Haushalt?“ (varFragen, senKinder).
-  // Bei Kindern rechnen die Regeln wie in SoLo mit (Wohngeld, Grundsicherung, Kinderzuschlag …), und diese Karten kommen dazu (varKarten).
-  // Unterhaltsvorschuss bleibt draußen (Zielgruppe Rente/Erwerbsminderung; Fragen zum anderen Elternteil wären für fast alle überflüssig).
-  var VAR_KARTEN_KINDER = ['kindergeld', 'kgBeh', 'kiz', 'but'];
+  // Bei Kindern rechnen die Regeln wie in SoLo mit (richtige Beträge bei Wohngeld und Grundsicherung). Angezeigt wird zusätzlich nur das Kindergeld
+  // für erwachsene Kinder mit Behinderung (varKarten). Kindergeld, Kinderzuschlag, Bildung und Teilhabe, Unterhaltsvorschuss zeigt die Variante nicht;
+  // stattdessen ein Hinweis auf die App SoLo unter den Karten (varKinderHinweis). Entscheidung David 25.11.2026: Fokus auf Rente und Pflege.
+  var VAR_KARTEN_KINDER = ['kgBeh'];
+  // Hinweise zu Leistungen, die die Variante nicht zeigt (Kindergeld zuerst, Wohngeld mit Kinderzuschlag, Unterhaltsvorschuss zuerst)
+  var VAR_HINWEISE_AUS = ['z.kgZuerst', 'z.wgKiz', 'z.uvgZuerst'];
   var VAR_FRAGEN_AUS = ['kinderMehr', 'uvgWechsel', 'uvgPartner', 'schwanger', 'baby', 'egVor', 'egArt', 'egKinder', 'egNach',
     'arbeitSit', 'algZeit', 'algMonate', 'krankWochen', 'lohnVorher', 'ausbildung', 'babMehr'];
   var VAR_FELDER_AUS = ['kindKrank', 'kinder12', 'unterhaltFehlt', 'uvgWechsel', 'uvgPartner', 'schwanger', 'baby', 'egVor', 'egArt', 'egKinder', 'egNach'];
@@ -1354,7 +1357,7 @@
     var alle = out.zusammen.filter(function (z) { return HINWEIS_ALLE.indexOf(z[0]) >= 0; });
     tippsHtml = (alle.length ? tippHtml('licht', t('gut.h'), listItems(alle.map(function (z) { return tL(z[0], z[1]); })), 'gutWissen') : '') +
       tippHtml('person', t('res.beratung'), '<p>' + esc(t('foot.2')) + '</p>', 'beratung');
-    $('cards').innerHTML = kartenHtml(out.results, out.wege);
+    $('cards').innerHTML = kartenHtml(out.results, out.wege) + (VAR_PFLEGE ? varKinderHinweis() : ''); // Pflege-Variante: Hinweis auf SoLo bei Kindern
     Object.keys(openIds).forEach(function (id) { var d = document.querySelector('#' + id + ' details'); if (d) d.open = true; });
     Object.keys(tippOffen).forEach(function (id) { var d = $(id); if (d) d.open = true; });
     if (neinOpen) { var nb = document.querySelector('#cards .neinbox'); if (nb) nb.open = true; }
@@ -5199,7 +5202,13 @@
     if (!VAR_PFLEGE || !out || !out.results) return out;
     var w = out.wege, k = varKarten();
     if (w && w.a.concat(w.b).some(function (id) { return k.indexOf(id) < 0; })) w = null; // Weg mit weggefallener Leistung: Karten einzeln zeigen
-    return Object.assign({}, out, { results: out.results.filter(function (r) { return k.indexOf(r.id) >= 0; }), wege: w });
+    return Object.assign({}, out, { results: out.results.filter(function (r) { return k.indexOf(r.id) >= 0; }), wege: w,
+      zusammen: (out.zusammen || []).filter(function (z) { return VAR_HINWEISE_AUS.indexOf(z[0]) < 0; }) });
+  }
+  // Mit Kindern: kurzer Hinweis unter den Karten, dass Leistungen für Kinder in der App SoLo stehen (Text sux.kinder.solo)
+  function varKinderHinweis() {
+    if (!VAR_PFLEGE || !varMitKindern(state)) return '';
+    return '<p class="small muted var-kinder-hinweis" id="varKinderHinweis" data-t="sux.kinder.solo">' + esc(t('sux.kinder.solo')) + '</p>';
   }
   // Suche: nur Ziele, die es in der Variante gibt
   function varZiel(id) {

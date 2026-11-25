@@ -54,5 +54,6 @@
   "sux.h.kindLage": "L’application ne pose une courte question que si quelque chose s’applique.",
   "sux.g.kUnterhalt": "Un enfant reçoit une pension alimentaire de l’autre parent",
   "sux.g.kWaisen": "Un enfant reçoit une pension d’orphelin",
-  "sux.g.kEink": "Un enfant a un revenu propre, par exemple d’apprentissage ou d’un Minijob"
+  "sux.g.kEink": "Un enfant a un revenu propre, par exemple d’apprentissage ou d’un Minijob",
+  "sux.kinder.solo": "Pour les prestations pour vos enfants (par exemple Kindergeld, Kinderzuschlag, aides à l’éducation), veuillez utiliser l’application SoLo."
 }

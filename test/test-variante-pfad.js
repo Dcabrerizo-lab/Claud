@@ -52,6 +52,7 @@ const warte = (ms) => new Promise((r) => setTimeout(r, ms || 5));
     if (out.has('bezug')) out.add('bezug');
     return out;
   };
+  const de0 = new Function(gebaut.i18n.replace('if (typeof module !== "undefined") module.exports = I18N;', '') + '; return I18N;')().de;
   w.__solo.set({}); const leer = JSON.parse(JSON.stringify(w.__solo.state()));
   const FAELLE = [
     ['Rentnerin allein, kleine Rente, Miete', { gebJahr: 1952, ek1Art: 'rente', ek1Brutto: 980, ek1Netto: 870, miete: 480, heizkosten: 70, plz: '91207', plzOrt: 'ja', mietstufe: '3', vermoegen: 2000 }],
@@ -92,11 +93,18 @@ const warte = (ms) => new Promise((r) => setTimeout(r, ms || 5));
   const wgEur = (r) => { const x = r && r.tx.find((t) => /^schaetz\./.test(t[0])); return x ? Number(x[1].a && x[1].a.eur != null ? x[1].a.eur : String(x[1].a).replace(/\D/g, '')) : NaN; };
   check('EM-Rente mit 2 Kindern: Wohngeld in der Variante gleich wie in SoLo', !!wgK && JSON.stringify(wgK.tx) === JSON.stringify(wgRoh.tx));
   check('EM-Rente mit 2 Kindern: Wohngeld etwa 620–670 € (nicht 180–240 €)', wgEur(wgK) >= 620 && wgEur(wgK) <= 670, wgK && wgK.tx);
-  check('EM-Rente mit 2 Kindern: Kindergeld-Karte erscheint', gefK.results.some((r) => r.id === 'kindergeld' && r.level === 'ja'));
+  // Fokus Rente und Pflege (Entscheidung David 25.11.2026): keine Karten Kindergeld, Kinderzuschlag, Bildung und Teilhabe, Unterhaltsvorschuss
+  check('EM-Rente mit 2 Kindern: keine Karten Kindergeld/Kinderzuschlag/Bildung und Teilhabe', !gefK.results.some((r) => ['kindergeld', 'kiz', 'but', 'uvg'].includes(r.id)), gefK.results.map((r) => r.id));
+  check('EM-Rente mit 2 Kindern: keine Hinweise zu Kindergeld/Kinderzuschlag', !gefK.zusammen.some((z) => ['z.kgZuerst', 'z.wgKiz', 'z.uvgZuerst'].includes(z[0])), gefK.zusammen.map((z) => z[0]));
+  check('Kinder-Karten der Variante: nur Kindergeld für erwachsene Kinder mit Behinderung', JSON.stringify(V.kartenKinder) === '["kgBeh"]');
+  await warte(30);
+  check('EM-Rente mit 2 Kindern: Hinweis auf die App SoLo unter den Karten', !!$('varKinderHinweis') && $('varKinderHinweis').textContent === de0['sux.kinder.solo'] && !d.querySelector('#cards article[data-id="kindergeld"]'));
   check('EM-Rente mit 2 Kindern: Grundsicherung rechnet mit den Kindern', JSON.stringify(gefK.results.find((r) => r.id === 'gsa').tx) === JSON.stringify(rohK.results.find((r) => r.id === 'gsa').tx));
   check('EM-Rente mit 2 Kindern: zwei Wege (Wohngeld oder Grundsicherung) bleiben sichtbar', !!gefK.wege === !!rohK.wege);
   w.__solo.set(Object.assign({}, emKinder, { kids: 0, kids14: 0 }));
   check('Ohne Kinder: keine Kinder-Karten', !V.filter(w.__solo.eval()).results.some((r) => V.kartenKinder.includes(r.id)));
+  await warte(30);
+  check('Ohne Kinder: kein Hinweis auf die App SoLo', !$('varKinderHinweis'));
 
   // Ablauf in der Oberfläche: Sammelfrage
   w.__solo.set({}); store['lotse.state'] = undefined;

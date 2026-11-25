@@ -54,5 +54,6 @@
   "sux.h.kindLage": "Nur wenn etwas zutrifft, stellt die App dazu eine kurze Frage.",
   "sux.g.kUnterhalt": "Ein Kind bekommt Unterhalt vom anderen Elternteil",
   "sux.g.kWaisen": "Ein Kind bekommt Waisenrente",
-  "sux.g.kEink": "Ein Kind hat eigenes Einkommen, zum Beispiel aus einer Ausbildung oder einem Minijob"
+  "sux.g.kEink": "Ein Kind hat eigenes Einkommen, zum Beispiel aus einer Ausbildung oder einem Minijob",
+  "sux.kinder.solo": "Für Leistungen für Ihre Kinder (zum Beispiel Kindergeld, Kinderzuschlag, Bildungspaket) nutzen Sie bitte die App SoLo."
 }

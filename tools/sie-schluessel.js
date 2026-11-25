@@ -14,7 +14,7 @@ const ROOT = path.join(__dirname, '..');
 // Leistungen, die es in der Pflege-Variante nicht gibt (Gegenstück zu VAR_KARTEN in src/app.js; alle Karten: test/karten.js)
 const KARTEN = require('../test/karten.js');
 const appJs = fs.readFileSync(path.join(ROOT, 'src', 'app.js'), 'utf8');
-// Mit Kindern unter 25 im Haushalt kommen VAR_KARTEN_KINDER dazu (Frage „Kinder unter 25“, Auftrag David 25.11.2026)
+// Mit Kindern unter 25 im Haushalt kommen VAR_KARTEN_KINDER dazu (nur kgBeh; Entscheidung David 25.11.2026)
 const VAR_KARTEN = ['VAR_KARTEN', 'VAR_KARTEN_KINDER'].flatMap((n) => JSON.parse(appJs.match(new RegExp('var ' + n + ' = (\\[[^\\]]*\\])'))[1].replace(/'/g, '"')));
 const KARTEN_AUS = KARTEN.filter((k) => !VAR_KARTEN.includes(k));
 // Fragen und Felder, die die Variante ausblendet (VAR_FRAGEN_AUS, VAR_FELDER_AUS in src/app.js): Schlüssel mit gleichem ersten Segment
@@ -31,8 +31,8 @@ const KARTEN_PRAEFIXE = ['t', 's', 'fw', 'f', 'n', 'zu', 'd', 'w', 'card', 'unte
 const BRIEF_AUS = /^bp\.(jc|fk)\b/;
 // Texte zu weggefallenen Leistungen mit Kürzeln statt Karten-ID (Asylbewerberleistungen, Elterngeld, Kindergeld, Krankengeld, Mutterschaft,
 // Hinweise für die Zukunft zu Arbeitslosengeld/Elterngeld, Kombinationen mit Grundsicherungsgeld/Kinderzuschlag)
-// Kindergeld-Kürzel (t.kg, z.kgZuerst, z.wgKiz) sind mit Kindern unter 25 erreichbar.
-const KUERZEL_AUS = /^(t\.(asyl|eg|krank|mu|zuk)|z\.(ggBezug|ggVsWg|zuk))\b/;
+// Hinweise zu Kindergeld/Kinderzuschlag/Unterhaltsvorschuss filtert die Variante heraus (VAR_HINWEISE_AUS in src/app.js).
+const KUERZEL_AUS = /^(t\.(asyl|eg|kg|krank|mu|zuk)|z\.(ggBezug|ggVsWg|wgKiz|kgZuerst|uvgZuerst|zuk))\b/;
 
 // Du-Anrede im Deutschen: Pronomen und Imperative (Liste aus allen Satzanfängen der App, von Hand ausgewählt)
 const DU = /(^|[^\wäöüßÄÖÜ])(du|dich|dir|dein|deine|deinen|deinem|deiner|deines|Du|Dich|Dir|Dein|Deine|Deinen|Deinem|Deiner|Deines|euch|euer|eure|euren|eurem|eurer)(?![\wäöüß])/;
