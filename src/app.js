@@ -12,15 +12,15 @@
   /*VAR-PFLEGE-ANFANG oben*/
   // Leistungen der Pflege-Variante (ids aus test/karten.js): Pflege, häufige Hilfen im Alter und bei dauerhafter Erwerbsminderung.
   // Gerechnet wird mit denselben Regeln (src/rules.js); die Variante filtert nur die Anzeige (varFilter).
-  var VAR_KARTEN = ['pflege', 'pflegeplus', 'hzp', 'lpg', 'gsa', 'wohngeld', 'emrente', 'srente', 'ausweis', 'pausch', 'rundfunk', 'zuzahl', 'blindengeld', 'blh'];
+  var VAR_KARTEN = ['pflege', 'pflegeplus', 'hzp', 'lpg', 'gsa', 'hlu', 'wohngeld', 'emrente', 'srente', 'ausweis', 'pausch', 'rundfunk', 'zuzahl', 'blindengeld', 'blh'];
   // Fragen (src/schritte.js) und Formularfelder, die nur weggefallene Leistungen betreffen (Kinder, Elterngeld, Arbeit, Ausbildung)
   // Kinder unter 25 im Haushalt (Auftrag David 25.11.2026): eigene Frage „Leben Kinder unter 25 Jahren in Ihrem Haushalt?“ (varFragen, senKinder).
   // Bei Kindern rechnen die Regeln wie in SoLo mit (Wohngeld, Grundsicherung, Kinderzuschlag …), und diese Karten kommen dazu (varKarten).
   // Unterhaltsvorschuss bleibt draußen (Zielgruppe Rente/Erwerbsminderung; Fragen zum anderen Elternteil wären für fast alle überflüssig).
   var VAR_KARTEN_KINDER = ['kindergeld', 'kgBeh', 'kiz', 'but'];
-  var VAR_FRAGEN_AUS = ['kinderMehr', 'uvgWechsel', 'uvgPartner', 'schwanger', 'baby', 'egVor', 'egKinder', 'egNach',
+  var VAR_FRAGEN_AUS = ['kinderMehr', 'uvgWechsel', 'uvgPartner', 'schwanger', 'baby', 'egVor', 'egArt', 'egKinder', 'egNach',
     'arbeitSit', 'algZeit', 'algMonate', 'krankWochen', 'lohnVorher', 'ausbildung', 'babMehr'];
-  var VAR_FELDER_AUS = ['kindKrank', 'kinder12', 'unterhaltFehlt', 'uvgWechsel', 'uvgPartner', 'schwanger', 'baby', 'egVor', 'egKinder', 'egNach'];
+  var VAR_FELDER_AUS = ['kindKrank', 'kinder12', 'unterhaltFehlt', 'uvgWechsel', 'uvgPartner', 'schwanger', 'baby', 'egVor', 'egArt', 'egKinder', 'egNach'];
   var VAR_FIELDSETS_AUS = ['arbeitSit', 'ausbildung']; // ganze Abschnitte „Arbeit“ und „Ausbildung“
   var varBereit = false;
   var VAR_TEL = /(^|[^\d\w+])((?:\+49[\s-]?|0)\d{2,5}(?:[\s\/-]?\d{2,}){1,4})(?![\d,.]\d)/g;

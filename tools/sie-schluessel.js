@@ -88,6 +88,8 @@ function erreichbar(k) {
   const teile = k.split('.');
   if (UNERREICHBAR.includes(teile[0])) return false;
   if (FRAGEN_AUS.includes(teile[0])) return false;
+  // Schritt-für-Schritt-Fragen zu ausgeblendeten Feldern (sf.q.egArt, sf.q.egArt2 …)
+  if (teile[0] === 'sf' && teile[1] === 'q' && teile[2] && FRAGEN_AUS.includes(teile[2].replace(/\d+$/, ''))) return false;
   if (teile[0] === 'sb' && !SB_SICHTBAR.includes(k)) return false;
   if (KARTEN_PRAEFIXE.includes(teile[0]) && KARTEN_AUS.includes(teile[1])) return false;
   if (BRIEF_AUS.test(k) || KUERZEL_AUS.test(k)) return false;
