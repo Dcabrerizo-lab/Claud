@@ -1,6 +1,6 @@
 # SoLo – Sozialleistungslotse
 
-Orientierungscheck für 31 Sozialleistungen in Deutschland (Leistungskarten, Liste in `test/karten.js`): Familie, Wohnen, Grundsicherung, Pflege, Behinderung, Rente, Ausbildung, Krankenversicherung. Es gibt eine Web-Version und Store-Apps für Android und iOS. Alles läuft auf dem Gerät: keine Server, keine Konten, kein Tracking.
+Orientierungscheck für 32 Sozialleistungen in Deutschland (Leistungskarten, Liste in `test/karten.js`): Familie, Wohnen, Grundsicherung, Pflege, Behinderung, Rente, Ausbildung, Krankenversicherung. Es gibt eine Web-Version und Store-Apps für Android und iOS. Alles läuft auf dem Gerät: keine Server, keine Konten, kein Tracking.
 
 ## Was die App kann
 

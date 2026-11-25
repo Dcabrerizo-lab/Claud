@@ -28,6 +28,7 @@ wenn nicht anders genannt.
 | Sofortzuschlag | 25 € im Monat je Kind / jungem Erwachsenen mit Regelbedarfsstufe 3–6, auch wenn der Anspruch nur am Kindergeld scheitert; nicht für Kinder, die ihren Bedarf selbst decken; zusätzlich, kein Bedarf | § 72 SGB II (Fassung ab 1.7.2026) | gesetze-im-internet.de/sgb_2/__72.html |
 | Mehrbedarf Alleinerziehende im Wechselmodell | bei etwa hälftiger Betreuung halber Mehrbedarf | § 21 Abs. 3 SGB II; BSG 3.3.2009, B 4 AS 50/07 R | – |
 | Familiengeld/Krippengeld Bayern | 250 € / 300 €, Krippengeld bis 100 €, nur für bis 31.12.2024 Geborene bis zum 3. Geburtstag (Hinweis in der App nur mit Kind unter 6 und bis Ende 2027) | Art. 9a BayFamGG (GVBl. 2025 S. 570); Art. 29 Abs. 2 BayKiBiG n. F. (GVBl. 2026 S. 401) | verkuendung-bayern.de |
+| Landeserziehungsgeld Sachsen | 150 / 200 / 300 € im Monat (1. / 2. / ab 3. Kind), zwischen 1. und 3. Geburtstag, 5 bis 12 Monate; nur ohne geförderten Kita-/Tagespflegeplatz, höchstens 30 Std./Woche; Einkommensgrenze 24.600 € (Paar) bzw. 21.600 € + 3.140 € je weiteres Kind, nicht ab dem 3. Kind; rückwirkend 1 Monat | §§ 1–4 SächsLErzGG (`R.lerzg`); Informationsblatt Dresden 01/23 | revosax.sachsen.de, Abruf 25.11.2026 |
 | Entlastungsbetrag | Steuerklasse II nur ohne weitere volljährige Person im Haushalt (App: bei Verwandten/WG Steuerklasse I) | § 24b Abs. 3 EStG | gesetze-im-internet.de/estg/__24b.html |
 
 ## 2. Konstellationen mit Soll-Ergebnis (Auswahl; vollständig in `test/rechtsmatrix/familie.json`)
@@ -39,6 +40,10 @@ wenn nicht anders genannt.
 | AE, Baby da + Geschwister, Elterngeld 375 € ohne Einkommen vor der Geburt | kein Elterngeld-Freibetrag beim Grundsicherungsgeld; etwa 1.370 € | § 10 Abs. 5 BEEG |
 | Elterngeld 200 € (sicher ElterngeldPlus) | Wohngeld: 150 € frei; Grundsicherungsgeld: 150 € frei (Einkommen vor der Geburt ergibt sich aus dem Betrag über 150 €) | § 10 Abs. 3, 5 BEEG |
 | Elterngeld 600 €, Basis oder Plus unbekannt | Grundsicherungsgeld/KiZ vorsichtig 150 € frei, für „eher nicht“ und KiZ-Obergrenze 300 € | § 10 Abs. 5 BEEG |
+| Frage „Bekommst du Basiselterngeld oder ElterngeldPlus?“ (je Person, nur mit Elterngeld als Einkommen; seit 25.11.2026) | Basiselterngeld: genau 300 € frei, ElterngeldPlus: genau 150 € (Wohngeld/BAföG je Kind der Geburt vervielfacht; Grundsicherungsgeld, Sozialhilfe, KiZ höchstens bis zum Einkommen vor der Geburt, nicht vervielfacht); „Weiß ich nicht“: Spanne wie oben. Die Angabe geht vor, auch bei ungewöhnlichem Betrag | § 10 Abs. 1, 3, 4, 5 BEEG (gesetze-im-internet.de/beeg/__10.html, Abruf 25.11.2026) |
+| egz-03: AE, Baby da, Elterngeld 936 € Basis, Netto vor der Geburt 1.500 € | Grundsicherungsgeld 982,68 € (1.822,68 − (936 − 300 − 30 + 259) + 25) | § 10 Abs. 5 BEEG, § 11b SGB II |
+| egz-04/05: wie egz-03, 468 € ElterngeldPlus bzw. „weiß nicht“ | 1.300,68 € (150 € frei) | § 10 Abs. 3, 5 BEEG |
+| egz-06: 468 € mit Angabe Basiselterngeld | 1.450,68 € (300 € frei) | § 10 Abs. 5 BEEG |
 | Paar 25.000 € brutto im Monat, Baby kommt | Elterngeld höchstens „möglich“, Grenze vorn | § 1 Abs. 8 BEEG |
 | Paar 16.000 € brutto im Monat | Elterngeld höchstens „möglich“, Grenze vorn | § 1 Abs. 8 BEEG |
 | Selbstständige Schwangere | Mutterschaftsgeld „möglich“, Text ohne Arbeitgeber | § 24i Abs. 1, 2 SGB V |
@@ -59,5 +64,5 @@ wenn nicht anders genannt.
 |---|---|---|
 | Kindergeld 267 € ab 2027 (BT-Drs. 21/8235) | nicht verkündet | mit UVG (Mindestunterhalt − Kindergeld) und KiZ-Höchstbetrag zusammen umstellen |
 | Sofortzuschlag 2027 (§ 72 SGB II, § 6a BKGG) | Streichung aus dem Haushaltsbegleitgesetz 2027 herausgenommen, Gesetz nicht verkündet | nach Verkündung bestätigen |
-| Sächsisches Landeserziehungsgeld | geltendes Landesrecht (SächsLErzGG) | in der App nicht genannt (keine neue Karte); Entscheidung offen |
+| Sächsisches Landeserziehungsgeld | geltendes Landesrecht (SächsLErzGG, Fassung ab 1.1.2019; keine Aufhebung gefunden, auch nicht im Haushaltsbegleitgesetz 2025/2026; Abruf revosax.sachsen.de 25.11.2026) | seit 25.11.2026 Hinweis auf der Kindergeld-Karte (Sachsen; ohne Bundesland „falls du in Sachsen wohnst“), Tests LERZG-01 bis -05 in test/rechtsmatrix/pflege.json |
 | Bayern: 100-€-Kita-Zuschuss | geht ab 1.1.2027 im Qualitätsbonus auf | nicht als Elternleistung nennen |

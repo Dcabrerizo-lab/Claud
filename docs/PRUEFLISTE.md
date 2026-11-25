@@ -100,6 +100,25 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Mehrbedarf dezentrale Warmwasserbereitung (§ 30 Abs. 7) | ✓ | `gsa-warmwasser` |
 | Ausschluss: Asylbewerberleistungen (§ 23 Abs. 2) | ✓ | `asyl-ausschluss` |
 
+
+## Hilfe zum Lebensunterhalt (SGB XII, 3. Kapitel)
+<!-- karten: hlu -->
+
+Neue Karte seit 25.11.2026 (Auftrag David). Matrix: docs/rechtsmatrix/grusi.md, Abschnitt „Hilfe zum Lebensunterhalt“.
+
+| Regel | Status | Test |
+|---|---|---|
+| Nur ohne Grundsicherungsgeld (§ 21 SGB XII, § 5 Abs. 2 SGB II) und ohne Grundsicherung im Alter (geht vor, § 19 Abs. 2 SGB XII); erwerbsfähig, jung: „eher nicht“ | ✓ | `rechtsmatrix-grusi` (HLU-*) |
+| Altersrente vor der Regelaltersgrenze (§ 7 Abs. 4 SGB II): allein „möglich“ mit Betrag wie Grundsicherung im Alter; Paar oder Kinder ab 15 ohne Betrag | ✓ | `rechtsmatrix-grusi` |
+| Volle Erwerbsminderung (nicht Werkstatt, § 41 Abs. 3a): „möglich“, nur wenn befristet; Betrag steht auf der Grundsicherungs-Karte (entweder oder) | ✓ / ◐ (Dauer wird nicht abgefragt) | `vp-pflege` |
+| Kinder eines alleinstehenden Elternteils mit Grundsicherung im Alter; Partner mit Altersrente unter der Regelaltersgrenze | ◐ | `rechtsmatrix-grusi` |
+| Verwandte im Haushalt: Vermutung der Bedarfsdeckung (§ 39 SGB XII, nicht bei Eingliederungshilfe/Pflege): höchstens „möglich“ ohne Betrag | ✓ | `vp-pflege` |
+| Mehrbedarf G nur ab Altersgrenze oder bei voller Erwerbsminderung (§ 30 Abs. 1): bei vorgezogener Altersrente nicht eingerechnet, Hinweis | ✓ | `rechtsmatrix-grusi` |
+| Unterhalt: 100.000-€-Grenze für Eltern und Kinder, nicht bei Hilfe an minderjährige Kinder (§ 94 Abs. 1a Satz 6 SGB XII) | ✓ (Text) | `rechtsmatrix-grusi` |
+| Kein Antrag nötig, Beginn ab Kenntnis (§ 18 SGB XII); Antragsmappe: Hinweis Sozialamt, Anschreiben | ✓ | `hlu-mappe` |
+| Rundfunkbeitrag: Befreiung (§ 4 Abs. 1 Nr. 1 RBeitrStV); Wohngeld nicht zusammen (§ 7 Abs. 1 Satz 1 Nr. 6 WoGG) | ✓ | `rechtsmatrix-grusi` |
+| Längerer Klinik- oder Heimaufenthalt (§ 7 Abs. 4 SGB II, § 27b SGB XII) | ○ (nicht abgefragt) | |
+
 ## Wohngeld (WoGG)
 <!-- karten: wohngeld -->
 
@@ -177,6 +196,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | EU-Bürger ohne Arbeit, unter 5 Jahren: nach 3 Monaten nur mit Freizügigkeitsrecht, nicht allein zur Arbeitsuche: „möglich“ (§ 62 Abs. 1a EStG, Abruf 24.11.2026) | ◐ | `rechtsmatrix-familie` |
 | Drittstaatsangehörige: Hinweis auf den nötigen Aufenthaltstitel bei Kindergeld und Elterngeld (§ 62 Abs. 2 EStG, § 1 Abs. 7 BEEG) | ◐ | `rechtsmatrix-familie` |
 | Baby ist da (unter 14 Monate): zählt als Kind unter 6, auch wenn es bei „Kinder“ fehlt; Baby kommt bald: Hinweis „nach der Geburt beantragen“; volljähriges Kind mit Behinderung: Verweis auf die eigene Karte | ✓ | `rechtsmatrix-familie` |
+| Sachsen: Hinweis Landeserziehungsgeld (§§ 1–4 SächsLErzGG, 150/200/300 €, 1. bis 3. Geburtstag, ohne geförderten Kita-Platz, höchstens 30 Std./Woche, Einkommensgrenze bis zum 2. Kind) bei Kind unter 6; ohne Bundesland „falls du in Sachsen wohnst“; bei laufendem Kindergeld nur mit Sachsen (Abruf revosax.sachsen.de 25.11.2026) | ✓ | `vp-pflege` |
 
 ## Kindergeld für erwachsene Kinder mit Behinderung (§ 32 Abs. 4 Satz 1 Nr. 3 EStG)
 <!-- karten: kgBeh -->
@@ -451,6 +471,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Elterngeld-Netto: Netto minus ein Zwölftel des Arbeitnehmer-Pauschbetrags (§ 2c Abs. 1 BEEG i. V. m. § 9a EStG: 1.230 € / 12 = 102,50 €; Entscheidung David 21.11.2026: Gesetz gilt). Unterschied zum Elterngeld-Schnellrechner des Bundes (rechnet mit 83,33 €) genau erklärt: bei festem Satz SoLo um Satz × 19,17 € niedriger, bei Mindest- und Höchstbetrag gleich | ✓ | `amtlich-elterngeld` |
 | Geschwisterbonus 10 %, mindestens 75 € (§ 2a BEEG): bei zwei Kindern unter 6 eingerechnet, bei einem als Hinweis (unter 3?); amtlich geprüft | ✓ | `amtlich-elterngeld` |
 | Einkommensgrenze 175.000 € zu versteuerndes Einkommen (§ 1 Abs. 8); Mutterschaftsgeld wird angerechnet (§ 3) | ◐ | `eg-hinweise` |
+| Frage „Bekommst du Basiselterngeld oder ElterngeldPlus?“ je Person, nur mit Elterngeld als Einkommen: Basis 300 €, Plus 150 € frei (Wohngeld je Kind der Geburt; SGB II/XII, KiZ bis Einkommen vor der Geburt); „Weiß ich nicht“: vorsichtige Spanne (§ 10 Abs. 1, 3, 4, 5 BEEG, Abruf 25.11.2026) | ✓ | `eg-art` |
 | Ausländer: Anspruch abhängig vom Aufenthaltstitel (§ 1 Abs. 7) | ◐ | `eg-asyl` |
 | Mehrlingszuschlag 300 € je weiteres Kind der Geburt, auch neben dem Geschwisterbonus (§ 2a Abs. 4); Kinder der Geburt zählen nicht als Geschwister (§ 2a Abs. 1 Satz 2); beim ElterngeldPlus halbiert (§ 4a Abs. 2 Satz 3 Nr. 3) (Abruf 21.11.2026) | ✓ | `eg-mehrlinge` |
 | Teilzeit nach der Geburt: Prozentsatz nach dem Einkommen vorher auf den Unterschied, Einkommen vorher höchstens 2.770 € (§ 2 Abs. 3), mindestens 300 € (§ 2 Abs. 4); ElterngeldPlus höchstens die Hälfte des Basiselterngelds ohne Einkommen, Mindestbetrag und Mindest-Geschwisterbonus halbiert (§ 4a Abs. 2) (Abruf 21.11.2026) | ✓ | `eg-teilzeit` |
@@ -563,6 +584,7 @@ Wird nur das Brutto eingetragen, schätzt die App das Netto. Gilt für alle Kart
 | Prüfliste „Stimmt der Brief?“: 6 Haken nach § 13a Abs. 1 RDG (Nr. 1 Auftraggeber, Nr. 2 Forderungsgrund, Nr. 3+4 Zinsen, Nr. 5+6 Inkassokosten, Nr. 8 Aufsichtsbehörde, Nr. 7 Herkunft der Anschrift; Wortlaut abgerufen 20.11.2026); Ergebnis nur „fehlt im Brief“ bzw. „alle Punkte stehen drin – sagt nichts über die Forderung“, Knopf zum Schreiben „Forderungsaufstellung“; Warnungen Schuldanerkenntnis (§ 13a Abs. 4 RDG), Kosten von Raten (§ 13a Abs. 3 RDG), gelber Umschlag 2 Wochen (§ 692 ZPO); nicht angehakte Punkte heißen „nicht angehakt“ (bedingte Punkte gelten nur, wenn sie zutreffen), darunter immer „Erste Einschätzung, keine Rechtsberatung“ (Prüfung 20.11.2026) | ✓ | `ip`, `inkasso` |
 | Musterschreiben (immer Deutsch, als Vorlage): Bitte um Geduld, Forderungsaufstellung (§ 13a Abs. 1 und 2 RDG, für Rechtsanwälte § 43d BRAO; ohne Zahlungsverweigerung), Widerspruch (unbekannt/bezahlt, mit Warnung), P-Konto-Bescheinigung (§ 903 ZPO); Gläubiger, Anschrift, Aktenzeichen nur aus Eingabe oder Schulden-Liste, sonst Lücke [ … ]; Eingaben nur als Text; Pflicht-Hinweis „Allgemeines Muster, keine Rechtsberatung. Bei Post vom Gericht läuft eine Frist“; keine Wertung des Einzelfalls; Ausgabe nur Drucken/Teilen | ✓ | `ms`, `schreiben` |
 | Raten anbieten: Ratenempfehlung als SoLo-Faustregel (keine Rechtsaussage): frei = Einnahmen − Ausgaben aus dem Haushaltsplan (nur gelesen), Puffer 10 % der Einnahmen (auf den Cent aufgerundet), mind. 50 €, Rate abgerundet auf volle 5 €, unter 5 € keine Rate (Verweis Schuldnerberatung); ohne ausgefüllten Plan nur Vermerk mit Knopf zum Plan; mehrere offene Schulden mit Betrag: Aufteilung nach Forderung, je Gläubiger auf ganze Euro abgerundet, Gläubiger des Schreibens hervorgehoben; „Übernehmen“ setzt die Rate ins Schreiben „Ratenzahlung anbieten“ (fragt nach Kosten, vgl. § 13a Abs. 3 RDG); Hinweis: Ratenangebot kann Anerkenntnis sein (§ 212 Abs. 1 Nr. 1 BGB); Schreiben mit Vorbehalt „ohne Anerkennung einer Rechtspflicht“, kein Anerkenntnis von Zinsen und Kosten | ✓ | `rate`, `rate-dom` |
+| Raten anbieten bei Paaren: Frage „Wer hat die Schulden?“ (ich / Partner oder Partnerin / wir beide); pfändbare Obergrenze nur aus dem Einkommen der Person(en) mit Schulden, bei „beide“ je Person eigene Pfändungstabelle, Beträge addiert, Einkommen nicht zusammengezählt; ohne Antwort Person 1 (§ 850c ZPO, Abruf 25.11.2026); Elterngeld unpfändbar bis 300 € (Plus 150 €, je Kind der Geburt, „weiß nicht“ 300 €; § 54 Abs. 3 Nr. 1 SGB I) | ✓ | `rate-wer` |
 | Ratenvorschlag (Prüfung Richtigkeit 21.11.2026): nur wenn Einnahmen, Miete und Essen im Plan stehen; Rate höchstens der pfändbare Betrag nach § 850c ZPO (Werte 2026; nur pfändbares eigenes Einkommen der Person 1: Lohn, Rente, ALG, Krankengeld, Werkstattlohn, Elterngeld über 300 €, Sonstige Einnahmen – ohne Partner-Einkommen, Kindergeld, Unterhalt für die Kinder und „Andere Leistungen“ wie Wohngeld, Kinderzuschlag, Grundsicherungsgeld; § 54 SGB I, § 42 Abs. 4 SGB II, § 17 Abs. 1 SGB XII, Prüfung 24.11.2026; Unterhaltsberechtigte aus Pfändungsrechner oder Check); nichts pfändbar: kein Vorschlag, Hinweis Pfändungstabelle und Schuldnerberatung, Miete/Strom zuerst, Geldstrafe: Raten bei der Staatsanwaltschaft; „Übernehmen“ setzt nie 0 € ins Schreiben | ✓ | `rate-pf` |
 | Aufteilung der Rate nach Vorrang wie die Schulden-Liste (Stufe 1 Miete, Strom, Unterhalt, Geldstrafe, Krankenversicherung; 2 Bußgeld, Amt; 3 Banken, Inkasso), innerhalb der Stufe anteilig, je Gläubiger höchstens die Forderung; Hinweis, vorrangige Raten direkt abzusprechen | ✓ | `rate-vor` |
 | Antragsmappe: bei Entweder-oder (Grundsicherungsgeld oder Wohngeld/Kinderzuschlag; bei Rente Grundsicherung im Alter oder Wohngeld; § 7 Abs. 1 WoGG, § 6a BKGG, § 12a SGB II) Optionsfelder mit beschreibenden Namen und „Ich weiß es noch nicht“ statt leerer Haken; vorbelegt nach `out.wege` der Regeln (aVor → Wohngeld/Kinderzuschlag, bUeblich → Grundsicherung, knapp/unklar → „Ich weiß es noch nicht“ mit Lage-Satz und Notfall-Satz); Satz „Beträge der zwei Wege nicht zusammenzählen“; je nach Wahl passende Anträge, Formulare und Unterlagen (docs/entwuerfe/entweder-oder.md, 21.11.2026) | ✓ | `weg` |

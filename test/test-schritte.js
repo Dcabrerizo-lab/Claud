@@ -214,6 +214,20 @@ const ohne = (o) => JSON.stringify(o.results.map((r) => [r.id, r.level, r.tx]));
   P.w.Schritte.laden({ pos: 'ek1Art', ja: [] });
   check('Ausreisepflichtig: Antwort „Asylbewerberleistungen“ wie bei Asyl', P.$('schritte').textContent.includes(L['sf.a.asylblg']));
 
+  // ---------- 5b. Elterngeld: Basiselterngeld oder ElterngeldPlus (je Person, nur mit Elterngeld; Auftrag David 25.11.2026) ----------
+  P.solo().state().aufenthalt = ''; P.solo().state().ek1Art = ''; P.solo().state().ek2Art = ''; P.w.Schritte.laden({ pos: 'ek1Art', ja: [] });
+  await plauf([L['ek.art.eg'], '468', L['ek.weiteres.0']]);
+  check('Elterngeld (Person 1): Frage „Basiselterngeld oder ElterngeldPlus?“ mit drei Antworten', P.frage() === q('sf.q.egArt')
+    && [...P.$('schritte').querySelectorAll('[data-i]')].map((x) => x.textContent.trim()).join('|') === [L['egArt.basis'], L['egArt.plus'], L['egArt.0']].join('|'), P.frage());
+  await plauf([L['egArt.plus']]);
+  check('Antwort ElterngeldPlus im Zustand; Person 2 ohne Elterngeld wird nicht gefragt', P.solo().state().egArt1 === 'plus' && P.frage() === q('sf.q.ekArt'));
+  await plauf([L['ek.art.lohn'], '1800', '1300', L['ek.art.eg']]);
+  await plauf(['600']);
+  check('Elterngeld als zweites Einkommen von Person 2: eigene Frage für den Partner', P.frage() === q('sf.q.egArt2') && P.$('schritte').querySelector('.sf-bereich').textContent.includes(L['sf.wer2']), P.frage());
+  await plauf([L['egArt.0']]);
+  check('„Weiß ich nicht“: leerer Wert', P.solo().state().egArt2 === '' && P.frage() !== q('sf.q.egArt2'));
+  check('Regeln: ElterngeldPlus 150 € frei, Person 2 offen', (() => { const h = require('../src/rules.js').derive(JSON.parse(JSON.stringify(P.solo().state()))); const e = h.egFreiJe.filter(Boolean); return e[0].sgbLo === 150 && e[0].sgbHi === 150 && e[1].wgLo === 150 && e[1].wgHi === 300; })());
+
   // ---------- 6. Speichern im Vorgang, Neuladen ----------
   A.solo().speichern();
   const gesp = JSON.parse(store['lotse.state'] || 'null') || null;

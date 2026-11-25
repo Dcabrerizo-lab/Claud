@@ -63,9 +63,27 @@ Abrufdatum aller Quellen: 24.11.2026, wenn nicht anders genannt. gesetze-im-inte
 
 ## Offen (nicht in SoLo abgebildet)
 
-- Eigene Karte „Hilfe zum Lebensunterhalt“ (SGB XII, 3. Kapitel) für vorgezogene Altersrente, befristete volle Erwerbsminderung und Kinder bei Eltern mit Grundsicherung im Alter fehlt (Fable 14). Heute nur Texte.
+- Hilfe zum Lebensunterhalt: längerer Klinik- oder Heimaufenthalt (§ 7 Abs. 4 Satz 1, 3 Nr. 1 SGB II, § 27b SGB XII) und die Dauer der vollen Erwerbsminderung werden nicht abgefragt (Karte seit 25.11.2026, siehe unten).
 - Humanitäre Aufenthaltstitel (§ 23 Abs. 1, § 24, § 25 Abs. 4, 5 AufenthG) laufen als „Aufenthaltstitel“, obwohl teils AsylbLG gilt (Z-01 / Z5). Rechtskreiswechsel Ukraine: Verkündung am 24.11.2026 nicht feststellbar.
 - Geringfügige Tätigkeit von EU-Bürgern (Z-02), Rundfunk-Härtefall bei Vorrang Wohngeld (Z-03), Werte ab 1.1.2027 (Z-05).
+
+## Hilfe zum Lebensunterhalt (Karte `hlu`, neu seit 25.11.2026)
+
+Rechtsgrundlagen (gesetze-im-internet.de, Abruf 25.11.2026): § 19 Abs. 1, 2 SGB XII (Grundsicherung im Alter geht vor), § 21 SGB XII und § 5 Abs. 2 SGB II (kein Anspruch, wer dem Grunde nach Grundsicherungsgeld bekommt), § 7 Abs. 4 SGB II (Altersrente schließt Grundsicherungsgeld aus), § 18 (Beginn ab Kenntnis, kein Antrag nötig), § 27 Abs. 2 (Einsatzgemeinschaft Partner, minderjährige Kinder mit Eltern), § 27a (Regelsätze wie Grundsicherung), § 30 Abs. 1 (Mehrbedarf G nur ab Altersgrenze oder bei voller Erwerbsminderung), § 35 (Unterkunft, 1,5-Deckel wie § 22 SGB II), § 39 (Vermutung der Bedarfsdeckung bei Verwandten im Haushalt; nicht bei Eingliederungshilfe-/Pflegebedarf, Satz 3 Nr. 2; in der Grundsicherung ausgeschlossen, § 43 Abs. 5), § 41 Abs. 3, 3a (dauerhafte volle Erwerbsminderung, Werkstatt = Grundsicherung), §§ 82, 82a (Einkommen, Freibeträge), § 90 mit Verordnung (10.000 € je volljährige Person, 500 € je überwiegend unterhaltene Person), § 94 Abs. 1a (100.000 € Jahreseinkommen der Eltern bzw. Kinder; **Satz 6: gilt nicht bei Hilfe zum Lebensunterhalt an minderjährige Kinder**), § 94 Abs. 2 (Pauschalen bei volljährigen Kindern mit Eingliederungshilfe/Pflegebedürftigkeit); Rundfunk § 4 Abs. 1 Nr. 1 RBeitrStV; Wohngeld-Ausschluss § 7 Abs. 1 Satz 1 Nr. 6 WoGG.
+
+| Nr | Konstellation | Soll | Test |
+|---|---|---|---|
+| H1 | Allein, nur Rente, Alter 60 bis unter Regelaltersgrenze oder unbekannt | „möglich“, Betrag wie Grundsicherung im Alter (Rente 614, Miete 500: ca. 450 €) | HLU-01, HLU-02, FA-GG-28 |
+| H2 | Dasselbe als Paar oder mit Kind ab 14 bzw. volljährig | „möglich“ ohne Betrag (erwerbsfähige Person -> Jobcenter) | HLU-03, HLU-13 |
+| H3 | Erwerbsfähig, jung | „eher nicht“ (§ 21 SGB XII) | HLU-04 |
+| H4 | Allein über der Regelaltersgrenze mit Kindern unter 14 | „wahrscheinlich“ für die Kinder, ohne Betrag (in der GSA-Karte enthalten) | HLU-05 |
+| H5 | Paar über der Regelaltersgrenze, zweite Person mit Rente | „möglich“ ohne Betrag (Partner evtl. Altersrente vor der Grenze) | HLU-06 |
+| H6 | Vermögen über 10.000 € je Person / Einkommen deckt Bedarf | „eher nicht“ | HLU-07, HLU-12 |
+| H7 | Vorgezogene Altersrente mit Merkzeichen G | Mehrbedarf G nicht eingerechnet, Hinweis | HLU-08, HLU-P04 |
+| H8 | Bezug Grundsicherungsgeld / Asyl / Bezug Sozialamt | „eher nicht“ / „eher nicht“ / „bekommst du schon“ | HLU-09, -10, -11 |
+| H9 | Volle Erwerbsminderung (eigene Angabe, nicht Werkstatt) | „möglich“ (nur wenn befristet), ohne doppelten Betrag; GSA-Karte verweist | HLU-P01, FA-GG-18 |
+| H10 | Voll erwerbsgemindert bei den Eltern | „möglich“ ohne Betrag, Hinweis § 39 | HLU-P02 |
+| H11 | Werkstatt | „eher nicht“ (Grundsicherung, § 41 Abs. 3a) | HLU-P03 |
 
 ## Bekanntgabe per Post (Fristtexte)
 

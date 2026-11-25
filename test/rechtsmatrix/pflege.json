@@ -7959,5 +7959,359 @@
   "erwartet": {
    "pg": 3
   }
+ },
+ {
+  "id": "HLU-P01",
+  "pruefer": "Claude (neue Karte 25.11.2026)",
+  "beschreibung": "Volle Erwerbsminderung (unter 3 Std., Jg. 1985), allein, ohne Einkommen, Miete 450: GSA mit Hinweis + Verweis, Karte HLU möglich ohne doppelten Betrag",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "ohne",
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1985,
+   "heute": 2026.83,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "emStd": "unter3",
+   "einkommen": [
+    {
+     "art": "ohne",
+     "b": 0,
+     "n": 0
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "tx": [
+     "gsa.emDauer",
+     "hlu.siehe"
+    ]
+   },
+   "hlu": {
+    "status": "vielleicht",
+    "tx": [
+     "hlu.emZeit",
+     "hlu.unterhalt"
+    ],
+    "txNicht": [
+     "schaetz.eins"
+    ]
+   }
+  },
+  "quelle": "SGB XII §§ 19, 27, 30, 39, 41; SächsLErzGG §§ 1–3 (revosax.sachsen.de, Abruf 25.11.2026)"
+ },
+ {
+  "id": "HLU-P02",
+  "pruefer": "Claude (neue Karte 25.11.2026)",
+  "beschreibung": "Voll erwerbsgemindert, 30 J., bei den Eltern: § 39 SGB XII (Vermutung der Bedarfsdeckung) -> möglich ohne Betrag",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "ohne",
+   "miete": "",
+   "vermoegen": 0,
+   "gebJahr": 1996,
+   "heute": 2026.83,
+   "bezug": {},
+   "emStd": "unter3",
+   "wohnform": "eltern",
+   "einkommen": [
+    {
+     "art": "ohne",
+     "b": 0,
+     "n": 0
+    }
+   ]
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "vielleicht",
+    "tx": [
+     "hlu.emZeit",
+     "hlu.verwandte"
+    ],
+    "txNicht": [
+     "schaetz.eins",
+     "schaetz.mind"
+    ]
+   }
+  },
+  "quelle": "SGB XII §§ 19, 27, 30, 39, 41; SächsLErzGG §§ 1–3 (revosax.sachsen.de, Abruf 25.11.2026)"
+ },
+ {
+  "id": "HLU-P03",
+  "pruefer": "Claude (neue Karte 25.11.2026)",
+  "beschreibung": "Werkstatt (Arbeitsbereich) gilt als dauerhaft voll erwerbsgemindert: nur Grundsicherung (§ 41 Abs. 3a, § 45 SGB XII)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "wfbm",
+   "brutto": 250,
+   "netto": 250,
+   "miete": 400,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.83,
+   "bezug": {},
+   "wfbm": true,
+   "wfbmSelbst": true
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "nein"
+   }
+  },
+  "quelle": "SGB XII §§ 19, 27, 30, 39, 41; SächsLErzGG §§ 1–3 (revosax.sachsen.de, Abruf 25.11.2026)"
+ },
+ {
+  "id": "HLU-P04",
+  "pruefer": "Claude (neue Karte 25.11.2026)",
+  "beschreibung": "Altersrente mit 64, Merkzeichen G: Hinweis kein Mehrbedarf G (§ 30 Abs. 1 SGB XII); Rundfunk: Befreiung über Hilfe zum Lebensunterhalt",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "brutto": 700,
+   "netto": 614,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1962,
+   "heute": 2026.9,
+   "bezug": {},
+   "mzG": true
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "vielleicht",
+    "tx": [
+     "hlu.vorgezogen",
+     "hlu.keinG",
+     "einmal.sgb12"
+    ]
+   },
+   "ggeld": {
+    "status": "vielleicht",
+    "tx": [
+     "ggeld.vorgezogen",
+     "hlu.siehe"
+    ]
+   },
+   "rundfunk": {
+    "status": "vielleicht",
+    "tx": [
+     "rundfunk.hlu"
+    ]
+   }
+  },
+  "quelle": "SGB XII §§ 19, 27, 30, 39, 41; SächsLErzGG §§ 1–3 (revosax.sachsen.de, Abruf 25.11.2026)"
+ },
+ {
+  "id": "HLU-P05",
+  "pruefer": "Claude (neue Karte 25.11.2026)",
+  "beschreibung": "Alleinerziehend, Jg. 1985, voll erwerbsgemindert, 2 Kinder (1 unter 6): HLU-Karte nennt Kinder",
+  "h": {
+   "adults": 1,
+   "kids": 2,
+   "kidsU6": 1,
+   "young": 0,
+   "art1": "ohne",
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 2000,
+   "gebJahr": 1985,
+   "heute": 2026.83,
+   "bundesland": "BY",
+   "bezug": {},
+   "ohneWege": true,
+   "emStd": "unter3",
+   "einkommen": [
+    {
+     "art": "ohne",
+     "b": 0,
+     "n": 0
+    }
+   ]
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "vielleicht",
+    "tx": [
+     "hlu.emZeit",
+     "hlu.kinder"
+    ]
+   },
+   "gsa": {
+    "status": "ja"
+   }
+  },
+  "quelle": "SGB XII §§ 19, 27, 30, 39, 41; SächsLErzGG §§ 1–3 (revosax.sachsen.de, Abruf 25.11.2026)"
+ },
+ {
+  "id": "LERZG-01",
+  "pruefer": "Claude (neue Karte 25.11.2026)",
+  "beschreibung": "Sachsen, Kind unter 6: Hinweis Landeserziehungsgeld (SächsLErzGG §§ 1–3; 150/200/300 €)",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 1,
+   "young": 0,
+   "art1": "lohn",
+   "brutto": 3500,
+   "netto": 2400,
+   "miete": 800,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "bundesland": "SN"
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja",
+    "tx": [
+     "kindergeld.lerzg"
+    ],
+    "txNicht": [
+     "kindergeld.familiengeld"
+    ],
+    "betrag": 150,
+    "betragAus": "kindergeld.lerzg.a"
+   }
+  },
+  "quelle": "SGB XII §§ 19, 27, 30, 39, 41; SächsLErzGG §§ 1–3 (revosax.sachsen.de, Abruf 25.11.2026)"
+ },
+ {
+  "id": "LERZG-02",
+  "pruefer": "Claude (neue Karte 25.11.2026)",
+  "beschreibung": "Ohne Bundesland (keine Postleitzahl), Kind unter 6: kein Sachsen-Hinweis (nur bei sächsischer PLZ, Entscheidung David 25.11.2026)",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 1,
+   "young": 0,
+   "art1": "lohn",
+   "brutto": 3500,
+   "netto": 2400,
+   "miete": 800,
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {}
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja",
+    "txNicht": [
+     "kindergeld.lerzg"
+    ]
+   }
+  },
+  "quelle": "SGB XII §§ 19, 27, 30, 39, 41; SächsLErzGG §§ 1–3 (revosax.sachsen.de, Abruf 25.11.2026)"
+ },
+ {
+  "id": "LERZG-03",
+  "pruefer": "Claude (neue Karte 25.11.2026)",
+  "beschreibung": "Bayern bzw. Sachsen ohne Kind unter 6: kein Hinweis",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "brutto": 3500,
+   "netto": 2400,
+   "miete": 800,
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "bundesland": "SN"
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja",
+    "txNicht": [
+     "kindergeld.lerzg"
+    ]
+   }
+  },
+  "quelle": "SGB XII §§ 19, 27, 30, 39, 41; SächsLErzGG §§ 1–3 (revosax.sachsen.de, Abruf 25.11.2026)"
+ },
+ {
+  "id": "LERZG-04",
+  "pruefer": "Claude (neue Karte 25.11.2026)",
+  "beschreibung": "Bayern, Kind unter 6: kein Hinweis auf Sachsen",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 1,
+   "young": 0,
+   "art1": "lohn",
+   "brutto": 3500,
+   "netto": 2400,
+   "miete": 800,
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {},
+   "bundesland": "BY"
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "ja",
+    "txNicht": [
+     "kindergeld.lerzg"
+    ]
+   }
+  },
+  "quelle": "SGB XII §§ 19, 27, 30, 39, 41; SächsLErzGG §§ 1–3 (revosax.sachsen.de, Abruf 25.11.2026)"
+ },
+ {
+  "id": "LERZG-05",
+  "pruefer": "Claude (neue Karte 25.11.2026)",
+  "beschreibung": "Sachsen, Kindergeld läuft schon: Hinweis trotzdem",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 1,
+   "young": 0,
+   "art1": "lohn",
+   "brutto": 3500,
+   "netto": 2400,
+   "miete": 800,
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "bezug": {
+    "kindergeld": true
+   },
+   "bundesland": "SN"
+  },
+  "erwartet": {
+   "kindergeld": {
+    "status": "na",
+    "tx": [
+     "kindergeld.lerzg"
+    ]
+   }
+  },
+  "quelle": "SGB XII §§ 19, 27, 30, 39, 41; SächsLErzGG §§ 1–3 (revosax.sachsen.de, Abruf 25.11.2026)"
  }
 ]

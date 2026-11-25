@@ -187,6 +187,10 @@ var Haushalt = (function () {
       o['ek' + i + 'bArt'] = zArt;
       o['ek' + i + 'b'] = zArt ? wert(s['ek' + i + 'bBetrag']) : null;
     });
+    // Elterngeld je Person: Basiselterngeld / ElterngeldPlus / unbekannt und Kinder dieser Geburt (nur bei „Baby ist da“, wie in den Regeln)
+    // für den pfändungsfreien Teil im Ratenvorschlag (pfaendbarPerson)
+    [1, 2].forEach(function (i) { var a = s['egArt' + i]; o['egArt' + i] = (i === 1 || o.zwei) && (a === 'basis' || a === 'plus') ? a : ''; });
+    o.egKinder = s.baby === 'da' ? Math.min(3, Math.max(1, Number(s.egKinder) || 1)) : 1;
     o.miete = wert(s.miete); o.uh = wert(s.unterhalt);
     o.kinder = Number(s.kids) || 0;
     o.kg = o.kinder > 0 && kindergeldEuro > 0 ? Math.round(o.kinder * kindergeldEuro * 100) : null;
@@ -194,21 +198,39 @@ var Haushalt = (function () {
   }
   // Pfändbares Einkommen für den Ratenvorschlag (Cent), nur der Person 1 (Schuldner; Prüfung Schulden 24.11.2026): Lohn, Selbstständigkeit,
   // Rente, Arbeitslosengeld I, Krankengeld, Werkstattlohn (pfändbar wie Arbeitseinkommen, § 850 ZPO, § 54 Abs. 4 SGB I) und Elterngeld über
-  // 300 € (§ 54 Abs. 3 Nr. 1 SGB I i. V. m. § 10 BEEG). Nicht: Einkommen des Partners (haftet nicht für die Schulden), Kindergeld, Unterhalt
+  // 300 € bzw. 150 € bei ElterngeldPlus, je Kind der Geburt (§ 54 Abs. 3 Nr. 1 SGB I i. V. m. § 10 BEEG, siehe egFreiPfaendung). Nicht: Einkommen des Partners (haftet nicht für die Schulden), Kindergeld, Unterhalt
   // für die Kinder, Unterhalt für sich selbst (§ 850b ZPO, nur bedingt pfändbar), „Andere Leistungen“ (Wohngeld, Grundsicherungsgeld,
   // Kinderzuschlag: § 54 Abs. 3 Nr. 2a, Abs. 5 SGB I, § 42 Abs. 4 SGB II, § 17 Abs. 1 SGB XII). „Sonstige Einnahmen“ (sonst, Cent) zählen mit:
   // Sozialleistungen haben ein eigenes Feld, dort steht also eher Nebenverdienst oder Untermiete; im Zweifel kein falsches „nichts pfändbar“.
+  // Elterngeld: unpfändbar „bis zur Höhe der nach § 10 BEEG anrechnungsfreien Beträge“ (§ 54 Abs. 3 Nr. 1 SGB I,
+  // https://www.gesetze-im-internet.de/sgb_1/__54.html, Abruf 25.11.2026). § 10 Abs. 1, 3, 4 BEEG (https://www.gesetze-im-internet.de/beeg/__10.html):
+  // 300 €, bei ElterngeldPlus 150 €, je Kind der Geburt vervielfacht. Angabe aus dem Check (g.egArt1/2, g.egKinder); „weiß nicht“: vorsichtig der
+  // höhere Betrag (300 € je Kind, kleinere pfändbare Obergrenze). Bis 25.11.2026: immer 300 €, auch bei Plus und Mehrlingen.
   var PFAENDBAR_ART = ['lohn', 'selbst', 'rente', 'alg', 'kg', 'wfbm'], EG_FREI = 30000;
-  function pfaendbarBasis(g, sonst) {
-    var s0 = sonst > 0 ? sonst : 0;
-    if (!g) return s0;
-    return [['ek1', 'ek1Art'], ['ek1b', 'ek1bArt']].reduce(function (sum, x) {
+  function egFreiPfaendung(g, i) { var k = g && g.egKinder >= 1 ? Math.min(3, g.egKinder | 0) : 1; return (g && g['egArt' + i] === 'plus' ? EG_FREI / 2 : EG_FREI) * k; }
+  // Pfändbares eigenes Einkommen einer Person i (1 oder 2) aus den Werten des Checks (Cent), ohne „Sonstige Einnahmen“
+  function pfaendbarPerson(g, i) {
+    if (!g || (i === 2 && !g.zwei)) return 0;
+    return [['ek' + i, 'ek' + i + 'Art'], ['ek' + i + 'b', 'ek' + i + 'bArt']].reduce(function (sum, x) {
       var c = g[x[0]], art = g[x[1]];
       if (!(c > 0)) return sum;
       if (PFAENDBAR_ART.indexOf(art) >= 0) return sum + c;
-      if (art === 'eg') return sum + Math.max(0, c - EG_FREI);
+      if (art === 'eg') return sum + Math.max(0, c - egFreiPfaendung(g, i));
       return sum;
-    }, s0);
+    }, 0);
+  }
+  function pfaendbarBasis(g, sonst) { return (sonst > 0 ? sonst : 0) + pfaendbarPerson(g, 1); }
+  // Wer hat die Schulden? (Frage im Ratenvorschlag, nur bei Paaren; Auftrag David 25.11.2026): 'ich' (Person 1, Standard wie bisher),
+  // 'partner' (Person 2), 'beide'. Jede Person haftet nur mit ihrem eigenen Einkommen; gepfändet wird bei jeder Person getrennt nach der
+  // Pfändungstabelle (§ 850c ZPO gilt je Schuldner für dessen Arbeitseinkommen, https://www.gesetze-im-internet.de/zpo/__850c.html, Abruf
+  // 25.11.2026). Darum je Schuldner ein eigener Betrag (Liste, Cent) – die Einkommen werden NICHT zusammengezählt. „Sonstige Einnahmen“ (sonst)
+  // gehören keiner Person sicher: Sie zählen bei der ersten Person, die die Schulden hat (wie bisher bei Person 1).
+  var SCHULDNER = ['ich', 'partner', 'beide'];
+  function pfaendbarBasisJe(g, sonst, wer) {
+    var s0 = sonst > 0 ? sonst : 0;
+    if (!g || !g.zwei || wer === 'ich' || SCHULDNER.indexOf(wer) < 0) return [pfaendbarBasis(g, sonst)];
+    if (wer === 'partner') return [s0 + pfaendbarPerson(g, 2)];
+    return [s0 + pfaendbarPerson(g, 1), pfaendbarPerson(g, 2)];
   }
   // Eine Änderung im Plan an einem gemeinsamen Feld: direkt schreiben (Feld leer oder gleich) oder erst fragen (anderer Wert steht schon da)
   function aenderung(alt, neu) {
@@ -413,7 +435,7 @@ var Haushalt = (function () {
   function eur(cent) { return ctx.euro((cent || 0) / 100); }
   function katName(k) { return t('hb.k.' + k); }
   function katSym(k) { var x = KAT.filter(function (a) { return a[0] === k; })[0] || KAT[8]; return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + x[1] + '</svg>'; }
-  function leer() { return { v: 1, plan: { kg: null, leist: null, sonst: null, aus: {} }, buch: [], weg: {}, ekBasis: null, ekV: 2, energie: leerEnergie() }; }
+  function leer() { return { v: 1, plan: { kg: null, leist: null, sonst: null, aus: {} }, buch: [], weg: {}, ekBasis: null, ekV: 2, energie: leerEnergie(), schuldner: '' }; }
 
   // ----- Speicherung: eine kleine Schnittstelle, später leicht an „Vorgänge“ anzubinden (Haushalt.speicherOrt) -----
   var SCHLUESSEL = 'lotse.haushalt';
@@ -452,6 +474,7 @@ var Haushalt = (function () {
     if (d.weg && typeof d.weg === 'object') Object.keys(d.weg).forEach(function (k) { if (d.weg[k] === true) x.weg[k] = true; });
     if (typeof d.ekBasis === 'number') x.ekBasis = d.ekBasis;
     x.energie = normiereEnergie(d.energie); // alte Felder (personen, bewilligt) werden verworfen
+    if (SCHULDNER.indexOf(d.schuldner) >= 0) x.schuldner = d.schuldner; // Wer hat die Schulden? (Ratenvorschlag, nur bei Paaren)
     // ekV 2: ekBasis enthält das zweite Einkommen. Ältere Stände (ohne ekV) werden in hinweisDaten() einmal angeglichen.
     x.ekV = d.ekV === 2 ? 2 : 1;
     if (Array.isArray(d.buch)) x.buch = d.buch.filter(function (e) { return e && /^\d{4}-\d\d-\d\d$/.test(e.d) && typeof e.c === 'number' && e.c > 0; }).map(buchungBereinigen);
@@ -1402,7 +1425,7 @@ var Haushalt = (function () {
     ausCheck: ausCheck, aenderung: aenderung, uebernahme: uebernahme, normiere: normiere, hinweisListe: hinweisListe, aenderungsBrief: aenderungsBrief,
     // Abschlag prüfen (Rechnung)
     PREIS: PREIS, TOL: TOL, tageZwischen: tageZwischen, jahresVerbrauch: jahresVerbrauch, gasKwh: gasKwh, jahresKosten: jahresKosten,
-    pfaendbarBasis: pfaendbarBasis, abschlagVergleich: abschlagVergleich, energieSparte: energieSparte, tarifKosten: tarifKosten, tarifVergleich: tarifVergleich, dezimalAus: dezimalAus, SAISON_TAGE: SAISON_TAGE, AKTUELL_TAGE: AKTUELL_TAGE,
+    pfaendbarBasis: pfaendbarBasis, pfaendbarBasisJe: pfaendbarBasisJe, SCHULDNER: SCHULDNER, abschlagVergleich: abschlagVergleich, energieSparte: energieSparte, tarifKosten: tarifKosten, tarifVergleich: tarifVergleich, dezimalAus: dezimalAus, SAISON_TAGE: SAISON_TAGE, AKTUELL_TAGE: AKTUELL_TAGE,
     // Oberfläche
     // Kurzstatus für „Mein Ordner“: { rest, restEuro, leer, ausgefuellt }. ausgefuellt: mindestens eine eigene Ausgabe im Plan (die Miete
     // kommt aus dem Check und zählt nicht) – sonst wäre „Im Monat bleiben dir …“ nur Einkommen minus Miete, ohne Essen, Strom und Handy.
@@ -1414,7 +1437,18 @@ var Haushalt = (function () {
       r.wesentlich = !!daten && r.ein > 0 && a.miete > 0 && a.essen > 0;
       r.kindergeld = daten ? (daten.plan.kg !== null ? daten.plan.kg : geteilte().kg) || 0 : 0;
       r.pfBasis = daten ? pfaendbarBasis(geteilte(), daten.plan.sonst) : 0; // pfändbares eigenes Einkommen (Cent), siehe pfaendbarBasis
+      // Paar: Wer hat die Schulden? Pfändbares Einkommen je Person, die die Schulden hat (Liste, Cent), siehe pfaendbarBasisJe
+      var g = daten ? geteilte() : null;
+      r.zwei = !!(g && g.zwei);
+      r.schuldner = r.zwei && daten.schuldner ? daten.schuldner : '';
+      r.pfBasisJe = daten ? pfaendbarBasisJe(g, daten.plan.sonst, r.schuldner) : [0];
       return r;
+    },
+    // Wer hat die Schulden? lesen oder setzen ('ich', 'partner', 'beide'; '' = nicht beantwortet). Gespeichert im Plan des Vorgangs.
+    schuldner: function (w) {
+      if (!daten) return '';
+      if (w !== undefined) { daten.schuldner = SCHULDNER.indexOf(w) >= 0 ? w : ''; sichern(); }
+      return daten.schuldner || '';
     },
     abschlag: function (ziel, art) { abschlagBox(ziel, art); }, tarif: function (ziel, art) { tarifBox(ziel, art); }, // Seiten „Strom“ und „Heizen“ (src/app.js)
     init: init, zeigen: zeigen, sprache: function () { render(); }, speicherOrt: speicherOrt,

@@ -212,10 +212,10 @@ function euAus(h) {
 function kappe(e, id, level) {
   if (level !== 'ja') return level;
   const eig = e.wohnart === 'eigentum', verw = e.hhAndere === 'verwandte', auto = (Number(e.autoWert) || 0) > 15000 && !e.autoBraucht;
-  if (eig && (id === 'ggeld' || id === 'gsa' || id === 'wohngeld')) return 'vielleicht';
+  if (eig && (id === 'ggeld' || id === 'gsa' || id === 'hlu' || id === 'wohngeld')) return 'vielleicht';
   if (verw && (id === 'ggeld' || id === 'wohngeld')) return 'vielleicht';
   if (auto && (id === 'ggeld' || id === 'kiz')) return 'vielleicht';
-  if (auto && !e.mzG && !(e.mz && e.mz.aG) && (id === 'gsa' || id === 'hzp' || id === 'blh')) return 'vielleicht';
+  if (auto && !e.mzG && !(e.mz && e.mz.aG) && (id === 'gsa' || id === 'hlu' || id === 'hzp' || id === 'blh')) return 'vielleicht';
   return level;
 }
 function grundsicherungsgeld(h) {
@@ -514,12 +514,12 @@ function einkommenSGB12(e, h) {
   }
   return summe;
 }
-function grundsicherungAlter(e) {
+function grundsicherungAlter(e, ohneVoraussetzung) {
   const h = haushalt(e);
   if (Array.isArray(e.einkommen)) { const s = e.einkommen.reduce((a, x) => a + zahl(x.b), 0); h.brutto = s; h.netto = e.einkommen.reduce((a, x) => a + (leer(x.n) ? zahl(x.b) : zahl(x.n)), 0); h.p = [{ art: e.einkommen.length ? e.einkommen[0].art : 'ohne', brutto: s }]; }
   // § 41 Abs. 3 SGB XII: dauerhaft voll erwerbsgemindert zählt erst ab 18 Jahren – ein Kind unter 18 in der Werkstatt reicht nicht
   const em = h.em && (emElternteil(e) || e.bhPerson !== 'minder');
-  if (!h.rente && !em && !h.grenz) return { level: 'nein' };
+  if (!ohneVoraussetzung && !h.rente && !em && !h.grenz) return { level: 'nein' };
   if (euAus(h)) return { level: 'nein' };
   if (h.bezug.sozialamt) return { level: 'na' };
   // Nur das erwachsene Kind voll erwerbsgemindert (Angaben der Eltern): Leistung des Kindes allein, Einkommen und Vermögen der Eltern zählen
@@ -557,6 +557,32 @@ function grundsicherungAlter(e) {
   if (fehlt && level === 'ja') return { level: 'vielleicht' };
   if (fehlt && level === 'vielleicht') return { level: 'vielleicht' };
   return { level, bedarf, luecke };
+}
+
+// ---------- Hilfe zum Lebensunterhalt (3. Kapitel SGB XII, neue Karte 25.11.2026) ----------
+// Einstufung (ohne Kappen und Miet-Grenzen, die macht der Vergleich). gsaStufe: Einstufung der Grundsicherung im Alter.
+// § 19 Abs. 2 SGB XII (Grundsicherung im Alter geht vor), § 21 SGB XII / § 5 Abs. 2 SGB II (kein SGB II), § 7 Abs. 4 SGB II (Altersrente),
+// § 41 Abs. 3a (Werkstatt = Grundsicherung), § 39 (Verwandte), § 30 Abs. 1 (Mehrbedarf G nur mit Altersgrenze oder voller Erwerbsminderung)
+function hilfeLebensunterhalt(e, gsaStufe) {
+  const h = haushalt(e);
+  if (e.aufenthalt === 'asyl' || e.aufenthalt === 'ausreise') return { level: 'nein' };
+  const arten = Array.isArray(e.einkommen) ? e.einkommen.filter((x) => zahl(x.b) > 0 || zahl(x.n) > 0).map((x) => x.art) : h.p.filter((x) => x.brutto > 0).map((x) => x.art);
+  const nurRente = arten.length > 0 && arten.every((a) => a === 'rente');
+  const vorgezogen = !h.rente && nurRente && (h.jahre ? h.jahre >= 60 : h.gruppe === '' || h.gruppe === '50+');
+  const werkstatt = !!e.wfbm || arten.indexOf('wfbm') >= 0;
+  const emZeit = !h.rente && !h.grenz && emElternteil(e) && !werkstatt;
+  const gOk = gsaStufe === 'ja' || gsaStufe === 'vielleicht' || gsaStufe === 'na';
+  const zweiteRente = Array.isArray(e.einkommen) ? false : h.erwachsene === 2 && e.art2 === 'rente';
+  const kids = e.kids | 0;
+  const fuerKinder = h.erwachsene === 1 && kids > 0 && gOk && !kindNurEMRef(h);
+  const fuerPartner = h.erwachsene === 2 && h.rente && zweiteRente && gOk;
+  if (!vorgezogen && !emZeit && !fuerKinder && !fuerPartner) return { level: 'nein' };
+  if (h.bezug.grundsicherungsgeld || euAus(h)) return { level: 'nein' };
+  if (h.bezug.sozialamt) return { level: 'na' };
+  const fehlt = (!Array.isArray(e.einkommen) && leer(e.brutto) && leer(e.netto)) || leer(e.vermoegen) || (!e.wohnform && leer(e.miete));
+  if (!vorgezogen && !emZeit) return { level: gsaStufe === 'ja' && h.k14 === 0 && h.jung === 0 && !fehlt ? 'ja' : 'vielleicht' };
+  const g = grundsicherungAlter(vorgezogen && !emElternteil(e) ? { ...e, mzG: false } : e, true);
+  return { level: g.level === 'nein' ? 'nein' : 'vielleicht' };
 }
 
 // ---------- Unterhaltsvorschuss (UVG) ----------
@@ -1008,4 +1034,4 @@ if (require.main === module) {
   process.exit(v.fehler.length ? 1 : 0);
 }
 
-module.exports = { asylbewerber, kdu15: (e) => { const g = kduGrenze(e); if (!g) return null; const st = Number(e.mietstufe), n = Math.min((e.adults === 2 ? 2 : 1) + kinderMitBaby(e) + Math.max(0, e.young | 0), 12); return hoechst(st, n) * 1.1 * 1.5 + heiz(n); }, wbs, pfaendung, pkonto, vergleich, kappe, euAus, kduGrenze, kuenftig, zusammen, elterngeld, egAbgleich, egHaushalt, egNettoRef, svAN, EG_PAUSCH, EG_PAUSCH_RECHNER, grenze85, schon90, ASYL_NEIN, ASYL_MOEGLICH, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };
+module.exports = { asylbewerber, kdu15: (e) => { const g = kduGrenze(e); if (!g) return null; const st = Number(e.mietstufe), n = Math.min((e.adults === 2 ? 2 : 1) + kinderMitBaby(e) + Math.max(0, e.young | 0), 12); return hoechst(st, n) * 1.1 * 1.5 + heiz(n); }, wbs, pfaendung, pkonto, vergleich, kappe, euAus, kduGrenze, kuenftig, zusammen, elterngeld, egAbgleich, egHaushalt, egNettoRef, svAN, EG_PAUSCH, EG_PAUSCH_RECHNER, grenze85, schon90, ASYL_NEIN, ASYL_MOEGLICH, haushalt, grundsicherungsgeld, wohngeld, kinderzuschlag, grundsicherungAlter, hilfeLebensunterhalt, unterhaltsvorschuss, bafoeg, arbeitslosengeld, krankengeld, regelaltersgrenze, freibetragArbeit, RB };

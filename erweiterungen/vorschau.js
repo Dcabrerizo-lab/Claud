@@ -740,15 +740,29 @@ Ergebnis: Pflegegrad 2`;
     wz++; const n = wz; w = w || {};
     const art = h('select', { id: `wm-art-${n}`, 'aria-label': `Einkommen ${n}: Art` }, ARTEN.map(([v, t]) => h('option', { value: v, text: t, selected: v === (w.art || 'lohn') })));
     const abz = h('select', { id: `wm-abz-${n}`, 'aria-label': `Einkommen ${n}: Pauschalabzug` }, [0, 10, 20, 30].map((p) => h('option', { value: p, text: p + ' %', selected: p === (w.abzug != null ? w.abzug : 30) })));
+    // Elterngeld: kein Pauschalabzug, dafür Basiselterngeld oder ElterngeldPlus und Kinder dieser Geburt (Freibetrag § 10 BEEG, BescheidWG egFrei).
+    // „Weiß ich nicht“ = egPlus fehlt (dann vorsichtige Spanne). Vorbelegt aus dem Check (Frage „Bekommst du Basiselterngeld oder ElterngeldPlus?“).
+    const egWert = w.egPlus === true ? 'plus' : w.egPlus === false ? 'basis' : '';
+    const egArt = h('select', { id: `wm-eg-${n}`, 'aria-label': `Einkommen ${n}: Basiselterngeld oder ElterngeldPlus` },
+      [['', 'Weiß ich nicht'], ['basis', 'Basiselterngeld'], ['plus', 'ElterngeldPlus']].map(([v, t]) => h('option', { value: v, text: t, selected: v === egWert })));
+    const egK = h('select', { id: `wm-egk-${n}`, 'aria-label': `Einkommen ${n}: Kinder bei dieser Geburt` },
+      [[1, 'ein Kind'], [2, 'Zwillinge'], [3, 'Drillinge oder mehr']].map(([v, t]) => h('option', { value: v, text: t, selected: v === (Number(w.egKinder) || 1) })));
+    const egBox = h('div', { class: 'wm-eg' }, egArt, egK);
+    const egZeigen = () => { const eg = art.value === 'eg'; abz.hidden = eg; egBox.hidden = !eg; };
+    art.addEventListener('change', egZeigen); egZeigen();
     const tr = h('tr', {}, h('td', {}, art),
       h('td', {}, h('input', { type: 'number', min: '0', step: '0.01', inputmode: 'decimal', id: `wm-b-${n}`, 'aria-label': `Einkommen ${n}: brutto im Monat`, value: w.brutto || '' })),
-      h('td', {}, abz),
+      h('td', {}, abz, egBox),
       h('td', {}, h('input', { type: 'number', min: '0', step: '0.01', inputmode: 'decimal', id: `wm-u-${n}`, 'aria-label': `Einkommen ${n}: Unterhalt im Monat`, value: w.unterhalt || '' })),
       h('td', {}, h('button', { type: 'button', class: 'btn', 'aria-label': `Einkommen ${n} entfernen`, onclick: () => { tr.remove(); zeigeWG(); } }, '×')));
     $('wg-mitglieder').append(tr);
   }
   function leseWG() {
-    const mitglieder = [...$('wg-mitglieder').children].map((tr) => { const s = tr.querySelectorAll('select'), i = tr.querySelectorAll('input'); return { art: s[0].value, abzug: +s[1].value, brutto: +i[0].value || 0, unterhalt: +i[1].value || 0 }; });
+    const mitglieder = [...$('wg-mitglieder').children].map((tr) => {
+      const s = tr.querySelectorAll('select'), i = tr.querySelectorAll('input'), m = { art: s[0].value, abzug: +s[1].value, brutto: +i[0].value || 0, unterhalt: +i[1].value || 0 };
+      if (m.art === 'eg') { const a = s[2].value; if (a) m.egPlus = a === 'plus'; m.egKinder = +s[3].value || 1; }
+      return m;
+    });
     return { personen: +$('wg-n').value || 1, stufe: +$('wg-stufe').value, bruttokalt: +$('wg-kalt').value || 0, schwerbehindert: +$('wg-sb').value || 0, alleinerziehend: $('wg-ae').checked, mitglieder,
       bescheid: { miete: wert('wg-b-miete'), einkommen: wert('wg-b-eink'), wohngeld: wert('wg-b-wg') } };
   }
@@ -1013,7 +1027,8 @@ Ergebnis: Pflegegrad 2`;
         if (hh.stufe && $('wg-stufe').querySelector(`option[value="${hh.stufe}"]`)) $('wg-stufe').value = hh.stufe;
         if (hh.alleinerziehend) $('wg-ae').checked = true;
         if (nurLeer('wg-mitglieder')) $('wg-mitglieder').replaceChildren();
-        if (!$('wg-mitglieder').children.length) erw.filter((p) => p.brutto).forEach((p) => wgZeile({ art: 'lohn', brutto: p.brutto }));
+        // Elterngeld aus dem Check: ausgezahlter Betrag, Basiselterngeld/ElterngeldPlus und Kinder dieser Geburt (p.eg); sonst wie bisher Lohn mit Brutto
+        if (!$('wg-mitglieder').children.length) erw.forEach((p) => { if (p.eg && p.eg.betrag) wgZeile({ art: 'eg', brutto: p.eg.betrag, egPlus: p.eg.plus, egKinder: p.eg.kinder }); else if (p.brutto) wgZeile({ art: 'lohn', brutto: p.brutto }); });
       }
       if (art === 'fk') {
         if (erw.length === 2) $('kz-zahl').value = '2';
