@@ -187,6 +187,10 @@ var Haushalt = (function () {
       o['ek' + i + 'bArt'] = zArt;
       o['ek' + i + 'b'] = zArt ? wert(s['ek' + i + 'bBetrag']) : null;
     });
+    // Elterngeld je Person: Basiselterngeld / ElterngeldPlus / unbekannt und Kinder dieser Geburt (nur bei „Baby ist da“, wie in den Regeln)
+    // für den pfändungsfreien Teil im Ratenvorschlag (pfaendbarPerson)
+    [1, 2].forEach(function (i) { var a = s['egArt' + i]; o['egArt' + i] = (i === 1 || o.zwei) && (a === 'basis' || a === 'plus') ? a : ''; });
+    o.egKinder = s.baby === 'da' ? Math.min(3, Math.max(1, Number(s.egKinder) || 1)) : 1;
     o.miete = wert(s.miete); o.uh = wert(s.unterhalt);
     o.kinder = Number(s.kids) || 0;
     o.kg = o.kinder > 0 && kindergeldEuro > 0 ? Math.round(o.kinder * kindergeldEuro * 100) : null;
@@ -194,11 +198,16 @@ var Haushalt = (function () {
   }
   // Pfändbares Einkommen für den Ratenvorschlag (Cent), nur der Person 1 (Schuldner; Prüfung Schulden 24.11.2026): Lohn, Selbstständigkeit,
   // Rente, Arbeitslosengeld I, Krankengeld, Werkstattlohn (pfändbar wie Arbeitseinkommen, § 850 ZPO, § 54 Abs. 4 SGB I) und Elterngeld über
-  // 300 € (§ 54 Abs. 3 Nr. 1 SGB I i. V. m. § 10 BEEG). Nicht: Einkommen des Partners (haftet nicht für die Schulden), Kindergeld, Unterhalt
+  // 300 € bzw. 150 € bei ElterngeldPlus, je Kind der Geburt (§ 54 Abs. 3 Nr. 1 SGB I i. V. m. § 10 BEEG, siehe egFreiPfaendung). Nicht: Einkommen des Partners (haftet nicht für die Schulden), Kindergeld, Unterhalt
   // für die Kinder, Unterhalt für sich selbst (§ 850b ZPO, nur bedingt pfändbar), „Andere Leistungen“ (Wohngeld, Grundsicherungsgeld,
   // Kinderzuschlag: § 54 Abs. 3 Nr. 2a, Abs. 5 SGB I, § 42 Abs. 4 SGB II, § 17 Abs. 1 SGB XII). „Sonstige Einnahmen“ (sonst, Cent) zählen mit:
   // Sozialleistungen haben ein eigenes Feld, dort steht also eher Nebenverdienst oder Untermiete; im Zweifel kein falsches „nichts pfändbar“.
+  // Elterngeld: unpfändbar „bis zur Höhe der nach § 10 BEEG anrechnungsfreien Beträge“ (§ 54 Abs. 3 Nr. 1 SGB I,
+  // https://www.gesetze-im-internet.de/sgb_1/__54.html, Abruf 25.11.2026). § 10 Abs. 1, 3, 4 BEEG (https://www.gesetze-im-internet.de/beeg/__10.html):
+  // 300 €, bei ElterngeldPlus 150 €, je Kind der Geburt vervielfacht. Angabe aus dem Check (g.egArt1/2, g.egKinder); „weiß nicht“: vorsichtig der
+  // höhere Betrag (300 € je Kind, kleinere pfändbare Obergrenze). Bis 25.11.2026: immer 300 €, auch bei Plus und Mehrlingen.
   var PFAENDBAR_ART = ['lohn', 'selbst', 'rente', 'alg', 'kg', 'wfbm'], EG_FREI = 30000;
+  function egFreiPfaendung(g, i) { var k = g && g.egKinder >= 1 ? Math.min(3, g.egKinder | 0) : 1; return (g && g['egArt' + i] === 'plus' ? EG_FREI / 2 : EG_FREI) * k; }
   // Pfändbares eigenes Einkommen einer Person i (1 oder 2) aus den Werten des Checks (Cent), ohne „Sonstige Einnahmen“
   function pfaendbarPerson(g, i) {
     if (!g || (i === 2 && !g.zwei)) return 0;
@@ -206,7 +215,7 @@ var Haushalt = (function () {
       var c = g[x[0]], art = g[x[1]];
       if (!(c > 0)) return sum;
       if (PFAENDBAR_ART.indexOf(art) >= 0) return sum + c;
-      if (art === 'eg') return sum + Math.max(0, c - EG_FREI);
+      if (art === 'eg') return sum + Math.max(0, c - egFreiPfaendung(g, i));
       return sum;
     }, 0);
   }

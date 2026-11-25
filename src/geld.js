@@ -122,7 +122,7 @@ var Geld = (function () {
   //  Obergrenze = pfändbarer Betrag nach der Pfändungstabelle (§ 850c ZPO mit den geprüften Werten 2026 in Rules.pfaendung, Wortlaut § 850c
   //    abgerufen 21.11.2026 auf https://www.gesetze-im-internet.de/zpo/__850c.html): mehr als das könnten alle Gläubiger zusammen auch mit einer
   //    Lohnpfändung nicht bekommen. Grundlage: nur das eigene pfändbare Einkommen der Person 1 (Haushalt.rest().pfBasis: Lohn, Rente, ALG,
-  //    Krankengeld, Elterngeld über 300 €, „Sonstige Einnahmen“) – ohne Einkommen des Partners und ohne unpfändbare Leistungen (Kindergeld § 76 EStG, Wohngeld,
+  //    Krankengeld, Elterngeld über 300 € bzw. 150 € bei ElterngeldPlus je Kind der Geburt, „Sonstige Einnahmen“) – ohne Einkommen des Partners und ohne unpfändbare Leistungen (Kindergeld § 76 EStG, Wohngeld,
   //    Kinderzuschlag, Grundsicherungsgeld, Sozialhilfe, Unterhalt für die Kinder; § 54 SGB I, § 42 Abs. 4 SGB II, § 17 Abs. 1 SGB XII;
   //    Prüfung Schulden 24.11.2026). Fehlt pfBasis (alte Aufrufer), wie bisher Einnahmen ohne Kindergeld. Unterhaltsberechtigte aus dem
   //    Pfändungsrechner oder dem Check (Partner und Kinder im Haushalt). Unterhaltsgläubiger können mehr pfänden (§ 850d ZPO) – das ersetzt keine Beratung.
