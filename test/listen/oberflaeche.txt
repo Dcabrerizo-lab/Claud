@@ -34,3 +34,4 @@ node test/test-cache-reste.js
 node test/test-vorlesen.js
 node test/test-variante-pflege.js
 node test/test-variante-pfad.js
+node test/test-elterngeld-art-dom.js

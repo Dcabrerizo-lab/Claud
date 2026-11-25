@@ -159,7 +159,7 @@
   // Erlaubte Arten für das zweite Einkommen einer Person (leer = keins)
   var EK_ZWEIT = ['', 'lohn', 'selbst', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'unt'];
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', waisen: '', uvgPartner: '', uvgWechsel: false, kindEink: '', ek1bArt: '', ek1bBetrag: '', ek2bArt: '', ek2bBetrag: '', zusatzRente: '', baby: '', egVor: '', egKinder: '', egNach: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', plzOrt: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', waisen: '', uvgPartner: '', uvgWechsel: false, kindEink: '', ek1bArt: '', ek1bBetrag: '', ek2bArt: '', ek2bBetrag: '', zusatzRente: '', baby: '', egVor: '', egKinder: '', egNach: '', egArt1: '', egArt2: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', plzOrt: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
   }
 
   function detect() {
@@ -359,6 +359,9 @@
     if (!state.ek2bArt) reset(['ek2bBetrag']);
     if (!(state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente' || state.ek2bArt === 'rente')) reset(['grundrente33', 'zusatzRente']);
     if (!(state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm' || state.ek2bArt === 'wfbm')) reset(['wfbmEssen']);
+    // Basiselterngeld oder ElterngeldPlus: nur, wenn die Person Elterngeld als Einkommen hat
+    if (!hatEg(1)) reset(['egArt1']);
+    if (!hatEg(2)) reset(['egArt2']);
     if (state.arbeitSit !== 'krank') reset(['krankWochen']);
     if (!state.arbeitSit) reset(['lohnVorher']);
     if (state.ausbildung !== 'ich') reset(['babBetrieb', 'babWohnt']);
@@ -386,6 +389,8 @@
     show('.cond-ek2b', state.adults === 2 && !!state.ek2Art && state.ek2Art !== 'ohne');
     show('.cond-ek2bBetrag', !!state.ek2bArt);
     show('.cond-rente', state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente' || state.ek2bArt === 'rente');
+    show('.cond-eg1', hatEg(1));
+    show('.cond-eg2', hatEg(2));
     show('.cond-wfbm', !!state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm' || state.ek2bArt === 'wfbm');
     show('.cond-krank', state.arbeitSit === 'krank');
     show('.cond-job', !!state.arbeitSit);
@@ -396,6 +401,8 @@
     show('.cond-uvgPartner', !!state.unterhaltFehlt && state.kids > 0 && state.adults === 2);
     show('.cond-auto', Number(state.autoWert) > 0);
   }
+  // Person i (1 oder 2) hat Elterngeld als Einkommen (Hauptfeld oder zweites Einkommen); Person 2 nur bei zwei Erwachsenen
+  function hatEg(i) { return (i === 1 || state.adults === 2) && (state['ek' + i + 'Art'] === 'eg' || (!!state['ek' + i + 'Art'] && state['ek' + i + 'Art'] !== 'ohne' && state['ek' + i + 'bArt'] === 'eg')); }
   // Frühere Fragen (Haken „Grad der Behinderung 100“ und „voll erwerbsgemindert“) in die neuen Fragen übernehmen
   function migriereFragen(s) {
     if (s.behinderung && !s.gdb) { s.gdb = '100'; if (!s.bhPerson) s.bhPerson = 'erwNach25'; }
@@ -678,6 +685,8 @@
     fillSelect('gdb', gd, state.gdb);
     fillSelect('baby', [['', t('baby.0')], ['bald', t('baby.bald')], ['da', t('baby.da')]], state.baby);
     fillSelect('egKinder', [['', t('egKinder.1')], ['2', t('egKinder.2')], ['3', t('egKinder.3')]], state.egKinder);
+    // Basiselterngeld oder ElterngeldPlus (je Person mit Elterngeld): bestimmt den Freibetrag nach § 10 BEEG (src/rules.js, derive egFrei)
+    ['egArt1', 'egArt2'].forEach(function (k) { fillSelect(k, [['', t('egArt.0')], ['basis', t('egArt.basis')], ['plus', t('egArt.plus')]], state[k]); });
     fillSelect('uvgPartner', [['', t('uvgPartner.0')], ['neu', t('uvgPartner.neu')], ['ehe', t('uvgPartner.ehe')], ['eltern', t('uvgPartner.eltern')]], state.uvgPartner);
     fillSelect('aufenthalt', [['', t('aufenthalt.0')], ['eu', t('aufenthalt.eu')], ['asyl', t('aufenthalt.asyl')], ['ausreise', t('aufenthalt.ausreise')]], state.aufenthalt);
     fillSelect('euArbeit', [['', t('eu.arbeit.0')], ['ja', t('eu.arbeit.ja')], ['nein', t('eu.arbeit.nein')]], state.euArbeit);
@@ -867,7 +876,7 @@
   }
 
   var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'kindKrank', 'unterhaltFehlt', 'uvgWechsel', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
-  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'ek2bArt', 'bhWeitere', 'baby', 'egKinder', 'aufenthalt', 'uvgPartner', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
+  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'ek2bArt', 'bhWeitere', 'baby', 'egKinder', 'egArt1', 'egArt2', 'aufenthalt', 'uvgPartner', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
   var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'waisen', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'ek2bBetrag', 'egVor', 'egNach', 'vermoegen', 'uzBetrag', 'autoWert', 'zusatzRente'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
@@ -1498,6 +1507,7 @@
     if (s.egVor) b.push('Nettoeinkommen vor der Geburt (für das Elterngeld): ' + money(s.egVor) + ' im Monat');
     if (s.baby && s.egKinder === '2') b.push('Zwillinge');
     if (s.baby && s.egKinder === '3') b.push('Drillinge oder mehr Kinder bei einer Geburt');
+    [1, 2].forEach(function (i) { var a = s['egArt' + i]; if (a === 'basis' || a === 'plus') b.push('Art des Elterngelds' + (s.adults === 2 ? (i === 1 ? ' (antragstellende Person)' : ' (Partner/in)') : '') + ': ' + (a === 'basis' ? 'Basiselterngeld' : 'ElterngeldPlus')); });
     if (s.egNach) b.push('Nettoeinkommen nach der Geburt in Teilzeit (für das Elterngeld): ' + money(s.egNach) + ' im Monat');
     if (s.aufenthalt === 'asyl') b.push('Im Asylverfahren (Aufenthaltsgestattung) oder mit Duldung');
     if (s.aufenthalt === 'ausreise') b.push('Ausreisepflichtig ohne Duldung');
@@ -4786,8 +4796,16 @@
   function haushalt() {
     if (!started) return { erwachsene: [], kinder: [] };
     var alter = state.gebJahr ? new Date().getFullYear() - (+state.gebJahr) : '';
-    var erw = [{ alter: alter, brutto: zahlOderLeer(state.ek1Brutto), netto: zahlOderLeer(state.ek1Netto) }];
-    if (state.adults === 2) erw.push({ alter: '', brutto: zahlOderLeer(state.ek2Brutto), netto: zahlOderLeer(state.ek2Netto) });
+    // Elterngeld je Person (Bescheid-Check Wohngeld): ausgezahlter Betrag, Basiselterngeld (plus false) / ElterngeldPlus (true) / unbekannt (null),
+    // Kinder dieser Geburt (nur bei „Baby ist da“, wie in den Regeln)
+    var egVon = function (i) {
+      var betrag = state['ek' + i + 'Art'] === 'eg' ? zahlOderLeer(state['ek' + i + 'Netto']) : state['ek' + i + 'bArt'] === 'eg' ? zahlOderLeer(state['ek' + i + 'bBetrag']) : '';
+      if (betrag === '') return null;
+      var a = state['egArt' + i];
+      return { betrag: betrag, plus: a === 'plus' ? true : a === 'basis' ? false : null, kinder: state.baby === 'da' ? Math.min(3, Math.max(1, Number(state.egKinder) || 1)) : 1 };
+    };
+    var erw = [{ alter: alter, brutto: zahlOderLeer(state.ek1Brutto), netto: zahlOderLeer(state.ek1Netto), eg: egVon(1) }];
+    if (state.adults === 2) erw.push({ alter: '', brutto: zahlOderLeer(state.ek2Brutto), netto: zahlOderLeer(state.ek2Netto), eg: egVon(2) });
     var kinder = [], u6 = state.kidsU6 || 0, k14 = state.kids14 || 0, rest = Math.max(0, (state.kids || 0) - u6 - k14), i;
     for (i = 0; i < u6; i++) kinder.push({ alter: '', gruppe: 'u6' });
     for (i = 0; i < rest; i++) kinder.push({ alter: '', gruppe: state.kidsAlter ? '6bis13' : '' });
@@ -4997,6 +5015,8 @@
         r.personen = pf.pers !== null ? pf.pers : Math.min(5, (state.adults === 2 ? 1 : 0) + (state.kids | 0) + (state.young | 0));
         return r;
       },
+      // Wer hat die Schulden? (nur bei Paaren; gespeichert im Haushaltsplan des Vorgangs, src/haushalt.js)
+      schuldner: function (w) { return window.Haushalt ? Haushalt.schuldner(w) : ''; },
       mappeDrucken: window.Schulden ? function () { oeffneVon('schulden', true); Schulden.blatt(); } : null, // Druck: Blatt der Schulden-Liste mit Haushaltsplan und Unterlagenliste
       textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); },
       absender: absender, absenderKasten: absenderKasten // gespeicherter Absender (einmal eingetragen, gilt für alle Briefe)

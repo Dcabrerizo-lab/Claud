@@ -1080,7 +1080,8 @@
    "ausnahmen": [
     "t.gsa.mzGBeide",
     "t.kiz.vermKnapp",
-    "sf.q.bezug"
+    "sf.q.bezug",
+    "ra.wer.hint"
    ]
   },
   "quelle": "Vorgabe SoLo: seriöses Du; nur fa, fa-AF, ps höflich"

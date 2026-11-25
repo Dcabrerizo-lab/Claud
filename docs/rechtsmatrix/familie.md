@@ -39,6 +39,10 @@ wenn nicht anders genannt.
 | AE, Baby da + Geschwister, Elterngeld 375 € ohne Einkommen vor der Geburt | kein Elterngeld-Freibetrag beim Grundsicherungsgeld; etwa 1.370 € | § 10 Abs. 5 BEEG |
 | Elterngeld 200 € (sicher ElterngeldPlus) | Wohngeld: 150 € frei; Grundsicherungsgeld: 150 € frei (Einkommen vor der Geburt ergibt sich aus dem Betrag über 150 €) | § 10 Abs. 3, 5 BEEG |
 | Elterngeld 600 €, Basis oder Plus unbekannt | Grundsicherungsgeld/KiZ vorsichtig 150 € frei, für „eher nicht“ und KiZ-Obergrenze 300 € | § 10 Abs. 5 BEEG |
+| Frage „Bekommst du Basiselterngeld oder ElterngeldPlus?“ (je Person, nur mit Elterngeld als Einkommen; seit 25.11.2026) | Basiselterngeld: genau 300 € frei, ElterngeldPlus: genau 150 € (Wohngeld/BAföG je Kind der Geburt vervielfacht; Grundsicherungsgeld, Sozialhilfe, KiZ höchstens bis zum Einkommen vor der Geburt, nicht vervielfacht); „Weiß ich nicht“: Spanne wie oben. Die Angabe geht vor, auch bei ungewöhnlichem Betrag | § 10 Abs. 1, 3, 4, 5 BEEG (gesetze-im-internet.de/beeg/__10.html, Abruf 25.11.2026) |
+| egz-03: AE, Baby da, Elterngeld 936 € Basis, Netto vor der Geburt 1.500 € | Grundsicherungsgeld 982,68 € (1.822,68 − (936 − 300 − 30 + 259) + 25) | § 10 Abs. 5 BEEG, § 11b SGB II |
+| egz-04/05: wie egz-03, 468 € ElterngeldPlus bzw. „weiß nicht“ | 1.300,68 € (150 € frei) | § 10 Abs. 3, 5 BEEG |
+| egz-06: 468 € mit Angabe Basiselterngeld | 1.450,68 € (300 € frei) | § 10 Abs. 5 BEEG |
 | Paar 25.000 € brutto im Monat, Baby kommt | Elterngeld höchstens „möglich“, Grenze vorn | § 1 Abs. 8 BEEG |
 | Paar 16.000 € brutto im Monat | Elterngeld höchstens „möglich“, Grenze vorn | § 1 Abs. 8 BEEG |
 | Selbstständige Schwangere | Mutterschaftsgeld „möglich“, Text ohne Arbeitgeber | § 24i Abs. 1, 2 SGB V |

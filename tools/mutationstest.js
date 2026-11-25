@@ -118,7 +118,7 @@ const M = [
   ['Grundsicherung im Alter: Freibetrag für Arbeit je Einkommen statt je Person', 'const p = h.liste ? x[5] : i + 1; lohnP[p]', 'const p = i; lohnP[p]'],
   ['Arbeitslosengeld: als zweites Einkommen nicht als „beziehst du schon“ erkannt', "|| (h.pers || []).some((x) => x[0] === 'alg' && x[1] > 0)) return", ') return'],
   ['Grundsicherung: Freibetrag größer als die Rente', 'const freiStaffel = (x, p, rs1) => (x > 0 ? Math.min(p.sockel + p.quote * Math.max(0, x - p.sockel), p.max * rs1, x) : 0);', 'const freiStaffel = (x, p, rs1) => (x > 0 ? Math.min(p.sockel + p.quote * Math.max(0, x - p.sockel), p.max * rs1) : 0);'],
-  ['Grundsicherungsgeld: Elterngeld 300 € nicht frei', "egFreiSGB: sumIf((a, b) => (a === 'eg' ? egFrei(b).sgbLo : 0))", "egFreiSGB: sumIf(() => 0)"],
+  ['Grundsicherungsgeld: Elterngeld 300 € nicht frei', "egFreiSGB: egFreiJe.reduce((a, f) => a + (f ? f.sgbLo : 0), 0)", "egFreiSGB: 0"],
   ['Grundsicherungsgeld: Unterhalt ohne Deckel', 'const anr = Math.min(eink, kinderBedarf);', 'const anr = eink;'],
   ['Blindengeld: Pflegegrad 2 mit 33 %', 'h.pflegegrad === 2 ? 0.46 * R.pflege.geld[2]', 'h.pflegegrad === 2 ? 0.33 * R.pflege.geld[2]'],
   ['Zuzahlung: chronisch schon ab GdB 50', 'if (gdbNum(h) >= 60 || h.pflegegrad >= 3)', 'if (gdbNum(h) >= 50 || h.pflegegrad >= 3)'],

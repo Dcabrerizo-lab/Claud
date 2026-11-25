@@ -25,6 +25,8 @@ var Schritte = (function () {
   function hatRente(s) { return s.ek1Art === 'rente' || s.ek2Art === 'rente' || s.ek1bArt === 'rente' || s.ek2bArt === 'rente'; }
   function hatWfbm(s) { return !!s.wfbm || s.ek1Art === 'wfbm' || s.ek1bArt === 'wfbm' || s.ek2bArt === 'wfbm'; }
   function plzInfo(s) { var p = String(s.plz || ''); return p.length === 5 && ctx.plz ? ctx.plz(p) : null; }
+  // wie hatEg() in src/app.js: Elterngeld als Hauptfeld oder als zweites Einkommen der Person
+  function hatEg(s, i) { var a = s['ek' + i + 'Art']; return a === 'eg' || (!!a && a !== 'ohne' && s['ek' + i + 'bArt'] === 'eg'); }
   function mitBrutto(a) { return a === 'lohn' || a === 'rente' || a === 'selbst'; }
 
   var JN = [[true, 'sf.a.ja'], [false, 'sf.a.nein']];
@@ -50,7 +52,10 @@ var Schritte = (function () {
         h: function (s) { return mitBrutto(s[A]) && s[A] !== 'selbst' ? 'sf.h.netto' : ''; } },
       { id: 'ek' + i + 'bArt', b: 'geld', art: 'wahl', wer: wer, q: 'sf.q.ekZweit', h: 'sf.h.ekZweit', klein: true, wenn: function (s) { return da(s) && !!s[A] && s[A] !== 'ohne' && s[A] !== 'asylblg'; },
         opts: [['', 'ek.weiteres.0']].concat(EK.map(function (a) { return [a, 'ek.art.' + a]; })) },
-      { id: 'ek' + i + 'bBetrag', b: 'geld', art: 'zahl', euro: true, skip: 'sf.weissNicht', wer: wer, q: 'sf.q.ekZweitBetrag', wenn: function (s) { return da(s) && !!s['ek' + i + 'bArt']; } }
+      { id: 'ek' + i + 'bBetrag', b: 'geld', art: 'zahl', euro: true, skip: 'sf.weissNicht', wer: wer, q: 'sf.q.ekZweitBetrag', wenn: function (s) { return da(s) && !!s['ek' + i + 'bArt']; } },
+      // Basiselterngeld oder ElterngeldPlus: nur, wenn die Person Elterngeld bekommt (Freibetrag § 10 BEEG, Rechnung in src/rules.js)
+      { id: 'egArt' + i, b: 'geld', art: 'wahl', wer: wer, q: i === 1 ? 'sf.q.egArt' : 'sf.q.egArt2', h: 'sf.h.egArt', wenn: function (s) { return da(s) && hatEg(s, i); },
+        opts: [['basis', 'egArt.basis'], ['plus', 'egArt.plus'], ['', 'egArt.0']] }
     ];
   }
   var nr = function (n) { return function () { return t('pflege.n', { n: n }); }; };
