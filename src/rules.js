@@ -716,17 +716,21 @@ const Rules = (function () {
     // Freibetrag für laufendes Elterngeld (Vollprüfung familie B2, B3; § 10 Abs. 1, 3, 4, 5 BEEG, https://www.buzer.de/10_BEEG.htm, Abruf 24.11.2026):
     // Grundsicherungsgeld, Sozialhilfe, Kinderzuschlag (Abs. 5): bis 300 €, aber nur bis zur Höhe des Einkommens vor der Geburt (Elterngeld-Netto,
     // § 2 Abs. 1, also Netto minus 102,50 €); bei ElterngeldPlus die Hälfte; bei Mehrlingen nicht vervielfacht. Wohngeld (Abs. 1, 3, 4): 300 €
-    // bzw. 150 € bei ElterngeldPlus, je Kind der Geburt. Die App fragt nicht, ob Basiselterngeld oder ElterngeldPlus bezogen wird:
-    // unter dem Mindestbetrag des Basiselterngelds (egOhneArbeit) ist es sicher ElterngeldPlus, über dem höchsten ElterngeldPlus sicher
-    // Basiselterngeld, dazwischen offen (vorsichtig: 150 €; obere Grenze: 300 €). Ohne Netto vor der Geburt (egVor): Liegt das Elterngeld nicht
+    // bzw. 150 € bei ElterngeldPlus, je Kind der Geburt. Seit 25.11.2026 fragt die App je Person, ob Basiselterngeld oder ElterngeldPlus
+    // bezogen wird (inp.egArt1, inp.egArt2: 'basis' | 'plus' | '' = weiß ich nicht; Auftrag David 25.11.2026). Bekannt: genau dieser Freibetrag.
+    // Weiß ich nicht: unter dem Mindestbetrag des Basiselterngelds (egOhneArbeit) ist es sicher ElterngeldPlus, über dem höchsten ElterngeldPlus
+    // sicher Basiselterngeld, dazwischen offen (vorsichtig: 150 €; obere Grenze: 300 €). Ohne Netto vor der Geburt (egVor): Liegt das Elterngeld nicht
     // über Mindestbetrag plus möglichem Geschwisterbonus (75 €, halb bei Plus) plus Mehrlingszuschlag, kann es ohne Einkommen vor der Geburt
     // entstanden sein: vorsichtig kein Freibetrag. Bis 24.11.2026: immer 300 € über dem Mindestbetrag (Geschwisterbonus und Plus nicht beachtet).
     const egVorN = blank(inp.egVor) ? null : num(inp.egVor);
     const egBonusMoegl = inp.baby === 'da' && kidsU6 > egMehr;
     const egPlusMax = (R.eg.max / 2) * (1 + R.eg.bonus) + (R.eg.mehrling / 2) * (egMehr - 1);
-    const egFrei = (b) => {
+    const egArtVon = (p) => (inp['egArt' + p] === 'basis' || inp['egArt' + p] === 'plus' ? inp['egArt' + p] : '');
+    const egFrei = (b, p) => {
       if (!(b > 0)) return { sgbLo: 0, sgbHi: 0, wgLo: 0, wgHi: 0 };
-      const plusSicher = b < egOhneArbeit, basisSicher = b > egPlusMax;
+      // Angabe der Person geht vor (auch wenn der Betrag ungewöhnlich ist, z. B. weil Mutterschaftsgeld angerechnet wird, § 3 BEEG)
+      const art = egArtVon(p);
+      const plusSicher = art ? art === 'plus' : b < egOhneArbeit, basisSicher = art ? art === 'basis' : b > egPlusMax;
       const F = R.elterngeldFrei;
       // Grenze „ohne Einkommen vor der Geburt möglich“: Basis 300 (+75) (+300 je weiteres Kind), Plus die Hälfte
       const thrBasis = R.eg.min + (egBonusMoegl ? R.eg.bonusMin : 0) + R.eg.mehrling * (egMehr - 1);
@@ -737,6 +741,8 @@ const Rules = (function () {
       const wa = plusSicher ? [F / 2] : basisSicher ? [F] : [F / 2, F];
       return { sgbLo: Math.min(...va), sgbHi: Math.max(...va), wgLo: Math.min(...wa) * egMehr, wgHi: Math.max(...wa) * egMehr };
     };
+    // Person des Eintrags: mit Liste x[5], sonst Reihenfolge (Person 1, Person 2)
+    const egFreiJe = pers.map((x, i) => (x[0] === 'eg' ? egFrei(x[1], liste ? x[5] : i + 1) : null));
     // Unterhalt, den die Person selbst an andere zahlt (Kinder, die nicht im Haushalt leben, frühere Partner), im Monat.
     // Grundsicherungsgeld und Kinderzuschlag: abgezogen, soweit festgelegt (Unterhaltstitel, Jugendamtsurkunde, notarielle
     // Vereinbarung) und wirklich gezahlt (§ 11b Abs. 1 Satz 1 Nr. 7 SGB II). Wohngeld: Höchstbeträge nach § 18 WoGG; mit
@@ -842,10 +848,10 @@ const Rules = (function () {
       hhAndere: inp.hhAndere === 'wg' || inp.hhAndere === 'verwandte' ? inp.hhAndere : '',
       eu: inp.aufenthalt === 'eu', euArbeit: inp.euArbeit === 'ja', euJahre5: inp.euJahre === 'ab5',
       art1, art2, pers, liste: !!liste, kindEink, uvgEst, uvgOffen, uvgOffenGG, kindZahl: unterhalt + waisen + uvgEst, waisen, uvgPartner, uvgWechsel, bruttoEigen, uvgKindAnr, mehrAE, mehrAEhoch, alterGrenz,
-      egMehr, egOhneArbeit, egFreiSGB: sumIf((a, b) => (a === 'eg' ? egFrei(b).sgbLo : 0)),
+      egMehr, egOhneArbeit, egFreiSGB: egFreiJe.reduce((a, f) => a + (f ? f.sgbLo : 0), 0),
       // Teil des Elterngeld-Freibetrags, der offen ist (ElterngeldPlus oder Basiselterngeld unbekannt): nur für die Grenze zu „eher nicht“
-      egFreiOffen: sumIf((a, b) => (a === 'eg' ? egFrei(b).sgbHi - egFrei(b).sgbLo : 0)),
-      egFreiJe: pers.map((x) => (x[0] === 'eg' ? egFrei(x[1]) : null)),
+      egFreiOffen: egFreiJe.reduce((a, f) => a + (f ? f.sgbHi - f.sgbLo : 0), 0),
+      egFreiJe, egArt1: egArtVon(1), egArt2: adults === 2 ? egArtVon(2) : '',
       // Versicherungspauschale (§ 6 Abs. 1 Nr. 1 GrusiGV) einmal je volljähriger Person, nicht zusätzlich neben Einkommen aus Arbeit (dort
       // steckt sie im Grundabsetzbetrag von 100 €, § 11b Abs. 2 SGB II). Ist der Lohn kleiner als 30 €, geht nur der vom Lohn nicht gedeckte
       // Rest vom anderen Einkommen derselben Person ab (BA, Fachliche Weisungen §§ 11-11b SGB II Rz. 11.155 mit Beispiel).

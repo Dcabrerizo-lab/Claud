@@ -89,6 +89,31 @@ setTimeout(() => {
     w.__solo.lang('en'); zurRate();
     check('[rate-dom] Englisch', /We suggest this instalment: €200 a month/.test(tx($('ra-betrag'))) && /Stadtwerke \(this letter\)/.test(tx($('ra-auft'))), tx($('ra-betrag')));
     w.__solo.lang('de'); if ($('einfacheSpracheBtn')) { klick($('einfacheSpracheBtn')); zurRate(); check('[rate-dom] Einfache Sprache', /Diese Rate schlagen wir dir vor: 200 € im Monat/.test(tx($('ra-betrag'))), tx($('ra-betrag'))); }
+    // 5. Paar: Frage „Wer hat die Schulden?“ (Auftrag David 25.11.2026). Ich 1.500 €, Partner 2.500 € netto (Lohn), 1 Unterhaltsberechtigter:
+    // ich → nichts pfändbar; Partner → 157,59 € pfändbar, Rate 155 €; beide → je eigene Tabelle (0 + 157,59), nicht 4.000 € zusammen (907,59 €)
+    w.__solo.lang('de');
+    if ($('einfacheSpracheBtn') && $('einfacheSpracheBtn').getAttribute('aria-checked') === 'true') klick($('einfacheSpracheBtn'));
+    const allein = () => { zurRate(); return !$('ra-wer'); };
+    check('[rate-wer] allein: keine Frage „Wer hat die Schulden?“', allein());
+    w.__solo.set({ adults: 2, kids: 0, ek1Art: 'lohn', ek1Netto: 1500, ek1Brutto: 2000, ek2Art: 'lohn', ek2Netto: 2500, ek2Brutto: 3600, miete: 500 });
+    w.Haushalt.laden({ plan: { kg: null, leist: null, sonst: null, aus: { essen: 150000, energie: 50000 } } });
+    zurRate();
+    const wer = $('ra-wer'), knoepfe = wer ? [...wer.querySelectorAll('button.wahl')] : [];
+    check('[rate-wer] Paar: Frage mit drei Antworten, Gruppe mit Namen', !!wer && wer.getAttribute('role') === 'group' && tx($(wer.getAttribute('aria-labelledby'))) === 'Wer hat die Schulden?'
+      && knoepfe.map(tx).join('|') === 'Ich|Mein Partner oder meine Partnerin|Wir beide' && knoepfe.every((b) => b.getAttribute('aria-pressed') === 'false'), knoepfe.map(tx));
+    check('[rate-wer] ohne Antwort: wie bisher nur mein Einkommen (1.500 €) → nichts pfändbar', /Nach der Pfändungstabelle/.test(tx($('ra-keine'))));
+    klick($('ra-wer-partner'));
+    check('[rate-wer] Partner: Rate 155 €, gewählt markiert, Fokus bleibt', /Diese Rate schlagen wir dir vor: 155 € im Monat/.test(tx($('ra-betrag'))) && $('ra-wer-partner').getAttribute('aria-pressed') === 'true' && d.activeElement === $('ra-wer-partner'), tx($('ra-betrag')));
+    check('[rate-wer] Partner: Rechenweg nennt das Einkommen des Partners', /etwa 157,59 €/.test(tx(d.querySelector('details.ra-so'))) && /dein eigenes Einkommen zählen nicht/.test(tx(d.querySelector('details.ra-so'))));
+    check('[rate-wer] Antwort im Haushaltsplan gespeichert', w.Haushalt.schuldner() === 'partner' && w.Haushalt.daten().schuldner === 'partner');
+    klick($('ra-wer-beide'));
+    check('[rate-wer] beide: je eigene Tabelle (0 € + 157,59 €), nicht zusammengezählt', /Diese Rate schlagen wir dir vor: 155 € im Monat/.test(tx($('ra-betrag'))) && /bei dir etwa 0(,00)? €, bei deinem Partner oder deiner Partnerin etwa 157,59 €, zusammen 157,59 €/.test(tx(d.querySelector('details.ra-so'))), tx(d.querySelector('details.ra-so')));
+    klick($('ra-wer-ich'));
+    check('[rate-wer] ich: wieder nichts pfändbar', !!$('ra-keine') && !$('ra-betrag') && $('ra-wer-ich').getAttribute('aria-pressed') === 'true');
+    w.__solo.lang('en'); zurRate();
+    check('[rate-wer] Englisch', tx($('ra-wer-q')) === 'Who has the debts?' && tx($('ra-wer-beide')) === 'Both of us');
+    w.__solo.lang('de');
+    w.__solo.set({ adults: 1 }); check('[rate-wer] wieder allein: Frage weg', allein());
     check('[rate-dom] keine Fehler im Fenster', errors.length === 0, errors);
   } catch (e) { fehler++; console.log('FAIL Ausnahme: ' + e.stack); }
   if (fehler) { console.log(fehler + ' von ' + n + ' FEHLGESCHLAGEN'); process.exit(1); }

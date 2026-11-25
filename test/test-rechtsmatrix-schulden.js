@@ -106,6 +106,14 @@ for (const t of M.fable) {
 for (const f of M.eigen) {
   const h = f.h, e = f.erwartet;
   if (f.fn === 'pfBasis') prf(f.id, Haushalt.pfaendbarBasis(h.g), e.pfBasis);
+  else if (f.fn === 'pfBasisJe') prf(f.id, JSON.stringify(Haushalt.pfaendbarBasisJe(h.g, h.sonst, h.wer)), JSON.stringify(e.pfBasisJe));
+  else if (f.fn === 'rateJe') {
+    // Frage „Wer hat die Schulden?“: je Person eigene Pfändungstabelle; Referenz: Summe der unabhängig gerechneten Beträge je Person
+    const r = Geld.rateEmpfehlung(h.hh, []);
+    prf(f.id + ' art', r.art, e.art); prf(f.id + ' pfaendbar (Cent)', r.pfaendbar, e.pfaendbar); prf(f.id + ' rate (Cent)', r.rate, e.rate);
+    if (e.pfJe) prf(f.id + ' pfJe', JSON.stringify(r.pfJe), JSON.stringify(e.pfJe));
+    prf(f.id + ' Referenz', h.hh.pfBasisJe.reduce((a, c) => a + Math.round(refPfaendung(c / 100, h.hh.personen) * 100), 0), e.pfaendbar);
+  }
   else if (f.fn === 'erkenne') prf(f.id, BL.erkenne(h.text).art, e.art);
   else if (f.fn === 'andere') { const r = BL.andere(h.text); if ('anzahlFristen' in e) prf(f.id, r.fristen.length, e.anzahlFristen); if ('frist0' in e) prf(f.id, r.fristen[0] && r.fristen[0].frist, e.frist0); }
   else if (f.fn === 'datum') prf(f.id, BL.lies(h.text, null).datum, e.datum);

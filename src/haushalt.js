@@ -199,16 +199,29 @@ var Haushalt = (function () {
   // Kinderzuschlag: § 54 Abs. 3 Nr. 2a, Abs. 5 SGB I, § 42 Abs. 4 SGB II, § 17 Abs. 1 SGB XII). „Sonstige Einnahmen“ (sonst, Cent) zählen mit:
   // Sozialleistungen haben ein eigenes Feld, dort steht also eher Nebenverdienst oder Untermiete; im Zweifel kein falsches „nichts pfändbar“.
   var PFAENDBAR_ART = ['lohn', 'selbst', 'rente', 'alg', 'kg', 'wfbm'], EG_FREI = 30000;
-  function pfaendbarBasis(g, sonst) {
-    var s0 = sonst > 0 ? sonst : 0;
-    if (!g) return s0;
-    return [['ek1', 'ek1Art'], ['ek1b', 'ek1bArt']].reduce(function (sum, x) {
+  // Pfändbares eigenes Einkommen einer Person i (1 oder 2) aus den Werten des Checks (Cent), ohne „Sonstige Einnahmen“
+  function pfaendbarPerson(g, i) {
+    if (!g || (i === 2 && !g.zwei)) return 0;
+    return [['ek' + i, 'ek' + i + 'Art'], ['ek' + i + 'b', 'ek' + i + 'bArt']].reduce(function (sum, x) {
       var c = g[x[0]], art = g[x[1]];
       if (!(c > 0)) return sum;
       if (PFAENDBAR_ART.indexOf(art) >= 0) return sum + c;
       if (art === 'eg') return sum + Math.max(0, c - EG_FREI);
       return sum;
-    }, s0);
+    }, 0);
+  }
+  function pfaendbarBasis(g, sonst) { return (sonst > 0 ? sonst : 0) + pfaendbarPerson(g, 1); }
+  // Wer hat die Schulden? (Frage im Ratenvorschlag, nur bei Paaren; Auftrag David 25.11.2026): 'ich' (Person 1, Standard wie bisher),
+  // 'partner' (Person 2), 'beide'. Jede Person haftet nur mit ihrem eigenen Einkommen; gepfändet wird bei jeder Person getrennt nach der
+  // Pfändungstabelle (§ 850c ZPO gilt je Schuldner für dessen Arbeitseinkommen, https://www.gesetze-im-internet.de/zpo/__850c.html, Abruf
+  // 25.11.2026). Darum je Schuldner ein eigener Betrag (Liste, Cent) – die Einkommen werden NICHT zusammengezählt. „Sonstige Einnahmen“ (sonst)
+  // gehören keiner Person sicher: Sie zählen bei der ersten Person, die die Schulden hat (wie bisher bei Person 1).
+  var SCHULDNER = ['ich', 'partner', 'beide'];
+  function pfaendbarBasisJe(g, sonst, wer) {
+    var s0 = sonst > 0 ? sonst : 0;
+    if (!g || !g.zwei || wer === 'ich' || SCHULDNER.indexOf(wer) < 0) return [pfaendbarBasis(g, sonst)];
+    if (wer === 'partner') return [s0 + pfaendbarPerson(g, 2)];
+    return [s0 + pfaendbarPerson(g, 1), pfaendbarPerson(g, 2)];
   }
   // Eine Änderung im Plan an einem gemeinsamen Feld: direkt schreiben (Feld leer oder gleich) oder erst fragen (anderer Wert steht schon da)
   function aenderung(alt, neu) {
@@ -413,7 +426,7 @@ var Haushalt = (function () {
   function eur(cent) { return ctx.euro((cent || 0) / 100); }
   function katName(k) { return t('hb.k.' + k); }
   function katSym(k) { var x = KAT.filter(function (a) { return a[0] === k; })[0] || KAT[8]; return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + x[1] + '</svg>'; }
-  function leer() { return { v: 1, plan: { kg: null, leist: null, sonst: null, aus: {} }, buch: [], weg: {}, ekBasis: null, ekV: 2, energie: leerEnergie() }; }
+  function leer() { return { v: 1, plan: { kg: null, leist: null, sonst: null, aus: {} }, buch: [], weg: {}, ekBasis: null, ekV: 2, energie: leerEnergie(), schuldner: '' }; }
 
   // ----- Speicherung: eine kleine Schnittstelle, später leicht an „Vorgänge“ anzubinden (Haushalt.speicherOrt) -----
   var SCHLUESSEL = 'lotse.haushalt';
@@ -452,6 +465,7 @@ var Haushalt = (function () {
     if (d.weg && typeof d.weg === 'object') Object.keys(d.weg).forEach(function (k) { if (d.weg[k] === true) x.weg[k] = true; });
     if (typeof d.ekBasis === 'number') x.ekBasis = d.ekBasis;
     x.energie = normiereEnergie(d.energie); // alte Felder (personen, bewilligt) werden verworfen
+    if (SCHULDNER.indexOf(d.schuldner) >= 0) x.schuldner = d.schuldner; // Wer hat die Schulden? (Ratenvorschlag, nur bei Paaren)
     // ekV 2: ekBasis enthält das zweite Einkommen. Ältere Stände (ohne ekV) werden in hinweisDaten() einmal angeglichen.
     x.ekV = d.ekV === 2 ? 2 : 1;
     if (Array.isArray(d.buch)) x.buch = d.buch.filter(function (e) { return e && /^\d{4}-\d\d-\d\d$/.test(e.d) && typeof e.c === 'number' && e.c > 0; }).map(buchungBereinigen);
@@ -1402,7 +1416,7 @@ var Haushalt = (function () {
     ausCheck: ausCheck, aenderung: aenderung, uebernahme: uebernahme, normiere: normiere, hinweisListe: hinweisListe, aenderungsBrief: aenderungsBrief,
     // Abschlag prüfen (Rechnung)
     PREIS: PREIS, TOL: TOL, tageZwischen: tageZwischen, jahresVerbrauch: jahresVerbrauch, gasKwh: gasKwh, jahresKosten: jahresKosten,
-    pfaendbarBasis: pfaendbarBasis, abschlagVergleich: abschlagVergleich, energieSparte: energieSparte, tarifKosten: tarifKosten, tarifVergleich: tarifVergleich, dezimalAus: dezimalAus, SAISON_TAGE: SAISON_TAGE, AKTUELL_TAGE: AKTUELL_TAGE,
+    pfaendbarBasis: pfaendbarBasis, pfaendbarBasisJe: pfaendbarBasisJe, SCHULDNER: SCHULDNER, abschlagVergleich: abschlagVergleich, energieSparte: energieSparte, tarifKosten: tarifKosten, tarifVergleich: tarifVergleich, dezimalAus: dezimalAus, SAISON_TAGE: SAISON_TAGE, AKTUELL_TAGE: AKTUELL_TAGE,
     // Oberfläche
     // Kurzstatus für „Mein Ordner“: { rest, restEuro, leer, ausgefuellt }. ausgefuellt: mindestens eine eigene Ausgabe im Plan (die Miete
     // kommt aus dem Check und zählt nicht) – sonst wäre „Im Monat bleiben dir …“ nur Einkommen minus Miete, ohne Essen, Strom und Handy.
@@ -1414,7 +1428,18 @@ var Haushalt = (function () {
       r.wesentlich = !!daten && r.ein > 0 && a.miete > 0 && a.essen > 0;
       r.kindergeld = daten ? (daten.plan.kg !== null ? daten.plan.kg : geteilte().kg) || 0 : 0;
       r.pfBasis = daten ? pfaendbarBasis(geteilte(), daten.plan.sonst) : 0; // pfändbares eigenes Einkommen (Cent), siehe pfaendbarBasis
+      // Paar: Wer hat die Schulden? Pfändbares Einkommen je Person, die die Schulden hat (Liste, Cent), siehe pfaendbarBasisJe
+      var g = daten ? geteilte() : null;
+      r.zwei = !!(g && g.zwei);
+      r.schuldner = r.zwei && daten.schuldner ? daten.schuldner : '';
+      r.pfBasisJe = daten ? pfaendbarBasisJe(g, daten.plan.sonst, r.schuldner) : [0];
       return r;
+    },
+    // Wer hat die Schulden? lesen oder setzen ('ich', 'partner', 'beide'; '' = nicht beantwortet). Gespeichert im Plan des Vorgangs.
+    schuldner: function (w) {
+      if (!daten) return '';
+      if (w !== undefined) { daten.schuldner = SCHULDNER.indexOf(w) >= 0 ? w : ''; sichern(); }
+      return daten.schuldner || '';
     },
     abschlag: function (ziel, art) { abschlagBox(ziel, art); }, tarif: function (ziel, art) { tarifBox(ziel, art); }, // Seiten „Strom“ und „Heizen“ (src/app.js)
     init: init, zeigen: zeigen, sprache: function () { render(); }, speicherOrt: speicherOrt,

@@ -138,6 +138,18 @@ const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + nam
     ok(`${schema}: Wohngeld-Beispiel: Anzeige = Rechnung (${wgBig})`, wgSoll > 0 && wgBig.includes(String(wgSoll).replace('.', ',')), { wgBig, wgSoll });
     ok(`${schema}: Wohngeld: Heizkostenkomponente als Grund`, /Heizkostenkomponente/.test(await p.textContent('#wg-erg')));
     await axe('Wohngeld mit Ergebnis');
+    // Elterngeld-Zeile: Basiselterngeld oder ElterngeldPlus und Kinder dieser Geburt statt Pauschalabzug (Freibetrag § 10 BEEG)
+    {
+      await p.click('#wg-plus');
+      const nr = await p.evaluate(() => { const t = [...document.querySelectorAll('#wg-mitglieder select[id^="wm-art-"]')].pop(); return t.id.slice(7); });
+      await p.selectOption('#wm-art-' + nr, 'eg'); await p.fill('#wm-b-' + nr, '300');
+      ok(`${schema}: Wohngeld: Elterngeld-Zeile zeigt Art und Kinder, kein Pauschalabzug`, await p.isVisible('#wm-eg-' + nr) && await p.isVisible('#wm-egk-' + nr) && !(await p.isVisible('#wm-abz-' + nr)));
+      await p.selectOption('#wm-eg-' + nr, 'plus');
+      const ein = await p.textContent('#wg-erg');
+      const soll = await p.evaluate(() => BescheidWG.rechne({ personen: 4, stufe: 4, bruttokalt: 800, mitglieder: [{ art: 'lohn', brutto: 2600, abzug: 30 }, { art: 'eg', brutto: 300, egPlus: true, egKinder: 1 }] }, Rules).einkommen);
+      ok(`${schema}: Wohngeld: ElterngeldPlus 300 € → 150 € Einkommen gerechnet`, ein.includes(String(soll.toFixed(2)).replace('.', ',')) || ein.includes(Number(soll).toLocaleString('de-DE', { minimumFractionDigits: 2 })), { soll });
+      await p.click(`#wg-mitglieder tr:last-child button`);
+    }
     await p.fill('#wg-datum', BESCHEID);
     await p.click('#wg-wid-mach');
     ok(`${schema}: Wohngeld-Widerspruch`, new RegExp('Widerspruch gegen den Wohngeldbescheid vom ' + reD(BESCHEID)).test(await p.inputValue('#wg-wid-text')));
