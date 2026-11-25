@@ -28,6 +28,7 @@ wenn nicht anders genannt.
 | Sofortzuschlag | 25 € im Monat je Kind / jungem Erwachsenen mit Regelbedarfsstufe 3–6, auch wenn der Anspruch nur am Kindergeld scheitert; nicht für Kinder, die ihren Bedarf selbst decken; zusätzlich, kein Bedarf | § 72 SGB II (Fassung ab 1.7.2026) | gesetze-im-internet.de/sgb_2/__72.html |
 | Mehrbedarf Alleinerziehende im Wechselmodell | bei etwa hälftiger Betreuung halber Mehrbedarf | § 21 Abs. 3 SGB II; BSG 3.3.2009, B 4 AS 50/07 R | – |
 | Familiengeld/Krippengeld Bayern | 250 € / 300 €, Krippengeld bis 100 €, nur für bis 31.12.2024 Geborene bis zum 3. Geburtstag (Hinweis in der App nur mit Kind unter 6 und bis Ende 2027) | Art. 9a BayFamGG (GVBl. 2025 S. 570); Art. 29 Abs. 2 BayKiBiG n. F. (GVBl. 2026 S. 401) | verkuendung-bayern.de |
+| Landeserziehungsgeld Sachsen | 150 / 200 / 300 € im Monat (1. / 2. / ab 3. Kind), zwischen 1. und 3. Geburtstag, 5 bis 12 Monate; nur ohne geförderten Kita-/Tagespflegeplatz, höchstens 30 Std./Woche; Einkommensgrenze 24.600 € (Paar) bzw. 21.600 € + 3.140 € je weiteres Kind, nicht ab dem 3. Kind; rückwirkend 1 Monat | §§ 1–4 SächsLErzGG (`R.lerzg`); Informationsblatt Dresden 01/23 | revosax.sachsen.de, Abruf 25.11.2026 |
 | Entlastungsbetrag | Steuerklasse II nur ohne weitere volljährige Person im Haushalt (App: bei Verwandten/WG Steuerklasse I) | § 24b Abs. 3 EStG | gesetze-im-internet.de/estg/__24b.html |
 
 ## 2. Konstellationen mit Soll-Ergebnis (Auswahl; vollständig in `test/rechtsmatrix/familie.json`)
@@ -63,5 +64,5 @@ wenn nicht anders genannt.
 |---|---|---|
 | Kindergeld 267 € ab 2027 (BT-Drs. 21/8235) | nicht verkündet | mit UVG (Mindestunterhalt − Kindergeld) und KiZ-Höchstbetrag zusammen umstellen |
 | Sofortzuschlag 2027 (§ 72 SGB II, § 6a BKGG) | Streichung aus dem Haushaltsbegleitgesetz 2027 herausgenommen, Gesetz nicht verkündet | nach Verkündung bestätigen |
-| Sächsisches Landeserziehungsgeld | geltendes Landesrecht (SächsLErzGG) | in der App nicht genannt (keine neue Karte); Entscheidung offen |
+| Sächsisches Landeserziehungsgeld | geltendes Landesrecht (SächsLErzGG, Fassung ab 1.1.2019; keine Aufhebung gefunden, auch nicht im Haushaltsbegleitgesetz 2025/2026; Abruf revosax.sachsen.de 25.11.2026) | seit 25.11.2026 Hinweis auf der Kindergeld-Karte (Sachsen; ohne Bundesland „falls du in Sachsen wohnst“), Tests LERZG-01 bis -05 in test/rechtsmatrix/pflege.json |
 | Bayern: 100-€-Kita-Zuschuss | geht ab 1.1.2027 im Qualitätsbonus auf | nicht als Elternleistung nennen |

@@ -1382,6 +1382,7 @@
     but: { stelle: 'Stelle für Bildung und Teilhabe der Kommune', betreff: 'Antrag auf Leistungen für Bildung und Teilhabe', satz: 'hiermit beantrage ich Leistungen für Bildung und Teilhabe für die Kinder in meinem Haushalt, zum Beispiel Schulbedarf, Mittagessen und Teilhabeleistungen.' },
     uvg: { stelle: 'Unterhaltsvorschussstelle (Jugendamt)', betreff: 'Antrag auf Unterhaltsvorschuss', satz: 'hiermit beantrage ich Unterhaltsvorschuss für mein Kind beziehungsweise meine Kinder. Der andere Elternteil zahlt keinen oder nicht ausreichend Unterhalt.' },
     gsa: { stelle: 'Sozialamt', betreff: 'Antrag auf Grundsicherung im Alter und bei voller Erwerbsminderung', satz: 'hiermit beantrage ich Grundsicherung im Alter und bei Erwerbsminderung nach dem Zwölften Buch Sozialgesetzbuch (SGB XII).' },
+    hlu: { stelle: 'Sozialamt', betreff: 'Antrag auf Hilfe zum Lebensunterhalt', satz: 'hiermit beantrage ich Hilfe zum Lebensunterhalt nach dem Dritten Kapitel des Zwölften Buches Sozialgesetzbuch (SGB XII). Bitte werten Sie dieses Schreiben als Kenntnis meiner Notlage im Sinne des § 18 SGB XII.' },
     bafoeg: { stelle: 'Amt für Ausbildungsförderung', betreff: 'Antrag auf Ausbildungsförderung nach dem BAföG', satz: 'hiermit beantrage ich Ausbildungsförderung nach dem Bundesausbildungsförderungsgesetz (BAföG).' },
     pflege: { stelle: 'Pflegekasse', betreff: 'Antrag auf Feststellung eines Pflegegrades und Leistungen der Pflegeversicherung', satz: 'hiermit beantrage ich die Feststellung eines Pflegegrades und Leistungen der Pflegeversicherung, insbesondere Pflegegeld und den Entlastungsbetrag.' },
     kgBeh: { stelle: 'Familienkasse der Bundesagentur für Arbeit', betreff: 'Antrag auf Kindergeld für ein volljähriges Kind mit Behinderung', satz: 'hiermit beantrage ich Kindergeld für mein volljähriges Kind. Die Behinderung ist vor dem 25. Geburtstag eingetreten, das Kind kann sich wegen der Behinderung nicht selbst unterhalten.' },
@@ -1439,7 +1440,7 @@
   var SUCHE = {
     kindergeld: ['Familienkasse'], kiz: ['Familienkasse Kinderzuschlag'], kgBeh: ['Familienkasse'],
     wohngeld: ['Wohngeldstelle'], wbs: ['Wohnberechtigungsschein beantragen'], but: ['Bildung und Teilhabe Antrag'],
-    uvg: ['Unterhaltsvorschussstelle Jugendamt'], gsa: ['Grundsicherung im Alter Sozialamt'], ggeld: ['Jobcenter'],
+    uvg: ['Unterhaltsvorschussstelle Jugendamt'], gsa: ['Grundsicherung im Alter Sozialamt'], hlu: ['Hilfe zum Lebensunterhalt Sozialamt'], ggeld: ['Jobcenter'],
     bafoeg: ['BAföG-Amt'], elterngeld: ['Elterngeldstelle'], hzp: ['Hilfe zur Pflege Sozialamt'], blh: ['Blindenhilfe Sozialamt'],
     asylblg: ['Asylbewerberleistungen Sozialamt'], eingl: ['Eingliederungshilfe Antrag'], arbeit: ['Budget für Arbeit Eingliederungshilfe'],
     ausweis: ['Schwerbehindertenausweis beantragen Versorgungsamt'], blindengeld: ['Blindengeld Antrag'],
@@ -1755,7 +1756,7 @@
     var k = 'fw.' + f.id + (f.id === 'wbs' ? '.' + (!bl ? 'leer' : bl === 'BY' ? 'BY' : WBS_DE[bl] ? 'de' : 'sonst') : f.id === 'wg' ? (f.art === 'link' ? '.by' : '.land') : '');
     return Object.prototype.hasOwnProperty.call(I18N.de, k) ? { text: t(k), de: false } : { text: f.warum, de: lang !== 'de' };
   }
-  var HINWEIS_FUER = { gsa: 'gsa', wg: 'wohngeld', wbs: 'wbs' };
+  var HINWEIS_FUER = { gsa: 'gsa', hlu: 'hlu', wg: 'wohngeld', wbs: 'wbs' };
   function antraegeHtml(ids, briefe, ohneOrt) {
     var nameLang = function (r) { return '<span' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</span>' + (lang === 'de' ? '' : ' <span class="small">(' + esc(t('n.' + r.id)) + ')</span>'); };
     var satzP = function (s) { return '<p class="small"' + (s.de ? ' lang="de" dir="ltr"' : '') + '>' + esc(s.text) + '</p>'; };

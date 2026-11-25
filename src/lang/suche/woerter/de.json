@@ -90,5 +90,6 @@
   "o-fristen": ["Fristen", "Termine", "Frist"],
   "o-ergebnis": ["Ergebnis", "letztes Ergebnis"],
   "p-gutachten": ["Gutachten", "Pflegegutachten prüfen", "MD", "Widerspruch Pflegegrad", "Gutachten vergleichen"],
-  "o-import": ["QR-Code", "SoLo-Datei", "Datei von der Beratung", "PIN von der Beratung", "von der Beratung bekommen"]
+  "o-import": ["QR-Code", "SoLo-Datei", "Datei von der Beratung", "PIN von der Beratung", "von der Beratung bekommen"],
+  "l-hlu": ["Sozialhilfe", "Hilfe zum Lebensunterhalt", "Frührente", "vorgezogene Rente", "Rente vor 67", "befristete Erwerbsminderung", "Zeitrente"]
 }

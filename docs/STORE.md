@@ -35,7 +35,7 @@ SoLo – Sozialleistungslotse
 ### Kurzbeschreibung (max. 80)
 
 ```
-31 Sozialleistungen prüfen, Briefe vom Amt verstehen, Geld planen. Offline.
+32 Sozialleistungen prüfen, Briefe vom Amt verstehen, Geld planen. Offline.
 ```
 (75 Zeichen)
 
@@ -45,7 +45,7 @@ Hinweis: Google Play zeigt keine Markdown-Formatierung. Deshalb stehen die Zwisc
 Die letzte Zeile (Quellen, „keine App einer Behörde“) verlangt Google Play bei Apps mit staatlichen Informationen: gut sichtbare Quellen in der Beschreibung und der klare Hinweis, dass die App keine Behörde vertritt (Play Console-Hilfe, „Requirements for apps that communicate government information“, support.google.com/googleplay/android-developer/answer/9514050, abgerufen am 21.11.2026). Nicht streichen. Kurzbeschreibung (75 von 80) hat dafür keinen Platz; das ist nicht verlangt.
 
 ```
-Steht dir Wohngeld zu? Kinderzuschlag? Grundsicherung? SoLo prüft in etwa 5 Minuten 31 Sozialleistungen und Vergünstigungen. Die App zeigt dir, was wahrscheinlich, möglich oder unwahrscheinlich ist, mit den nächsten Schritten, der zuständigen Stelle und den nötigen Unterlagen.
+Steht dir Wohngeld zu? Kinderzuschlag? Grundsicherung? SoLo prüft in etwa 5 Minuten 32 Sozialleistungen und Vergünstigungen. Die App zeigt dir, was wahrscheinlich, möglich oder unwahrscheinlich ist, mit den nächsten Schritten, der zuständigen Stelle und den nötigen Unterlagen.
 
 Einfach zu bedienen
 Fragen Schritt für Schritt oder alles auf einer Seite. Zuerst siehst du, was jetzt zählt, Details klappst du auf.
@@ -149,7 +149,7 @@ Hilfen finden, Briefe prüfen
 ### Werbetext / Promotional Text (max. 170)
 
 ```
-Welche Hilfen stehen dir zu? Prüfe 31 Sozialleistungen, lass Briefe vom Amt nachrechnen und plane dein Geld. Mit PIN-Sperre, offline, ohne Anmeldung, in 13 Sprachen.
+Welche Hilfen stehen dir zu? Prüfe 32 Sozialleistungen, lass Briefe vom Amt nachrechnen und plane dein Geld. Mit PIN-Sperre, offline, ohne Anmeldung, in 13 Sprachen.
 ```
 (165 Zeichen)
 
@@ -220,7 +220,7 @@ Die Bilder sind zuletzt für Version 1.10.0 (Build 153) mit `node tools/store-bi
 Motive (Überschrift auf dem Bild in Klammern; Reihenfolge = Dateiname):
 
 1. Startseite mit Begrüßung und Kacheln („Hilfen finden, Briefe prüfen“)
-2. Ergebnis des Leistungs-Checks mit Karten („31 Leistungen geprüft“)
+2. Ergebnis des Leistungs-Checks mit Karten („32 Leistungen geprüft“)
 3. Geld und Schulden → Es ist dringend → Konto gepfändet: Frist und erster Schritt („Schulden? Erst das Dringende“)
 4. Brief prüfen: Musterbescheid nachgerechnet, Abweichungen mit Paragraf („Bescheid nachgerechnet“)
 5. Pflege: Leistungen bei Pflegegrad 3 („Was steht dir bei Pflege zu?“)

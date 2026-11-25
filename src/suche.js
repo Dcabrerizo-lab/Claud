@@ -21,7 +21,7 @@ var Suche = (function () {
   };
   // Ziele: [ID, Bereich, Titel-Schlüssel]. „N:<id>“ = Name der Leistung (Rules.NAMES bzw. n.<id>). Reihenfolge = Rang bei gleicher Güte.
   var LEISTUNGEN = ['wohngeld', 'ggeld', 'kiz', 'kindergeld', 'but', 'uvg', 'gsa', 'pflege', 'ausweis', 'rundfunk', 'alg1', 'bafoeg', 'bab', 'elterngeld',
-    'mutter', 'krankengeld', 'kkg', 'zuzahl', 'wbs', 'emrente', 'eingl', 'pausch', 'blindengeld', 'blh', 'hzp', 'lpg', 'pflegeplus', 'arbeit', 'srente', 'kgBeh', 'asylblg'];
+    'mutter', 'krankengeld', 'kkg', 'zuzahl', 'wbs', 'emrente', 'eingl', 'pausch', 'blindengeld', 'blh', 'hzp', 'lpg', 'pflegeplus', 'arbeit', 'srente', 'kgBeh', 'asylblg', 'hlu'];
   var ZIELE = [['check', 'L', 'home.leistungen']].concat(LEISTUNGEN.map(function (id) { return ['l-' + id, 'L', 'N:' + id]; })).concat([
     ['brief', 'B', 'home.brief'], ['b-jc', 'B', 'briefe.jobcenter'], ['b-sa', 'B', 'briefe.sozialamt'], ['b-wg', 'B', 'briefe.wohngeld'],
     ['b-fk', 'B', 'briefe.familienkasse'], ['b-pk', 'B', 'briefe.pflegekasse'], ['b-vm', 'B', 'briefe.vermieter'], ['b-ab', 'B', 'briefe.ab'],

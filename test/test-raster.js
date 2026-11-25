@@ -135,6 +135,7 @@ function pruefe(e) {
   }
   // Grundsicherung im Alter und bei Erwerbsminderung
   vergleicheGSA(e, r);
+  vergleicheHLU(e, r);
   // Unterhaltsvorschuss, BAföG, Arbeitslosengeld I, Krankengeld
   const u = Ref.unterhaltsvorschuss(e, gg.level);
   if (r.uvg.level !== u.level) melde('Unterhaltsvorschuss: Einstufung', e, { app: r.uvg.level, ref: u.level });
@@ -159,6 +160,16 @@ function pruefe(e) {
   if (/NaN|Infinity|undefined/.test(JSON.stringify(out))) melde('Fehlwerte (NaN/undefined)', e, {});
 }
 
+// Hilfe zum Lebensunterhalt (neue Karte 25.11.2026): Einstufung wie die Referenz, mit denselben Miet-Grenzen und Kappen
+function vergleicheHLU(e, r) {
+  const k15 = Ref.kdu15(e), eK = k15 && (Number(e.miete) || 0) > k15 ? { ...e, miete: k15 } : e;
+  const gStufe = (x) => Ref.grundsicherungAlter(x).level;
+  let lv = Ref.hilfeLebensunterhalt(eK, gStufe(eK)).level;
+  const kduG = Ref.kduGrenze(e);
+  if (kduG && (Number(e.miete) || 0) > kduG) { const eG = { ...e, miete: kduG }; lv = Ref.zusammen(lv, Ref.hilfeLebensunterhalt(eG, gStufe(eG)).level); }
+  lv = Ref.kappe(e, 'hlu', lv);
+  if (r.hlu.level !== lv) melde('Hilfe zum Lebensunterhalt: Einstufung', e, { app: r.hlu.level, ref: lv });
+}
 function vergleicheGSA(e, r) {
   const k15 = Ref.kdu15(e);
   const g = { ...Ref.grundsicherungAlter(k15 && (Number(e.miete) || 0) > k15 ? { ...e, miete: k15 } : e) };
@@ -195,6 +206,7 @@ for (let i = 0; i < N2; i++) {
   const e = personZufall(); n++;
   const out = Rules.evaluate(e); const r = {}; out.results.forEach((x) => { r[x.id] = x; });
   vergleicheGSA(e, r);
+  vergleicheHLU(e, r);
   if (e.wohnform && r.wohngeld.level !== 'nein') melde('Wohngeld bei Eltern/Wohnheim', e, { app: r.wohngeld.level });
   if (r.ggeld.level === 'ja' && (e.wfbm || e.emStd === 'unter3')) melde('Grundsicherungsgeld trotz Erwerbsminderung', e, {});
   if (/NaN|Infinity|undefined/.test(JSON.stringify(out))) melde('Fehlwerte (NaN/undefined)', e, {});
@@ -214,6 +226,7 @@ for (const wohn of W.wohn) for (const wf of W.wfbm) for (const re of W.rente) fo
   raster++; n++;
   const r = {}; Rules.evaluate(e).results.forEach((x) => { r[x.id] = x; });
   vergleicheGSA(e, r);
+  vergleicheHLU(e, r);
   // Eigenschaft: 100 € mehr Rente macht die Grundsicherung nie wahrscheinlicher
   const r2 = {}; Rules.evaluate({ ...e, einkommen: ein.concat([{ art: 'rente', b: 100 }]) }).results.forEach((x) => { r2[x.id] = x; });
   if (RANG[r2.gsa.level] > RANG[r.gsa.level]) melde('Eigenschaft: mehr Einkommen verbessert die Grundsicherung', e, { vorher: r.gsa.level, nachher: r2.gsa.level });
