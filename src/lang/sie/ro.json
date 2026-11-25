@@ -582,5 +582,14 @@
   "t.kindergeld.sieheBeh": "Pentru copilul dumneavoastră adult cu dizabilitate vedeți cardul „Kindergeld pentru copii adulți cu dizabilitate”. Acolo Kindergeld este posibil și după 25 de ani.",
   "t.kindergeld.babyBald": "După naștere există Kindergeld pentru bebelușul dumneavoastră. Cereți-l la Familienkasse imediat ce aveți certificatul de naștere.",
   "t.familie.titel": "Dacă nu aveți cetățenie germană sau a unei țări UE, Kindergeld, Kinderzuschlag și Elterngeld se acordă doar cu anumite permise de ședere, de exemplu Niederlassungserlaubnis sau o Aufenthaltserlaubnis care permite munca (§ 62 EStG, § 1 Abs. 7 BEEG). Instituția competentă verifică acest lucru.",
-  "bp.vb.frist": "Contestație (Einspruch) doar în 2 săptămâni de la comunicare. Întrebați imediat un serviciu de consiliere pentru datorii (Schuldnerberatung)."
+  "bp.vb.frist": "Contestație (Einspruch) doar în 2 săptămâni de la comunicare. Întrebați imediat un serviciu de consiliere pentru datorii (Schuldnerberatung).",
+  "s.hlu.wo": "La Sozialamt din orașul sau districtul dumneavoastră. O scrisoare sau un telefon ajunge ca anunț.",
+  "s.hlu.tip": "Anunțați Sozialamt de îndată ce banii nu ajung. Ajutorul începe abia când oficiul află de situația dumneavoastră (§ 18 SGB XII).",
+  "t.hlu.vorgezogen": "Cine primește pensie pentru limită de vârstă înainte de Regelaltersgrenze nu primește Grundsicherungsgeld și încă nu primește Grundsicherung im Alter. Dacă pensia nu ajunge, Sozialamt plătește Hilfe zum Lebensunterhalt. Aceasta nu este valabil pentru pensia de urmaș sau de orfan dacă puteți lucra.",
+  "t.hlu.partner": "Dacă partenera sau partenerul dumneavoastră este mai tânăr decât Regelaltersgrenze și primește deja pensie pentru limită de vârstă, primește Hilfe zum Lebensunterhalt în loc de Grundsicherung im Alter. Același Sozialamt, sumă asemănătoare; oficiul vă calculează împreună.",
+  "t.hlu.verwandte": "Locuiți cu părinții sau cu alte rude. Atunci Sozialamt presupune că vă sprijină, în măsura în care venitul lor permite (§ 39 SGB XII). Puteți dovedi contrariul. La dizabilitate sau nevoie de îngrijire, presupunerea nu se aplică. Sub 25 de ani, la părinți, poate fi competent și Jobcenter.",
+  "t.hlu.paar": "Dacă partenera sau partenerul dumneavoastră poate lucra, ține de Jobcenter (Grundsicherungsgeld). Cine primește pensie pentru limită de vârstă primește atunci de la Sozialamt ajutor doar pentru sine; la incapacitate de muncă temporară, și această persoană ține de cele mai multe ori de Jobcenter. Cereți verificarea ambelor.",
+  "t.hlu.kind15": "Dacă un copil are 15 ani sau mai mult și poate lucra, ține de Jobcenter (Grundsicherungsgeld). Atunci Jobcenter este de obicei competent pentru toată gospodăria, cu excepția unei persoane cu pensie pentru limită de vârstă. Cereți verificarea.",
+  "t.rundfunk.hlu": "Dacă vi se aprobă Hilfe zum Lebensunterhalt, puteți fi scutit(ă) de Rundfunkbeitrag. Trimiteți atunci decizia la Beitragsservice.",
+  "z.hluWg": "Hilfe zum Lebensunterhalt și Wohngeld nu se plătesc în același timp. Cereți verificarea ambelor și întrebați care variantă vă aduce mai mult."
 }

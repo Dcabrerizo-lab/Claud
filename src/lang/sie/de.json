@@ -513,5 +513,17 @@
   "u.bescheidBefreiung": "Bescheid über Ihre Leistung, zum Beispiel Grundsicherungsgeld, Sozialhilfe oder BAföG",
   "z.kgZuerst": "Beantragen Sie zuerst Kindergeld. Ohne Kindergeld gibt es keinen Kinderzuschlag.",
   "z.uvgZuerst": "Beantragen Sie den Unterhaltsvorschuss zuerst oder gleichzeitig mit dem Kinderzuschlag. Ohne diesen Antrag kann die Familienkasse den Kinderzuschlag ablehnen.",
-  "z.wgKiz": "Wohngeld und Kinderzuschlag lassen sich kombinieren. Beantragen Sie beides, auch wenn eins davon knapp ist."
+  "z.wgKiz": "Wohngeld und Kinderzuschlag lassen sich kombinieren. Beantragen Sie beides, auch wenn eins davon knapp ist.",
+  "s.hlu.tip": "Melden Sie sich beim Sozialamt, sobald das Geld nicht reicht. Die Hilfe beginnt erst, wenn das Amt von Ihrer Notlage weiß (§ 18 SGB XII).",
+  "s.hlu.wo": "Beim Sozialamt Ihrer Stadt oder Ihres Landkreises. Ein Brief oder Anruf reicht als Meldung.",
+  "t.hlu.emZeit": "Ist Ihre volle Erwerbsminderung nur auf Zeit festgestellt (zum Beispiel befristete Rente), bekommen Sie statt der Grundsicherung Hilfe zum Lebensunterhalt vom selben Sozialamt. Die Höhe ist ähnlich wie auf der Karte Grundsicherung. Ist sie dauerhaft, gilt nur die Grundsicherung.",
+  "t.hlu.ggBezug": "Sie bekommen Grundsicherungsgeld vom Jobcenter. Dann gibt es keine Hilfe zum Lebensunterhalt (§ 5 SGB II). Bekommen Sie eine Altersrente, sagen Sie es dem Jobcenter.",
+  "t.hlu.kind15": "Ist ein Kind 15 oder älter und kann arbeiten, gehört es zum Jobcenter (Grundsicherungsgeld). Dann ist meist das Jobcenter für den ganzen Haushalt zuständig, außer für eine Person mit Altersrente. Lassen Sie das prüfen.",
+  "t.hlu.paar": "Kann Ihre Partnerin oder Ihr Partner arbeiten, gehört sie oder er zum Jobcenter (Grundsicherungsgeld). Wer Altersrente bezieht, bekommt dann vom Sozialamt die Hilfe nur für sich selbst; bei befristeter Erwerbsminderung gehört auch diese Person meist zum Jobcenter. Lassen Sie beides prüfen.",
+  "t.hlu.partner": "Ist Ihre Partnerin oder Ihr Partner jünger als die Regelaltersgrenze und bezieht schon Altersrente, bekommt sie oder er Hilfe zum Lebensunterhalt statt Grundsicherung im Alter. Gleiches Sozialamt, ähnliche Höhe; das Amt rechnet Sie beide zusammen.",
+  "t.hlu.verwandte": "Sie wohnen mit Eltern oder anderen Verwandten zusammen. Dann vermutet das Sozialamt, dass sie Sie unterstützen, soweit ihr Einkommen reicht (§ 39 SGB XII). Das können Sie widerlegen. Bei Behinderung oder Pflegebedarf gilt die Vermutung nicht. Unter 25 bei den Eltern kann auch das Jobcenter zuständig sein.",
+  "t.hlu.vorgezogen": "Wer vor der Regelaltersgrenze Altersrente bezieht, bekommt kein Grundsicherungsgeld und noch keine Grundsicherung im Alter. Reicht die Rente nicht, zahlt das Sozialamt Hilfe zum Lebensunterhalt. Bei Witwenrente oder Waisenrente gilt das nicht, wenn Sie arbeiten können.",
+  "t.kindergeld.lerzgFalls": "Falls Sie in Sachsen wohnen: Dort gibt es zwischen dem 1. und 3. Geburtstag eines Kindes Landeserziehungsgeld: {a} im Monat für das erste Kind, {b} für das zweite, {c} ab dem dritten, für 5 bis 12 Monate. Nur ohne geförderten Kita- oder Tagespflegeplatz und mit höchstens 30 Stunden Arbeit in der Woche; für das erste und zweite Kind gibt es eine Einkommensgrenze. Antrag bei der Elterngeldstelle des Landkreises oder der kreisfreien Stadt, rückwirkend nur für einen Monat.",
+  "t.rundfunk.hlu": "Wenn Ihnen Hilfe zum Lebensunterhalt bewilligt wird, können Sie sich vom Rundfunkbeitrag befreien lassen. Schicken Sie dann den Bescheid an den Beitragsservice.",
+  "z.hluWg": "Hilfe zum Lebensunterhalt und Wohngeld gibt es nicht gleichzeitig. Lassen Sie beides prüfen und fragen Sie, welcher Weg Ihnen mehr bringt."
 }

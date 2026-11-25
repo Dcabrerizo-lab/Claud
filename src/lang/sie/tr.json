@@ -584,5 +584,11 @@
   "z.uvgZuerst": "Unterhaltsvorschuss için önce veya Kinderzuschlag ile aynı anda başvurun. Bu başvuru olmadan Familienkasse Kinderzuschlag'ı reddedebilir.",
   "t.kindergeld.sieheBeh": "Engelli yetişkin çocuğunuz için “Engelli yetişkin çocuklar için Kindergeld” kartına bakın. Orada Kindergeld 25 yaşından sonra da mümkündür.",
   "t.kindergeld.babyBald": "Doğumdan sonra bebeğiniz için Kindergeld vardır. Doğum belgesini alır almaz Familienkasse'ye başvurun.",
-  "bp.vb.frist": "İtiraz (Einspruch) yalnızca tebliğden sonraki 2 hafta içinde. Hemen bir borç danışmanlığına (Schuldnerberatung) sorun."
+  "bp.vb.frist": "İtiraz (Einspruch) yalnızca tebliğden sonraki 2 hafta içinde. Hemen bir borç danışmanlığına (Schuldnerberatung) sorun.",
+  "s.hlu.tip": "Paranız yetmediği anda Sozialamt'a başvurun. Yardım ancak daire zor durumunuzu öğrendiğinde başlar (§ 18 SGB XII).",
+  "t.hlu.verwandte": "Ebeveynlerinizle veya başka akrabalarla birlikte yaşıyorsunuz. O zaman Sozialamt, gelirleri yettiği ölçüde sizi desteklediklerini varsayar (§ 39 SGB XII). Bunun aksini kanıtlayabilirsiniz. Engellilik veya bakım ihtiyacında bu varsayım geçerli değildir. 25 yaşından küçük olup ebeveynlerinizle yaşıyorsanız Jobcenter da yetkili olabilir.",
+  "t.hlu.paar": "Partneriniz çalışabiliyorsa Jobcenter'a bağlıdır (Grundsicherungsgeld). Yaşlılık emekli maaşı alan kişi o zaman Sozialamt'tan yalnızca kendisi için yardım alır; geçici çalışma gücü kaybında bu kişi de çoğunlukla Jobcenter'a bağlıdır. İkisini de kontrol ettirin.",
+  "t.hlu.kind15": "Bir çocuk 15 yaşında veya daha büyükse ve çalışabiliyorsa Jobcenter'a bağlıdır (Grundsicherungsgeld). O zaman yaşlılık emekli maaşı alan kişi dışında genellikle tüm hane için Jobcenter yetkilidir. Bunu kontrol ettirin.",
+  "t.rundfunk.hlu": "Size Hilfe zum Lebensunterhalt verilirse Rundfunkbeitrag'dan muaf olabilirsiniz. O zaman kararı Beitragsservice'e gönderin.",
+  "z.hluWg": "Hilfe zum Lebensunterhalt ve Wohngeld aynı anda ödenmez. İkisini de kontrol ettirin ve hangi yolun size daha çok kazandırdığını sorun."
 }
