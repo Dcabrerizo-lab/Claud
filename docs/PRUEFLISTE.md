@@ -73,7 +73,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Angemessenes Auto geschützt (§ 90 Abs. 2 Nr. 10 SGB XII); über 15.000 € nur „möglich“; gebraucht (Behinderung, Arbeit) ohne Einschränkung | ◐ | `auto` |
 | EU-Staatsangehörige: Ausschluss wie § 7 SGB II (§ 23 Abs. 3 SGB XII) | ✓ | `eu` |
 | Voraussetzung Rentenalter oder dauerhaft volle Erwerbsminderung (§ 41) | ✓ | `gsa-voraus` |
-| Freibetrag Erwerbstätige 30 %, höchstens 50 % RS1 (§ 82 Abs. 3 Satz 1) | ✓ | `gsa-ewt` |
+| Freibetrag Erwerbstätige 30 %, höchstens 50 % RS1 (§ 82 Abs. 3 Satz 1); Bezugsgröße Brutto (Fachanweisung Hamburg Ziff. 5.6), „wahrscheinlich“ nur, wenn es auch mit 30 % vom Netto reicht; Betrag als Spanne (geprüft 26.11.2026) | ✓ | `gsa-ewt`, R-GSA-AE1–4 |
 | Selbst gezahlter Unterhalt: in der Regel kein Abzug (§ 82 SGB XII kennt ihn nicht), Hinweis auf Selbstbehalt | ◐ | `uz-gsa` |
 | Unterhalt für die Person selbst: voll Einkommen (§ 82 Abs. 1 SGB XII), kein Freibetrag nach § 82 Abs. 3 | ✓ | `unt-sgb12` |
 | Werkstattlohn: Arbeitsförderungsgeld frei, 1/8 RS1 + 50 % frei (§ 82 Abs. 2 Nr. 5, Abs. 3 Satz 2) | ✓ | `gsa-wfbm` |

@@ -8313,5 +8313,291 @@
    }
   },
   "quelle": "SGB XII §§ 19, 27, 30, 39, 41; SächsLErzGG §§ 1–3 (revosax.sachsen.de, Abruf 25.11.2026)"
+ },
+ {
+  "id": "R-GSA-AE1",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "Rentner allein, Lohn 1.000 brutto / 800 netto, Miete 500: Bedarf 1.063; 30 % vom Brutto = 300, gedeckelt 281,50 -> Einkommen 518,50, Lücke 544,50 (obere Grenze 540)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "art1": "lohn",
+   "brutto": 1000,
+   "netto": 800,
+   "miete": 500
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 540,
+    "toleranz": 0.01,
+    "betragAus": "schaetz.spanne.b",
+    "tx": [
+     "bedarfJa"
+    ]
+   }
+  },
+  "quelle": "§ 82 Abs. 2, 3 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__82.html, Abruf 26.11.2026); Fachanweisung Hamburg §§ 82-84 SGB XII, Stand 1.1.2022, Ziff. 5.6 (Brutto); RBSFV 2026 (RS1 563 €)"
+ },
+ {
+  "id": "R-GSA-AE2",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "wie AE1, untere Grenze mit 30 % vom Netto (240): Einkommen 560, Lücke 503 -> 500",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "art1": "lohn",
+   "brutto": 1000,
+   "netto": 800,
+   "miete": 500
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 500,
+    "toleranz": 0.01,
+    "betragAus": "schaetz.spanne.a"
+   }
+  },
+  "quelle": "§ 82 Abs. 2, 3 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__82.html, Abruf 26.11.2026); Fachanweisung Hamburg §§ 82-84 SGB XII, Stand 1.1.2022, Ziff. 5.6 (Brutto); RBSFV 2026 (RS1 563 €)"
+ },
+ {
+  "id": "R-GSA-AE3",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "Rente 600 netto + Minijob 400 (brutto = netto), Miete 450: Freibetrag 120 in beiden Lesarten, Lücke 1.013 - 880 = 133 -> 130 (ein Betrag)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "miete": 450,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 685,
+     "n": 600
+    },
+    {
+     "art": "lohn",
+     "b": 400,
+     "n": 400
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 130,
+    "toleranz": 0.01,
+    "betragAus": "schaetz.eins.a"
+   }
+  },
+  "quelle": "§ 82 Abs. 2, 3 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__82.html, Abruf 26.11.2026); Fachanweisung Hamburg §§ 82-84 SGB XII, Stand 1.1.2022, Ziff. 5.6 (Brutto); RBSFV 2026 (RS1 563 €)"
+ },
+ {
+  "id": "R-GSA-AE4",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "Rente 520 netto + Lohn 900 brutto / 720 netto, Miete 500: mit Brutto Lücke 93, mit Netto 39 (< 50) -> nur „möglich“ mit Spanne",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "miete": 500,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 590,
+     "n": 520
+    },
+    {
+     "art": "lohn",
+     "b": 900,
+     "n": 720
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "vielleicht",
+    "betrag": 90,
+    "toleranz": 0.01,
+    "betragAus": "schaetz.spanne.b",
+    "tx": [
+     "bedarfRand"
+    ]
+   }
+  },
+  "quelle": "§ 82 Abs. 2, 3 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__82.html, Abruf 26.11.2026); Fachanweisung Hamburg §§ 82-84 SGB XII, Stand 1.1.2022, Ziff. 5.6 (Brutto); RBSFV 2026 (RS1 563 €)"
+ },
+ {
+  "id": "R-PV-01",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "Rente nur brutto 1.300, keine Kinder im Haushalt (Kinderlosigkeit unbekannt), Miete 471: Netto geschätzt 1.139,45 (3,6 %), kinderlos 1.131,65; Lücke -105,45 liegt im Puffer 100 + 7,80 -> „möglich“ statt „unwahrscheinlich“",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "art1": "rente",
+   "brutto": 1300,
+   "netto": "",
+   "miete": 471
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "§ 55 Abs. 1, 3, § 59 Abs. 1 SGB XI; BMG „Finanzierung der Pflegeversicherung“ (Stand 14.9.2026, Abruf 26.11.2026): 3,6 %, kinderlos +0,6, je Kind unter 25 ab dem 2. Kind −0,25 (höchstens −1,0); § 247, § 249a SGB V"
+ },
+ {
+  "id": "R-PV-02",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "wie R-PV-01, aber Netto selbst eingegeben (1.139,45): kein Zuschlag offen -> „unwahrscheinlich“",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "art1": "rente",
+   "brutto": 1300,
+   "netto": 1139.45,
+   "miete": 471
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 55 Abs. 1, 3, § 59 Abs. 1 SGB XI; BMG „Finanzierung der Pflegeversicherung“ (Stand 14.9.2026, Abruf 26.11.2026): 3,6 %, kinderlos +0,6, je Kind unter 25 ab dem 2. Kind −0,25 (höchstens −1,0); § 247, § 249a SGB V"
+ },
+ {
+  "id": "R-PV-03",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "Renten-Netto 1.000 brutto, 5 Kinder unter 25: Pflege 3,6 - 4 × 0,25 = 2,6 % -> 886,50",
+  "art": "funktion",
+  "funktion": "nettoRente",
+  "args": [
+   1000,
+   {
+    "heute": 2026.9,
+    "kinder": 5
+   }
+  ],
+  "erwartet": {
+   "wert": 886.5,
+   "toleranz": 0.01
+  },
+  "quelle": "§ 55 Abs. 1, 3, § 59 Abs. 1 SGB XI; BMG „Finanzierung der Pflegeversicherung“ (Stand 14.9.2026, Abruf 26.11.2026): 3,6 %, kinderlos +0,6, je Kind unter 25 ab dem 2. Kind −0,25 (höchstens −1,0); § 247, § 249a SGB V"
+ },
+ {
+  "id": "R-PV-04",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "Renten-Netto 1.000 brutto, 7 Kinder: Abschlag höchstens 1,0 Punkte -> 886,50",
+  "art": "funktion",
+  "funktion": "nettoRente",
+  "args": [
+   1000,
+   {
+    "heute": 2026.9,
+    "kinder": 7
+   }
+  ],
+  "erwartet": {
+   "wert": 886.5,
+   "toleranz": 0.01
+  },
+  "quelle": "§ 55 Abs. 1, 3, § 59 Abs. 1 SGB XI; BMG „Finanzierung der Pflegeversicherung“ (Stand 14.9.2026, Abruf 26.11.2026): 3,6 %, kinderlos +0,6, je Kind unter 25 ab dem 2. Kind −0,25 (höchstens −1,0); § 247, § 249a SGB V"
+ },
+ {
+  "id": "R-PV-05",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "Brutto aus Auszahlung 870,50 ohne Kinder: mit Kinderlosen-Zuschlag (4,2 %) -> 1.000",
+  "art": "funktion",
+  "funktion": "bruttoAusNettoRente",
+  "args": [
+   870.5,
+   {
+    "heute": 2026.9,
+    "kinder": 0
+   }
+  ],
+  "erwartet": {
+   "wert": 1000,
+   "toleranz": 1
+  },
+  "quelle": "§ 55 Abs. 1, 3, § 59 Abs. 1 SGB XI; BMG „Finanzierung der Pflegeversicherung“ (Stand 14.9.2026, Abruf 26.11.2026): 3,6 %, kinderlos +0,6, je Kind unter 25 ab dem 2. Kind −0,25 (höchstens −1,0); § 247, § 249a SGB V"
+ },
+ {
+  "id": "R-PV-06",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "Brutto aus Auszahlung 876,50 mit 1 Kind: 3,6 % -> 1.000",
+  "art": "funktion",
+  "funktion": "bruttoAusNettoRente",
+  "args": [
+   876.5,
+   {
+    "heute": 2026.9,
+    "kinder": 1
+   }
+  ],
+  "erwartet": {
+   "wert": 1000,
+   "toleranz": 1
+  },
+  "quelle": "§ 55 Abs. 1, 3, § 59 Abs. 1 SGB XI; BMG „Finanzierung der Pflegeversicherung“ (Stand 14.9.2026, Abruf 26.11.2026): 3,6 %, kinderlos +0,6, je Kind unter 25 ab dem 2. Kind −0,25 (höchstens −1,0); § 247, § 249a SGB V"
  }
 ]

@@ -179,8 +179,13 @@ function vergleicheGSA(e, r) {
   if (r.gsa.level !== g.level) melde('Grundsicherung im Alter: Einstufung', e, { app: r.gsa.level, ref: g.level, ref2: g });
   else if (g.bedarf != null && r.gsa.tx[0][1] && r.gsa.tx[0][1].bedarf) {
     if (r.gsa.tx[0][1].bedarf.eur !== Math.round(g.bedarf)) melde('Grundsicherung im Alter: Bedarf', e, { app: r.gsa.tx[0][1].bedarf.eur, ref: g.bedarf });
-    const s = zahlAus(r.gsa, 'schaetz.eins', 'a') ?? zahlAus(r.gsa, 'schaetz.mind', 'a');
-    if (g.luecke >= 50 && s !== Math.round(g.luecke / 10) * 10) melde('Grundsicherung im Alter: geschätzter Betrag', e, { app: s, ref: g.luecke });
+    // § 82 Abs. 3 SGB XII: obere Grenze mit 30 % vom Brutto (luecke), untere mit 30 % vom Netto (lueckeN); „mindestens“ nimmt die untere
+    const r10 = (x) => Math.round(Math.max(0, x) / 10) * 10;
+    const s = zahlAus(r.gsa, 'schaetz.eins', 'a') ?? zahlAus(r.gsa, 'schaetz.spanne', 'b') ?? zahlAus(r.gsa, 'schaetz.bis', 'b');
+    const sLo = zahlAus(r.gsa, 'schaetz.spanne', 'a') ?? zahlAus(r.gsa, 'schaetz.mind', 'a');
+    if (g.luecke >= 50 && s != null && s !== r10(g.luecke)) melde('Grundsicherung im Alter: geschätzter Betrag', e, { app: s, ref: g.luecke });
+    if (g.luecke >= 50 && sLo != null && sLo !== r10(g.lueckeN)) melde('Grundsicherung im Alter: geschätzter Betrag (untere Grenze)', e, { app: sLo, ref: g.lueckeN });
+    if (g.luecke >= 50 && s == null && sLo == null) melde('Grundsicherung im Alter: geschätzter Betrag fehlt', e, { ref: g.luecke });
   }
 }
 // Werkstatt-Beschäftigte und einfache Version: eine Person, Liste von Einkommen, Wohnform
