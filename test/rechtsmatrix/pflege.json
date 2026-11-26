@@ -8433,7 +8433,7 @@
  },
  {
   "id": "B-blind-BB",
-  "beschreibung": "blind, Erwachsene, Brandenburg: kein fester Betrag, Spanne 350–952 € – dynamisch (425 € + Rentenanpassung ab 1.7.2026, § 3 Abs. 1 LTeilhGG)",
+  "beschreibung": "blind, Erwachsene, BB: 443,03 € fest (Vorgabe David 26.11.2026: zwei übereinstimmende Fachseiten)",
   "h": {
    "adults": 1,
    "kids": 0,
@@ -8461,21 +8461,19 @@
   "erwartet": {
    "blindengeld": {
     "status": "ja",
-    "tx": [
-     "blindengeld.landJa"
-    ],
+    "betrag": 443.03,
+    "betragAus": "blindengeld.landBetrag.betrag",
     "txNicht": [
-     "blindengeld.landBetrag",
-     "blindengeld.blind"
+     "blindengeld.landJa"
     ]
    }
   },
-  "quelle": "Landesrecht Brandenburg; Spanne: SH 350 € (DBSV 7/2026) bis NRW 951,92 € (§ 2 Abs. 1 GHBG, https://recht.nrw.de/system/files/BH/4675-20951.htm), Abruf 26.11.2026",
+  "quelle": "§ 3 Abs. 1 LTeilhGG (bravors.brandenburg.de/gesetze/lteilhgg) + Rentenanpassung 1.7.2026; https://www.dbsv.org/blindengeld-in-brandenburg.html (Stand 1.7.2026); https://www.betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026), Abruf 26.11.2026",
   "pruefer": "Claude (Teil blind, 26.11.2026)"
  },
  {
   "id": "B-blind-HB",
-  "beschreibung": "blind, Erwachsene, Bremen: kein fester Betrag, Spanne 350–952 € – Betrag amtlich nicht belegt",
+  "beschreibung": "blind, Erwachsene, HB: 559,73 € fest (Vorgabe David 26.11.2026: zwei übereinstimmende Fachseiten)",
   "h": {
    "adults": 1,
    "kids": 0,
@@ -8503,21 +8501,19 @@
   "erwartet": {
    "blindengeld": {
     "status": "ja",
-    "tx": [
-     "blindengeld.landJa"
-    ],
+    "betrag": 559.73,
+    "betragAus": "blindengeld.landBetrag.betrag",
     "txNicht": [
-     "blindengeld.landBetrag",
-     "blindengeld.blind"
+     "blindengeld.landJa"
     ]
    }
   },
-  "quelle": "Landesrecht Bremen; Spanne: SH 350 € (DBSV 7/2026) bis NRW 951,92 € (§ 2 Abs. 1 GHBG, https://recht.nrw.de/system/files/BH/4675-20951.htm), Abruf 26.11.2026",
+  "quelle": "Bremisches LPflGG; https://www.dbsv.org/blindengeld-in-bremen.html (Stand 1.7.2026); https://www.betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026), Abruf 26.11.2026",
   "pruefer": "Claude (Teil blind, 26.11.2026)"
  },
  {
   "id": "B-blind-HH",
-  "beschreibung": "blind, Erwachsene, Hamburg: kein fester Betrag, Spanne 350–952 € – Betrag amtlich nicht belegt",
+  "beschreibung": "blind, Erwachsene, HH: 724,99 € fest (Vorgabe David 26.11.2026: zwei übereinstimmende Fachseiten)",
   "h": {
    "adults": 1,
    "kids": 0,
@@ -8545,16 +8541,14 @@
   "erwartet": {
    "blindengeld": {
     "status": "ja",
-    "tx": [
-     "blindengeld.landJa"
-    ],
+    "betrag": 724.99,
+    "betragAus": "blindengeld.landBetrag.betrag",
     "txNicht": [
-     "blindengeld.landBetrag",
-     "blindengeld.blind"
+     "blindengeld.landJa"
     ]
    }
   },
-  "quelle": "Landesrecht Hamburg; Spanne: SH 350 € (DBSV 7/2026) bis NRW 951,92 € (§ 2 Abs. 1 GHBG, https://recht.nrw.de/system/files/BH/4675-20951.htm), Abruf 26.11.2026",
+  "quelle": "HmbBlinGG; https://www.dbsv.org/blindengeld-in-hamburg.html (Stand 1.7.2026); https://www.betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026), Abruf 26.11.2026",
   "pruefer": "Claude (Teil blind, 26.11.2026)"
  },
  {
@@ -8761,7 +8755,7 @@
  },
  {
   "id": "B-blind-SL",
-  "beschreibung": "blind, Erwachsene, Saarland: kein fester Betrag, Spanne 350–952 € – Betrag amtlich nicht belegt",
+  "beschreibung": "blind, Erwachsene, SL: 460 € fest (Vorgabe David 26.11.2026: zwei übereinstimmende Fachseiten)",
   "h": {
    "adults": 1,
    "kids": 0,
@@ -8789,16 +8783,14 @@
   "erwartet": {
    "blindengeld": {
     "status": "ja",
-    "tx": [
-     "blindengeld.landJa"
-    ],
+    "betrag": 460,
+    "betragAus": "blindengeld.landBetrag.betrag",
     "txNicht": [
-     "blindengeld.landBetrag",
-     "blindengeld.blind"
+     "blindengeld.landJa"
     ]
    }
   },
-  "quelle": "Landesrecht Saarland; Spanne: SH 350 € (DBSV 7/2026) bis NRW 951,92 € (§ 2 Abs. 1 GHBG, https://recht.nrw.de/system/files/BH/4675-20951.htm), Abruf 26.11.2026",
+  "quelle": "Saarländisches Landesrecht (zuletzt geänd. G v. 4.12.2024); https://www.dbsv.org/blindengeld-im-saarland.html (Stand 1.7.2026); betanet (Stand 28.7.2026); down-syndrom.org 29.1.2026, Abruf 26.11.2026",
   "pruefer": "Claude (Teil blind, 26.11.2026)"
  },
  {
@@ -8843,7 +8835,7 @@
  },
  {
   "id": "B-blind-ST",
-  "beschreibung": "blind, Erwachsene, Sachsen-Anhalt: kein fester Betrag, Spanne 350–952 € – Betrag amtlich nicht belegt",
+  "beschreibung": "blind, Erwachsene, ST: 479,96 € fest (Vorgabe David 26.11.2026: zwei übereinstimmende Fachseiten)",
   "h": {
    "adults": 1,
    "kids": 0,
@@ -8871,16 +8863,14 @@
   "erwartet": {
    "blindengeld": {
     "status": "ja",
-    "tx": [
-     "blindengeld.landJa"
-    ],
+    "betrag": 479.96,
+    "betragAus": "blindengeld.landBetrag.betrag",
     "txNicht": [
-     "blindengeld.landBetrag",
-     "blindengeld.blind"
+     "blindengeld.landJa"
     ]
    }
   },
-  "quelle": "Landesrecht Sachsen-Anhalt; Spanne: SH 350 € (DBSV 7/2026) bis NRW 951,92 € (§ 2 Abs. 1 GHBG, https://recht.nrw.de/system/files/BH/4675-20951.htm), Abruf 26.11.2026",
+  "quelle": "LBliGG Sachsen-Anhalt; https://www.dbsv.org/blindengeld-in-sachsen-anhalt.html (Stand 1.7.2026); betanet (Stand 28.7.2026), Abruf 26.11.2026",
   "pruefer": "Claude (Teil blind, 26.11.2026)"
  },
  {
@@ -8925,7 +8915,7 @@
  },
  {
   "id": "B-blind-TH",
-  "beschreibung": "blind, Erwachsene, Thüringen: kein fester Betrag, Spanne 350–952 € – Quellen widersprüchlich (ThürSinnbGG 400 € vs. 472 €)",
+  "beschreibung": "blind, Erwachsene, TH: 472 € fest (Vorgabe David 26.11.2026: zwei übereinstimmende Fachseiten)",
   "h": {
    "adults": 1,
    "kids": 0,
@@ -8953,16 +8943,14 @@
   "erwartet": {
    "blindengeld": {
     "status": "ja",
-    "tx": [
-     "blindengeld.landJa"
-    ],
+    "betrag": 472,
+    "betragAus": "blindengeld.landBetrag.betrag",
     "txNicht": [
-     "blindengeld.landBetrag",
-     "blindengeld.blind"
+     "blindengeld.landJa"
     ]
    }
   },
-  "quelle": "Landesrecht Thüringen; Spanne: SH 350 € (DBSV 7/2026) bis NRW 951,92 € (§ 2 Abs. 1 GHBG, https://recht.nrw.de/system/files/BH/4675-20951.htm), Abruf 26.11.2026",
+  "quelle": "§ 2 ThürSinnbGG; FIM Thüringen https://fimportal.de/api/v0/xzufi-services/L100038/354554/de/pdf (seit 1.7.2023 472 €); https://www.dbsv.org/blindengeld-in-thueringen.html (Stand 1.7.2026); betanet (Stand 28.7.2026), Abruf 26.11.2026",
   "pruefer": "Claude (Teil blind, 26.11.2026)"
  },
  {
@@ -9435,5 +9423,79 @@
    "toleranz": 1
   },
   "quelle": "§ 55 Abs. 1, 3, § 59 Abs. 1 SGB XI; BMG „Finanzierung der Pflegeversicherung“ (Stand 14.9.2026, Abruf 26.11.2026): 3,6 %, kinderlos +0,6, je Kind unter 25 ab dem 2. Kind −0,25 (höchstens −1,0); § 247, § 249a SGB V"
+ },
+ {
+  "id": "B-blh-HH",
+  "beschreibung": "blind, HH, kein Pflegegrad, wenig Einkommen: Blindenhilfe-Rest 951,92 − 724.99 = 226.93 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1027,
+   "brutto2": "",
+   "netto": 900,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "HH",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blh": {
+    "status": "vielleicht|ja",
+    "betrag": 226.93,
+    "betragAus": "blh.differenz.rest"
+   }
+  },
+  "quelle": "§ 72 Abs. 1 Satz 1, Abs. 2 SGB XII – https://www.buzer.de/72_SGB_XII.htm; HmbBlinGG; https://www.dbsv.org/blindengeld-in-hamburg.html (Stand 1.7.2026); https://www.betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026)",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blh-TH",
+  "beschreibung": "blind, TH, kein Pflegegrad, wenig Einkommen: Blindenhilfe-Rest 951,92 − 472 = 479.92 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1027,
+   "brutto2": "",
+   "netto": 900,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "TH",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blh": {
+    "status": "vielleicht|ja",
+    "betrag": 479.92,
+    "betragAus": "blh.differenz.rest"
+   }
+  },
+  "quelle": "§ 72 Abs. 1 Satz 1, Abs. 2 SGB XII – https://www.buzer.de/72_SGB_XII.htm; § 2 ThürSinnbGG; FIM Thüringen https://fimportal.de/api/v0/xzufi-services/L100038/354554/de/pdf (seit 1.7.2023 472 €); https://www.dbsv.org/blindengeld-in-thueringen.html (Stand 1.7.2026); betanet (Stand 28.7.2026)",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
  }
 ]
