@@ -189,7 +189,15 @@ const Rules = (function () {
     // HH 724,99 € (alle Alter), SL 460 € seit 1/2026 (unter 18: 327 €; auch down-syndrom.org 29.1.2026), ST 479,96 € (unter 18: 333,32 €),
     // TH 472 € seit 1.7.2023 (alle Alter; ThürSinnbGG, 8. Änderungsgesetz; amtlich bestätigt durch FIM-Leistungsbeschreibung Thüringen).
     // Nur NW ohne festen Betrag (altersabhängig: unter 60 Höhe der Blindenhilfe, ab 60 473 €) -> Spanne.
-    landBlind: { von: 350, bis: 952, land: { BW: 410, BE: 761.54, BB: 443.03, HB: 559.73, HH: 724.99, HE: 818.65, MV: 430, NI: 450, RP: 410, SL: 460, SN: 380, ST: 479.96, SH: 350, TH: 472 }, stand: '11/2026' },
+    landBlind: { von: 350, bis: 952, land: { BW: 410, BE: 761.54, BB: 443.03, HB: 559.73, HH: 724.99, HE: 818.65, MV: 430, NI: 450, RP: 410, SL: 460, SN: 380, ST: 479.96, SH: 350, TH: 472 },
+      // Kinder unter 18 (bhPerson „minder“), Nachprüfung Fable Nr. 7, 27.11.2026: DBSV-Länderseiten Stand 1.7.2026 und betanet Stand 28.7.2026
+      // übereinstimmend; BW/RP 50 % (§ 2 BliHG BW, § 2 LBlindenGG RP), HE und NW = Blindenhilfe unter 18 (476,78 €, § 2 Abs. 1 GHBG NRW);
+      // BE, HH, NI, TH zahlen unabhängig vom Alter den vollen Betrag. SN: unter 14 Jahren 75 % = 285 €, ab 14 voll 380 € (§ 2 Abs. 2 LBlindG).
+      kind: { BW: 205, BE: 761.54, BB: 221.51, HB: 279.87, HH: 724.99, HE: 476.78, MV: 273.05, NI: 450, NW: 476.78, RP: 205, SL: 327, ST: 333.32, SH: 250, TH: 472 },
+      kindSN: { unter: 285, ab: 380, alter: 14 },
+      // NRW (§ 2 Abs. 1 GHBG, https://recht.nrw.de/system/files/BH/4675-20951.htm): unter 60 Höhe der Blindenhilfe, ab dem vollendeten 60. Lebensjahr 473 €
+      nw: { ab60: 473, alter: 60 },
+      stand: '11/2026' },
     // Blindenhilfe § 72 Abs. 1 SGB XII ab 1.7.2026 (angepasst wie die Renten); unter 18 die Hälfte (§ 72 Abs. 2)
     blhBetrag: { erw: 951.92, kind: 476.78, stand: '7/2026' },
     // Bayerisches Landespflegegeld (BayLPflGG): ab Pflegegrad 2, unabhängig vom Einkommen; ab dem Pflegegeldjahr 2026 500 € im Jahr (vorher 1.000 €)
@@ -2567,7 +2575,10 @@ const Rules = (function () {
       [h.land === 'BY' ? 'blh.bayern' : 'blh.landAnders']];
     // Höhe: Blindenhilfe minus Landesblindengeld (voll angerechnet, § 72 Abs. 1 Satz 1), wo das Landesblindengeld belegt ist. Ohne Bundesland
     // kein Landesbetrag (Vollprüfung F8, 24.11.2026; vorher bayerischer Betrag).
-    const B = R.blhBetrag, landB = h.land === 'BY' ? R.beh.blind.blind : h.land ? R.landBlind.land[h.land] : 0;
+    // NRW mit bekanntem Alter (allein lebend, Geburtsjahr) ab 60: 473 € (§ 2 Abs. 1 GHBG) -> Unterschied zur Blindenhilfe; unter 60 entspricht das
+    // Landesblindengeld der Blindenhilfe, dann kein Restbetrag (kein Text)
+    const nw60 = h.land === 'NW' && h.bhPerson !== 'erwVor25' && h.adults === 1 && h.alterJahre >= R.landBlind.nw.alter;
+    const B = R.blhBetrag, landB = h.land === 'BY' ? R.beh.blind.blind : nw60 ? R.landBlind.nw.ab60 : h.land ? R.landBlind.land[h.land] : 0;
     tx.push(['blh.betrag', { betrag: eur2(B.erw), kind: eur2(B.kind), stand: B.stand }]);
     // Mit Pflegegrad 2 bis 5 wird Pflegegeld angerechnet: auf die Blindenhilfe 50 % des Pflegegelds PG 2 bzw. 40 % des Pflegegelds PG 3, höchstens
     // 50 % der Blindenhilfe (§ 72 Abs. 1 Satz 2 SGB XII, https://www.buzer.de/72_SGB_XII.htm), auf das Bayerische Blindengeld 46 % bzw. 33 %
@@ -2712,8 +2723,14 @@ const Rules = (function () {
     // widersprüchlich, daher nur eine Spanne und keine feste Zahl (Prüfliste).
     if (h.land && h.land !== 'BY') {
       if (h.blind !== 'blind') return mk(id, 'vielleicht', 'vielleicht', [['blindengeld.hochLand']]);
-      const fest = R.landBlind.land[h.land];
-      const t1 = fest ? ['blindengeld.landBetrag', { land: BL_NAME[h.land], betrag: eur2(fest), stand: R.landBlind.stand }] : ['blindengeld.landJa', { von: eur(R.landBlind.von), bis: eur(R.landBlind.bis) }];
+      const LB = R.landBlind, st = LB.stand, land = BL_NAME[h.land];
+      // Blindes Kind unter 18: Kinderbetrag des Landes (Fable-Nachprüfung Nr. 7). NRW für eine allein lebende erwachsene Person mit Geburtsjahr:
+      // unter 60 Höhe der Blindenhilfe, ab 60 473 € (§ 2 Abs. 1 GHBG); sonst (Alter der blinden Person unbekannt) die Spanne.
+      const nwAlter = h.land === 'NW' && h.bhPerson !== 'minder' && h.bhPerson !== 'erwVor25' && h.adults === 1 && h.alterJahre > 0 ? h.alterJahre : 0;
+      const fest = h.bhPerson === 'minder' ? LB.kind[h.land] : nwAlter ? (nwAlter >= LB.nw.alter ? LB.nw.ab60 : R.blhBetrag.erw) : LB.land[h.land];
+      const t1 = h.bhPerson === 'minder' && h.land === 'SN' ? ['blindengeld.landKindAlter', { land, alter: String(LB.kindSN.alter), betrag: eur2(LB.kindSN.unter), betrag2: eur2(LB.kindSN.ab), stand: st }]
+        : fest ? [h.bhPerson === 'minder' ? 'blindengeld.landKind' : 'blindengeld.landBetrag', { land, betrag: eur2(fest), stand: st }]
+          : ['blindengeld.landJa', { von: eur(LB.von), bis: eur(LB.bis) }];
       return mk(id, 'ja', 'ja', [t1].concat(h.pflegegrad >= 2 ? [['blindengeld.pflegeLand']] : []));
     }
     const b = R.beh.blind;

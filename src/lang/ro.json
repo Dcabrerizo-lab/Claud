@@ -990,6 +990,8 @@
   "t.blh.differenz": "Indemnizația de nevăzător din {land} ({landbetrag}) se scade. La un venit mic se plătesc în plus până la {rest} pe lună Blindenhilfe.",
   "t.blh.betrag": "Ajutorul pentru nevăzători (Blindenhilfe) este de până la {betrag} pe lună, pentru copiii sub 18 ani de până la {kind} (la {stand}).",
   "t.blindengeld.landBetrag": "În landul {land}, adulții nevăzători primesc {betrag} indemnizație de nevăzător a landului pe lună (la {stand}), de obicei indiferent de venit. Pentru copii este adesea mai puțin. Suma exactă o verifică autoritatea competentă.",
+  "t.blindengeld.landKind": "În landul {land}, copiii nevăzători sub 18 ani primesc {betrag} indemnizație de nevăzător a landului pe lună (la {stand}), de obicei indiferent de venit. Suma exactă o verifică autoritatea competentă.",
+  "t.blindengeld.landKindAlter": "În landul {land}, copiii nevăzători sub {alter} ani primesc {betrag} indemnizație de nevăzător a landului pe lună, de la {alter} ani {betrag2} (la {stand}), de obicei indiferent de venit. Suma exactă o verifică autoritatea competentă.",
   "t.blindengeld.hochLand": "Doar unele landuri plătesc o prestație separată pentru persoanele cu deficiență gravă de vedere (de exemplu Bavaria). Întreabă instituția competentă dacă există în landul tău.",
   "t.blindengeld.pflegeLand": "Dacă primești Pflegegeld, în majoritatea landurilor acesta se scade parțial din Landesblindengeld.",
   "t.wbs.landJa": "Venitul tău brut este chiar sub limita la nivel național ({grenze} pe an pentru gospodăria ta). Niciun land nu are o limită mai mică, deci un Wohnberechtigungsschein este foarte probabil.",
