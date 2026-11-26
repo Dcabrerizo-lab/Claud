@@ -52,7 +52,11 @@ for (const f of FAELLE) {
     ['Zwillinge Basis: Wohngeld 600, SGB 300', je({ art1: 'eg', brutto: 1200, netto: 1200, egKinder: '2', egArt1: 'basis' }), { sgbLo: 300, sgbHi: 300, wgLo: 600, wgHi: 600 }],
     ['Drillinge Plus: Wohngeld 450, SGB 150', je({ art1: 'eg', brutto: 800, netto: 800, egKinder: '3', egArt1: 'plus' }), { sgbLo: 150, sgbHi: 150, wgLo: 450, wgHi: 450 }],
     ['Basis, Netto vor der Geburt 300 €: SGB höchstens 197,50', je({ art1: 'eg', brutto: 400, netto: 400, egVor: 300, egArt1: 'basis' }), { sgbLo: 197.5, sgbHi: 197.5, wgLo: 300, wgHi: 300 }],
-    ['Plus, Netto vor der Geburt 200 €: SGB höchstens 97,50', je({ art1: 'eg', brutto: 400, netto: 400, egVor: 200, egArt1: 'plus' }), { sgbLo: 97.5, sgbHi: 97.5, wgLo: 150, wgHi: 150 }],
+    // § 10 Abs. 5 Satz 3 BEEG: Hälfte des ganzen Betrags nach Satz 2 (Fable-Nachprüfung Nr. 4): min(97,50; 300) / 2
+    ['Plus, Netto vor der Geburt 200 €: SGB 48,75 (Hälfte von 97,50)', je({ art1: 'eg', brutto: 400, netto: 400, egVor: 200, egArt1: 'plus' }), { sgbLo: 48.75, sgbHi: 48.75, wgLo: 150, wgHi: 150 }],
+    ['Plus, Netto vor der Geburt 250 €: SGB 73,75 (Hälfte von 147,50)', je({ art1: 'eg', brutto: 300, netto: 300, egVor: 250, egArt1: 'plus' }), { sgbLo: 73.75, sgbHi: 73.75, wgLo: 150, wgHi: 150 }],
+    ['Plus, Netto vor der Geburt 500 €: SGB 150 (Hälfte von 300)', je({ art1: 'eg', brutto: 300, netto: 300, egVor: 500, egArt1: 'plus' }), { sgbLo: 150, sgbHi: 150, wgLo: 150, wgHi: 150 }],
+    ['weiß nicht, Netto vor der Geburt 250 €: Spanne 73,75 bis 147,50', je({ art1: 'eg', brutto: 468, netto: 468, egVor: 250 }), { sgbLo: 73.75, sgbHi: 147.5, wgLo: 150, wgHi: 300 }],
     ['Paar: Person 1 Plus, Person 2 Basis (Liste)', D({ adults: 2, einkommen: [{ art: 'eg', b: 600, p: 1 }, { art: 'eg', b: 700, p: 2 }], egArt1: 'plus', egArt2: 'basis' }).egFreiJe,
       [{ sgbLo: 150, sgbHi: 150, wgLo: 150, wgHi: 150 }, { sgbLo: 300, sgbHi: 300, wgLo: 300, wgHi: 300 }]],
     ['Paar ohne Liste: Person 2 Plus', D({ adults: 2, art1: 'lohn', art2: 'eg', brutto: 2500, brutto2: 500, netto: 2200, egArt2: 'plus' }).egFreiJe[1], { sgbLo: 150, sgbHi: 150, wgLo: 150, wgHi: 150 }],

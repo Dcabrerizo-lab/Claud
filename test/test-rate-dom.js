@@ -105,11 +105,12 @@ setTimeout(() => {
     klick($('ra-wer-partner'));
     check('[rate-wer] Partner: Rate 155 €, gewählt markiert, Fokus bleibt', /Diese Rate schlagen wir dir vor: 155 € im Monat/.test(tx($('ra-betrag'))) && $('ra-wer-partner').getAttribute('aria-pressed') === 'true' && d.activeElement === $('ra-wer-partner'), tx($('ra-betrag')));
     check('[rate-wer] Partner: Rechenweg nennt das Einkommen des Partners', /etwa 157,59 €/.test(tx(d.querySelector('details.ra-so'))) && /dein eigenes Einkommen zählen nicht/.test(tx(d.querySelector('details.ra-so'))));
+    check('[rate-wer] Partner: Hinweis, dass die Zahl der Unterhaltsberechtigten abweichen kann (Pfändungsrechner)', /nicht verheiratet/.test(tx($('ra-wer-pers'))) && /Pfändungsrechner/.test(tx($('ra-wer-pers'))));
     check('[rate-wer] Antwort im Haushaltsplan gespeichert', w.Haushalt.schuldner() === 'partner' && w.Haushalt.daten().schuldner === 'partner');
     klick($('ra-wer-beide'));
     check('[rate-wer] beide: je eigene Tabelle (0 € + 157,59 €), nicht zusammengezählt', /Diese Rate schlagen wir dir vor: 155 € im Monat/.test(tx($('ra-betrag'))) && /bei dir etwa 0(,00)? €, bei deinem Partner oder deiner Partnerin etwa 157,59 €, zusammen 157,59 €/.test(tx(d.querySelector('details.ra-so'))), tx(d.querySelector('details.ra-so')));
     klick($('ra-wer-ich'));
-    check('[rate-wer] ich: wieder nichts pfändbar', !!$('ra-keine') && !$('ra-betrag') && $('ra-wer-ich').getAttribute('aria-pressed') === 'true');
+    check('[rate-wer] ich: wieder nichts pfändbar, kein Hinweis zu Unterhaltsberechtigten', !!$('ra-keine') && !$('ra-betrag') && $('ra-wer-ich').getAttribute('aria-pressed') === 'true' && !$('ra-wer-pers'));
     w.__solo.lang('en'); zurRate();
     check('[rate-wer] Englisch', tx($('ra-wer-q')) === 'Who has the debts?' && tx($('ra-wer-beide')) === 'Both of us');
     w.__solo.lang('de');
