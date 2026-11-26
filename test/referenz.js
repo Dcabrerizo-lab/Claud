@@ -277,7 +277,8 @@ function grundsicherungsgeld(h) {
   // Sofortzuschlag nicht, wenn die Kinder ihren Bedarf (Regelbedarf + Kopfteil Miete) schon mit eigenem Einkommen ohne Kindergeld decken
   const kindEigen = h.unterhalt + h.waisen + h.uvg + Math.max(0, h.kindEink - h.mini);
   const sofort = h.kids > 0 && kindEigen >= h.regelKinder + h.miete * h.kids / h.personen ? 0 : 25 * h.kids;
-  return { level: level === 'ja' && h.erwachsene === 1 && nurRenteAb60(h) ? 'vielleicht' : level, bedarf, luecke: luecke + sofort };
+  // Seit 26.11.2026 (Fable-Nachprüfung Nr. 2, 8): jede Rente zählt (auch neben Lohn), und auch bei Paaren (Person mit Altersrente -> Sozialamt)
+  return { level: level === 'ja' && !h.rente && renteAb60(h) ? 'vielleicht' : level, bedarf, luecke: luecke + sofort };
 }
 
 // ---------- Wohngeld (WoGG) ----------
@@ -384,6 +385,10 @@ function minderungElternKiZ(h, bedarf, egHoch) {
 }
 // Nur Rente, Alter unbekannt oder ab 60: vielleicht eine Altersrente vor der Regelaltersgrenze (§ 7 Abs. 4 SGB II schließt dann SGB II aus;
 // eine vorgezogene Altersrente gibt es frühestens mit 60 bis 63, § 36-38, § 236-237a SGB VI)
+function renteAb60(h) {
+  if (!h.p.some((x) => x.art === 'rente' && x.brutto > 0)) return false;
+  return h.jahre ? h.jahre >= 60 : (h.gruppe === '' || h.gruppe === '50+');
+}
 function nurRenteAb60(h) {
   const mit = h.p.filter((x) => x.brutto > 0);
   if (!mit.length || mit.some((x) => x.art !== 'rente')) return false;
@@ -569,20 +574,24 @@ function hilfeLebensunterhalt(e, gsaStufe) {
   const h = haushalt(e);
   if (e.aufenthalt === 'asyl' || e.aufenthalt === 'ausreise') return { level: 'nein' };
   const arten = Array.isArray(e.einkommen) ? e.einkommen.filter((x) => zahl(x.b) > 0 || zahl(x.n) > 0).map((x) => x.art) : h.p.filter((x) => x.brutto > 0).map((x) => x.art);
-  const nurRente = arten.length > 0 && arten.every((a) => a === 'rente');
-  const vorgezogen = !h.rente && nurRente && (h.jahre ? h.jahre >= 60 : h.gruppe === '' || h.gruppe === '50+');
+  // Altersrente vor der Regelaltersgrenze auch neben Lohn (§ 7 Abs. 4 Satz 1 SGB II hängt nur am Bezug; Fable-Nachprüfung 26.11.2026, Nr. 2)
+  const vorgezogen = !h.rente && arten.indexOf('rente') >= 0 && (h.jahre ? h.jahre >= 60 : h.gruppe === '' || h.gruppe === '50+');
   const werkstatt = !!e.wfbm || arten.indexOf('wfbm') >= 0;
   const emZeit = !h.rente && !h.grenz && emElternteil(e) && !werkstatt;
   const gOk = gsaStufe === 'ja' || gsaStufe === 'vielleicht' || gsaStufe === 'na';
   const zweiteRente = Array.isArray(e.einkommen) ? false : h.erwachsene === 2 && e.art2 === 'rente';
   const kids = e.kids | 0;
-  const fuerKinder = h.erwachsene === 1 && kids > 0 && gOk && !kindNurEMRef(h);
+  const fuerKinder = (h.erwachsene === 1 || h.rente) && kids > 0 && gOk && !kindNurEMRef(h);
   const fuerPartner = h.erwachsene === 2 && h.rente && zweiteRente && gOk;
   if (!vorgezogen && !emZeit && !fuerKinder && !fuerPartner) return { level: 'nein' };
   if (h.bezug.grundsicherungsgeld || euAus(h)) return { level: 'nein' };
   if (h.bezug.sozialamt) return { level: 'na' };
   const fehlt = (!Array.isArray(e.einkommen) && leer(e.brutto) && leer(e.netto)) || leer(e.vermoegen) || (!e.wohnform && leer(e.miete));
-  if (!vorgezogen && !emZeit) return { level: gsaStufe === 'ja' && h.k14 === 0 && h.jung === 0 && !fehlt ? 'ja' : 'vielleicht' };
+  // Kinder „wahrscheinlich“ nur sicher unter 15 (Alter angegeben), ohne Mitbewohner, eigenes Einkommen je Kind klar unter Stufe 6 + Kopfteil Miete (Nr. 1)
+  const alterBekannt = !!e.kidsAlter || (kids > 0 && (e.kidsU6 | 0) >= kids);
+  const eigen = (h.unterhalt + h.waisen + h.uvg + (zahl(e.kindEink) || 0) + kids * KG) / Math.max(1, kids);
+  const sicher = fuerKinder && h.erwachsene === 1 && gsaStufe === 'ja' && alterBekannt && h.k14 === 0 && h.jung === 0 && !e.wohnform && !e.hhAndere && eigen < RB[6] + h.miete / h.personen - 50;
+  if (!vorgezogen && !emZeit) return { level: sicher && !fehlt ? 'ja' : 'vielleicht' };
   const g = grundsicherungAlter(vorgezogen && !emElternteil(e) ? { ...e, mzG: false } : e, true);
   return { level: g.level === 'nein' ? 'nein' : 'vielleicht' };
 }

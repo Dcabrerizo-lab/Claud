@@ -1306,6 +1306,15 @@ const Rules = (function () {
     if (h.alterJahre) return h.alterJahre >= 60;
     return h.gruppe === '' || h.gruppe === '50+';
   }
+  // Mindestens ein Einkommen ist Rente, Regelaltersgrenze nicht sicher erreicht, Alter ab 60 oder unbekannt: Es KANN eine Altersrente vor der
+  // Regelaltersgrenze sein, auch neben Lohn oder Minijob. Der Ausschluss vom Grundsicherungsgeld hängt nur am Bezug der Altersrente
+  // (§ 7 Abs. 4 Satz 1 SGB II, § 21 SGB XII; gesetze-im-internet.de/sgb_2/__7.html, Abruf 26.11.2026; Fable-Nachprüfung 26.11.2026, Nr. 2).
+  // Für Grundsicherungsgeld und Hilfe zum Lebensunterhalt; der Kinderzuschlag nutzt weiter vielleichtAltersrente.
+  function altersrenteMoeglich(h) {
+    if (!(h.pers || []).some((x) => x[0] === 'rente' && x[1] > 0)) return false;
+    if (h.alterJahre) return h.alterJahre >= 60;
+    return h.gruppe === '' || h.gruppe === '50+';
+  }
   // Kinderzuschlag setzt voraus, dass im Haushalt mindestens eine Person dem Grunde nach zum SGB II gehört (§ 6a Abs. 1 Nr. 3 BKGG
   // i. V. m. § 7, § 8 SGB II; DA-KiZ Stand 20.02.2026, D.2 Abs. 1 Satz 5 und B.1 Abs. 5; BSG 13.07.2022, B 7/14 KG 1/21 R):
   // ein erwerbsfähiger Elternteil oder ein Kind ab 15. Altersrentner (Regelaltersgrenze, auch vorgezogene Altersrente, § 7 Abs. 4 SGB II)
@@ -1482,8 +1491,13 @@ const Rules = (function () {
     // Wechselmodell: Bedarf des Kindes nur für die Tage im Haushalt, Mehrbedarf zur Hälfte (siehe derive): höchstens „möglich“, Betrag als
     // obere Grenze („bis etwa“), Hinweis vorn (Vollprüfung familie B14, Fable Nr. 26)
     const r = h.uvgWechsel && (r0.level === 'ja' || r0.level === 'vielleicht') ? wechselBis(r0, 'ggeld.wechsel') : r0;
-    if (h.adults !== 1 || (r.level !== 'ja' && r.level !== 'vielleicht') || !vielleichtAltersrente(h)) return r;
-    return mk(r.id, 'vielleicht', 'vielleicht', r.tx.slice(0, 1).concat([['ggeld.vorgezogen']], r.tx.slice(1)));
+    if ((r.level !== 'ja' && r.level !== 'vielleicht') || h.alter || !altersrenteMoeglich(h)) return r;
+    if (h.adults === 1) return mk(r.id, 'vielleicht', 'vielleicht', r.tx.slice(0, 1).concat([['ggeld.vorgezogen']], r.tx.slice(1)));
+    // Paar mit Altersrente unter der Regelaltersgrenze (Fable-Nachprüfung 26.11.2026, Nr. 8): Die Person mit Altersrente bekommt kein
+    // Grundsicherungsgeld (§ 7 Abs. 4 Satz 1 SGB II), sondern Hilfe zum Lebensunterhalt; der Betrag verteilt sich auf Jobcenter und Sozialamt.
+    if (r.tx.some((t) => t[0] === 'ggeld.gemischt')) return r;
+    const out = mk(r.id, 'vielleicht', 'vielleicht', r.tx.slice(0, 1).concat([['ggeld.vorgezogen'], ['ggeld.vorgezogenPaar']], r.tx.slice(1)));
+    return r.lage ? Object.defineProperty(out, 'lage', { value: r.lage }) : out;
   }
   function ggeldRechnung(h) {
     const id = 'ggeld';
@@ -1678,7 +1692,7 @@ const Rules = (function () {
   // ---------------------------------------------------------------
   // Bildung und Teilhabe
   // ---------------------------------------------------------------
-  function bildungTeilhabe(h, wg, kz, gg) {
+  function bildungTeilhabe(h, wg, kz, gg, hlu) {
     const id = 'but';
     if (h.children === 0) return mk(id, 'nein', 'keinKind', [['but.keinKind']]);
     // § 28 Abs. 1 Satz 2, Abs. 7 SGB II (https://www.gesetze-im-internet.de/sgb_2/__28.html, Abruf 24.11.2026): junge Erwachsene nur, solange
@@ -1693,10 +1707,10 @@ const Rules = (function () {
     const betreuung = (h.kidsU6 > 0 ? [['but.kita']] : []).concat(h.kids > h.kidsU6 ? [['but.hort']] : []);
     const inhalt = nurJung ? ['but.inhaltJung', { schul: eur(R.but.schulbedarf), teil: eur(R.but.teilhabeMonat) }]
       : h.young === 0 && h.kids > 0 && h.kidsU6 === h.kids ? ['but.inhaltKlein', { teil: eur(R.but.teilhabeMonat) }] : ['but.inhalt', { schul: eur(R.but.schulbedarf), teil: eur(R.but.teilhabeMonat) }];
-    const r = bildungTeilhabe0(h, wg, kz, gg, inhalt, betreuung);
+    const r = bildungTeilhabe0(h, wg, kz, gg, inhalt, betreuung, hlu);
     return nurJung ? hoechstensMoeglich(r, 'but.azubi') : r;
   }
-  function bildungTeilhabe0(h, wg, kz, gg, inhalt, betreuung) {
+  function bildungTeilhabe0(h, wg, kz, gg, inhalt, betreuung, hlu) {
     const id = 'but';
     // Einziges Kind ist das erwachsene Kind in der Werkstatt: kein Schüler im Sinn von § 28 Abs. 1 Satz 2 SGB II, § 34 Abs. 1 SGB XII
     if (h.children === 1 && h.young === 1 && kindNurEM(h)) return mk(id, 'nein', 'vorausFehlt', [['but.azubi']]);
@@ -1715,6 +1729,11 @@ const Rules = (function () {
     if (h.asylBezug) return mk(id, 'ja', 'ja', [['but.asylBezug'], inhalt].concat(betreuung));
     if (h.asyl) return mk(id, 'vielleicht', 'butMoeglich', [['but.asyl'], inhalt].concat(betreuung));
     if (wg.level === 'ja' || kz.level === 'ja' || gg.level === 'ja') return mk(id, 'ja', 'butFolgt', [['but.folgt'], inhalt].concat(betreuung));
+    // § 34 SGB XII: Bildung und Teilhabe auch für Kinder mit Hilfe zum Lebensunterhalt (gesetze-im-internet.de/sgb_12/__34.html, Abruf 26.11.2026;
+    // Fable-Nachprüfung 26.11.2026, Nr. 9). Nur, wenn die Karte die Kinder nennt.
+    const hluKinder = !!hlu && hlu.tx.some((t) => t[0] === 'hlu.kinder');
+    if (hluKinder && hlu.level === 'ja') return mk(id, 'ja', 'butFolgt', [['but.hlu'], inhalt].concat(betreuung));
+    if (hluKinder && hlu.level === 'vielleicht') return mk(id, 'vielleicht', 'butMoeglich', [['but.hlu'], inhalt].concat(betreuung));
     if (wg.level === 'vielleicht' || kz.level === 'vielleicht' || gg.level === 'vielleicht') {
       return mk(id, 'vielleicht', 'butMoeglich', [['but.moeglich'], inhalt].concat(betreuung));
     }
@@ -1850,11 +1869,13 @@ const Rules = (function () {
     const id = 'hlu';
     if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);
     const werkstatt = !!h.wfbm || (h.pers || []).some((x) => x[0] === 'wfbm');
-    const vorgezogen = !h.alter && vielleichtAltersrente(h);
+    const vorgezogen = !h.alter && altersrenteMoeglich(h);
     const emZeit = !h.alter && !h.alterGrenz && !!h.emEltern && !werkstatt;
     const gsaOk = !!gsa && (gsa.level === 'ja' || gsa.level === 'vielleicht' || gsa.level === 'na');
     const rente2 = h.liste ? (h.pers || []).some((x) => x[5] === 2 && x[0] === 'rente' && x[1] > 0) : h.art2 === 'rente';
-    const kinder = h.adults === 1 && h.kids > 0 && gsaOk && !kindNurEM(h);
+    // Kinder neben Grundsicherung im Alter: allein oder als Paar über der Altersgrenze (Fable-Nachprüfung 26.11.2026, Nr. 10; beim Paar nur „möglich“,
+    // die zweite Person kann erwerbsfähig sein, dann gehören die Kinder zum Jobcenter, § 7 Abs. 3 SGB II)
+    const kinder = (h.adults === 1 || (h.adults === 2 && h.alter)) && h.kids > 0 && gsaOk && !kindNurEM(h);
     const partner = h.adults === 2 && h.alter && rente2 && gsaOk;
     if (!vorgezogen && !emZeit && !kinder && !partner) return mk(id, 'nein', 'vorausFehlt', [[h.alter || h.alterGrenz ? 'hlu.gsaVorrang' : 'hlu.voraus']]);
     if (h.bezug.grundsicherungsgeld) return mk(id, 'nein', 'schonGrund', [['hlu.ggBezug']]);
@@ -1863,15 +1884,23 @@ const Rules = (function () {
     const unterhalt = ['hlu.unterhalt'];
     // Die Person selbst bekommt Grundsicherung im Alter: Hilfe zum Lebensunterhalt nur für Kinder bzw. Partner, im Betrag der GSA-Karte enthalten
     if (!vorgezogen && !emZeit) {
-      if (kinder) return mk(id, gsa.level === 'ja' && h.kids14 === 0 && h.young === 0 ? 'ja' : 'vielleicht', gsa.level === 'ja' && h.kids14 === 0 && h.young === 0 ? 'ja' : 'vielleicht', [['hlu.kinder'], unterhalt]);
-      return mk(id, 'vielleicht', 'vielleicht', [['hlu.partner'], unterhalt]);
+      // „wahrscheinlich“ nur, wenn sicher (Fable-Nachprüfung 26.11.2026, Nr. 1): allein, Grundsicherung „wahrscheinlich“, alle Kinder sicher unter 15
+      // (Alter angegeben, keins 14 bis 17, keins volljährig; § 7 Abs. 1 Nr. 1 SGB II), keine Verwandten oder Mitbewohner (§ 39 SGB XII), nicht bei den
+      // Eltern oder im Heim, und das eigene Einkommen der Kinder (Kindergeld, Unterhalt, Waisenrente, Unterhaltsvorschuss, eigener Verdienst) liegt je
+      // Kind klar unter dem kleinsten Regelsatz plus Kopfteil der Miete (§ 27 Abs. 2 Satz 3, § 82 Abs. 1 Satz 4 SGB XII)
+      const kindEigen = ((h.kindZahl || 0) + (h.kindEink || 0) + h.kids * R.kindergeld) / h.kids;
+      const sicher = kinder && h.adults === 1 && gsa.level === 'ja' && h.kidsAlter && h.kids14 === 0 && h.young === 0 && !h.wohnform && !h.hhAndere &&
+        kindEigen < R.regelbedarf.kind0 + h.miete / h.persons - R.grundsicherung.sicherAb;
+      const tx = (partner ? [['hlu.partner']] : []).concat(kinder ? [['hlu.kinder']] : [], h.hhAndere === 'wg' ? [['hlu.wg']] : [], h.hhAndere === 'verwandte' ? [['hlu.verwandte']] : [], [unterhalt]);
+      return mk(id, sicher ? 'ja' : 'vielleicht', sicher ? 'ja' : 'vielleicht', tx);
     }
     const lage = vorgezogen ? 'hlu.vorgezogen' : 'hlu.emZeit';
     // Mehrbedarf G (§ 30 Abs. 1 SGB XII) bei Altersrente vor der Altersgrenze nur mit voller Erwerbsminderung
     const ohneG = vorgezogen && !h.emEltern && h.mzG;
     const base = grundsicherungAlter(ohneG ? { ...h, mzG: false } : h, { hlu: true });
     if (base.level === 'nein' || base.level === 'na') return mk(id, base.level, base.hl, base.tx.filter((t) => HLU_WEG.indexOf(t[0]) < 0));
-    const extra = (ohneG ? [['hlu.keinG']] : []).concat(h.kids > 0 ? [['hlu.kinder']] : [], [unterhalt]);
+    // § 39 Satz 1 SGB XII gilt für alle Personen in derselben Wohnung, auch in einer Wohngemeinschaft (Fable-Nachprüfung 26.11.2026, Nr. 3)
+    const extra = (ohneG ? [['hlu.keinG']] : []).concat(h.kids > 0 ? [['hlu.kinder']] : [], h.hhAndere === 'wg' ? [['hlu.wg']] : [], [unterhalt]);
     const ohneBetrag = (key) => mk(id, 'vielleicht', 'vielleicht', [[lage]].concat(key ? [[key]] : [], base.tx.filter((t) => HLU_WEG.indexOf(t[0]) < 0 && t[0].indexOf('schaetz.') !== 0 && t[0].indexOf('bedarf') !== 0), extra));
     // § 39 SGB XII: bei Eltern oder anderen Verwandten im Haushalt vermutet das Amt Unterstützung (widerlegbar; nicht bei Behinderung oder Pflege, Satz 3 Nr. 2)
     if (h.wohnform === 'eltern' || h.hhAndere === 'verwandte') return ohneBetrag('hlu.verwandte');
@@ -3265,7 +3294,7 @@ const Rules = (function () {
       lagenR.push(gsaK.lage); hlu = mitKdu(hlu, hilfeLebensunterhalt(hKdu, gsaK), kdu); gsa = mitKdu(gsa, gsaK, kdu);
     }
     // Bildung und Teilhabe gibt es auf beiden Wegen (§ 6b BKGG, § 28 SGB II): Einstufung vor dem Kappen bei unklarem Weg
-    const but = bildungTeilhabe(h, wg, kz, gg);
+    const but = bildungTeilhabe(h, wg, kz, gg, hlu);
     const wege = h.ohneWege ? null : wegeAnwenden(h, wg, kz, gg, gsa, lagen, lagenR);
     const uvg = unterhaltsvorschuss(h, gg);
     const baf = bafoeg(h);

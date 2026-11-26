@@ -89,6 +89,11 @@ Rechtsgrundlagen (gesetze-im-internet.de, Abruf 25.11.2026): § 19 Abs. 1, 2 SGB
 | H9 | Volle Erwerbsminderung (eigene Angabe, nicht Werkstatt) | „möglich“ (nur wenn befristet), ohne doppelten Betrag; GSA-Karte verweist | HLU-P01, FA-GG-18 |
 | H10 | Voll erwerbsgemindert bei den Eltern | „möglich“ ohne Betrag, Hinweis § 39 | HLU-P02 |
 | H11 | Werkstatt | „eher nicht“ (Grundsicherung, § 41 Abs. 3a) | HLU-P03 |
+| H12 | Kinder neben GSA: „wahrscheinlich“ nur allein, Alter angegeben (alle unter 15), ohne Mitbewohner, Kindeseinkommen je Kind < Stufe 6 + Kopfteil Miete − 50 €; sonst „möglich“ (§ 27 Abs. 2 Satz 3, § 39, § 82 Abs. 1 Satz 4) | NP-01 bis NP-04, HLU-05 |
+| H13 | Altersrente vor der Regelaltersgrenze neben Lohn/Minijob (§ 7 Abs. 4 Satz 1 SGB II; Freibetrag § 82 Abs. 3): „möglich“ mit Betrag (63 J., Rente 614 + Minijob 400, Miete 450: ca. 120 €); Grundsicherungsgeld mit Hinweis | NP-05 |
+| H14 | Wohngemeinschaft: Hinweis § 39 (gemeinsames Wirtschaften vermutet, widerlegbar) | NP-06 |
+| H15 | Paar mit Altersrente unter der Altersgrenze: Grundsicherungsgeld höchstens „möglich“, Betrag verteilt sich auf Jobcenter und Sozialamt | NP-07 |
+| H16 | Paar über der Altersgrenze mit Kindern: Kinder auf der Karte, „möglich“; Bildung und Teilhabe über § 34 SGB XII | NP-08, NP-09, NP-02 |
 
 ## Bekanntgabe per Post (Fristtexte)
 
