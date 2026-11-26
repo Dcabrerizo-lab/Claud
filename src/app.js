@@ -2093,7 +2093,7 @@
   // ----- Ergebnisblatt zum Mitgeben: eine Druckseite (Leistung, Einstufung, ungefährer Betrag, Stelle, nächster Schritt), ohne Namen -----
   // Gleiche Wörter wie auf dem Bildschirm: Betrag ist der Schätzsatz der Karte („Grob geschätzt …“) oder der Satz mit dem festen Betrag;
   // ohne solchen Satz steht ein Strich (keine eigene Rechnung, keine neuen Zahlen).
-  var EB_SATZ = ['kindergeld.ja', 'uvg.ja', 'pflege.pg1', 'pflege.pg2', 'blindengeld.blind', 'blindengeld.hoch', 'blindengeld.landBetrag', 'blh.betrag'];
+  var EB_SATZ = ['kindergeld.ja', 'uvg.ja', 'pflege.pg1', 'pflege.pg2', 'blindengeld.blind', 'blindengeld.hoch', 'blindengeld.landBetrag', 'blindengeld.landKind', 'blh.betrag'];
   function ebBetrag(r) {
     var x = r.tx.filter(function (z) { return z[0].indexOf('schaetz.') === 0; })[0] || r.tx.filter(function (z) { return EB_SATZ.indexOf(z[0]) >= 0; })[0];
     return x ? tL('t.' + x[0], x[1]) : '–';

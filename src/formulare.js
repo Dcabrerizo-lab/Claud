@@ -150,7 +150,7 @@ const Formulare = (function () {
       hinweis('hlu', 'Hilfe zum Lebensunterhalt (SGB XII, Drittes Kapitel)', 'Beim Sozialamt der Stadt oder des Landkreises; ein Brief oder ein Anruf reicht. Die Hilfe beginnt erst, wenn das Sozialamt von der Notlage weiß (§ 18 SGB XII): früh melden', [
         'Angaben zu dir und zu Personen im Haushalt, Wohnkosten (Mietvertrag, Nebenkosten- und Heizkostenabrechnung)',
         'Einkommen: Rentenbescheid (auch Altersrente vor der Regelaltersgrenze) oder Bescheid über die befristete volle Erwerbsminderung; Vermögen mit Kontoauszügen der letzten 3 Monate (geschützt sind 10.000 € je Person)',
-        'Wohnst du mit Verwandten zusammen: Angaben zu deren Einkommen, denn das Sozialamt vermutet Unterstützung (§ 39 SGB XII); bei Behinderung oder Pflegebedarf gilt das nicht',
+        'Wohnst du mit anderen zusammen (Verwandte, auch Wohngemeinschaft): Angaben zu deren Einkommen, denn das Sozialamt vermutet Unterstützung (§ 39 SGB XII); widerlegen geht mit einer Erklärung. Nicht bei Behinderung oder Pflegebedarf, nicht für Schwangere und Eltern mit Kind unter 6 bei den eigenen Eltern',
         'Unterhalt von Eltern oder erwachsenen Kindern prüft das Sozialamt erst bei mehr als 100.000 € Jahreseinkommen; bei Kindern unter 18 gilt diese Grenze nicht (§ 94 Abs. 1a SGB XII)',
         'Schwerbehindertenausweis mit Merkzeichen G: Mehrbedarf nur ab der Regelaltersgrenze oder bei voller Erwerbsminderung, Kopie beilegen']);
     }

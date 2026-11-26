@@ -83,7 +83,7 @@ Grundlage für künftige Aktualitätsprüfungen. Zusammengeführt aus zwei unabh
 
 ## 4. Landesblindengeld aller Länder (Prüfung 26.11.2026, Rechtsstand 2026)
 
-Erwachsene, häusliche Versorgung, ohne Pflegegrad. „In der App“: fester Betrag in `R.landBlind.land` (Karte `blindengeld`, Text `blindengeld.landBetrag`, Abzug in `blh.differenz`), sonst Spanne `R.landBlind.von`–`bis` (350–952 €, seit 26.11.2026 nur noch NW). Abruf aller Quellen 26.11.2026. Werte, die erst 2027 gelten: keine gefunden.
+Erwachsene, häusliche Versorgung, ohne Pflegegrad. „In der App“: fester Betrag in `R.landBlind.land` (Karte `blindengeld`, Text `blindengeld.landBetrag`, Abzug in `blh.differenz`), sonst Spanne `R.landBlind.von`–`bis` (350–952 €, seit 26.11.2026 nur noch NW, wenn das Alter unbekannt ist). Abruf aller Quellen 26.11.2026. Werte, die erst 2027 gelten: keine gefunden.
 
 | Land | Betrag Erwachsene (Kinder) | Rechtsgrundlage | Quelle / Fundstelle | In der App | Testfall |
 |---|---|---|---|---|---|
@@ -107,3 +107,9 @@ Erwachsene, häusliche Versorgung, ohne Pflegegrad. „In der App“: fester Bet
 Blindenhilfe (§ 72 SGB XII): 951,92 € / unter 18: 476,78 € ab 1.7.2026; Landesblindengeld wird voll angerechnet (§ 72 Abs. 1 Satz 1), Pflegegeld nach Abs. 1 Satz 2 (s. o.). Die App rechnet den Rest nur ohne Pflegegrad außerhalb Bayerns (andere Anrechnungsregeln je Land) und nicht für Kinder.
 
 Bayern mit Pflegegrad (bestätigt): Blindengeld PG 2: 809 − 159,62 = 649,38 €; PG 3–5: 809 − 197,67 = 611,33 €; Blindenhilfe-Rest PG 3: (951,92 − 239,60) − 611,33 = 100,99 €.
+
+### Kinder und NRW nach Alter (Fable-Nachprüfung Nr. 7, umgesetzt 27.11.2026)
+
+- Blindes Kind unter 18 (`bhPerson = 'minder'`): Kinderbetrag `R.landBlind.kind`, Text `blindengeld.landKind`. BW 205 €, BE 761,54 €, BB 221,51 €, HB 279,87 €, HH 724,99 €, HE 476,78 €, MV 273,05 €, NI 450 €, NW 476,78 €, RP 205 €, SL 327 €, ST 333,32 €, SH 250 €, TH 472 €. Quellen: Landesgesetze wie oben, DBSV-Länderseiten (Stand 1.7.2026), betanet (Stand 28.7.2026). Bayern unverändert 809 € (alle Alter). Testfälle B-blind-kind-*.
+- Sachsen: unter 14 Jahren 285 € (75 %), ab 14 Jahren 380 € (§ 2 Abs. 1, 2 LBlindG). Das Alter des Kindes kennt die App nicht, daher beide Beträge (Text `blindengeld.landKindAlter`). Testfälle B-blind-kind-SN, B-blind-kind-SN-ab14.
+- NRW: allein lebende erwachsene Person mit Geburtsjahr: unter 60 Höhe der Blindenhilfe 951,92 €, ab 60 473 € (§ 2 Abs. 1 GHBG); Blindenhilfe-Rest ab 60: 951,92 − 473 = 478,92 €, unter 60 kein Rest. Paar oder ohne Geburtsjahr (Alter der blinden Person unbekannt): Spanne. Testfälle B-blind-NW-ab60, B-blind-NW-u60, B-blind-NW-paar, B-blh-NW-ab60, C-BLI-06 (angepasst).

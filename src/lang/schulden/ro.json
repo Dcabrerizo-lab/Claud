@@ -277,6 +277,7 @@
   "ra.wer.partner": "Partenerul sau partenera mea",
   "ra.wer.beide": "Amândoi",
   "ra.wer.hint": "Creditorii pot popri doar de la persoana care are datoriile. De aceea socotim doar venitul acestei persoane. Dacă aveți amândoi datorii, socotim separat pentru fiecare dintre voi.",
+  "ra.wer.pers": "Ca persoane pentru care se plătește întreținere socotim partenerul sau partenera și toți copiii din gospodărie – la fel pentru fiecare persoană cu datorii. Dacă nu sunteți căsătoriți sau nu sunt copiii ei proprii, pot fi mai puține. Atunci propunerea noastră e mai degrabă prea mică. Mai exact calculezi în calculatorul de poprire, unde alegi singur numărul.",
   "ra.so.4": "La mai multe datorii primesc întâi rata chiria, curentul, pensia de întreținere, amenzile penale și asigurarea de sănătate, apoi amenzile contravenționale și autoritățile, la final băncile, firmele de recuperare și comerțul prin corespondență. În cadrul unui grup împărțim după mărime și rotunjim în jos la euro întregi.",
   "ra.so.5": "Aceasta este o regulă simplă a SoLo, nu consultanță juridică. Tu decizi ce oferi.",
   "ra.tipp.kurz": "Oferă doar cât poți plăti sigur în fiecare lună.",

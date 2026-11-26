@@ -990,6 +990,8 @@
   "t.blh.differenz": "Landesblindengeld ee {land} ({landbetrag}) waa laga jarayaa. Haddii dakhligu yar yahay, waxaa dheeri ahaan loo bixiyaa ilaa {rest} bishii Blindenhilfe.",
   "t.blh.betrag": "Blindenhilfe waa ilaa {betrag} bishii, carruurta ka yar 18 sano ilaa {kind} (xaaladda {stand}).",
   "t.blindengeld.landBetrag": "{land}, dadka waaweyn ee indhoolaha ah waxay helaan {betrag} Landesblindengeld bishii (xaaladda {stand}), inta badan iyadoon loo eegin dakhliga. Carruurta inta badan waa ka yar. Xafiiska masuulka ah ayaa hubiya qadarka saxda ah.",
+  "t.blindengeld.landKind": "{land}, carruurta indhoolaha ah ee ka yar 18 sano waxay helaan {betrag} Landesblindengeld bishii (xaaladda {stand}), inta badan iyadoon loo eegin dakhliga. Xafiiska masuulka ah ayaa hubiya qadarka saxda ah.",
+  "t.blindengeld.landKindAlter": "{land}, carruurta indhoolaha ah ee ka yar {alter} sano waxay helaan {betrag} Landesblindengeld bishii, laga bilaabo {alter} sano {betrag2} (xaaladda {stand}), inta badan iyadoon loo eegin dakhliga. Xafiiska masuulka ah ayaa hubiya qadarka saxda ah.",
   "t.blindengeld.hochLand": "Dadka araggoodu si weyn u liito, Bundesländer qaar oo keliya ayaa bixiya gargaar u gaar ah (tusaale ahaan Bayern). Weydii xafiiska masuulka ah haddii uu ka jiro gobolkaaga.",
   "t.blindengeld.pflegeLand": "Haddii aad hesho Pflegegeld, gobollada intooda badan qayb ahaan ayaa lagu xisaabiyaa Landesblindengeld.",
   "t.wbs.landJa": "Dakhligaaga guud (brutto) xitaa wuxuu ka hooseeyaa xadka federaalka ({grenze} sannadkii qoyskaaga). Ma jiro Bundesland leh xad ka hooseeya, sidaas darteed Wohnberechtigungsschein aad buu u badan yahay in la helo.",

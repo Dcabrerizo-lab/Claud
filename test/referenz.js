@@ -48,7 +48,8 @@ function elterngeldFrei(e, b) {
   const grund = (plus) => {
     const deckel = plus ? 150 : 300;
     if (vor == null) return b <= (plus ? ohneEinkommenBis / 2 : ohneEinkommenBis) ? 0 : deckel;
-    return Math.min(deckel, Math.max(0, vor - 1230 / 12));
+    // § 10 Abs. 5 Satz 3 BEEG: bei ElterngeldPlus die Hälfte des ganzen Betrags nach Satz 2 (Fable-Nachprüfung Nr. 4, Abruf 26.11.2026)
+    return Math.min(300, Math.max(0, vor - 1230 / 12)) * deckel / 300;
   };
   const v = nurPlus ? [grund(true)] : nurBasis ? [grund(false)] : [grund(true), grund(false)];
   const w = nurPlus ? [150] : nurBasis ? [300] : [150, 300];
@@ -277,7 +278,8 @@ function grundsicherungsgeld(h) {
   // Sofortzuschlag nicht, wenn die Kinder ihren Bedarf (Regelbedarf + Kopfteil Miete) schon mit eigenem Einkommen ohne Kindergeld decken
   const kindEigen = h.unterhalt + h.waisen + h.uvg + Math.max(0, h.kindEink - h.mini);
   const sofort = h.kids > 0 && kindEigen >= h.regelKinder + h.miete * h.kids / h.personen ? 0 : 25 * h.kids;
-  return { level: level === 'ja' && h.erwachsene === 1 && nurRenteAb60(h) ? 'vielleicht' : level, bedarf, luecke: luecke + sofort };
+  // Seit 26.11.2026 (Fable-Nachprüfung Nr. 2, 8): jede Rente zählt (auch neben Lohn), und auch bei Paaren (Person mit Altersrente -> Sozialamt)
+  return { level: level === 'ja' && !h.rente && renteAb60(h) ? 'vielleicht' : level, bedarf, luecke: luecke + sofort };
 }
 
 // ---------- Wohngeld (WoGG) ----------
@@ -384,6 +386,10 @@ function minderungElternKiZ(h, bedarf, egHoch) {
 }
 // Nur Rente, Alter unbekannt oder ab 60: vielleicht eine Altersrente vor der Regelaltersgrenze (§ 7 Abs. 4 SGB II schließt dann SGB II aus;
 // eine vorgezogene Altersrente gibt es frühestens mit 60 bis 63, § 36-38, § 236-237a SGB VI)
+function renteAb60(h) {
+  if (!h.p.some((x) => x.art === 'rente' && x.brutto > 0)) return false;
+  return h.jahre ? h.jahre >= 60 : (h.gruppe === '' || h.gruppe === '50+');
+}
 function nurRenteAb60(h) {
   const mit = h.p.filter((x) => x.brutto > 0);
   if (!mit.length || mit.some((x) => x.art !== 'rente')) return false;
@@ -569,20 +575,24 @@ function hilfeLebensunterhalt(e, gsaStufe) {
   const h = haushalt(e);
   if (e.aufenthalt === 'asyl' || e.aufenthalt === 'ausreise') return { level: 'nein' };
   const arten = Array.isArray(e.einkommen) ? e.einkommen.filter((x) => zahl(x.b) > 0 || zahl(x.n) > 0).map((x) => x.art) : h.p.filter((x) => x.brutto > 0).map((x) => x.art);
-  const nurRente = arten.length > 0 && arten.every((a) => a === 'rente');
-  const vorgezogen = !h.rente && nurRente && (h.jahre ? h.jahre >= 60 : h.gruppe === '' || h.gruppe === '50+');
+  // Altersrente vor der Regelaltersgrenze auch neben Lohn (§ 7 Abs. 4 Satz 1 SGB II hängt nur am Bezug; Fable-Nachprüfung 26.11.2026, Nr. 2)
+  const vorgezogen = !h.rente && arten.indexOf('rente') >= 0 && (h.jahre ? h.jahre >= 60 : h.gruppe === '' || h.gruppe === '50+');
   const werkstatt = !!e.wfbm || arten.indexOf('wfbm') >= 0;
   const emZeit = !h.rente && !h.grenz && emElternteil(e) && !werkstatt;
   const gOk = gsaStufe === 'ja' || gsaStufe === 'vielleicht' || gsaStufe === 'na';
   const zweiteRente = Array.isArray(e.einkommen) ? false : h.erwachsene === 2 && e.art2 === 'rente';
   const kids = e.kids | 0;
-  const fuerKinder = h.erwachsene === 1 && kids > 0 && gOk && !kindNurEMRef(h);
+  const fuerKinder = (h.erwachsene === 1 || h.rente) && kids > 0 && gOk && !kindNurEMRef(h);
   const fuerPartner = h.erwachsene === 2 && h.rente && zweiteRente && gOk;
   if (!vorgezogen && !emZeit && !fuerKinder && !fuerPartner) return { level: 'nein' };
   if (h.bezug.grundsicherungsgeld || euAus(h)) return { level: 'nein' };
   if (h.bezug.sozialamt) return { level: 'na' };
   const fehlt = (!Array.isArray(e.einkommen) && leer(e.brutto) && leer(e.netto)) || leer(e.vermoegen) || (!e.wohnform && leer(e.miete));
-  if (!vorgezogen && !emZeit) return { level: gsaStufe === 'ja' && h.k14 === 0 && h.jung === 0 && !fehlt ? 'ja' : 'vielleicht' };
+  // Kinder „wahrscheinlich“ nur sicher unter 15 (Alter angegeben), ohne Mitbewohner, eigenes Einkommen je Kind klar unter Stufe 6 + Kopfteil Miete (Nr. 1)
+  const alterBekannt = !!e.kidsAlter || (kids > 0 && (e.kidsU6 | 0) >= kids);
+  const eigen = (h.unterhalt + h.waisen + h.uvg + (zahl(e.kindEink) || 0) + kids * KG) / Math.max(1, kids);
+  const sicher = fuerKinder && h.erwachsene === 1 && gsaStufe === 'ja' && alterBekannt && h.k14 === 0 && h.jung === 0 && !e.wohnform && !e.hhAndere && eigen < RB[6] + h.miete / h.personen - 50;
+  if (!vorgezogen && !emZeit) return { level: sicher && !fehlt ? 'ja' : 'vielleicht' };
   const g = grundsicherungAlter(vorgezogen && !emElternteil(e) ? { ...e, mzG: false } : e, true);
   return { level: g.level === 'nein' ? 'nein' : 'vielleicht' };
 }
@@ -881,9 +891,13 @@ function asylbewerber(e) {
   if (Array.isArray(e.einkommen)) e.einkommen.forEach((x) => { if (x && (x.art === 'lohn' || x.art === 'selbst')) lohn += leer(x.n) ? zahl(x.b) : zahl(x.n); });
   else h.p.forEach((x) => { if (x.art === 'lohn' && h.brutto > 0) lohn += h.netto * x.brutto / h.brutto; });
   const netto = Array.isArray(e.einkommen) ? e.einkommen.reduce((a, x) => a + (x ? (leer(x.n) ? zahl(x.b) : zahl(x.n)) : 0), 0) : h.netto;
-  const luecke = bedarf - Math.max(0, netto - Math.min(0.25 * lohn, 0.5 * RB[1] * h.erwachsene));
+  // Elterngeld: Freibetrag § 10 Abs. 5 BEEG gilt auch beim AsylbLG (Fable-Nachprüfung Nr. 5); „eher nicht“ mit dem höheren möglichen Freibetrag
+  const egF = (k) => (Array.isArray(e.einkommen) ? e.einkommen.reduce((a, x) => a + (x && x.art === 'eg' ? elterngeldFrei(e, leer(x.n) ? zahl(x.b) : zahl(x.n))[k] : 0), 0)
+    : h.p.reduce((a, x) => a + (x.art === 'eg' ? elterngeldFrei(e, x.brutto)[k] : 0), 0));
+  const fr = Math.min(0.25 * lohn, 0.5 * RB[1] * h.erwachsene);
+  const luecke = bedarf - Math.max(0, netto - fr - egF('lo')), lueckeHoch = bedarf - Math.max(0, netto - fr - egF('hi'));
   const ueber = h.vermoegen - 200 * h.personen;
-  if (luecke < -100) return { level: 'nein' }; // Vermögen über dem Freibetrag: nur „möglich“ (keine feste Schwelle im Gesetz)
+  if (lueckeHoch < -100) return { level: 'nein' }; // Vermögen über dem Freibetrag: nur „möglich“ (keine feste Schwelle im Gesetz)
   if (ueber > 0 || netto > 0 || luecke < 50) return { level: 'vielleicht' };
   return { level: 'ja' };
 }

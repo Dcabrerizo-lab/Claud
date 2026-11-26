@@ -277,6 +277,7 @@
   "ra.wer.partner": "Mein Partner oder meine Partnerin",
   "ra.wer.beide": "Wir beide",
   "ra.wer.hint": "Gläubiger dürfen nur bei der Person pfänden, die die Schulden hat. Darum rechnen wir nur mit ihrem Einkommen. Habt ihr beide Schulden, rechnen wir für jeden von euch getrennt.",
+  "ra.wer.pers": "Als Personen, für die Unterhalt gezahlt wird, zählen wir den Partner oder die Partnerin und alle Kinder im Haushalt – für jede Person mit Schulden gleich. Seid ihr nicht verheiratet oder sind es nicht die eigenen Kinder, können es weniger sein. Dann ist unser Vorschlag eher zu niedrig. Genauer rechnest du im Pfändungsrechner, dort wählst du die Zahl selbst.",
   "ra.so.4": "Bei mehreren Schulden bekommen zuerst Miete, Strom, Unterhalt, Geldstrafen und Krankenversicherung die Rate, dann Bußgelder und Ämter, zum Schluss Banken, Inkasso und Versandhandel. Innerhalb einer Gruppe teilen wir nach der Höhe auf und runden auf ganze Euro ab.",
   "ra.so.5": "Das ist eine Faustregel von SoLo, keine Rechtsberatung. Du entscheidest selbst, was du anbietest.",
   "ra.tipp.kurz": "Biete nur an, was du jeden Monat sicher zahlen kannst.",

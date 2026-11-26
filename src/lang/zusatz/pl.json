@@ -143,5 +143,6 @@
   "u.eink.wg": "do Wohngeld od wszystkich w gospodarstwie, zwykle z ostatnich 12 miesięcy",
   "u.eink.kiz": "do Kinderzuschlag od rodziców i o dochodach dzieci (np. alimenty), zwykle z ostatnich 6 miesięcy",
   "bp.sa.lohnB": "Wynagrodzenie brutto (jeśli znasz)",
-  "bp.sa.nettoFrei": "Urząd socjalny (Sozialamt) najwyraźniej obliczył kwotę wolną od Twojego wynagrodzenia od kwoty netto. Wiele urzędów socjalnych liczy 30 % od kwoty brutto (na przykład Hamburg i Brema w swoich wytycznych). Wtedy dostałbyś/dostałabyś {diff} więcej zasiłku podstawowego miesięcznie. Ustawa nie mówi tego jednoznacznie (§ 82 Abs. 3 SGB XII). Zapytaj w urzędzie socjalnym albo na wszelki wypadek złóż sprzeciw (Widerspruch) w terminie."
+  "bp.sa.nettoFrei": "Urząd socjalny (Sozialamt) najwyraźniej obliczył kwotę wolną od Twojego wynagrodzenia od kwoty netto. Wiele urzędów socjalnych liczy 30 % od kwoty brutto (na przykład Hamburg i Brema w swoich wytycznych). Wtedy dostałbyś/dostałabyś {diff} więcej zasiłku podstawowego miesięcznie. Ustawa nie mówi tego jednoznacznie (§ 82 Abs. 3 SGB XII). Zapytaj w urzędzie socjalnym albo na wszelki wypadek złóż sprzeciw (Widerspruch) w terminie.",
+  "bp.sa.zwischen": "W decyzji doliczono {diff} więcej dochodu miesięcznie niż przy kwocie wolnej 30 % wynagrodzenia brutto. Nie pasuje to też do obliczenia z 30 % netto. Nie wiadomo, jak urząd socjalny (Sozialamt) liczył. Zapytaj w Sozialamt albo na wszelki wypadek złóż w terminie sprzeciw (Widerspruch)."
 }

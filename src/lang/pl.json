@@ -990,6 +990,8 @@
   "t.blh.differenz": "Krajowy zasiłek dla niewidomych w {land} ({landbetrag}) jest odliczany. Przy niskim dochodzie dopłacane jest do {rest} miesięcznie Blindenhilfe.",
   "t.blh.betrag": "Pomoc dla niewidomych (Blindenhilfe) wynosi do {betrag} miesięcznie, dla dzieci poniżej 18 lat do {kind} (stan na {stand}).",
   "t.blindengeld.landBetrag": "W kraju związkowym {land} niewidomi dorośli otrzymują {betrag} krajowego zasiłku dla niewidomych miesięcznie (stan na {stand}), zwykle niezależnie od dochodu. Dla dzieci jest on często niższy. Dokładną kwotę sprawdza właściwy urząd.",
+  "t.blindengeld.landKind": "W kraju związkowym {land} niewidome dzieci poniżej 18 lat otrzymują {betrag} krajowego zasiłku dla niewidomych miesięcznie (stan na {stand}), zwykle niezależnie od dochodu. Dokładną kwotę sprawdza właściwy urząd.",
+  "t.blindengeld.landKindAlter": "W kraju związkowym {land} niewidome dzieci poniżej {alter} lat otrzymują {betrag} krajowego zasiłku dla niewidomych miesięcznie, od {alter} lat {betrag2} (stan na {stand}), zwykle niezależnie od dochodu. Dokładną kwotę sprawdza właściwy urząd.",
   "t.blindengeld.hochLand": "Tylko niektóre kraje związkowe płacą osobne świadczenie osobom ze znacznym niedowidzeniem (na przykład Bawaria). Zapytaj we właściwym urzędzie, czy jest ono w twoim kraju związkowym.",
   "t.blindengeld.pflegeLand": "Jeśli otrzymujesz Pflegegeld, w większości krajów związkowych jest ono częściowo zaliczane na Landesblindengeld.",
   "t.wbs.landJa": "Twój dochód brutto jest nawet poniżej ogólnoniemieckiej granicy ({grenze} rocznie dla twojego gospodarstwa). Żaden kraj związkowy nie ma niższej granicy, więc Wohnberechtigungsschein jest bardzo prawdopodobny.",
