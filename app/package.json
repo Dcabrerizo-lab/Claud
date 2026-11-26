@@ -26,7 +26,7 @@
     "@pdf-lib/fontkit": "^1.1.1",
     "esbuild": "^0.28.2",
     "pdf-lib": "^1.17.1",
-    "pdfjs-dist": "3.11.174"
+    "pdfjs-dist": "6.5.438"
   },
   "overrides": {
     "@mapbox/node-pre-gyp": "^2.0.3"
