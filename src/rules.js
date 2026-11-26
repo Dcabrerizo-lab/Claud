@@ -184,8 +184,12 @@ const Rules = (function () {
     // NI 450 € (§ 2 Abs. 1 BlindGeldG Nds., geänd. durch Art. 10 G v. 13.12.2024, Nds. GVBl. 2024 Nr. 118), RP 410 € (§ 2 Abs. 1 LBlindenGG;
     // Flyer Kreis Mainz-Bingen Stand 1.7.2026), SN 380 € ab 14 Jahren (§ 2 Abs. 1 LBlindG Sachsen, Fassung ab 1.1.2023),
     // SH 350 € ab 1.4.2026 (Erhöhung um 25 € nach 325 € ab 4/2025; DBSV Stand 1.7.2026; die Landesseite mit 300 € ist von 3/2024 und veraltet).
-    // Übrige Länder (BB, HB, HH, NW, SL, ST, TH): dynamisch, altersabhängig oder Quellen widersprüchlich, daher nur die Spanne.
-    landBlind: { von: 350, bis: 952, land: { BW: 410, BE: 761.54, HE: 818.65, MV: 430, NI: 450, RP: 410, SN: 380, SH: 350 }, stand: '11/2026' },
+    // Nach Vorgabe David 26.11.2026 (zwei unabhängige Fachseiten übereinstimmend; DBSV-Länderseiten Stand 1.7.2026 und betanet Stand 28.7.2026):
+    // BB 443,03 € (§ 3 Abs. 1 LTeilhGG: 425 € + Rentenanpassung 1.7.2026; unter 18: 221,51 €), HB 559,73 € (unter 18: 279,87 €),
+    // HH 724,99 € (alle Alter), SL 460 € seit 1/2026 (unter 18: 327 €; auch down-syndrom.org 29.1.2026), ST 479,96 € (unter 18: 333,32 €),
+    // TH 472 € seit 1.7.2023 (alle Alter; ThürSinnbGG, 8. Änderungsgesetz; amtlich bestätigt durch FIM-Leistungsbeschreibung Thüringen).
+    // Nur NW ohne festen Betrag (altersabhängig: unter 60 Höhe der Blindenhilfe, ab 60 473 €) -> Spanne.
+    landBlind: { von: 350, bis: 952, land: { BW: 410, BE: 761.54, BB: 443.03, HB: 559.73, HH: 724.99, HE: 818.65, MV: 430, NI: 450, RP: 410, SL: 460, SN: 380, ST: 479.96, SH: 350, TH: 472 }, stand: '11/2026' },
     // Blindenhilfe § 72 Abs. 1 SGB XII ab 1.7.2026 (angepasst wie die Renten); unter 18 die Hälfte (§ 72 Abs. 2)
     blhBetrag: { erw: 951.92, kind: 476.78, stand: '7/2026' },
     // Bayerisches Landespflegegeld (BayLPflGG): ab Pflegegrad 2, unabhängig vom Einkommen; ab dem Pflegegeldjahr 2026 500 € im Jahr (vorher 1.000 €)
