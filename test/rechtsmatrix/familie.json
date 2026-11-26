@@ -6469,5 +6469,104 @@
   },
   "quelle": "§ 2 BAföG",
   "quelleTest": "Gegenprüfung 25.11.2026"
+ },
+ {
+  "id": "asyl-eg-01",
+  "beschreibung": "Asyl, allein, Baby, Basiselterngeld 1.500 €, Miete 400 €: Bedarf 563 + 357 + 400 = 1.320; Einkommen 1.500 − 300 (§ 10 Abs. 5 BEEG) = 1.200 → Asylbewerberleistungen möglich (bisher fälschlich „eher nicht“)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "eg",
+   "art2": "",
+   "brutto": 1500,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 400,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "baby": "da",
+   "egVor": 3000,
+   "egArt1": "basis",
+   "aufenthalt": "asyl",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "asylblg": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "§ 10 Abs. 5 Satz 1 BEEG nennt das AsylbLG ausdrücklich (buzer.de/10_BEEG.htm, Abruf 26.11.2026); Fable-Nachprüfung Nr. 5"
+ },
+ {
+  "id": "asyl-eg-02",
+  "beschreibung": "Wie asyl-eg-01, Art unbekannt: mit dem höheren möglichen Freibetrag (300 €) noch möglich",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "eg",
+   "art2": "",
+   "brutto": 1500,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 400,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "baby": "da",
+   "egVor": 3000,
+   "egArt1": "",
+   "aufenthalt": "asyl",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "asylblg": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "§ 10 Abs. 5 Satz 1 BEEG nennt das AsylbLG ausdrücklich (buzer.de/10_BEEG.htm, Abruf 26.11.2026); Fable-Nachprüfung Nr. 5"
+ },
+ {
+  "id": "asyl-eg-03",
+  "beschreibung": "Wie asyl-eg-01, Basiselterngeld 1.800 €: 1.800 − 300 = 1.500 > 1.320 + 100 → eher nicht",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "eg",
+   "art2": "",
+   "brutto": 1800,
+   "brutto2": "",
+   "netto": 1800,
+   "miete": 400,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1990,
+   "heute": 2026.9,
+   "baby": "da",
+   "egVor": 3000,
+   "egArt1": "basis",
+   "aufenthalt": "asyl",
+   "bundesland": "BY",
+   "bezug": {}
+  },
+  "erwartet": {
+   "asylblg": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 10 Abs. 5 Satz 1 BEEG nennt das AsylbLG ausdrücklich (buzer.de/10_BEEG.htm, Abruf 26.11.2026); Fable-Nachprüfung Nr. 5"
  }
 ]

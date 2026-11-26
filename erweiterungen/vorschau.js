@@ -619,8 +619,10 @@ Ergebnis: Pflegegrad 2`;
   // die vollständige Tabelle zum Aufklappen. Für alle Bescheid-Prüfungen gleich.
   // Hinweis Bescheid-Check Grundsicherung im Alter: Freibetrag für Arbeit offenbar vom Netto (BescheidGSA, tKey bp.sa.nettoFrei)
   const NETTO_FREI_DE = 'Das Sozialamt hat den Freibetrag für deinen Lohn offenbar vom Netto berechnet. Viele Sozialämter rechnen 30 % vom Brutto (zum Beispiel Hamburg und Bremen in ihren Verwaltungsanweisungen). Dann wären es {diff} mehr Grundsicherung im Monat. Das Gesetz sagt es nicht eindeutig (§ 82 Abs. 3 SGB XII). Frag beim Sozialamt nach oder lege vorsorglich innerhalb der Frist Widerspruch ein.';
+  // Bescheid liegt zwischen der Rechnung mit 30 % vom Brutto und der mit 30 % vom Netto (BescheidGSA, tKey bp.sa.zwischen, Fable-Nachprüfung Nr. 6)
+  const ZWISCHEN_DE = 'Im Bescheid ist {diff} mehr Einkommen im Monat angerechnet als bei einem Freibetrag von 30 % vom Bruttolohn. Zur Rechnung mit 30 % vom Netto passt es auch nicht. Wie das Sozialamt gerechnet hat, ist nicht klar. Frag beim Sozialamt nach oder lege vorsorglich innerhalb der Frist Widerspruch ein.';
   function abweichungsKarten(box, r, label) {
-    const grundVon = (p) => (p.tKey ? tA(p.tKey, NETTO_FREI_DE, p.tP) : p.grund) || ((r.gruende || []).find((g) => g.key === p.key) || {}).grund || '';
+    const grundVon = (p) => (p.tKey ? tA(p.tKey, p.tKey === 'bp.sa.zwischen' ? ZWISCHEN_DE : NETTO_FREI_DE, p.tP) : p.grund) || ((r.gruende || []).find((g) => g.key === p.key) || {}).grund || '';
     const ab = r.posten.filter((p) => p.wirkung === 'zuWenig' || p.wirkung === 'pruefen');
     for (const p of ab) {
       box.append(h('div', { class: 'opt abw' },

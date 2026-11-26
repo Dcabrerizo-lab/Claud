@@ -118,6 +118,7 @@ Neue Karte seit 25.11.2026 (Auftrag David). Matrix: docs/rechtsmatrix/grusi.md, 
 | Kein Antrag nötig, Beginn ab Kenntnis (§ 18 SGB XII); Antragsmappe: Hinweis Sozialamt, Anschreiben | ✓ | `hlu-mappe` |
 | Rundfunkbeitrag: Befreiung (§ 4 Abs. 1 Nr. 1 RBeitrStV); Wohngeld nicht zusammen (§ 7 Abs. 1 Satz 1 Nr. 6 WoGG) | ✓ | `rechtsmatrix-grusi` |
 | Längerer Klinik- oder Heimaufenthalt (§ 7 Abs. 4 SGB II, § 27b SGB XII) | ○ (nicht abgefragt) | |
+| Fable-Nachprüfung 26.11.2026: Kinder „wahrscheinlich“ nur sicher unter 15, ohne Mitbewohner, Kindeseinkommen klar unter Bedarf (Nr. 1); Altersrente auch neben Lohn/Minijob (Nr. 2, § 82 Abs. 3); § 39 auch bei Wohngemeinschaft, Ausnahme Schwangere/Kind unter 6 bei den eigenen Eltern (Nr. 3); Paar mit Altersrente: Grundsicherungsgeld „möglich“ mit Hinweis (Nr. 8); Bildung und Teilhabe über § 34 SGB XII (Nr. 9); Paar über der Altersgrenze mit Kindern (Nr. 10) | ✓ | `rechtsmatrix-grusi` |
 
 ## Wohngeld (WoGG)
 <!-- karten: wohngeld -->

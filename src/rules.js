@@ -189,7 +189,15 @@ const Rules = (function () {
     // HH 724,99 € (alle Alter), SL 460 € seit 1/2026 (unter 18: 327 €; auch down-syndrom.org 29.1.2026), ST 479,96 € (unter 18: 333,32 €),
     // TH 472 € seit 1.7.2023 (alle Alter; ThürSinnbGG, 8. Änderungsgesetz; amtlich bestätigt durch FIM-Leistungsbeschreibung Thüringen).
     // Nur NW ohne festen Betrag (altersabhängig: unter 60 Höhe der Blindenhilfe, ab 60 473 €) -> Spanne.
-    landBlind: { von: 350, bis: 952, land: { BW: 410, BE: 761.54, BB: 443.03, HB: 559.73, HH: 724.99, HE: 818.65, MV: 430, NI: 450, RP: 410, SL: 460, SN: 380, ST: 479.96, SH: 350, TH: 472 }, stand: '11/2026' },
+    landBlind: { von: 350, bis: 952, land: { BW: 410, BE: 761.54, BB: 443.03, HB: 559.73, HH: 724.99, HE: 818.65, MV: 430, NI: 450, RP: 410, SL: 460, SN: 380, ST: 479.96, SH: 350, TH: 472 },
+      // Kinder unter 18 (bhPerson „minder“), Nachprüfung Fable Nr. 7, 27.11.2026: DBSV-Länderseiten Stand 1.7.2026 und betanet Stand 28.7.2026
+      // übereinstimmend; BW/RP 50 % (§ 2 BliHG BW, § 2 LBlindenGG RP), HE und NW = Blindenhilfe unter 18 (476,78 €, § 2 Abs. 1 GHBG NRW);
+      // BE, HH, NI, TH zahlen unabhängig vom Alter den vollen Betrag. SN: unter 14 Jahren 75 % = 285 €, ab 14 voll 380 € (§ 2 Abs. 2 LBlindG).
+      kind: { BW: 205, BE: 761.54, BB: 221.51, HB: 279.87, HH: 724.99, HE: 476.78, MV: 273.05, NI: 450, NW: 476.78, RP: 205, SL: 327, ST: 333.32, SH: 250, TH: 472 },
+      kindSN: { unter: 285, ab: 380, alter: 14 },
+      // NRW (§ 2 Abs. 1 GHBG, https://recht.nrw.de/system/files/BH/4675-20951.htm): unter 60 Höhe der Blindenhilfe, ab dem vollendeten 60. Lebensjahr 473 €
+      nw: { ab60: 473, alter: 60 },
+      stand: '11/2026' },
     // Blindenhilfe § 72 Abs. 1 SGB XII ab 1.7.2026 (angepasst wie die Renten); unter 18 die Hälfte (§ 72 Abs. 2)
     blhBetrag: { erw: 951.92, kind: 476.78, stand: '7/2026' },
     // Bayerisches Landespflegegeld (BayLPflGG): ab Pflegegrad 2, unabhängig vom Einkommen; ab dem Pflegegeldjahr 2026 500 € im Jahr (vorher 1.000 €)
@@ -751,7 +759,10 @@ const Rules = (function () {
       const thrBasis = R.eg.min + (egBonusMoegl ? R.eg.bonusMin : 0) + R.eg.mehrling * (egMehr - 1);
       const ohneVor = (plus) => b <= (plus ? thrBasis / 2 : thrBasis);
       const cap = egVorN == null ? Infinity : Math.max(0, egVorN - R.eg.pausch);
-      const sgb = (plus) => (egVorN == null && ohneVor(plus) ? 0 : Math.min(cap, plus ? F / 2 : F));
+      // § 10 Abs. 5 Satz 3 BEEG: bei ElterngeldPlus „verringern sich die Beträge nach Satz 2 um die Hälfte“ – halbiert wird der ganze Betrag nach
+      // Satz 2, also min(Einkommen vor der Geburt, 300 €) / 2 (Fable-Nachprüfung Nr. 4, buzer.de/10_BEEG.htm, Abruf 26.11.2026; vorsichtige Lesart).
+      // Bis 26.11.2026: min(Einkommen, 150 €), bei Einkommen vor der Geburt unter 300 € bis 75 € zu viel.
+      const sgb = (plus) => (egVorN == null && ohneVor(plus) ? 0 : Math.min(cap, F) / (plus ? 2 : 1));
       const va = plusSicher ? [sgb(true)] : basisSicher ? [sgb(false)] : [sgb(true), sgb(false)];
       const wa = plusSicher ? [F / 2] : basisSicher ? [F] : [F / 2, F];
       return { sgbLo: Math.min(...va), sgbHi: Math.max(...va), wgLo: Math.min(...wa) * egMehr, wgHi: Math.max(...wa) * egMehr };
@@ -1306,6 +1317,15 @@ const Rules = (function () {
     if (h.alterJahre) return h.alterJahre >= 60;
     return h.gruppe === '' || h.gruppe === '50+';
   }
+  // Mindestens ein Einkommen ist Rente, Regelaltersgrenze nicht sicher erreicht, Alter ab 60 oder unbekannt: Es KANN eine Altersrente vor der
+  // Regelaltersgrenze sein, auch neben Lohn oder Minijob. Der Ausschluss vom Grundsicherungsgeld hängt nur am Bezug der Altersrente
+  // (§ 7 Abs. 4 Satz 1 SGB II, § 21 SGB XII; gesetze-im-internet.de/sgb_2/__7.html, Abruf 26.11.2026; Fable-Nachprüfung 26.11.2026, Nr. 2).
+  // Für Grundsicherungsgeld und Hilfe zum Lebensunterhalt; der Kinderzuschlag nutzt weiter vielleichtAltersrente.
+  function altersrenteMoeglich(h) {
+    if (!(h.pers || []).some((x) => x[0] === 'rente' && x[1] > 0)) return false;
+    if (h.alterJahre) return h.alterJahre >= 60;
+    return h.gruppe === '' || h.gruppe === '50+';
+  }
   // Kinderzuschlag setzt voraus, dass im Haushalt mindestens eine Person dem Grunde nach zum SGB II gehört (§ 6a Abs. 1 Nr. 3 BKGG
   // i. V. m. § 7, § 8 SGB II; DA-KiZ Stand 20.02.2026, D.2 Abs. 1 Satz 5 und B.1 Abs. 5; BSG 13.07.2022, B 7/14 KG 1/21 R):
   // ein erwerbsfähiger Elternteil oder ein Kind ab 15. Altersrentner (Regelaltersgrenze, auch vorgezogene Altersrente, § 7 Abs. 4 SGB II)
@@ -1482,8 +1502,13 @@ const Rules = (function () {
     // Wechselmodell: Bedarf des Kindes nur für die Tage im Haushalt, Mehrbedarf zur Hälfte (siehe derive): höchstens „möglich“, Betrag als
     // obere Grenze („bis etwa“), Hinweis vorn (Vollprüfung familie B14, Fable Nr. 26)
     const r = h.uvgWechsel && (r0.level === 'ja' || r0.level === 'vielleicht') ? wechselBis(r0, 'ggeld.wechsel') : r0;
-    if (h.adults !== 1 || (r.level !== 'ja' && r.level !== 'vielleicht') || !vielleichtAltersrente(h)) return r;
-    return mk(r.id, 'vielleicht', 'vielleicht', r.tx.slice(0, 1).concat([['ggeld.vorgezogen']], r.tx.slice(1)));
+    if ((r.level !== 'ja' && r.level !== 'vielleicht') || h.alter || !altersrenteMoeglich(h)) return r;
+    if (h.adults === 1) return mk(r.id, 'vielleicht', 'vielleicht', r.tx.slice(0, 1).concat([['ggeld.vorgezogen']], r.tx.slice(1)));
+    // Paar mit Altersrente unter der Regelaltersgrenze (Fable-Nachprüfung 26.11.2026, Nr. 8): Die Person mit Altersrente bekommt kein
+    // Grundsicherungsgeld (§ 7 Abs. 4 Satz 1 SGB II), sondern Hilfe zum Lebensunterhalt; der Betrag verteilt sich auf Jobcenter und Sozialamt.
+    if (r.tx.some((t) => t[0] === 'ggeld.gemischt')) return r;
+    const out = mk(r.id, 'vielleicht', 'vielleicht', r.tx.slice(0, 1).concat([['ggeld.vorgezogen'], ['ggeld.vorgezogenPaar']], r.tx.slice(1)));
+    return r.lage ? Object.defineProperty(out, 'lage', { value: r.lage }) : out;
   }
   function ggeldRechnung(h) {
     const id = 'ggeld';
@@ -1678,7 +1703,7 @@ const Rules = (function () {
   // ---------------------------------------------------------------
   // Bildung und Teilhabe
   // ---------------------------------------------------------------
-  function bildungTeilhabe(h, wg, kz, gg) {
+  function bildungTeilhabe(h, wg, kz, gg, hlu) {
     const id = 'but';
     if (h.children === 0) return mk(id, 'nein', 'keinKind', [['but.keinKind']]);
     // § 28 Abs. 1 Satz 2, Abs. 7 SGB II (https://www.gesetze-im-internet.de/sgb_2/__28.html, Abruf 24.11.2026): junge Erwachsene nur, solange
@@ -1693,10 +1718,10 @@ const Rules = (function () {
     const betreuung = (h.kidsU6 > 0 ? [['but.kita']] : []).concat(h.kids > h.kidsU6 ? [['but.hort']] : []);
     const inhalt = nurJung ? ['but.inhaltJung', { schul: eur(R.but.schulbedarf), teil: eur(R.but.teilhabeMonat) }]
       : h.young === 0 && h.kids > 0 && h.kidsU6 === h.kids ? ['but.inhaltKlein', { teil: eur(R.but.teilhabeMonat) }] : ['but.inhalt', { schul: eur(R.but.schulbedarf), teil: eur(R.but.teilhabeMonat) }];
-    const r = bildungTeilhabe0(h, wg, kz, gg, inhalt, betreuung);
+    const r = bildungTeilhabe0(h, wg, kz, gg, inhalt, betreuung, hlu);
     return nurJung ? hoechstensMoeglich(r, 'but.azubi') : r;
   }
-  function bildungTeilhabe0(h, wg, kz, gg, inhalt, betreuung) {
+  function bildungTeilhabe0(h, wg, kz, gg, inhalt, betreuung, hlu) {
     const id = 'but';
     // Einziges Kind ist das erwachsene Kind in der Werkstatt: kein Schüler im Sinn von § 28 Abs. 1 Satz 2 SGB II, § 34 Abs. 1 SGB XII
     if (h.children === 1 && h.young === 1 && kindNurEM(h)) return mk(id, 'nein', 'vorausFehlt', [['but.azubi']]);
@@ -1715,6 +1740,11 @@ const Rules = (function () {
     if (h.asylBezug) return mk(id, 'ja', 'ja', [['but.asylBezug'], inhalt].concat(betreuung));
     if (h.asyl) return mk(id, 'vielleicht', 'butMoeglich', [['but.asyl'], inhalt].concat(betreuung));
     if (wg.level === 'ja' || kz.level === 'ja' || gg.level === 'ja') return mk(id, 'ja', 'butFolgt', [['but.folgt'], inhalt].concat(betreuung));
+    // § 34 SGB XII: Bildung und Teilhabe auch für Kinder mit Hilfe zum Lebensunterhalt (gesetze-im-internet.de/sgb_12/__34.html, Abruf 26.11.2026;
+    // Fable-Nachprüfung 26.11.2026, Nr. 9). Nur, wenn die Karte die Kinder nennt.
+    const hluKinder = !!hlu && hlu.tx.some((t) => t[0] === 'hlu.kinder');
+    if (hluKinder && hlu.level === 'ja') return mk(id, 'ja', 'butFolgt', [['but.hlu'], inhalt].concat(betreuung));
+    if (hluKinder && hlu.level === 'vielleicht') return mk(id, 'vielleicht', 'butMoeglich', [['but.hlu'], inhalt].concat(betreuung));
     if (wg.level === 'vielleicht' || kz.level === 'vielleicht' || gg.level === 'vielleicht') {
       return mk(id, 'vielleicht', 'butMoeglich', [['but.moeglich'], inhalt].concat(betreuung));
     }
@@ -1850,11 +1880,13 @@ const Rules = (function () {
     const id = 'hlu';
     if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);
     const werkstatt = !!h.wfbm || (h.pers || []).some((x) => x[0] === 'wfbm');
-    const vorgezogen = !h.alter && vielleichtAltersrente(h);
+    const vorgezogen = !h.alter && altersrenteMoeglich(h);
     const emZeit = !h.alter && !h.alterGrenz && !!h.emEltern && !werkstatt;
     const gsaOk = !!gsa && (gsa.level === 'ja' || gsa.level === 'vielleicht' || gsa.level === 'na');
     const rente2 = h.liste ? (h.pers || []).some((x) => x[5] === 2 && x[0] === 'rente' && x[1] > 0) : h.art2 === 'rente';
-    const kinder = h.adults === 1 && h.kids > 0 && gsaOk && !kindNurEM(h);
+    // Kinder neben Grundsicherung im Alter: allein oder als Paar über der Altersgrenze (Fable-Nachprüfung 26.11.2026, Nr. 10; beim Paar nur „möglich“,
+    // die zweite Person kann erwerbsfähig sein, dann gehören die Kinder zum Jobcenter, § 7 Abs. 3 SGB II)
+    const kinder = (h.adults === 1 || (h.adults === 2 && h.alter)) && h.kids > 0 && gsaOk && !kindNurEM(h);
     const partner = h.adults === 2 && h.alter && rente2 && gsaOk;
     if (!vorgezogen && !emZeit && !kinder && !partner) return mk(id, 'nein', 'vorausFehlt', [[h.alter || h.alterGrenz ? 'hlu.gsaVorrang' : 'hlu.voraus']]);
     if (h.bezug.grundsicherungsgeld) return mk(id, 'nein', 'schonGrund', [['hlu.ggBezug']]);
@@ -1863,15 +1895,23 @@ const Rules = (function () {
     const unterhalt = ['hlu.unterhalt'];
     // Die Person selbst bekommt Grundsicherung im Alter: Hilfe zum Lebensunterhalt nur für Kinder bzw. Partner, im Betrag der GSA-Karte enthalten
     if (!vorgezogen && !emZeit) {
-      if (kinder) return mk(id, gsa.level === 'ja' && h.kids14 === 0 && h.young === 0 ? 'ja' : 'vielleicht', gsa.level === 'ja' && h.kids14 === 0 && h.young === 0 ? 'ja' : 'vielleicht', [['hlu.kinder'], unterhalt]);
-      return mk(id, 'vielleicht', 'vielleicht', [['hlu.partner'], unterhalt]);
+      // „wahrscheinlich“ nur, wenn sicher (Fable-Nachprüfung 26.11.2026, Nr. 1): allein, Grundsicherung „wahrscheinlich“, alle Kinder sicher unter 15
+      // (Alter angegeben, keins 14 bis 17, keins volljährig; § 7 Abs. 1 Nr. 1 SGB II), keine Verwandten oder Mitbewohner (§ 39 SGB XII), nicht bei den
+      // Eltern oder im Heim, und das eigene Einkommen der Kinder (Kindergeld, Unterhalt, Waisenrente, Unterhaltsvorschuss, eigener Verdienst) liegt je
+      // Kind klar unter dem kleinsten Regelsatz plus Kopfteil der Miete (§ 27 Abs. 2 Satz 3, § 82 Abs. 1 Satz 4 SGB XII)
+      const kindEigen = ((h.kindZahl || 0) + (h.kindEink || 0) + h.kids * R.kindergeld) / h.kids;
+      const sicher = kinder && h.adults === 1 && gsa.level === 'ja' && h.kidsAlter && h.kids14 === 0 && h.young === 0 && !h.wohnform && !h.hhAndere &&
+        kindEigen < R.regelbedarf.kind0 + h.miete / h.persons - R.grundsicherung.sicherAb;
+      const tx = (partner ? [['hlu.partner']] : []).concat(kinder ? [['hlu.kinder']] : [], h.hhAndere === 'wg' ? [['hlu.wg']] : [], h.hhAndere === 'verwandte' ? [['hlu.verwandte']] : [], [unterhalt]);
+      return mk(id, sicher ? 'ja' : 'vielleicht', sicher ? 'ja' : 'vielleicht', tx);
     }
     const lage = vorgezogen ? 'hlu.vorgezogen' : 'hlu.emZeit';
     // Mehrbedarf G (§ 30 Abs. 1 SGB XII) bei Altersrente vor der Altersgrenze nur mit voller Erwerbsminderung
     const ohneG = vorgezogen && !h.emEltern && h.mzG;
     const base = grundsicherungAlter(ohneG ? { ...h, mzG: false } : h, { hlu: true });
     if (base.level === 'nein' || base.level === 'na') return mk(id, base.level, base.hl, base.tx.filter((t) => HLU_WEG.indexOf(t[0]) < 0));
-    const extra = (ohneG ? [['hlu.keinG']] : []).concat(h.kids > 0 ? [['hlu.kinder']] : [], [unterhalt]);
+    // § 39 Satz 1 SGB XII gilt für alle Personen in derselben Wohnung, auch in einer Wohngemeinschaft (Fable-Nachprüfung 26.11.2026, Nr. 3)
+    const extra = (ohneG ? [['hlu.keinG']] : []).concat(h.kids > 0 ? [['hlu.kinder']] : [], h.hhAndere === 'wg' ? [['hlu.wg']] : [], [unterhalt]);
     const ohneBetrag = (key) => mk(id, 'vielleicht', 'vielleicht', [[lage]].concat(key ? [[key]] : [], base.tx.filter((t) => HLU_WEG.indexOf(t[0]) < 0 && t[0].indexOf('schaetz.') !== 0 && t[0].indexOf('bedarf') !== 0), extra));
     // § 39 SGB XII: bei Eltern oder anderen Verwandten im Haushalt vermutet das Amt Unterstützung (widerlegbar; nicht bei Behinderung oder Pflege, Satz 3 Nr. 2)
     if (h.wohnform === 'eltern' || h.hhAndere === 'verwandte') return ohneBetrag('hlu.verwandte');
@@ -2535,7 +2575,10 @@ const Rules = (function () {
       [h.land === 'BY' ? 'blh.bayern' : 'blh.landAnders']];
     // Höhe: Blindenhilfe minus Landesblindengeld (voll angerechnet, § 72 Abs. 1 Satz 1), wo das Landesblindengeld belegt ist. Ohne Bundesland
     // kein Landesbetrag (Vollprüfung F8, 24.11.2026; vorher bayerischer Betrag).
-    const B = R.blhBetrag, landB = h.land === 'BY' ? R.beh.blind.blind : h.land ? R.landBlind.land[h.land] : 0;
+    // NRW mit bekanntem Alter (allein lebend, Geburtsjahr) ab 60: 473 € (§ 2 Abs. 1 GHBG) -> Unterschied zur Blindenhilfe; unter 60 entspricht das
+    // Landesblindengeld der Blindenhilfe, dann kein Restbetrag (kein Text)
+    const nw60 = h.land === 'NW' && h.bhPerson !== 'erwVor25' && h.adults === 1 && h.alterJahre >= R.landBlind.nw.alter;
+    const B = R.blhBetrag, landB = h.land === 'BY' ? R.beh.blind.blind : nw60 ? R.landBlind.nw.ab60 : h.land ? R.landBlind.land[h.land] : 0;
     tx.push(['blh.betrag', { betrag: eur2(B.erw), kind: eur2(B.kind), stand: B.stand }]);
     // Mit Pflegegrad 2 bis 5 wird Pflegegeld angerechnet: auf die Blindenhilfe 50 % des Pflegegelds PG 2 bzw. 40 % des Pflegegelds PG 3, höchstens
     // 50 % der Blindenhilfe (§ 72 Abs. 1 Satz 2 SGB XII, https://www.buzer.de/72_SGB_XII.htm), auf das Bayerische Blindengeld 46 % bzw. 33 %
@@ -2570,10 +2613,13 @@ const Rules = (function () {
     const bedarf = h.regel + h.miete;
     const lohnNetto = h.erwerb || h.erwerb2 ? (h.pers || []).reduce((a, x) => a + (x[0] === 'lohn' ? (h.liste ? x[2] : (h.brutto > 0 ? h.netto * x[1] / h.brutto : 0)) : 0), 0) : 0;
     const frei = Math.min(R.asylblg.lohnFrei * lohnNetto, 0.5 * R.regelbedarf.alleinstehend * h.adults);
-    const luecke = bedarf - Math.max(0, h.netto - frei);
+    // Elterngeld: Freibetrag nach § 10 Abs. 5 BEEG gilt ausdrücklich auch beim AsylbLG (wie SGB II/XII, derive egFrei; Fable-Nachprüfung Nr. 5,
+    // buzer.de/10_BEEG.htm, Abruf 26.11.2026). Für „eher nicht“ mit dem höheren möglichen Freibetrag (egFreiOffen). Bis 26.11.2026: voll angerechnet.
+    const luecke = bedarf - Math.max(0, h.netto - frei - (h.egFreiSGB || 0));
+    const lueckeHoch = bedarf - Math.max(0, h.netto - frei - (h.egFreiSGB || 0) - (h.egFreiOffen || 0));
     const vermUeber = h.vermoegen - R.asylblg.vermFrei * h.persons;
     const tx = [['asyl.einkommen'], ['asyl.ja'], ['asyl.analog']];
-    if (luecke < -R.grundsicherung.knappPuffer) return mk(id, 'nein', 'einkoHoch', tx);
+    if (lueckeHoch < -R.grundsicherung.knappPuffer) return mk(id, 'nein', 'einkoHoch', tx);
     // Die Grundleistungen (§ 3a AsylbLG) liegen unter den Regelbedarfen: „wahrscheinlich“ nur ohne eigenes Einkommen und Vermögen
     if (vermUeber > 0 || h.netto > 0 || luecke < R.grundsicherung.sicherAb) return mk(id, 'vielleicht', 'vielleicht', tx);
     return mk(id, 'ja', 'ja', [['asyl.ja'], ['asyl.analog']]);
@@ -2677,8 +2723,14 @@ const Rules = (function () {
     // widersprüchlich, daher nur eine Spanne und keine feste Zahl (Prüfliste).
     if (h.land && h.land !== 'BY') {
       if (h.blind !== 'blind') return mk(id, 'vielleicht', 'vielleicht', [['blindengeld.hochLand']]);
-      const fest = R.landBlind.land[h.land];
-      const t1 = fest ? ['blindengeld.landBetrag', { land: BL_NAME[h.land], betrag: eur2(fest), stand: R.landBlind.stand }] : ['blindengeld.landJa', { von: eur(R.landBlind.von), bis: eur(R.landBlind.bis) }];
+      const LB = R.landBlind, st = LB.stand, land = BL_NAME[h.land];
+      // Blindes Kind unter 18: Kinderbetrag des Landes (Fable-Nachprüfung Nr. 7). NRW für eine allein lebende erwachsene Person mit Geburtsjahr:
+      // unter 60 Höhe der Blindenhilfe, ab 60 473 € (§ 2 Abs. 1 GHBG); sonst (Alter der blinden Person unbekannt) die Spanne.
+      const nwAlter = h.land === 'NW' && h.bhPerson !== 'minder' && h.bhPerson !== 'erwVor25' && h.adults === 1 && h.alterJahre > 0 ? h.alterJahre : 0;
+      const fest = h.bhPerson === 'minder' ? LB.kind[h.land] : nwAlter ? (nwAlter >= LB.nw.alter ? LB.nw.ab60 : R.blhBetrag.erw) : LB.land[h.land];
+      const t1 = h.bhPerson === 'minder' && h.land === 'SN' ? ['blindengeld.landKindAlter', { land, alter: String(LB.kindSN.alter), betrag: eur2(LB.kindSN.unter), betrag2: eur2(LB.kindSN.ab), stand: st }]
+        : fest ? [h.bhPerson === 'minder' ? 'blindengeld.landKind' : 'blindengeld.landBetrag', { land, betrag: eur2(fest), stand: st }]
+          : ['blindengeld.landJa', { von: eur(LB.von), bis: eur(LB.bis) }];
       return mk(id, 'ja', 'ja', [t1].concat(h.pflegegrad >= 2 ? [['blindengeld.pflegeLand']] : []));
     }
     const b = R.beh.blind;
@@ -3265,7 +3317,7 @@ const Rules = (function () {
       lagenR.push(gsaK.lage); hlu = mitKdu(hlu, hilfeLebensunterhalt(hKdu, gsaK), kdu); gsa = mitKdu(gsa, gsaK, kdu);
     }
     // Bildung und Teilhabe gibt es auf beiden Wegen (§ 6b BKGG, § 28 SGB II): Einstufung vor dem Kappen bei unklarem Weg
-    const but = bildungTeilhabe(h, wg, kz, gg);
+    const but = bildungTeilhabe(h, wg, kz, gg, hlu);
     const wege = h.ohneWege ? null : wegeAnwenden(h, wg, kz, gg, gsa, lagen, lagenR);
     const uvg = unterhaltsvorschuss(h, gg);
     const baf = bafoeg(h);

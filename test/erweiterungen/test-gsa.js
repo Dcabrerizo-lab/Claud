@@ -54,6 +54,10 @@ const nur = lb(1160, 1000);
 ok('Bescheid passt nur zur Netto-Lesart: „prüfen“, kein „zu wenig“', pe(nur).wirkung === 'pruefen' && nur.zuWenigImMonat === 0 && pe(nur).diff === 41.5 && pe(nur).tKey === 'bp.sa.nettoFrei' && pe(nur).tP.diff === '41,50 €', pe(nur));
 ok('Hinweis nennt Quellen und Differenz (Widerspruchsbegründung, förmlich)', /Fachanweisung Hamburg/.test(pe(nur).grund) && /41,50 € im Monat niedriger/.test(pe(nur).grund) && !/\bdu\b|dein/i.test(pe(nur).grund), pe(nur).grund);
 ok('Hinweis kommt in die Widerspruchspunkte', W.punkteSGB2(nur).some((x) => /§ 82 Abs. 3 Satz 1/.test(x)));
+// Fable-Nachprüfung Nr. 6: Bescheid zwischen Brutto-Lesart (1.118,50) und Netto-Lesart (1.160): kein „offenbar vom Netto“, neutraler Hinweis
+const zw = lb(1140, 1000);
+ok('Bescheid zwischen den Lesarten: „prüfen“ mit neutralem Hinweis (bp.sa.zwischen), Differenz zur Brutto-Lesart 21,50', pe(zw).wirkung === 'pruefen' && pe(zw).tKey === 'bp.sa.zwischen' && pe(zw).diff === 21.5 && pe(zw).tP.diff === '21,50 €' && !/offenbar/.test(pe(zw).grund) && /nicht nachvollziehbar/.test(pe(zw).grund) && zw.zuWenigImMonat === 0, pe(zw));
+ok('Bescheid 0,80 € unter der Netto-Lesart (Toleranz): weiter „offenbar vom Netto“', pe(lb(1159.2, 1000)).tKey === 'bp.sa.nettoFrei');
 ok('Bescheid passt zur Brutto-Lesart: passt', pe(lb(1118.5, 1000)).wirkung === 'passt', pe(lb(1118.5, 1000)));
 const mehr = lb(1300, 1000);
 ok('Bescheid über der Netto-Lesart: zu wenig, gemessen an der Netto-Lesart (140), Text nennt die Brutto-Lesart', pe(mehr).wirkung === 'zuWenig' && pe(mehr).diff === 140 && /nur 1\.118,50 €/.test(pe(mehr).grund), pe(mehr));

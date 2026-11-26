@@ -990,6 +990,8 @@
   "t.blh.differenz": "په {land} کې Landesblindengeld ({landbetrag}) کمېږي. د لږ عاید په حالت کې په میاشت کې تر {rest} پورې Blindenhilfe ورسره پاتې کېږي.",
   "t.blh.betrag": "Blindenhilfe په میاشت کې تر {betrag} پورې ده، د 18 کالو کم عمر ماشومانو لپاره تر {kind} پورې (نېټه {stand}).",
   "t.blindengeld.landBetrag": "په {land} کې ړانده لویان په میاشت کې {betrag} Landesblindengeld ترلاسه کوي (نېټه {stand})، معمولاً پرته له عاید ته کتلو. د ماشومانو لپاره ډېری وخت لږ وي. مسؤله اداره دقیق مبلغ ګوري.",
+  "t.blindengeld.landKind": "په {land} کې له ۱۸ کالو کم عمره ړانده ماشومان په میاشت کې {betrag} Landesblindengeld ترلاسه کوي (نېټه {stand})، معمولاً پرته له عاید ته کتلو. دقیق مقدار مسؤل اداره ګوري.",
+  "t.blindengeld.landKindAlter": "په {land} کې له {alter} کالو کم عمره ړانده ماشومان په میاشت کې {betrag} Landesblindengeld ترلاسه کوي، او له {alter} کالو وروسته {betrag2} (نېټه {stand})، معمولاً پرته له عاید ته کتلو. دقیق مقدار مسؤل اداره ګوري.",
   "t.blindengeld.hochLand": "د هغو کسانو لپاره چې د لیدو سخته کمزوري لري، یوازې ځینې ایالتونه جلا مرسته ورکوي (د بېلګې په توګه بایرن). له مسؤلې ادارې وپوښتئ چې ایا ستاسو په ایالت کې شته.",
   "t.blindengeld.pflegeLand": "که Pflegegeld ترلاسه کوئ، په ډېرو ایالتونو کې په Landesblindengeld کې یوه برخه یې حسابېږي.",
   "t.wbs.landJa": "ستاسو ناخالص عاید حتی د ټول هېواد له حد څخه ټیټ دی (ستاسو د کورنۍ لپاره په کال کې {grenze}). هېڅ ایالت ټیټ حد نه لري، نو Wohnberechtigungsschein ډېر احتمال لري.",

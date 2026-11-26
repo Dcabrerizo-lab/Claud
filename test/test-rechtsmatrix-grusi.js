@@ -25,6 +25,10 @@ for (const f of FAELLE) {
     if (!r) p.push('Karte fehlt');
     else {
       if (r.level !== e.status && !(e.auchOk || []).includes(r.level)) p.push(`Status ${r.level} statt ${e.status}`);
+      // Texte (seit 26.11.2026): tx = müssen vorkommen, txNicht = dürfen nicht vorkommen
+      const keys = r.tx.map((t) => t[0]);
+      (e.tx || []).forEach((k) => { if (keys.indexOf(k) < 0) p.push(`Text ${k} fehlt (${keys.join(', ')})`); });
+      (e.txNicht || []).forEach((k) => { if (keys.indexOf(k) >= 0) p.push(`Text ${k} gezeigt, darf nicht`); });
       const s = spanne(r);
       if (e.ohneBetrag && s) p.push('Betrag gezeigt, erwartet keiner');
       if (e.betrag != null && (r.level === 'ja' || r.level === 'vielleicht')) {
