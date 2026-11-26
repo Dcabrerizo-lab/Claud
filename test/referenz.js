@@ -487,7 +487,8 @@ function kizBetrag0(h) {
 // ---------- Grundsicherung im Alter und bei Erwerbsminderung (SGB XII, 4. Kapitel) ----------
 // Einkommen § 82: Werkstattlohn ohne Arbeitsförderungsgeld (52 €), davon frei: RS1/8 + 50 % des Rests (Abs. 3 Satz 2);
 // Lohn: 30 % frei, höchstens RS1/2 (Abs. 3 Satz 1); Elterngeld über 300 €: 300 € frei; Renten, ALG, Krankengeld voll.
-function einkommenSGB12(e, h) {
+// Lohn: Bezugsgröße der 30 % ist das Brutto (Fachanweisung Hamburg Ziff. 5.6, Prüfung 26.11.2026), ohne Brutto das Netto; nettoBasis = vorsichtige Seite
+function einkommenSGB12(e, h, nettoBasis) {
   let posten;
   if (Array.isArray(e.einkommen)) posten = e.einkommen.map((x) => ({ art: x.art, n: leer(x.n) ? zahl(x.b) : zahl(x.n), b: zahl(x.b) }));
   else {
@@ -501,7 +502,7 @@ function einkommenSGB12(e, h) {
   const staffel = (x) => (x <= 0 ? 0 : Math.min(x, 100 + 0.3 * Math.max(0, x - 100), 0.5 * rs1));
   for (const x of posten) {
     if (x.art === 'wfbm') { const lohn = Math.max(0, x.n - 52); const frei = Math.min(lohn, rs1 / 8 + 0.5 * Math.max(0, lohn - rs1 / 8)); summe += lohn - frei; }
-    else if (x.art === 'lohn') summe += x.n - Math.min(0.3 * x.n, 0.5 * rs1);
+    else if (x.art === 'lohn') summe += x.n - Math.min(0.3 * (nettoBasis ? x.n : Math.max(x.b || 0, x.n)), 0.5 * rs1, x.n);
     else if (x.art === 'eg') summe += Math.max(0, x.n - elterngeldFrei(e, x.b != null ? x.b : x.n).lo); // § 10 Abs. 5 BEEG, vorsichtig
     else if (x.art === 'rente') {
       const zus = Math.min(offen, Math.max(0, x.n)); offen -= zus;
@@ -545,10 +546,11 @@ function grundsicherungAlter(e, ohneVoraussetzung) {
   if (e.wfbmEssen) unsicher += 90;
   unsicher += tMoeglich + msG.moeglich;
   bedarf += msG.sicher;
-  const eink = einkommenSGB12(e, h) + (wf ? 0 : h.kids * KG + kinderEinkommen(h, 0, false, true));
-  const luecke = bedarf - eink;
+  const sonst = wf ? 0 : h.kids * KG + kinderEinkommen(h, 0, false, true);
+  const eink = einkommenSGB12(e, h) + sonst;
+  const luecke = bedarf - eink, lueckeN = bedarf - einkommenSGB12(e, h, true) - sonst;
   const altersAngabe = !!e.kidsAlter || (h.kinder > 0 && h.u6 === h.kinder);
-  let level = luecke >= 50 ? 'ja' : luecke > -(100 + unsicher + (wf || altersAngabe ? 0 : h.mitte * (RB[4] - RB[5]))) ? 'vielleicht' : 'nein';
+  let level = luecke >= 50 ? (lueckeN >= 50 ? 'ja' : 'vielleicht') : luecke > -(100 + unsicher + (wf || altersAngabe ? 0 : h.mitte * (RB[4] - RB[5]))) ? 'vielleicht' : 'nein';
   if (h.grenz && level === 'ja') level = 'vielleicht';
   // Gemischtes Paar: zweite Person mit Lohn oder Arbeitslosengeld, Kinder ab 14 oder volljährig -> Jobcenter für sie, höchstens „möglich“ ohne Betrag
   if (!wf && level !== 'nein' && h.erwachsene === 2 && ((h.p[1].art === 'lohn' && h.p[1].brutto > 0) || h.p[1].art === 'alg' || h.jung > 0 || h.k14 > 0)) return { level: 'vielleicht' };
@@ -556,7 +558,7 @@ function grundsicherungAlter(e, ohneVoraussetzung) {
   const fehlt = (!Array.isArray(e.einkommen) && leer(e.brutto) && leer(e.netto)) || leer(e.vermoegen) || (!wf && leer(e.miete));
   if (fehlt && level === 'ja') return { level: 'vielleicht' };
   if (fehlt && level === 'vielleicht') return { level: 'vielleicht' };
-  return { level, bedarf, luecke };
+  return { level, bedarf, luecke, lueckeN };
 }
 
 // ---------- Hilfe zum Lebensunterhalt (3. Kapitel SGB XII, neue Karte 25.11.2026) ----------
