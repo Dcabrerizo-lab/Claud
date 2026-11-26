@@ -73,7 +73,7 @@ Status: ✓ eingebaut und gerechnet · ◐ als Hinweis oder als „möglich“ (
 | Angemessenes Auto geschützt (§ 90 Abs. 2 Nr. 10 SGB XII); über 15.000 € nur „möglich“; gebraucht (Behinderung, Arbeit) ohne Einschränkung | ◐ | `auto` |
 | EU-Staatsangehörige: Ausschluss wie § 7 SGB II (§ 23 Abs. 3 SGB XII) | ✓ | `eu` |
 | Voraussetzung Rentenalter oder dauerhaft volle Erwerbsminderung (§ 41) | ✓ | `gsa-voraus` |
-| Freibetrag Erwerbstätige 30 %, höchstens 50 % RS1 (§ 82 Abs. 3 Satz 1) | ✓ | `gsa-ewt` |
+| Freibetrag Erwerbstätige 30 %, höchstens 50 % RS1 (§ 82 Abs. 3 Satz 1); Bezugsgröße Brutto (Fachanweisung Hamburg Ziff. 5.6), „wahrscheinlich“ nur, wenn es auch mit 30 % vom Netto reicht; Betrag als Spanne (geprüft 26.11.2026) | ✓ | `gsa-ewt`, R-GSA-AE1–4 |
 | Selbst gezahlter Unterhalt: in der Regel kein Abzug (§ 82 SGB XII kennt ihn nicht), Hinweis auf Selbstbehalt | ◐ | `uz-gsa` |
 | Unterhalt für die Person selbst: voll Einkommen (§ 82 Abs. 1 SGB XII), kein Freibetrag nach § 82 Abs. 3 | ✓ | `unt-sgb12` |
 | Werkstattlohn: Arbeitsförderungsgeld frei, 1/8 RS1 + 50 % frei (§ 82 Abs. 2 Nr. 5, Abs. 3 Satz 2) | ✓ | `gsa-wfbm` |
@@ -379,8 +379,8 @@ Neue Karte seit 25.11.2026 (Auftrag David). Matrix: docs/rechtsmatrix/grusi.md, 
 | Blindengeld und Sehbehindertengeld, Beträge Stand 7/2026 | ✓ | `bg-betrag` |
 | Anrechnung von Pflegegeld: 46 % bei Pflegegrad 2, 33 % ab 3, mindestens 20 € (Art. 4) | ✓ | `bg-pflege` |
 | Pflegegrad 3 bis 5 einheitlich 33 % des Pflegegeldes von Pflegegrad 3 (197,67 €, Art. 4 Abs. 1 Satz 2 BayBlindG; ZBFS-Infoblatt 7/2026: 611,33 €), Befund 12 (Abgleich 2, Abruf 21.11.2026) | ✓ | `mb2-blind` |
-| Andere Länder: blinde Menschen „wahrscheinlich“ (Landesblindengeld gibt es in jedem Land), Spanne für Erwachsene etwa 350 bis 950 €; hochgradig Sehbehinderte nur „möglich“; Hinweis Pflegegeld-Anrechnung | ◐ | `bg-land` |
-| Landesblindengeld mit belegtem Betrag (Stand 11/2026): Baden-Württemberg 410 €, Hessen 818,65 € (86 % der Blindenhilfe), Mecklenburg-Vorpommern 430 €, Niedersachsen 450 €, Rheinland-Pfalz 410 €, Schleswig-Holstein 350 €; übrige Länder (Quellen widersprüchlich) weiter mit Spanne | ✓ | `bg-land-betrag` |
+| Andere Länder: blinde Menschen „wahrscheinlich“ (Landesblindengeld gibt es in jedem Land), Spanne für Erwachsene etwa 350 bis 952 € (NRW unter 60 = Blindenhilfe 951,92 €, § 2 Abs. 1 GHBG); hochgradig Sehbehinderte nur „möglich“; Hinweis Pflegegeld-Anrechnung | ◐ | `bg-land` |
+| Landesblindengeld mit belegtem Betrag (Prüfung 26.11.2026, Quellen in docs/rechtsmatrix/pflege.md): Baden-Württemberg 410 €, Berlin 761,54 € (80 % der Blindenhilfe, § 2 LPflGG), Hessen 818,65 € (86 % der Blindenhilfe), Mecklenburg-Vorpommern 430 €, Niedersachsen 450 €, Rheinland-Pfalz 410 €, Sachsen 380 € (ab 14 Jahren), Schleswig-Holstein 350 € (ab 1.4.2026; Landesseite mit 300 € veraltet); übrige Länder (BB, HB, HH, NW, SL, ST, TH: dynamisch, altersabhängig oder Quellen widersprüchlich) weiter mit Spanne | ✓ | `bg-land-betrag` |
 | Genaue Beträge und Anrechnungsregeln der anderen 15 Länder | ○ (die Quellen widersprechen sich stark; ohne geprüfte Quelle je Land keine feste Zahl) | |
 
 ## Blindenhilfe (SGB XII, § 72)
