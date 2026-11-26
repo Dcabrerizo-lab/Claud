@@ -36,6 +36,7 @@ Dauerhafter Test: `test/test-rechtsmatrix-schulden.js` mit den Fällen in `test/
 | WS-1…8 | Paar, Frage „Wer hat die Schulden?“ (ich / Partner / beide; seit 25.11.2026) | pfändbares Einkommen nur der Person(en) mit Schulden; „beide“: je Person getrennt, nicht zusammengezählt; ohne Antwort wie bisher Person 1; „Sonstige Einnahmen“ bei der ersten Person mit Schulden |
 | WS-9 | beide: 1.500 € und 2.500 € netto, je 1 Unterhaltsberechtigter | pfändbar 0 + 157,59 € → Rate 155 € (zusammengezählt wären es falsch 907,59 €) |
 | WS-12 | beide: je 3.000 € netto, 3 Unterhaltsberechtigte | je 44,86 €, zusammen 89,72 € → Rate 85 € |
+| Hinweis (Fable-Nachprüfung Nr. 11) | Antwort „Partner“ oder „beide“ | Unterhaltsberechtigte (§ 850c Abs. 2 ZPO: nur gesetzliche Unterhaltspflicht) zählt SoLo für jede Person gleich (Partner + alle Kinder). Bei Unverheirateten oder Stiefkindern können es weniger sein (Obergrenze dann zu klein = vorsichtig); Hinweis `ra.wer.pers` mit Verweis auf den Pfändungsrechner |
 | WS-13…19 | Elterngeld im Ratenvorschlag (§ 54 Abs. 3 Nr. 1 SGB I i. V. m. § 10 Abs. 1, 3, 4 BEEG, Abruf 25.11.2026) | unpfändbar: Basis 300 €, Plus 150 €, je Kind der Geburt; „weiß nicht“ vorsichtig 300 € je Kind; z. B. 500 € Plus → 350 € pfändbares Einkommen |
 | RA-3 | Paar, 3 Kinder, Lohn 2.000 € + Grundsicherungsgeld | nichts pfändbar |
 | RA-4 | Rentner, Rente 1.200 € + Grundsicherung im Alter | nichts pfändbar |

@@ -143,5 +143,6 @@
   "u.eink.wg": "für Wohngeld von allen im Haushalt, meist der letzten 12 Monate",
   "u.eink.kiz": "für Kinderzuschlag von den Eltern und zum Einkommen der Kinder (z. B. Unterhalt), meist der letzten 6 Monate",
   "bp.sa.lohnB": "Lohn brutto (falls bekannt)",
-  "bp.sa.nettoFrei": "Das Sozialamt hat den Freibetrag für deinen Lohn offenbar vom Netto berechnet. Viele Sozialämter rechnen 30 % vom Brutto (zum Beispiel Hamburg und Bremen in ihren Verwaltungsanweisungen). Dann wären es {diff} mehr Grundsicherung im Monat. Das Gesetz sagt es nicht eindeutig (§ 82 Abs. 3 SGB XII). Frag beim Sozialamt nach oder lege vorsorglich innerhalb der Frist Widerspruch ein."
+  "bp.sa.nettoFrei": "Das Sozialamt hat den Freibetrag für deinen Lohn offenbar vom Netto berechnet. Viele Sozialämter rechnen 30 % vom Brutto (zum Beispiel Hamburg und Bremen in ihren Verwaltungsanweisungen). Dann wären es {diff} mehr Grundsicherung im Monat. Das Gesetz sagt es nicht eindeutig (§ 82 Abs. 3 SGB XII). Frag beim Sozialamt nach oder lege vorsorglich innerhalb der Frist Widerspruch ein.",
+  "bp.sa.zwischen": "Im Bescheid ist {diff} mehr Einkommen im Monat angerechnet als bei einem Freibetrag von 30 % vom Bruttolohn. Zur Rechnung mit 30 % vom Netto passt es auch nicht. Wie das Sozialamt gerechnet hat, ist nicht klar. Frag beim Sozialamt nach oder lege vorsorglich innerhalb der Frist Widerspruch ein."
 }

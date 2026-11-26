@@ -990,6 +990,8 @@
   "t.blh.differenz": "Landesblindengeld در {land} ({landbetrag}) کسر می‌شود. با عاید کم، تا {rest} در ماه Blindenhilfe اضافه باقی می‌ماند.",
   "t.blh.betrag": "Blindenhilfe تا {betrag} در ماه است، برای اطفال زیر 18 سال تا {kind} (مطابق تاریخ {stand}).",
   "t.blindengeld.landBetrag": "در {land} بزرگسالان نابینا {betrag} Landesblindengeld در ماه می‌گیرند (مطابق تاریخ {stand})، معمولاً بدون وابستگی به عاید. برای اطفال اکثراً کمتر است. اداره مسئول مبلغ دقیق را بررسی می‌کند.",
+  "t.blindengeld.landKind": "در {land} اطفال نابینای زیر ۱۸ سال {betrag} Landesblindengeld در ماه می‌گیرند (مطابق تاریخ {stand})، معمولاً بدون وابستگی به عاید. مبلغ دقیق را اداره مسئول بررسی می‌کند.",
+  "t.blindengeld.landKindAlter": "در {land} اطفال نابینای زیر {alter} سال {betrag} Landesblindengeld در ماه می‌گیرند و از {alter} سالگی {betrag2} (مطابق تاریخ {stand})، معمولاً بدون وابستگی به عاید. مبلغ دقیق را اداره مسئول بررسی می‌کند.",
   "t.blindengeld.hochLand": "برای اشخاصی که بینایی شدیداً ضعیف دارند، فقط بعضی ایالت‌ها یک کمک جداگانه می‌پردازند (مثلاً بایرن). از اداره مسئول بپرسید که آیا در ایالت شما وجود دارد.",
   "t.blindengeld.pflegeLand": "اگر Pflegegeld می‌گیرید، در بیشتر ایالت‌ها بخشی از آن از Landesblindengeld کسر می‌شود.",
   "t.wbs.landJa": "عاید ناخالص (brutto) شما حتی کمتر از حد سراسری آلمان است ({grenze} در سال برای خانوار شما). هیچ ایالتی حد پایین‌تر ندارد، پس Wohnberechtigungsschein به احتمال بسیار زیاد ممکن است.",

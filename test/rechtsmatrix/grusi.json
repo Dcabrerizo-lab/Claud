@@ -4701,7 +4701,7 @@
  {
   "id": "HLU-05",
   "pruefer": "eigene Fälle (neue Karte 25.11.2026)",
-  "beschreibung": "Jg. 1955 (über der Regelaltersgrenze), allein, 2 Kinder unter 14: Kinder bekommen Hilfe zum Lebensunterhalt, Betrag in der GSA-Karte",
+  "beschreibung": "Jg. 1955 (über der Regelaltersgrenze), allein, 2 Kinder unter 14: Kinder bekommen Hilfe zum Lebensunterhalt, Betrag in der GSA-Karte (Alter der Kinder angegeben; ohne Angabe nur „möglich“, Fable-Nachprüfung Nr. 1, siehe NP-03)",
   "quelle": "https://www.gesetze-im-internet.de/sgb_12/__27.html, __19.html, __21.html; sgb_2/__7.html (Abruf 25.11.2026)",
   "h": {
    "adults": 1,
@@ -4719,7 +4719,8 @@
    "vermoegen": 0,
    "heute": 2026.9,
    "bezug": {},
-   "gebJahr": 1955
+   "gebJahr": 1955,
+   "kidsAlter": true
   },
   "erwartet": {
    "hlu": {
@@ -5074,6 +5075,323 @@
    "gsa": {
     "status": "vielleicht",
     "ohneBetrag": true
+   }
+  }
+ },
+ {
+  "id": "NP-01",
+  "pruefer": "Fable-Nachprüfung (Korrektur 26.11.2026)",
+  "beschreibung": "Nr. 1: Rentnerin Jg. 1958, Rente 600/530, Miete 500, 1 Kind (Alter angegeben, unter 6) mit 700 € Unterhalt: Kind deckt Bedarf selbst -> nur „möglich“",
+  "quelle": "Fable-Nachprüfung 26.11.2026; gesetze-im-internet.de/sgb_12/__27.html, __34.html, __39.html, __82.html; sgb_2/__7.html (Abruf 26.11.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 600,
+   "brutto2": "",
+   "netto": 530,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1958,
+   "kidsAlter": true,
+   "unterhalt": 700
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "vielleicht",
+    "tx": [
+     "hlu.kinder"
+    ]
+   }
+  }
+ },
+ {
+  "id": "NP-02",
+  "pruefer": "Fable-Nachprüfung (Korrektur 26.11.2026)",
+  "beschreibung": "Nr. 1: wie NP-01 ohne Unterhalt: Kinder sicher unter 15, Einkommen unter Bedarf -> „wahrscheinlich“; Bildung und Teilhabe über § 34 SGB XII (Nr. 9)",
+  "quelle": "Fable-Nachprüfung 26.11.2026; gesetze-im-internet.de/sgb_12/__27.html, __34.html, __39.html, __82.html; sgb_2/__7.html (Abruf 26.11.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 600,
+   "brutto2": "",
+   "netto": 530,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1958,
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "ja",
+    "ohneBetrag": true
+   },
+   "but": {
+    "status": "ja"
+   }
+  }
+ },
+ {
+  "id": "NP-03",
+  "pruefer": "Fable-Nachprüfung (Korrektur 26.11.2026)",
+  "beschreibung": "Nr. 1: Rentnerin, 2 Kinder ohne Altersangabe (können 15+ sein) -> „möglich“",
+  "quelle": "Fable-Nachprüfung 26.11.2026; gesetze-im-internet.de/sgb_12/__27.html, __34.html, __39.html, __82.html; sgb_2/__7.html (Abruf 26.11.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 2,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 600,
+   "brutto2": "",
+   "netto": 530,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1958
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "vielleicht"
+   }
+  }
+ },
+ {
+  "id": "NP-04",
+  "pruefer": "Fable-Nachprüfung (Korrektur 26.11.2026)",
+  "beschreibung": "Nr. 1, 3: Rentnerin, Kind unter 6, Verwandte in der Wohnung (§ 39 SGB XII) -> „möglich“ mit Hinweis",
+  "quelle": "Fable-Nachprüfung 26.11.2026; gesetze-im-internet.de/sgb_12/__27.html, __34.html, __39.html, __82.html; sgb_2/__7.html (Abruf 26.11.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 600,
+   "brutto2": "",
+   "netto": 530,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1958,
+   "kidsAlter": true,
+   "hhAndere": "verwandte"
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "vielleicht",
+    "tx": [
+     "hlu.verwandte"
+    ]
+   }
+  }
+ },
+ {
+  "id": "NP-05",
+  "pruefer": "Fable-Nachprüfung (Korrektur 26.11.2026)",
+  "beschreibung": "Nr. 2: 63 J. (Jg. 1963), Rente 700/614 + Minijob 400, Miete 450: Hilfe zum Lebensunterhalt mindestens „möglich“, Grundsicherungsgeld mit Hinweis auf den Ausschluss",
+  "quelle": "Fable-Nachprüfung 26.11.2026; gesetze-im-internet.de/sgb_12/__27.html, __34.html, __39.html, __82.html; sgb_2/__7.html (Abruf 26.11.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1963,
+   "heute": 2026.9,
+   "bezug": {},
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 700,
+     "n": 614
+    },
+    {
+     "art": "lohn",
+     "b": 400,
+     "n": 400
+    }
+   ]
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "vielleicht",
+    "tx": [
+     "hlu.vorgezogen"
+    ]
+   },
+   "ggeld": {
+    "status": "vielleicht",
+    "auchOk": [
+     "nein"
+    ]
+   }
+  }
+ },
+ {
+  "id": "NP-06",
+  "pruefer": "Fable-Nachprüfung (Korrektur 26.11.2026)",
+  "beschreibung": "Nr. 3: Altersrente mit 64 in einer Wohngemeinschaft: Hinweis § 39 SGB XII (gemeinsames Wirtschaften vermutet)",
+  "quelle": "Fable-Nachprüfung 26.11.2026; gesetze-im-internet.de/sgb_12/__27.html, __34.html, __39.html, __82.html; sgb_2/__7.html (Abruf 26.11.2026)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 700,
+   "brutto2": "",
+   "netto": 614,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1962,
+   "hhAndere": "wg"
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "vielleicht",
+    "tx": [
+     "hlu.wg"
+    ]
+   }
+  }
+ },
+ {
+  "id": "NP-07",
+  "pruefer": "Fable-Nachprüfung (Korrektur 26.11.2026)",
+  "beschreibung": "Nr. 8: Paar 64/60, Rente 900/790, Partner ohne Einkommen, Miete 600: Grundsicherungsgeld höchstens „möglich“ mit Hinweis Altersrente/Sozialamt",
+  "quelle": "Fable-Nachprüfung 26.11.2026; gesetze-im-internet.de/sgb_12/__27.html, __34.html, __39.html, __82.html; sgb_2/__7.html (Abruf 26.11.2026)",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "ohne",
+   "brutto": 900,
+   "brutto2": "",
+   "netto": 790,
+   "miete": 600,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1962
+  },
+  "erwartet": {
+   "ggeld": {
+    "status": "vielleicht",
+    "tx": [
+     "ggeld.vorgezogen",
+     "ggeld.vorgezogenPaar",
+     "hlu.siehe"
+    ]
+   },
+   "hlu": {
+    "status": "vielleicht",
+    "ohneBetrag": true
+   }
+  }
+ },
+ {
+  "id": "NP-08",
+  "pruefer": "Fable-Nachprüfung (Korrektur 26.11.2026)",
+  "beschreibung": "Nr. 10: Paar Jg. 1955, beide Rente, 1 Kind unter 6: Karte nennt Kinder und Partner, nur „möglich“",
+  "quelle": "Fable-Nachprüfung 26.11.2026; gesetze-im-internet.de/sgb_12/__27.html, __34.html, __39.html, __82.html; sgb_2/__7.html (Abruf 26.11.2026)",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "rente",
+   "brutto": 1000,
+   "brutto2": 500,
+   "netto": 1320,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1955,
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "vielleicht",
+    "tx": [
+     "hlu.kinder",
+     "hlu.partner"
+    ]
+   }
+  }
+ },
+ {
+  "id": "NP-09",
+  "pruefer": "Fable-Nachprüfung (Korrektur 26.11.2026)",
+  "beschreibung": "Nr. 10: Paar Jg. 1955, zweite Person ohne Einkommen, 1 Kind unter 6: Kinder auf der Karte, „möglich“",
+  "quelle": "Fable-Nachprüfung 26.11.2026; gesetze-im-internet.de/sgb_12/__27.html, __34.html, __39.html, __82.html; sgb_2/__7.html (Abruf 26.11.2026)",
+  "h": {
+   "adults": 2,
+   "kids": 1,
+   "kidsU6": 1,
+   "kids14": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "ohne",
+   "brutto": 1000,
+   "brutto2": "",
+   "netto": 880,
+   "miete": 500,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "heute": 2026.9,
+   "bezug": {},
+   "gebJahr": 1955,
+   "kidsAlter": true
+  },
+  "erwartet": {
+   "hlu": {
+    "status": "vielleicht",
+    "tx": [
+     "hlu.kinder"
+    ],
+    "txNicht": [
+     "hlu.partner"
+    ]
    }
   }
  }

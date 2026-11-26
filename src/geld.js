@@ -385,6 +385,9 @@ var Geld = (function () {
       }, { id: 'ra-wer-' + x[0], 'aria-pressed': String(jetzt === x[0]) }));
     });
     g.appendChild(el('p', 'hint', t('ra.wer.hint')));
+    // Unterhaltsberechtigte (§ 850c Abs. 2 ZPO: nur gesetzliche Unterhaltspflicht) zählt SoLo für jede Person gleich (Partner und alle Kinder);
+    // bei Unverheirateten oder Stiefkindern sind es weniger, die Obergrenze ist dann zu klein (vorsichtig). Fable-Nachprüfung Nr. 11, 26.11.2026.
+    if (jetzt === 'partner' || jetzt === 'beide') g.appendChild(el('p', 'hint', t('ra.wer.pers'))).id = 'ra-wer-pers';
   }
   function rateSeite(box, neu) {
     var m = st.ms; if (m.art !== 'rate') { m.art = 'rate'; m.rate = m.rate || ''; }
