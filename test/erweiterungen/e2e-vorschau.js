@@ -127,6 +127,17 @@ const ok = (name, c, info) => { n++; console.log((c ? 'ok   ' : 'FEHLER ') + nam
     await p.selectOption('#ga-zahl', '2');
     ok(`${schema}: Paar zeigt Person 2`, await p.isVisible('#ga-rente2'));
     await p.selectOption('#ga-zahl', '1');
+    // Bruttolohn freiwillig (§ 82 Abs. 3 SGB XII): Bescheid passt nur zur Netto-Lesart -> „prüfen“ mit Hinweis und Differenz, kein „zu wenig“
+    await p.click('#ga-beispiel');
+    await p.fill('#ga-zus1', ''); await p.uncheck('#ga-gr1'); await p.uncheck('#ga-g1');
+    await p.fill('#ga-rente1', '600'); await p.fill('#ga-lohn1', '800'); await p.fill('#ga-b-g', ''); await p.fill('#ga-b-zahl', ''); await p.fill('#ga-b-eink', '1160');
+    ok(`${schema}: Ohne Bruttolohn: Einkommen passt`, !/vom Netto berechnet/.test(await p.textContent('#ga-erg')), await p.textContent('#ga-erg'));
+    await p.fill('#ga-lohnb1', '1000');
+    const gaT = await p.textContent('#ga-erg');
+    ok(`${schema}: Mit Bruttolohn: Hinweis Netto-Freibetrag mit 41,50 €`, /vom Netto berechnet/.test(gaT) && gaT.includes('41,50 €') && !/zu wenig/i.test(await p.textContent('#ga-erg .big')), gaT);
+    await p.fill('#ga-b-eink', '1118.5');
+    ok(`${schema}: Bescheid nach Brutto-Lesart: kein Hinweis`, !/vom Netto berechnet/.test(await p.textContent('#ga-erg')));
+    await p.click('#ga-beispiel');
     await p.fill('#ga-datum', BESCHEID);
     await p.click('#ga-wid-mach');
     ok(`${schema}: Widerspruch Grundsicherung im Alter`, new RegExp('Grundsicherung im Alter und bei Erwerbsminderung vom ' + reD(BESCHEID)).test(await p.inputValue('#ga-wid-text')));
