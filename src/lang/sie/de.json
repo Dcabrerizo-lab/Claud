@@ -524,5 +524,6 @@
   "t.hlu.verwandte": "Sie wohnen mit Eltern oder anderen Verwandten zusammen. Dann vermutet das Sozialamt, dass sie Sie unterstützen, soweit ihr Einkommen reicht (§ 39 SGB XII). Das können Sie widerlegen. Bei Behinderung oder Pflegebedarf gilt die Vermutung nicht. Unter 25 bei den Eltern kann auch das Jobcenter zuständig sein.",
   "t.hlu.vorgezogen": "Wer vor der Regelaltersgrenze Altersrente bezieht, bekommt kein Grundsicherungsgeld und noch keine Grundsicherung im Alter. Reicht die Rente nicht, zahlt das Sozialamt Hilfe zum Lebensunterhalt. Bei Witwenrente oder Waisenrente gilt das nicht, wenn Sie arbeiten können.",
   "t.rundfunk.hlu": "Wenn Ihnen Hilfe zum Lebensunterhalt bewilligt wird, können Sie sich vom Rundfunkbeitrag befreien lassen. Schicken Sie dann den Bescheid an den Beitragsservice.",
-  "z.hluWg": "Hilfe zum Lebensunterhalt und Wohngeld gibt es nicht gleichzeitig. Lassen Sie beides prüfen und fragen Sie, welcher Weg Ihnen mehr bringt."
+  "z.hluWg": "Hilfe zum Lebensunterhalt und Wohngeld gibt es nicht gleichzeitig. Lassen Sie beides prüfen und fragen Sie, welcher Weg Ihnen mehr bringt.",
+  "bp.sa.nettoFrei": "Das Sozialamt hat den Freibetrag für Ihren Lohn offenbar vom Netto berechnet. Viele Sozialämter rechnen 30 % vom Brutto (zum Beispiel Hamburg und Bremen in ihren Verwaltungsanweisungen). Dann wären es {diff} mehr Grundsicherung im Monat. Das Gesetz sagt es nicht eindeutig (§ 82 Abs. 3 SGB XII). Fragen Sie beim Sozialamt nach oder legen Sie vorsorglich innerhalb der Frist Widerspruch ein."
 }

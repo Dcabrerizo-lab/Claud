@@ -582,5 +582,6 @@
   "t.hlu.paar": "Jeśli partnerka lub partner może pracować, należy do Jobcenter (Grundsicherungsgeld). Osoba pobierająca emeryturę dostaje wtedy z Sozialamt pomoc tylko dla siebie; przy czasowej niezdolności do pracy także ta osoba należy zwykle do Jobcenter. Proszę zlecić sprawdzenie obu.",
   "t.hlu.kind15": "Jeśli dziecko ma 15 lat lub więcej i może pracować, należy do Jobcenter (Grundsicherungsgeld). Wtedy Jobcenter jest zwykle właściwy dla całego gospodarstwa, z wyjątkiem osoby z emeryturą. Proszę zlecić to sprawdzenie.",
   "t.rundfunk.hlu": "Jeśli zostanie przyznana Hilfe zum Lebensunterhalt, można uzyskać zwolnienie z Rundfunkbeitrag. Proszę wtedy wysłać decyzję do Beitragsservice.",
-  "z.hluWg": "Hilfe zum Lebensunterhalt i Wohngeld nie są wypłacane jednocześnie. Proszę zlecić sprawdzenie obu i zapytać, która droga daje więcej."
+  "z.hluWg": "Hilfe zum Lebensunterhalt i Wohngeld nie są wypłacane jednocześnie. Proszę zlecić sprawdzenie obu i zapytać, która droga daje więcej.",
+  "bp.sa.nettoFrei": "Urząd socjalny (Sozialamt) najwyraźniej obliczył kwotę wolną od Pana/Pani wynagrodzenia od kwoty netto. Wiele urzędów socjalnych liczy 30 % od kwoty brutto (na przykład Hamburg i Brema w swoich wytycznych). Wtedy otrzymywałby Pan / otrzymywałaby Pani o {diff} więcej zabezpieczenia podstawowego miesięcznie. Ustawa nie mówi tego jednoznacznie (§ 82 Abs. 3 SGB XII). Proszę zapytać w urzędzie socjalnym albo na wszelki wypadek złożyć sprzeciw (Widerspruch) w terminie."
 }
