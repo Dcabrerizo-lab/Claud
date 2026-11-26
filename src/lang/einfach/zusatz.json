@@ -67,5 +67,7 @@
   "bp.vgl.zaehltNicht": "=",
   "bp.vgl.pg": "=",
   "bp.vgl.kein": "=",
-  "bp.vgl.klein": "So rechnet die Pflegekasse. Plus heißt: Du gibst dort mehr Punkte als das Gutachten. Weiter unten steht, bei welchen Fragen."
+  "bp.vgl.klein": "So rechnet die Pflegekasse. Plus heißt: Du gibst dort mehr Punkte als das Gutachten. Weiter unten steht, bei welchen Fragen.",
+  "bp.sa.lohnB": "Lohn brutto (wenn du ihn weißt)",
+  "bp.sa.nettoFrei": "Das Amt hat den Freibetrag für deinen Lohn wohl vom Netto berechnet. Viele Ämter nehmen 30 % vom Brutto. Dann bekommst du {diff} mehr im Monat. Das Gesetz ist hier nicht klar. Frag beim Amt nach. Oder lege rechtzeitig Widerspruch ein."
 }
