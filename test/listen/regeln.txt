@@ -46,6 +46,9 @@ node test/test-amtlich-wohngeld.js
 node test/test-ausziehen.js
 node test/test-krypto.js
 node test/test-doku-zusammenfuehrung.js
+node test/test-senioren.js
+node test/test-variante-nativ.js
+node test/test-sie-ebene.js
 node test/test-alter-paar.js
 node test/test-kind-werkstatt.js
 node test/test-rechtsmatrix-texte.js

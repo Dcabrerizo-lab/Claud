@@ -1,0 +1,7 @@
+// Variante „SoLo Pflege & Rente“ (docs/VARIANTE-PFLEGE.md). Nicht im Xcode-Projekt eingetragen: wird beim Bauen auf der
+// Kommandozeile übergeben und überschreibt dann die Einstellungen des Targets „App“ (SoLo bleibt unverändert):
+//   xcodebuild -project App.xcodeproj -scheme App -configuration Release -xcconfig pflege.xcconfig …
+// Vorher den Web-Inhalt der Variante bauen: VARIANTE=pflege npm run build:app
+PRODUCT_BUNDLE_IDENTIFIER = com.Sozialleistungslotse.pflege
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIconPflege
+SOLO_ANZEIGENAME = SoLo Pflege
