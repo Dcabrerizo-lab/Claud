@@ -63,7 +63,15 @@ const BescheidGSA = (function () {
     const ibE = leer(b.einkommen) ? 0 : z(b.einkommen);
     // Bruttolohn angegeben und der Bescheid passt nur zur Rechnung mit 30 % vom Netto: kein Fehler, sondern „prüfen“ mit vorsichtigem Hinweis
     // (die Bezugsgröße ist nicht höchstrichterlich geklärt). Liegt der Bescheid noch über der Netto-Rechnung, bleibt es „zu wenig“, gemessen an der Netto-Rechnung.
-    if (hatEink && einkommenN - einkommen > TOL && ibE - einkommen > TOL && ibE - einkommenN <= TOL) {
+    // Fable-Nachprüfung Nr. 6 (26.11.2026): „offenbar vom Netto“ nur, wenn der Bescheid zur Netto-Rechnung passt (± 1 €). Liegt er dazwischen,
+    // hat das Amt anders gerechnet: neutraler Hinweis (bp.sa.zwischen), ebenfalls „prüfen“.
+    const zwischen = hatEink && einkommenN - einkommen > TOL && ibE - einkommen > TOL && einkommenN - ibE > TOL;
+    if (zwischen) {
+      const diff = c2(ibE - einkommen);
+      posten.push({ key: 'einkommen', name: 'Angerechnetes Einkommen', erwartet: einkommen, bescheid: ibE, diff, wirkung: 'pruefen', recht: '§ 82 Abs. 3 Satz 1 SGB XII',
+        tKey: 'bp.sa.zwischen', tP: { diff: eur(diff) },
+        grund: `Das angerechnete Einkommen liegt um ${eur(diff)} im Monat über der Rechnung mit einem Freibetrag von 30 % des Bruttoeinkommens (§ 82 Abs. 3 Satz 1 SGB XII; z. B. Fachanweisung Hamburg zu §§ 82–84 SGB XII, Ziff. 5.6; Verwaltungsanweisung Bremen zu § 82 SGB XII). Es entspricht auch nicht der Rechnung mit 30 % des Nettoeinkommens (${eur(einkommenN)}). Die Berechnung des Freibetrags ist nicht nachvollziehbar.` });
+    } else if (hatEink && einkommenN - einkommen > TOL && ibE - einkommen > TOL && Math.abs(ibE - einkommenN) <= TOL) {
       const diff = c2(ibE - einkommen), fAN = teile.reduce((s, t) => s + t.freiArbeitNetto, 0), fAB = teile.reduce((s, t) => s + t.freiArbeit, 0);
       posten.push({ key: 'einkommen', name: 'Angerechnetes Einkommen', erwartet: einkommen, bescheid: ibE, diff, wirkung: 'pruefen', recht: '§ 82 Abs. 3 Satz 1 SGB XII',
         tKey: 'bp.sa.nettoFrei', tP: { diff: eur(diff) },

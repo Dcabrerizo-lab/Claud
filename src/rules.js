@@ -751,7 +751,10 @@ const Rules = (function () {
       const thrBasis = R.eg.min + (egBonusMoegl ? R.eg.bonusMin : 0) + R.eg.mehrling * (egMehr - 1);
       const ohneVor = (plus) => b <= (plus ? thrBasis / 2 : thrBasis);
       const cap = egVorN == null ? Infinity : Math.max(0, egVorN - R.eg.pausch);
-      const sgb = (plus) => (egVorN == null && ohneVor(plus) ? 0 : Math.min(cap, plus ? F / 2 : F));
+      // § 10 Abs. 5 Satz 3 BEEG: bei ElterngeldPlus „verringern sich die Beträge nach Satz 2 um die Hälfte“ – halbiert wird der ganze Betrag nach
+      // Satz 2, also min(Einkommen vor der Geburt, 300 €) / 2 (Fable-Nachprüfung Nr. 4, buzer.de/10_BEEG.htm, Abruf 26.11.2026; vorsichtige Lesart).
+      // Bis 26.11.2026: min(Einkommen, 150 €), bei Einkommen vor der Geburt unter 300 € bis 75 € zu viel.
+      const sgb = (plus) => (egVorN == null && ohneVor(plus) ? 0 : Math.min(cap, F) / (plus ? 2 : 1));
       const va = plusSicher ? [sgb(true)] : basisSicher ? [sgb(false)] : [sgb(true), sgb(false)];
       const wa = plusSicher ? [F / 2] : basisSicher ? [F] : [F / 2, F];
       return { sgbLo: Math.min(...va), sgbHi: Math.max(...va), wgLo: Math.min(...wa) * egMehr, wgHi: Math.max(...wa) * egMehr };
@@ -2599,10 +2602,13 @@ const Rules = (function () {
     const bedarf = h.regel + h.miete;
     const lohnNetto = h.erwerb || h.erwerb2 ? (h.pers || []).reduce((a, x) => a + (x[0] === 'lohn' ? (h.liste ? x[2] : (h.brutto > 0 ? h.netto * x[1] / h.brutto : 0)) : 0), 0) : 0;
     const frei = Math.min(R.asylblg.lohnFrei * lohnNetto, 0.5 * R.regelbedarf.alleinstehend * h.adults);
-    const luecke = bedarf - Math.max(0, h.netto - frei);
+    // Elterngeld: Freibetrag nach § 10 Abs. 5 BEEG gilt ausdrücklich auch beim AsylbLG (wie SGB II/XII, derive egFrei; Fable-Nachprüfung Nr. 5,
+    // buzer.de/10_BEEG.htm, Abruf 26.11.2026). Für „eher nicht“ mit dem höheren möglichen Freibetrag (egFreiOffen). Bis 26.11.2026: voll angerechnet.
+    const luecke = bedarf - Math.max(0, h.netto - frei - (h.egFreiSGB || 0));
+    const lueckeHoch = bedarf - Math.max(0, h.netto - frei - (h.egFreiSGB || 0) - (h.egFreiOffen || 0));
     const vermUeber = h.vermoegen - R.asylblg.vermFrei * h.persons;
     const tx = [['asyl.einkommen'], ['asyl.ja'], ['asyl.analog']];
-    if (luecke < -R.grundsicherung.knappPuffer) return mk(id, 'nein', 'einkoHoch', tx);
+    if (lueckeHoch < -R.grundsicherung.knappPuffer) return mk(id, 'nein', 'einkoHoch', tx);
     // Die Grundleistungen (§ 3a AsylbLG) liegen unter den Regelbedarfen: „wahrscheinlich“ nur ohne eigenes Einkommen und Vermögen
     if (vermUeber > 0 || h.netto > 0 || luecke < R.grundsicherung.sicherAb) return mk(id, 'vielleicht', 'vielleicht', tx);
     return mk(id, 'ja', 'ja', [['asyl.ja'], ['asyl.analog']]);

@@ -277,6 +277,7 @@
   "ra.wer.partner": "Mój partner lub moja partnerka",
   "ra.wer.beide": "Oboje",
   "ra.wer.hint": "Wierzyciele mogą zajmować tylko u osoby, która ma długi. Dlatego liczymy tylko dochód tej osoby. Jeśli oboje macie długi, liczymy osobno dla każdego z was.",
+  "ra.wer.pers": "Jako osoby, na które płacone są alimenty, liczymy partnera lub partnerkę i wszystkie dzieci w gospodarstwie domowym – tak samo dla każdej osoby z długami. Jeśli nie jesteście małżeństwem albo to nie są jej własne dzieci, może ich być mniej. Wtedy nasza propozycja jest raczej za niska. Dokładniej policzysz w kalkulatorze zajęć – tam sam wybierasz liczbę.",
   "ra.so.4": "Przy kilku długach ratę dostają najpierw czynsz, prąd, alimenty, grzywny i ubezpieczenie zdrowotne, potem mandaty i urzędy, na końcu banki, windykacja i sprzedaż wysyłkowa. W obrębie grupy dzielimy według wysokości i zaokrąglamy w dół do pełnych euro.",
   "ra.so.5": "To prosta zasada SoLo, a nie porada prawna. Sam(a) decydujesz, co proponujesz.",
   "ra.tipp.kurz": "Proponuj tylko tyle, ile na pewno możesz płacić co miesiąc.",

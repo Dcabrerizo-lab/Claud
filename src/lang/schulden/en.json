@@ -277,6 +277,7 @@
   "ra.wer.partner": "My partner",
   "ra.wer.beide": "Both of us",
   "ra.wer.hint": "Creditors may only seize from the person who has the debts. So we only count that person's income. If you both have debts, we calculate for each of you separately.",
+  "ra.wer.pers": "As people you pay maintenance for, we count your partner and all children in the household – the same for each person with debts. If you are not married or the children are not that person's own, there may be fewer. Then our suggestion is rather too low. For a more exact figure, use the garnishment calculator, where you choose the number yourself.",
   "ra.so.4": "With several debts, rent, electricity, maintenance, fines and health insurance get the instalment first, then administrative fines and authorities, and banks, debt collectors and mail-order companies last. Within a group we split by the size of the claims and round down to whole euros.",
   "ra.so.5": "This is a SoLo rule of thumb, not legal advice. You decide yourself what you offer.",
   "ra.tipp.kurz": "Only offer what you can safely pay every month.",

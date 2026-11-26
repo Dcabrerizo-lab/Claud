@@ -143,5 +143,6 @@
   "u.eink.wg": "Wohngeld için hanedeki herkesin, genelde son 12 ay",
   "u.eink.kiz": "Kinderzuschlag için ebeveynlerin ve çocukların geliri (ör. nafaka), genelde son 6 ay",
   "bp.sa.lohnB": "Brüt ücret (biliyorsan)",
-  "bp.sa.nettoFrei": "Sosyal yardım dairesi (Sozialamt) ücretin için muafiyet tutarını görünüşe göre net tutardan hesaplamış. Birçok sosyal yardım dairesi brüt tutarın %30’unu hesaplar (örneğin Hamburg ve Bremen idari talimatlarında). O zaman ayda {diff} daha fazla temel güvence alırdın. Kanun bu konuda açık değil (§ 82 Abs. 3 SGB XII). Sosyal yardım dairesine sor ya da önlem olarak süre içinde itiraz (Widerspruch) et."
+  "bp.sa.nettoFrei": "Sosyal yardım dairesi (Sozialamt) ücretin için muafiyet tutarını görünüşe göre net tutardan hesaplamış. Birçok sosyal yardım dairesi brüt tutarın %30’unu hesaplar (örneğin Hamburg ve Bremen idari talimatlarında). O zaman ayda {diff} daha fazla temel güvence alırdın. Kanun bu konuda açık değil (§ 82 Abs. 3 SGB XII). Sosyal yardım dairesine sor ya da önlem olarak süre içinde itiraz (Widerspruch) et.",
+  "bp.sa.zwischen": "Kararda, brüt maaşın % 30'u kadar muafiyete göre ayda {diff} daha fazla gelir hesaba katılmış. Netin % 30'u ile yapılan hesaba da uymuyor. Sosyal yardım dairesinin (Sozialamt) nasıl hesapladığı belli değil. Sozialamt'a sor veya tedbir olarak süre içinde itiraz (Widerspruch) et."
 }

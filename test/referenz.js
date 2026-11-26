@@ -48,7 +48,8 @@ function elterngeldFrei(e, b) {
   const grund = (plus) => {
     const deckel = plus ? 150 : 300;
     if (vor == null) return b <= (plus ? ohneEinkommenBis / 2 : ohneEinkommenBis) ? 0 : deckel;
-    return Math.min(deckel, Math.max(0, vor - 1230 / 12));
+    // § 10 Abs. 5 Satz 3 BEEG: bei ElterngeldPlus die Hälfte des ganzen Betrags nach Satz 2 (Fable-Nachprüfung Nr. 4, Abruf 26.11.2026)
+    return Math.min(300, Math.max(0, vor - 1230 / 12)) * deckel / 300;
   };
   const v = nurPlus ? [grund(true)] : nurBasis ? [grund(false)] : [grund(true), grund(false)];
   const w = nurPlus ? [150] : nurBasis ? [300] : [150, 300];
@@ -890,9 +891,13 @@ function asylbewerber(e) {
   if (Array.isArray(e.einkommen)) e.einkommen.forEach((x) => { if (x && (x.art === 'lohn' || x.art === 'selbst')) lohn += leer(x.n) ? zahl(x.b) : zahl(x.n); });
   else h.p.forEach((x) => { if (x.art === 'lohn' && h.brutto > 0) lohn += h.netto * x.brutto / h.brutto; });
   const netto = Array.isArray(e.einkommen) ? e.einkommen.reduce((a, x) => a + (x ? (leer(x.n) ? zahl(x.b) : zahl(x.n)) : 0), 0) : h.netto;
-  const luecke = bedarf - Math.max(0, netto - Math.min(0.25 * lohn, 0.5 * RB[1] * h.erwachsene));
+  // Elterngeld: Freibetrag § 10 Abs. 5 BEEG gilt auch beim AsylbLG (Fable-Nachprüfung Nr. 5); „eher nicht“ mit dem höheren möglichen Freibetrag
+  const egF = (k) => (Array.isArray(e.einkommen) ? e.einkommen.reduce((a, x) => a + (x && x.art === 'eg' ? elterngeldFrei(e, leer(x.n) ? zahl(x.b) : zahl(x.n))[k] : 0), 0)
+    : h.p.reduce((a, x) => a + (x.art === 'eg' ? elterngeldFrei(e, x.brutto)[k] : 0), 0));
+  const fr = Math.min(0.25 * lohn, 0.5 * RB[1] * h.erwachsene);
+  const luecke = bedarf - Math.max(0, netto - fr - egF('lo')), lueckeHoch = bedarf - Math.max(0, netto - fr - egF('hi'));
   const ueber = h.vermoegen - 200 * h.personen;
-  if (luecke < -100) return { level: 'nein' }; // Vermögen über dem Freibetrag: nur „möglich“ (keine feste Schwelle im Gesetz)
+  if (lueckeHoch < -100) return { level: 'nein' }; // Vermögen über dem Freibetrag: nur „möglich“ (keine feste Schwelle im Gesetz)
   if (ueber > 0 || netto > 0 || luecke < 50) return { level: 'vielleicht' };
   return { level: 'ja' };
 }

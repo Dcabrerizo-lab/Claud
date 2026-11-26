@@ -277,6 +277,7 @@
   "ra.wer.partner": "Mon ou ma partenaire",
   "ra.wer.beide": "Nous deux",
   "ra.wer.hint": "Les créanciers ne peuvent saisir que chez la personne qui a les dettes. Nous ne comptons donc que les revenus de cette personne. Si vous avez tous les deux des dettes, nous calculons séparément pour chacun de vous.",
+  "ra.wer.pers": "Comme personnes pour lesquelles une pension alimentaire est versée, nous comptons le ou la partenaire et tous les enfants du foyer – de la même façon pour chaque personne endettée. Si vous n'êtes pas mariés ou si ce ne sont pas ses propres enfants, il peut y en avoir moins. Notre proposition est alors plutôt trop basse. Pour un calcul plus précis, utilise le calculateur de saisie : tu y choisis toi-même le nombre.",
   "ra.so.4": "Avec plusieurs dettes, le loyer, l’électricité, la pension alimentaire, les amendes pénales et l’assurance maladie reçoivent d’abord la mensualité, puis les amendes administratives et les administrations, enfin les banques, le recouvrement et la vente par correspondance. Dans un même groupe, nous répartissons selon le montant et arrondissons à l’euro inférieur.",
   "ra.so.5": "C’est une règle simple de SoLo, pas un conseil juridique. C’est toi qui décides ce que tu proposes.",
   "ra.tipp.kurz": "Ne propose que ce que tu peux payer sans risque chaque mois.",
