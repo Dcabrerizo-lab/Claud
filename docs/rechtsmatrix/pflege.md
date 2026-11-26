@@ -33,6 +33,7 @@ Grundlage für künftige Aktualitätsprüfungen. Zusammengeführt aus zwei unabh
 | Grundsicherung bei Erwerbsminderung | nur bei dauerhafter voller Erwerbsminderung, ab 18 | § 41 Abs. 3, § 45 SGB XII | buzer.de/41_SGB_XII.htm | `grundsicherungAlter`, Text `t.gsa.emDauer` |
 | Pflegegrad-Einschätzung Kinder bis 18 Monate | nur Module 3 und 5, statt Modul 4 nur 4.K (20 Einzelpunkte), aus Modul 1 nur KF 4.1.6; Grad eine Stufe höher | § 15 Abs. 7 SGB XI; Begutachtungs-Richtlinien Kap. 5 (AOK-Download, Fassung 2016) | aok.de/gp/…/begutachtungs_RL_BRi.pdf | `erweiterungen/pflege.js` `rechne` |
 | Besondere Bedarfskonstellation | Gebrauchsunfähigkeit beider Arme und Beine → PG 5 | § 15 Abs. 4 SGB XI; BRi 4.9.1 | wie oben | `pflege-assistent.js` Schritt `bk` |
+| Renten-Netto (geprüft 26.11.2026) | KV 7,3 % + halber durchschnittlicher Zusatzbeitrag 2,9 % (= 8,75 %), PV allein getragen 3,6 %, kinderlos 4,2 %, je Kind unter 25 ab dem 2. Kind −0,25 (höchstens −1,0 → 2,6 %); bis BBG KV 5.812,50 €. Ohne Angabe zur Elterneigenschaft: Netto aus Brutto ohne Zuschlag (eher höheres Netto), Brutto aus Zahlbetrag ohne Kinder im Haushalt mit Zuschlag; Grundsicherung im Alter: „unwahrscheinlich“ erst, wenn es auch mit Zuschlag nicht reicht | § 247, § 249a SGB V; § 55 Abs. 1, 3, § 59 Abs. 1 SGB XI | BMG „Finanzierung der Pflegeversicherung“ (Stand 14.9.2026, Abruf 26.11.2026) | `nettoRente`, `bruttoAusNettoRente`, `grundsicherungAlter` (`pvOffen`) |
 | Wohngeld: Rente nur als Zahlbetrag | Zahlbetrag ≈ 87,65 % Brutto → nach 10 % / 20 % Abzug ≈ 103 % / 91 % des Zahlbetrags | §§ 14, 16 WoGG | gesetze-im-internet.de | `R.wgAbzugAuszahlung.rente = [-0,04, 0,09]` |
 
 ## 2. Konstellationen mit Soll-Ergebnis
@@ -63,12 +64,18 @@ Grundlage für künftige Aktualitätsprüfungen. Zusammengeführt aus zwei unabh
 | Paar, ältere Person über Regelaltersgrenze, jüngere erwerbsgemindert | emrente, srente, ggeld | möglich (nicht „nein“) | C-EMR-03, F-em-08, F-sr-06 (schon in main, PR #189) |
 | Kind unter 18 mit Werkstatt-Haken | gsa | nein, `gsa.kindU18` | F-gsa-23 (schon in main) |
 | Rente nur als Zahlbetrag (Wohngeld) | wohngeld | untere Schätzung ≤ Schätzung mit Brutto | fest im Läufer |
+| Grundsicherung im Alter, Lohn 1.000 brutto / 800 netto, Miete 500 | gsa | ja, Spanne 500–540 € (§ 82 Abs. 3 SGB XII: Brutto-Lesart oben, Netto-Lesart unten) | R-GSA-AE1, R-GSA-AE2 |
+| Rente 600 + Minijob 400 (brutto = netto) | gsa | ja, ein Betrag 130 € | R-GSA-AE3 |
+| Rente 520 + Lohn 900/720, Miete 500 | gsa | möglich, Spanne bis 90 €, Text `bedarfRand` | R-GSA-AE4 |
+| Rente nur brutto 1.300, keine Kinder, Miete 471 | gsa | möglich (Kinderlosen-Zuschlag offen); mit eingegebenem Netto: nein | R-PV-01, R-PV-02 |
+| Renten-Netto 5 bzw. 7 Kinder | nettoRente | 886,50 € (PV 2,6 %) | R-PV-03, R-PV-04 |
+| Brutto aus Zahlbetrag, ohne Kinder / 1 Kind | bruttoAusNettoRente | 1.000 € aus 870,50 € / 876,50 € | R-PV-05, R-PV-06 |
 | Volle Erwerbsminderung unter der Altersgrenze (nicht Werkstatt) | gsa, hlu | Grundsicherung „wahrscheinlich“ mit Hinweis + Verweis; Hilfe zum Lebensunterhalt „möglich“ (nur bei befristeter Erwerbsminderung, § 19 Abs. 2, § 27, § 41 Abs. 3, 3a SGB XII), ohne doppelten Betrag; bei den Eltern Hinweis § 39 SGB XII (seit 25.11.2026) | HLU-P01 bis HLU-P05 |
 
 ## 3. Offen / zu klären (nicht als harte Erwartung im Test)
 
 - Erwerbsminderungsrente „wahrscheinlich“ bei eigener Angabe „unter 3 Stunden“ (Z3 Claude).
-- `nettoRente` ohne Kinderlosen-Zuschlag als Standard (Z4 Claude).
+- `nettoRente` ohne Kinderlosen-Zuschlag als Standard (Z4 Claude): bleibt (vorsichtig: eher höheres Netto); seit 26.11.2026 bei der Grundsicherung im Alter kein „unwahrscheinlich“ allein wegen des offenen Zuschlags. Genauer wäre eine Frage „Hast du Kinder (auch erwachsene)?“ – Entscheidung David.
 - Digitale Pflegeanwendungen, § 92c-Zuschuss, Zuschüsse § 44a Abs. 1 in der Übersicht (Z5 Claude).
 - Krankengeld als Zahlbetrag beim Wohngeld (`wgAbzugAuszahlung.kg`), gleiche Herleitung wie Rente, nicht geändert.
 - Landesblindengeld SH, BW, MV, NI, RP: am 26.11.2026 geprüft, siehe Abschnitt 4 (erledigt). Offen bleiben feste Beträge für BB, HB, HH, NW, SL, ST, TH (Abschnitt 4) und der Gesetzestext SH in juris (nicht abrufbar).
