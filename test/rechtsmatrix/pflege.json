@@ -8313,5 +8313,1127 @@
    }
   },
   "quelle": "SGB XII §§ 19, 27, 30, 39, 41; SächsLErzGG §§ 1–3 (revosax.sachsen.de, Abruf 25.11.2026)"
+ },
+ {
+  "id": "B-blind-BW",
+  "beschreibung": "blind, Erwachsene, Baden-Württemberg: 410 € (§ 2 Abs. 1 BliHG BW)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "BW",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 410,
+    "betragAus": "blindengeld.landBetrag.betrag",
+    "txNicht": [
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "Gesetz über die Landesblindenhilfe BW § 2 Abs. 1 (lexaris.de, Fassung mit 410 €); service-bw/Stadt Heidelberg, Stand 19.10.2026 – https://www.heidelberg.de/-/Verfahrensbeschreibung/blindenhilfe-beantragen/vbid6029407, Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blind-BY",
+  "beschreibung": "blind, Erwachsene, Bayern 809 € (Art. 2 BayBlindG, 85 % von 951,92 €)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 809,
+    "betragAus": "blindengeld.blind.betrag"
+   }
+  },
+  "quelle": "Art. 2 BayBlindG; ZBFS Infoblatt Blindengeld Stand 01.07.2026 – https://www.zbfs.bayern.de/imperia/md/content/stmas/zbfs_2022/weitere_aufgaben/blindengeld_infoblatt_2026-07_comp.pdf, Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blind-BE",
+  "beschreibung": "blind, Erwachsene, Berlin: 761,54 € (80 % der Blindenhilfe 951,92 €)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "BE",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 761.54,
+    "betragAus": "blindengeld.landBetrag.betrag",
+    "txNicht": [
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "§ 2 LPflGG Berlin (80 v. H. der Blindenhilfe) – https://www.berlin.de/sen/soziales/soziale-sicherung/landespflegegeldgesetz/; § 72 Abs. 2 SGB XII 951,92 € ab 1.7.2026, Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blind-BB",
+  "beschreibung": "blind, Erwachsene, Brandenburg: kein fester Betrag, Spanne 350–952 € – dynamisch (425 € + Rentenanpassung ab 1.7.2026, § 3 Abs. 1 LTeilhGG)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "BB",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "tx": [
+     "blindengeld.landJa"
+    ],
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.blind"
+    ]
+   }
+  },
+  "quelle": "Landesrecht Brandenburg; Spanne: SH 350 € (DBSV 7/2026) bis NRW 951,92 € (§ 2 Abs. 1 GHBG, https://recht.nrw.de/system/files/BH/4675-20951.htm), Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blind-HB",
+  "beschreibung": "blind, Erwachsene, Bremen: kein fester Betrag, Spanne 350–952 € – Betrag amtlich nicht belegt",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "HB",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "tx": [
+     "blindengeld.landJa"
+    ],
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.blind"
+    ]
+   }
+  },
+  "quelle": "Landesrecht Bremen; Spanne: SH 350 € (DBSV 7/2026) bis NRW 951,92 € (§ 2 Abs. 1 GHBG, https://recht.nrw.de/system/files/BH/4675-20951.htm), Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blind-HH",
+  "beschreibung": "blind, Erwachsene, Hamburg: kein fester Betrag, Spanne 350–952 € – Betrag amtlich nicht belegt",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "HH",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "tx": [
+     "blindengeld.landJa"
+    ],
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.blind"
+    ]
+   }
+  },
+  "quelle": "Landesrecht Hamburg; Spanne: SH 350 € (DBSV 7/2026) bis NRW 951,92 € (§ 2 Abs. 1 GHBG, https://recht.nrw.de/system/files/BH/4675-20951.htm), Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blind-HE",
+  "beschreibung": "blind, Erwachsene, Hessen: 818,65 € (86 % der Blindenhilfe)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "HE",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 818.65,
+    "betragAus": "blindengeld.landBetrag.betrag",
+    "txNicht": [
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "BliGG Hessen (86 % der Blindenhilfe nach § 72 SGB XII = 818,65 € ab 1.7.2026), Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blind-MV",
+  "beschreibung": "blind, Erwachsene, Mecklenburg-Vorpommern: 430 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "MV",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 430,
+    "betragAus": "blindengeld.landBetrag.betrag",
+    "txNicht": [
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "§ 1 LBlGG M-V; FIM-Leistungsbeschreibung MV – https://fimportal.de/api/v0/xzufi-services/L100027/9576990/de/pdf; Haushaltsbegleitgesetz 2026/2027 (LT-Drs. 8/5199) ohne Änderung, Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blind-NI",
+  "beschreibung": "blind, Erwachsene, Niedersachsen: 450 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "NI",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 450,
+    "betragAus": "blindengeld.landBetrag.betrag",
+    "txNicht": [
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "§ 2 Abs. 1 BlindGeldG Nds. i. d. F. Art. 10 G v. 13.12.2024 (Nds. GVBl. 2024 Nr. 118) – https://schure.de/2114102/blindgeldg.htm, Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blind-NW",
+  "beschreibung": "blind, Erwachsene, Nordrhein-Westfalen: kein fester Betrag, Spanne 350–952 € – altersabhängig (§ 2 Abs. 1 GHBG: unter 60 = Blindenhilfe, ab 60 473 €)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "NW",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "tx": [
+     "blindengeld.landJa"
+    ],
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.blind"
+    ]
+   }
+  },
+  "quelle": "Landesrecht Nordrhein-Westfalen; Spanne: SH 350 € (DBSV 7/2026) bis NRW 951,92 € (§ 2 Abs. 1 GHBG, https://recht.nrw.de/system/files/BH/4675-20951.htm), Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blind-RP",
+  "beschreibung": "blind, Erwachsene, Rheinland-Pfalz: 410 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "RP",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 410,
+    "betragAus": "blindengeld.landBetrag.betrag",
+    "txNicht": [
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "§ 2 Abs. 1 LBlindenGG RP; Flyer Kreisverwaltung Mainz-Bingen Stand 1.7.2026 – https://www.mainz-bingen.de/default-wAssets/docs/Familie-Jugend-Asyl-Gesundheit-Soziales/Soziales/Grundsicherung/flyer33a-landesblindengeld-aktuell.pdf, Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blind-SL",
+  "beschreibung": "blind, Erwachsene, Saarland: kein fester Betrag, Spanne 350–952 € – Betrag amtlich nicht belegt",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "SL",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "tx": [
+     "blindengeld.landJa"
+    ],
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.blind"
+    ]
+   }
+  },
+  "quelle": "Landesrecht Saarland; Spanne: SH 350 € (DBSV 7/2026) bis NRW 951,92 € (§ 2 Abs. 1 GHBG, https://recht.nrw.de/system/files/BH/4675-20951.htm), Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blind-SN",
+  "beschreibung": "blind, Erwachsene, Sachsen: 380 € (ab 14 Jahren)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "SN",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 380,
+    "betragAus": "blindengeld.landBetrag.betrag",
+    "txNicht": [
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "§ 2 Abs. 1 LBlindG Sachsen, Fassung ab 1.1.2023 – https://revosax.sachsen.de/vorschrift/1537, Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blind-ST",
+  "beschreibung": "blind, Erwachsene, Sachsen-Anhalt: kein fester Betrag, Spanne 350–952 € – Betrag amtlich nicht belegt",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "ST",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "tx": [
+     "blindengeld.landJa"
+    ],
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.blind"
+    ]
+   }
+  },
+  "quelle": "Landesrecht Sachsen-Anhalt; Spanne: SH 350 € (DBSV 7/2026) bis NRW 951,92 € (§ 2 Abs. 1 GHBG, https://recht.nrw.de/system/files/BH/4675-20951.htm), Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blind-SH",
+  "beschreibung": "blind, Erwachsene, Schleswig-Holstein: 350 € ab 1.4.2026",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "SH",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 350,
+    "betragAus": "blindengeld.landBetrag.betrag",
+    "txNicht": [
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "LBlGG SH; DBSV Stand 1.7.2026 – https://www.dbsv.org/blindengeld-in-schleswig-holstein.html; Erhöhung 25 € ab 4/2026 (dsl. 29.1.2026); Landesseite (Stand 3/2024, 300 €) veraltet, Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blind-TH",
+  "beschreibung": "blind, Erwachsene, Thüringen: kein fester Betrag, Spanne 350–952 € – Quellen widersprüchlich (ThürSinnbGG 400 € vs. 472 €)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "TH",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "tx": [
+     "blindengeld.landJa"
+    ],
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.blind"
+    ]
+   }
+  },
+  "quelle": "Landesrecht Thüringen; Spanne: SH 350 € (DBSV 7/2026) bis NRW 951,92 € (§ 2 Abs. 1 GHBG, https://recht.nrw.de/system/files/BH/4675-20951.htm), Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blind-spanne",
+  "beschreibung": "blind, NRW: Spanne bis 952 € (NRW unter 60 = Blindenhilfe 951,92 €)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "NW",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 952,
+    "betragAus": "blindengeld.landJa.bis"
+   }
+  },
+  "quelle": "§ 2 Abs. 1 GHBG NRW – https://recht.nrw.de/system/files/BH/4675-20951.htm; § 72 Abs. 2 SGB XII, Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blh-SH",
+  "beschreibung": "blind, Schleswig-Holstein, kein Pflegegrad, wenig Einkommen: Blindenhilfe-Rest 951,92 − 350 = 601.92 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1027,
+   "brutto2": "",
+   "netto": 900,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "SH",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blh": {
+    "status": "vielleicht|ja",
+    "betrag": 601.92,
+    "betragAus": "blh.differenz.rest"
+   }
+  },
+  "quelle": "§ 72 Abs. 1 Satz 1, Abs. 2 SGB XII (Landesblindengeld voll angerechnet) – https://www.buzer.de/72_SGB_XII.htm; LBlGG SH; DBSV Stand 1.7.2026 – https://www.dbsv.org/blindengeld-in-schleswig-holstein.html; Erhöhung 25 € ab 4/2026 (dsl. 29.1.2026); Landesseite (Stand 3/2024, 300 €) veraltet, Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blh-BE",
+  "beschreibung": "blind, Berlin, kein Pflegegrad, wenig Einkommen: Blindenhilfe-Rest 951,92 − 761.54 = 190.38 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1027,
+   "brutto2": "",
+   "netto": 900,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "BE",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blh": {
+    "status": "vielleicht|ja",
+    "betrag": 190.38,
+    "betragAus": "blh.differenz.rest"
+   }
+  },
+  "quelle": "§ 72 Abs. 1 Satz 1, Abs. 2 SGB XII (Landesblindengeld voll angerechnet) – https://www.buzer.de/72_SGB_XII.htm; § 2 LPflGG Berlin (80 v. H. der Blindenhilfe) – https://www.berlin.de/sen/soziales/soziale-sicherung/landespflegegeldgesetz/; § 72 Abs. 2 SGB XII 951,92 € ab 1.7.2026, Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blh-SN",
+  "beschreibung": "blind, Sachsen, kein Pflegegrad, wenig Einkommen: Blindenhilfe-Rest 951,92 − 380 = 571.92 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1027,
+   "brutto2": "",
+   "netto": 900,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "SN",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blh": {
+    "status": "vielleicht|ja",
+    "betrag": 571.92,
+    "betragAus": "blh.differenz.rest"
+   }
+  },
+  "quelle": "§ 72 Abs. 1 Satz 1, Abs. 2 SGB XII (Landesblindengeld voll angerechnet) – https://www.buzer.de/72_SGB_XII.htm; § 2 Abs. 1 LBlindG Sachsen, Fassung ab 1.1.2023 – https://revosax.sachsen.de/vorschrift/1537, Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blh-NI",
+  "beschreibung": "blind, Niedersachsen, kein Pflegegrad, wenig Einkommen: Blindenhilfe-Rest 951,92 − 450 = 501.92 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1027,
+   "brutto2": "",
+   "netto": 900,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "NI",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blh": {
+    "status": "vielleicht|ja",
+    "betrag": 501.92,
+    "betragAus": "blh.differenz.rest"
+   }
+  },
+  "quelle": "§ 72 Abs. 1 Satz 1, Abs. 2 SGB XII (Landesblindengeld voll angerechnet) – https://www.buzer.de/72_SGB_XII.htm; § 2 Abs. 1 BlindGeldG Nds. i. d. F. Art. 10 G v. 13.12.2024 (Nds. GVBl. 2024 Nr. 118) – https://schure.de/2114102/blindgeldg.htm, Abruf 26.11.2026",
+  "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "R-GSA-AE1",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "Rentner allein, Lohn 1.000 brutto / 800 netto, Miete 500: Bedarf 1.063; 30 % vom Brutto = 300, gedeckelt 281,50 -> Einkommen 518,50, Lücke 544,50 (obere Grenze 540)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "art1": "lohn",
+   "brutto": 1000,
+   "netto": 800,
+   "miete": 500
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 540,
+    "toleranz": 0.01,
+    "betragAus": "schaetz.spanne.b",
+    "tx": [
+     "bedarfJa"
+    ]
+   }
+  },
+  "quelle": "§ 82 Abs. 2, 3 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__82.html, Abruf 26.11.2026); Fachanweisung Hamburg §§ 82-84 SGB XII, Stand 1.1.2022, Ziff. 5.6 (Brutto); RBSFV 2026 (RS1 563 €)"
+ },
+ {
+  "id": "R-GSA-AE2",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "wie AE1, untere Grenze mit 30 % vom Netto (240): Einkommen 560, Lücke 503 -> 500",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "art1": "lohn",
+   "brutto": 1000,
+   "netto": 800,
+   "miete": 500
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 500,
+    "toleranz": 0.01,
+    "betragAus": "schaetz.spanne.a"
+   }
+  },
+  "quelle": "§ 82 Abs. 2, 3 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__82.html, Abruf 26.11.2026); Fachanweisung Hamburg §§ 82-84 SGB XII, Stand 1.1.2022, Ziff. 5.6 (Brutto); RBSFV 2026 (RS1 563 €)"
+ },
+ {
+  "id": "R-GSA-AE3",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "Rente 600 netto + Minijob 400 (brutto = netto), Miete 450: Freibetrag 120 in beiden Lesarten, Lücke 1.013 - 880 = 133 -> 130 (ein Betrag)",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "miete": 450,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 685,
+     "n": 600
+    },
+    {
+     "art": "lohn",
+     "b": 400,
+     "n": 400
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "ja",
+    "betrag": 130,
+    "toleranz": 0.01,
+    "betragAus": "schaetz.eins.a"
+   }
+  },
+  "quelle": "§ 82 Abs. 2, 3 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__82.html, Abruf 26.11.2026); Fachanweisung Hamburg §§ 82-84 SGB XII, Stand 1.1.2022, Ziff. 5.6 (Brutto); RBSFV 2026 (RS1 563 €)"
+ },
+ {
+  "id": "R-GSA-AE4",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "Rente 520 netto + Lohn 900 brutto / 720 netto, Miete 500: mit Brutto Lücke 93, mit Netto 39 (< 50) -> nur „möglich“ mit Spanne",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "miete": 500,
+   "einkommen": [
+    {
+     "art": "rente",
+     "b": 590,
+     "n": 520
+    },
+    {
+     "art": "lohn",
+     "b": 900,
+     "n": 720
+    }
+   ]
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "vielleicht",
+    "betrag": 90,
+    "toleranz": 0.01,
+    "betragAus": "schaetz.spanne.b",
+    "tx": [
+     "bedarfRand"
+    ]
+   }
+  },
+  "quelle": "§ 82 Abs. 2, 3 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__82.html, Abruf 26.11.2026); Fachanweisung Hamburg §§ 82-84 SGB XII, Stand 1.1.2022, Ziff. 5.6 (Brutto); RBSFV 2026 (RS1 563 €)"
+ },
+ {
+  "id": "R-PV-01",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "Rente nur brutto 1.300, keine Kinder im Haushalt (Kinderlosigkeit unbekannt), Miete 471: Netto geschätzt 1.139,45 (3,6 %), kinderlos 1.131,65; Lücke -105,45 liegt im Puffer 100 + 7,80 -> „möglich“ statt „unwahrscheinlich“",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "art1": "rente",
+   "brutto": 1300,
+   "netto": "",
+   "miete": 471
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "vielleicht"
+   }
+  },
+  "quelle": "§ 55 Abs. 1, 3, § 59 Abs. 1 SGB XI; BMG „Finanzierung der Pflegeversicherung“ (Stand 14.9.2026, Abruf 26.11.2026): 3,6 %, kinderlos +0,6, je Kind unter 25 ab dem 2. Kind −0,25 (höchstens −1,0); § 247, § 249a SGB V"
+ },
+ {
+  "id": "R-PV-02",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "wie R-PV-01, aber Netto selbst eingegeben (1.139,45): kein Zuschlag offen -> „unwahrscheinlich“",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "bezug": {},
+   "ohneWege": true,
+   "bundesland": "BY",
+   "aufenthalt": "",
+   "art1": "rente",
+   "brutto": 1300,
+   "netto": 1139.45,
+   "miete": 471
+  },
+  "erwartet": {
+   "gsa": {
+    "status": "nein"
+   }
+  },
+  "quelle": "§ 55 Abs. 1, 3, § 59 Abs. 1 SGB XI; BMG „Finanzierung der Pflegeversicherung“ (Stand 14.9.2026, Abruf 26.11.2026): 3,6 %, kinderlos +0,6, je Kind unter 25 ab dem 2. Kind −0,25 (höchstens −1,0); § 247, § 249a SGB V"
+ },
+ {
+  "id": "R-PV-03",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "Renten-Netto 1.000 brutto, 5 Kinder unter 25: Pflege 3,6 - 4 × 0,25 = 2,6 % -> 886,50",
+  "art": "funktion",
+  "funktion": "nettoRente",
+  "args": [
+   1000,
+   {
+    "heute": 2026.9,
+    "kinder": 5
+   }
+  ],
+  "erwartet": {
+   "wert": 886.5,
+   "toleranz": 0.01
+  },
+  "quelle": "§ 55 Abs. 1, 3, § 59 Abs. 1 SGB XI; BMG „Finanzierung der Pflegeversicherung“ (Stand 14.9.2026, Abruf 26.11.2026): 3,6 %, kinderlos +0,6, je Kind unter 25 ab dem 2. Kind −0,25 (höchstens −1,0); § 247, § 249a SGB V"
+ },
+ {
+  "id": "R-PV-04",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "Renten-Netto 1.000 brutto, 7 Kinder: Abschlag höchstens 1,0 Punkte -> 886,50",
+  "art": "funktion",
+  "funktion": "nettoRente",
+  "args": [
+   1000,
+   {
+    "heute": 2026.9,
+    "kinder": 7
+   }
+  ],
+  "erwartet": {
+   "wert": 886.5,
+   "toleranz": 0.01
+  },
+  "quelle": "§ 55 Abs. 1, 3, § 59 Abs. 1 SGB XI; BMG „Finanzierung der Pflegeversicherung“ (Stand 14.9.2026, Abruf 26.11.2026): 3,6 %, kinderlos +0,6, je Kind unter 25 ab dem 2. Kind −0,25 (höchstens −1,0); § 247, § 249a SGB V"
+ },
+ {
+  "id": "R-PV-05",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "Brutto aus Auszahlung 870,50 ohne Kinder: mit Kinderlosen-Zuschlag (4,2 %) -> 1.000",
+  "art": "funktion",
+  "funktion": "bruttoAusNettoRente",
+  "args": [
+   870.5,
+   {
+    "heute": 2026.9,
+    "kinder": 0
+   }
+  ],
+  "erwartet": {
+   "wert": 1000,
+   "toleranz": 1
+  },
+  "quelle": "§ 55 Abs. 1, 3, § 59 Abs. 1 SGB XI; BMG „Finanzierung der Pflegeversicherung“ (Stand 14.9.2026, Abruf 26.11.2026): 3,6 %, kinderlos +0,6, je Kind unter 25 ab dem 2. Kind −0,25 (höchstens −1,0); § 247, § 249a SGB V"
+ },
+ {
+  "id": "R-PV-06",
+  "pruefer": "Korrektur rente",
+  "beschreibung": "Brutto aus Auszahlung 876,50 mit 1 Kind: 3,6 % -> 1.000",
+  "art": "funktion",
+  "funktion": "bruttoAusNettoRente",
+  "args": [
+   876.5,
+   {
+    "heute": 2026.9,
+    "kinder": 1
+   }
+  ],
+  "erwartet": {
+   "wert": 1000,
+   "toleranz": 1
+  },
+  "quelle": "§ 55 Abs. 1, 3, § 59 Abs. 1 SGB XI; BMG „Finanzierung der Pflegeversicherung“ (Stand 14.9.2026, Abruf 26.11.2026): 3,6 %, kinderlos +0,6, je Kind unter 25 ab dem 2. Kind −0,25 (höchstens −1,0); § 247, § 249a SGB V"
  }
 ]

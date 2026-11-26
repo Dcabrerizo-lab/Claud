@@ -76,6 +76,7 @@ const Rules = (function () {
     // (§ 59 Abs. 1 SGB XI): 3,6 % seit der Beitragssatz-Anpassung zum 1.1.2025 (der Gesetzestext § 55 Abs. 1 SGB XI nennt noch 3,4 %),
     // Abschlag 0,25 je Kind vom 2. bis 5. Kind unter 25 (§ 55 Abs. 3 SGB XI). Netto aus Brutto ohne Kinderlosen-Zuschlag und ohne Steuer
     // (vorsichtig: eher höheres Netto); Brutto aus Netto ohne Kinder im Haushalt mit Zuschlag 0,6 (vorsichtig: eher höheres Brutto).
+    // Grundsicherung im Alter: „unwahrscheinlich“ erst, wenn es auch mit Zuschlag nicht reicht (pvOffen, 26.11.2026; Sätze geprüft: BMG, Stand 14.9.2026).
     // Nicht eingerechnet: arbeitende Altersrentner (Lohn ohne RV/AV-Beitrag, KV 7,0 %), Pflegereform 2027 (Entwurf: Kinderlosen-Zuschlag 0,9).
     lohn: {
       pap2026: { gfb: 12348, z2: 17800, a2: 914.51, z3: 69879, a3: 173.1, c3: 1034.87, z4: 277826, c4: 11135.63, c5: 19470.38,
@@ -175,11 +176,16 @@ const Rules = (function () {
     // Blindenhilfe (§ 72 SGB XII): gleiche Einkommensgrenze wie Hilfe zur Pflege (§ 85); vom Einkommen über der Grenze
     // werden höchstens 40 % eingesetzt (§ 87 Abs. 1 Satz 3); Landesblindengeld wird voll angerechnet (§ 72 Abs. 1 Satz 2)
     blh: { einsatzUeber: 0.4 },
-    // Landesblindengeld außerhalb Bayerns: für Erwachsene je nach Land etwa 350 € (Schleswig-Holstein) bis 950 € (Nordrhein-Westfalen, unter 60).
-    // Feste Beträge nur, wo belegt (Stand 11/2026): BW 410 € (§ 2 BliHG), HE 86 % der Blindenhilfe = 818,65 € (BliGG Hessen),
-    // MV 430 € (LBlGG M-V), NI 450 € (Merkblatt Landesblindengeld), RP 410 € (LBlGG, Merkblatt Kreisverwaltung), SH 350 € ab 4/2026.
-    // Übrige Länder: Quellen widersprüchlich, daher nur die Spanne (Prüfliste).
-    landBlind: { von: 350, bis: 950, land: { BW: 410, HE: 818.65, MV: 430, NI: 450, RP: 410, SH: 350 }, stand: '11/2026' },
+    // Landesblindengeld außerhalb Bayerns: für Erwachsene je nach Land 350 € (Schleswig-Holstein) bis 951,92 € (Nordrhein-Westfalen unter 60:
+    // Höhe der Blindenhilfe, § 2 Abs. 1 GHBG NRW, https://recht.nrw.de/system/files/BH/4675-20951.htm), daher bis 952 € (gerundet).
+    // Feste Beträge nur, wo belegt (Prüfung 26.11.2026, Einzelnachweise docs/rechtsmatrix/pflege.md, Abschnitt Landesblindengeld):
+    // BW 410 € (§ 2 Abs. 1 BliHG BW; service-bw, Stand 19.10.2026), BE 761,54 € (§ 2 LPflGG Berlin: 80 % der Blindenhilfe),
+    // HE 818,65 € (86 % der Blindenhilfe, BliGG Hessen), MV 430 € (§ 1 LBlGG M-V; Haushaltsbegleitgesetz 2026/2027 ändert es nicht),
+    // NI 450 € (§ 2 Abs. 1 BlindGeldG Nds., geänd. durch Art. 10 G v. 13.12.2024, Nds. GVBl. 2024 Nr. 118), RP 410 € (§ 2 Abs. 1 LBlindenGG;
+    // Flyer Kreis Mainz-Bingen Stand 1.7.2026), SN 380 € ab 14 Jahren (§ 2 Abs. 1 LBlindG Sachsen, Fassung ab 1.1.2023),
+    // SH 350 € ab 1.4.2026 (Erhöhung um 25 € nach 325 € ab 4/2025; DBSV Stand 1.7.2026; die Landesseite mit 300 € ist von 3/2024 und veraltet).
+    // Übrige Länder (BB, HB, HH, NW, SL, ST, TH): dynamisch, altersabhängig oder Quellen widersprüchlich, daher nur die Spanne.
+    landBlind: { von: 350, bis: 952, land: { BW: 410, BE: 761.54, HE: 818.65, MV: 430, NI: 450, RP: 410, SN: 380, SH: 350 }, stand: '11/2026' },
     // Blindenhilfe § 72 Abs. 1 SGB XII ab 1.7.2026 (angepasst wie die Renten); unter 18 die Hälfte (§ 72 Abs. 2)
     blhBetrag: { erw: 951.92, kind: 476.78, stand: '7/2026' },
     // Bayerisches Landespflegegeld (BayLPflGG): ab Pflegegrad 2, unabhängig vom Einkommen; ab dem Pflegegeldjahr 2026 500 € im Jahr (vorher 1.000 €)
@@ -1779,17 +1785,24 @@ const Rules = (function () {
   const freiStaffel = (x, p, rs1) => (x > 0 ? Math.min(p.sockel + p.quote * Math.max(0, x - p.sockel), p.max * rs1, x) : 0);
 
   // Einkommen für die Grundsicherung nach dem SGB XII je Einkommen der Person(en) (§ 82 SGB XII)
-  function gsaEinkommen(h) {
+  function gsaEinkommen(h, nettoBasis) {
     const pers = h.pers || [['lohn', h.brutto]];
     const sumB = pers.reduce((a, x) => a + x[1], 0);
     const rs1 = R.regelbedarf.alleinstehend;
     // Netto je Einkommen: in der ausführlichen Version anteilig aus dem Haushaltsnetto
     const nettos = pers.map((x) => (h.liste ? x[2] : sumB > 0 ? h.netto * x[1] / sumB : h.netto / pers.length));
     const zus = zusatzVerteilt(h, nettos), zusB = zusatzVerteilt(h, pers.map((x) => x[1]));
-    // Freibetrag für Arbeit (§ 82 Abs. 3 Satz 1 SGB XII): 30 %, höchstens 50 % RS 1, je Person aus allen ihren Löhnen zusammen
-    const lohnP = {};
-    pers.forEach((x, i) => { if (x[0] === 'lohn') { const p = h.liste ? x[5] : i + 1; lohnP[p] = (lohnP[p] || 0) + nettos[i]; } });
-    const freiArbeit = Object.keys(lohnP).reduce((a, p) => a + Math.min(R.gsaArbeit.quote * lohnP[p], R.gsaArbeit.max * rs1), 0);
+    // Freibetrag für Arbeit (§ 82 Abs. 3 Satz 1 SGB XII): 30 %, höchstens 50 % RS 1, je Person aus allen ihren Löhnen zusammen, nie mehr als das Netto.
+    // Bezugsgröße (geprüft 26.11.2026): 30 % vom Bruttoeinkommen aus der Tätigkeit, getrennt von den Abzügen nach Abs. 2 (Fachanweisung Hamburg
+    // §§ 82–84 SGB XII, Stand 1.1.2022, Ziff. 5.6: „das unbereinigte Einkommen (das Brutto-Einkommen)“; Verwaltungsanweisung Bremen zu § 82, 20.2.2019,
+    // Rechenbeispiel „30 % vom Brutto“; Kreis Viersen, Richtlinie § 82, Stand 1.10.2024, 82.5.3). Der Wortlaut sagt nur „Einkommen“; ein Teil der
+    // Literatur liest das bereinigte Einkommen (vgl. WD 6 - 3000 - 018/26, Bundestag 16.3.2026: Satz 1 „Einkommen“, Satz 2 „Entgelt“).
+    // Deshalb: Betrag und „nein“ nach dem Brutto (herrschende Praxis), „wahrscheinlich“ nur, wenn es auch mit 30 % vom Netto reicht (nettoBasis).
+    // Bis 26.11.2026 rechnete die App nur mit 30 % vom Netto (Freibetrag z. B. 240 statt 281,50 € bei 1.000 € brutto / 800 € netto).
+    // Ohne Brutto (nur Auszahlung bekannt) zählt das Netto als Bezugsgröße (vorsichtige Seite).
+    const lohnP = {}, lohnPB = {};
+    pers.forEach((x, i) => { if (x[0] === 'lohn') { const p = h.liste ? x[5] : i + 1; lohnP[p] = (lohnP[p] || 0) + nettos[i]; lohnPB[p] = (lohnPB[p] || 0) + Math.max(x[1] || 0, nettos[i]); } });
+    const freiArbeit = Object.keys(lohnP).reduce((a, p) => a + Math.min(R.gsaArbeit.quote * (nettoBasis ? lohnP[p] : lohnPB[p]), R.gsaArbeit.max * rs1, lohnP[p]), 0);
     return -freiArbeit + pers.reduce((a, x, i) => {
       const art = x[0], b = x[1];
       const n = nettos[i];
@@ -1909,8 +1922,15 @@ const Rules = (function () {
     const maG = mehrAllg(h, eigen, regelP);
     bedarf += maG.fest;
     const offen = kduOffen + (h.wfbmEssen ? R.offen.essen : 0) + teilOffen + maG.offen;
-    const eink = gsaEinkommen(h) + (eigen ? 0 : h.children * R.kindergeld + unterhaltAnrechenbar(h, true));
+    const einkSonst = eigen ? 0 : h.children * R.kindergeld + unterhaltAnrechenbar(h, true);
+    const eink = gsaEinkommen(h) + einkSonst;
     const luecke = bedarf - eink;
+    // Vorsichtige Seite (30 % vom Netto statt vom Brutto, § 82 Abs. 3 Satz 1 SGB XII, siehe gsaEinkommen)
+    const lueckeN = bedarf - gsaEinkommen(h, true) - einkSonst;
+    // Rente nur brutto eingegeben, keine Kinder im Haushalt: Ob die Person Kinder hat (auch erwachsene), weiß die App nicht. Das geschätzte Netto
+    // rechnet ohne Kinderlosen-Zuschlag (§ 55 Abs. 3 SGB XI: +0,6 Punkte, BMG „Finanzierung der Pflegeversicherung“, Stand 14.9.2026) und ist für
+    // Kinderlose um 0,6 % der Rente zu hoch. „Unwahrscheinlich“ erst, wenn es auch mit dem kleineren Netto nicht reicht (Vollprüfung Z4, 26.11.2026).
+    const pvOffen = h.nettoGeschaetzt && h.kids + h.young === 0 ? (h.pers || []).reduce((a, x) => a + (x[0] === 'rente' ? lohnParam(h.heute || 2026).pvKinderlos * Math.min(x[1] || 0, lohnParam(h.heute || 2026).bbgKV) : 0), 0) : 0;
     const hatRente = (h.pers || []).some((x) => x[0] === 'rente' && x[1] > 0);
     const extra = (h.alterGrenz ? [['gsa.grenz']] : []).concat(h.wfbmEssen ? [['gsa.essen']] : [], kduOffen ? [[h.wohnform === 'heim' ? 'gsa.heim' : 'gsa.eltern']] : [],
       hatRente && !h.grundrente33 ? [['gsa.grundrente', { max: { eur: R.grundrente.max * R.regelbedarf.alleinstehend } }]] : [], teilFest ? [['mehr.teilhabe', { betrag: eur(teilFest) }]] : [], teilOffen ? [['ggeld.mehrBeh']] : [], maG.tx,
@@ -1925,9 +1945,11 @@ const Rules = (function () {
     const ja = !h.alterGrenz;
     let r;
     if (luecke >= R.grundsicherung.sicherAb) {
-      const sch = offen ? ['schaetz.mind', { a: eur(r10(luecke)) }] : ['schaetz.eins', { a: eur(r10(luecke)) }];
-      r = mk(id, ja ? 'ja' : 'vielleicht', ja ? 'ja' : 'vielleicht', bedarfTx('ja', bedarf).concat([sch], extra));
-    } else if (luecke > -(R.grundsicherung.knappPuffer + offen + (eigen || h.kidsAlter ? 0 : Math.max(0, h.kids - h.kidsU6 - h.kids14) * (R.regelbedarf.kind14 - R.regelbedarf.kind)))) r = mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(extra));
+      const lo = r10(Math.max(0, lueckeN)), hi = r10(luecke);
+      const sch = offen ? ['schaetz.mind', { a: eur(lo) }] : hi - lo >= 10 && lo >= 10 ? ['schaetz.spanne', { a: eur(lo), b: eur(hi) }] : hi - lo >= 10 ? ['schaetz.bis', { b: eur(hi) }] : ['schaetz.eins', { a: eur(hi) }];
+      const sicher = ja && lueckeN >= R.grundsicherung.sicherAb;
+      r = mk(id, sicher ? 'ja' : 'vielleicht', sicher ? 'ja' : 'vielleicht', bedarfTx(lueckeN >= R.grundsicherung.sicherAb ? 'ja' : 'vielleicht', bedarf).concat([sch], extra));
+    } else if (luecke > -(R.grundsicherung.knappPuffer + offen + pvOffen + (eigen || h.kidsAlter ? 0 : Math.max(0, h.kids - h.kidsU6 - h.kids14) * (R.regelbedarf.kind14 - R.regelbedarf.kind)))) r = mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(extra));
     else return mk(id, 'nein', 'einkoHoch', bedarfTx('nein', bedarf));
     // Gemischtes Paar (Vollprüfung 24.11.2026, Befund Fable 17): Arbeitet die zweite Person, bezieht sie Arbeitslosengeld oder leben Kinder
     // im Haushalt, gehören diese in der Regel zum Jobcenter (§ 7 Abs. 2, 3 SGB II). Grundsicherung nach § 43 Abs. 1 SGB XII bekommt nur die
