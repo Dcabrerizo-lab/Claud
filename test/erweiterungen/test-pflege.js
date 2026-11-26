@@ -200,7 +200,8 @@ const REF = (() => {
     for (const m of [1, 2, 3, 4, 6]) {
       const mo = res.module[m];
       const liste = [{ gewinn: 0, schritte: 0, wege: [], bereich: mo.bereich }];
-      for (let b = mo.bereich + 1; b <= 4; b++) {
+      // Kinder bis 18 Monate: nur Modul 3 (und 5) haben Hebel, Module 1, 2, 4, 6 zählen nicht (BRi, seit 24.11.2026)
+      for (let b = mo.bereich + 1; b <= 4 && !(res.saeugling && m !== 3); b++) {
         const noetig = ANLAGE2[m].bis[b - 1] + 1 - mo.summe;
         const f = stufenFuer(m, g, noetig);
         if (!f) break;

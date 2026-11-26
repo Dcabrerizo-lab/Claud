@@ -98,6 +98,8 @@ function sprachObjekte(vari) {
   LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'fristen', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
   // Nachträge aus der Prüfung mit frischen Augen (Brief prüfen, Ergebnis, Sprachwahl): src/lang/zusatz/<Sprache>.json (getrennt, damit parallele Arbeiten nicht kollidieren)
   LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'zusatz', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
+  // Texte neuer Karten (Hilfe zum Lebensunterhalt, Landeserziehungsgeld; 25.11.2026): src/lang/karten/<Sprache>.json
+  LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'karten', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
   // Leistungs-Check Schritt für Schritt (src/schritte.js): eigene Sprachdateien src/lang/schritte/<Sprache>.json, Schlüssel „sf.*“
   LANGS.forEach((l) => { const f = path.join(SRC, 'lang', 'schritte', l + '.json'); if (fs.existsSync(f)) Object.assign(all[l], JSON.parse(fs.readFileSync(f, 'utf8'))); });
   // „Für Klient zusammenstellen“ (src/klient.js): eigene Sprachdateien src/lang/klient/<Sprache>.json, Schlüssel „kb.*“

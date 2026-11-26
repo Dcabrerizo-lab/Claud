@@ -14,7 +14,8 @@ const ROOT = path.join(__dirname, '..');
 // Leistungen, die es in der Pflege-Variante nicht gibt (Gegenstück zu VAR_KARTEN in src/app.js; alle Karten: test/karten.js)
 const KARTEN = require('../test/karten.js');
 const appJs = fs.readFileSync(path.join(ROOT, 'src', 'app.js'), 'utf8');
-const VAR_KARTEN = JSON.parse(appJs.match(/var VAR_KARTEN = (\[[^\]]*\])/)[1].replace(/'/g, '"'));
+// Mit Kindern unter 25 im Haushalt kommen VAR_KARTEN_KINDER dazu (nur kgBeh; Entscheidung David 25.11.2026)
+const VAR_KARTEN = ['VAR_KARTEN', 'VAR_KARTEN_KINDER'].flatMap((n) => JSON.parse(appJs.match(new RegExp('var ' + n + ' = (\\[[^\\]]*\\])'))[1].replace(/'/g, '"')));
 const KARTEN_AUS = KARTEN.filter((k) => !VAR_KARTEN.includes(k));
 // Fragen und Felder, die die Variante ausblendet (VAR_FRAGEN_AUS, VAR_FELDER_AUS in src/app.js): Schlüssel mit gleichem ersten Segment
 const liste = (name) => JSON.parse(appJs.match(new RegExp('var ' + name + ' = (\\[[^\\]]*\\])'))[1].replace(/'/g, '"').replace(/\s+/g, ' '));
@@ -30,7 +31,8 @@ const KARTEN_PRAEFIXE = ['t', 's', 'fw', 'f', 'n', 'zu', 'd', 'w', 'card', 'unte
 const BRIEF_AUS = /^bp\.(jc|fk)\b/;
 // Texte zu weggefallenen Leistungen mit Kürzeln statt Karten-ID (Asylbewerberleistungen, Elterngeld, Kindergeld, Krankengeld, Mutterschaft,
 // Hinweise für die Zukunft zu Arbeitslosengeld/Elterngeld, Kombinationen mit Grundsicherungsgeld/Kinderzuschlag)
-const KUERZEL_AUS = /^(t\.(asyl|eg|kg|krank|mu|zuk)|z\.(ggBezug|ggVsWg|wgKiz|kgZuerst|zuk))\b/;
+// Hinweise zu Kindergeld/Kinderzuschlag/Unterhaltsvorschuss filtert die Variante heraus (VAR_HINWEISE_AUS in src/app.js).
+const KUERZEL_AUS = /^(t\.(asyl|eg|kg|krank|mu|zuk)|z\.(ggBezug|ggVsWg|wgKiz|kgZuerst|uvgZuerst|zuk))\b/;
 
 // Du-Anrede im Deutschen: Pronomen und Imperative (Liste aus allen Satzanfängen der App, von Hand ausgewählt)
 const DU = /(^|[^\wäöüßÄÖÜ])(du|dich|dir|dein|deine|deinen|deinem|deiner|deines|Du|Dich|Dir|Dein|Deine|Deinen|Deinem|Deiner|Deines|euch|euer|eure|euren|eurem|eurer)(?![\wäöüß])/;
@@ -86,6 +88,8 @@ function erreichbar(k) {
   const teile = k.split('.');
   if (UNERREICHBAR.includes(teile[0])) return false;
   if (FRAGEN_AUS.includes(teile[0])) return false;
+  // Schritt-für-Schritt-Fragen zu ausgeblendeten Feldern (sf.q.egArt, sf.q.egArt2 …)
+  if (teile[0] === 'sf' && teile[1] === 'q' && teile[2] && FRAGEN_AUS.includes(teile[2].replace(/\d+$/, ''))) return false;
   if (teile[0] === 'sb' && !SB_SICHTBAR.includes(k)) return false;
   if (KARTEN_PRAEFIXE.includes(teile[0]) && KARTEN_AUS.includes(teile[1])) return false;
   if (BRIEF_AUS.test(k) || KUERZEL_AUS.test(k)) return false;

@@ -209,8 +209,8 @@ var Weitergabe = (function () {
   // Pflege-Einschätzung: Antworten wie erweiterungen/pflege-assistent.js neu() (Listen sind Objekte mit einfachen Werten, nie null) und Ergebnis { pg, punkte, datum }
   function oderFlach(v) { return einfach(v) || flach(v) || (Array.isArray(v) && v.length <= 50 && v.every(einfach)); }
   function antwortenOk(a) {
-    if (!istObj(a) || !nurFelder(a, ['v', 'alterJahre', 'alterMonate', 'vor', 'stufen', 'm5', 'm5Hilfe', 'm5Wahl', 'inkontinenz', 'ink', 'sonde', 'k4K', 'pos'])) return false;
-    if (!['v', 'alterJahre', 'alterMonate', 'k4K', 'pos'].every(function (k) { return einfach(a[k]); }) || (a.pos != null && !(typeof a.pos === 'number' && a.pos >= 0 && a.pos <= 500 && a.pos === Math.floor(a.pos)))) return false;
+    if (!istObj(a) || !nurFelder(a, ['v', 'alterJahre', 'alterMonate', 'vor', 'stufen', 'm5', 'm5Hilfe', 'm5Wahl', 'inkontinenz', 'ink', 'sonde', 'k4K', 'bk', 'pos'])) return false;
+    if (!['v', 'alterJahre', 'alterMonate', 'k4K', 'bk', 'pos'].every(function (k) { return einfach(a[k]); }) || (a.pos != null && !(typeof a.pos === 'number' && a.pos >= 0 && a.pos <= 500 && a.pos === Math.floor(a.pos)))) return false;
     if (!['vor', 'stufen', 'm5Hilfe', 'inkontinenz'].every(function (k) { return a[k] === undefined || flach(a[k]); })) return false;
     if (!['m5', 'm5Wahl'].every(function (k) { return a[k] === undefined || (istObj(a[k]) && Object.keys(a[k]).every(function (n) { return oderFlach(a[k][n]); })); })) return false;
     return oderFlach(a.ink) && oderFlach(a.sonde);

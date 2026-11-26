@@ -33,7 +33,9 @@ Object.keys(GESETZ).forEach((v) => werte.add(Number(v)));
 
 const num = (s) => Number(s.replace(/\./g, '').replace(',', '.'));
 const funde = {};
-const scan = (txt, wo) => { for (const m of txt.matchAll(/(\d{1,3}(?:\.\d{3})+|\d+)(?:,(\d{1,2}))?\s?(?:€|Euro)/g)) { const v = num(m[1] + (m[2] ? ',' + m[2] : '')); (funde[v] = funde[v] || new Set()).add(wo); } };
+const scan = (txt, wo) => { for (const m of txt.matchAll(/(\d{1,3}(?:\.\d{3})+|\d+)(?:,(\d{1,2}))?\s?(?:€|Euro)/g)) { const v = num(m[1] + (m[2] ? ',' + m[2] : '')); (funde[v] = funde[v] || new Set()).add(wo); }
+  for (const m of txt.matchAll(/\{eur:(\d+(?:\.\d+)?)\}/g)) { const v = r2(Number(m[1])); (funde[v] = funde[v] || new Set()).add(wo); } // fester Betrag als Platzhalter (t() in src/app.js)
+};
 const de = JSON.parse(fs.readFileSync(path.join(ROOT, 'src', 'lang', 'de.json'), 'utf8'));
 Object.entries(de).forEach(([k, v]) => scan(v, 'de.json ' + k));
 scan(fs.readFileSync(path.join(ROOT, 'src', 'template.html'), 'utf8').replace(/<[^>]+>/g, ' '), 'template.html');

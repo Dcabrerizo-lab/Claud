@@ -110,7 +110,10 @@ const ergebnis = (p) => p.evaluate(() => {
   e = await ergebnis(p);
   // 600 € liegen über dem Regelsatz im Wohnheim (Stufe 2: 506 €); die Wohnkosten des Heims kennt die App nicht -> „Vielleicht“
   ok('C: Wohnheim, Rente 600 €: Grundsicherung „Vielleicht“ (Wohnkosten des Heims offen)', karte('Grundsicherung') && karte('Grundsicherung').lvl === 'vielleicht', JSON.stringify(e.k));
-  ok('C: Pflegegrad 3: Pflegegeld 599 €', karte('Pflegegeld') && /599/.test(karte('Pflegegeld').geld));
+  // Wohnheim (besondere Wohnform der Eingliederungshilfe): kein volles Pflegegeld, die Pflegekasse zahlt pauschal 15 % der Vergütung,
+  // höchstens 278 € an das Wohnheim (§ 43a SGB XI; BMG Übersicht Leistungsbeträge 2026). Wer dort gepflegt wird, weiß die App nicht -> „Vielleicht“.
+  // Bis 24.11.2026 zeigte die Karte 599 € Pflegegeld (Vollprüfung B07).
+  ok('C: Wohnheim, Pflegegrad 3: Pflegegeld „Vielleicht“, keine 599 € (§ 43a SGB XI)', karte('Pflegegeld') && karte('Pflegegeld').lvl === 'vielleicht' && !/599/.test(karte('Pflegegeld').geld || ''), JSON.stringify(karte('Pflegegeld')));
   await p.click('#es-neu');
   await durchlauf(p, ['#1950', 'heim', 'nein', 'ja', '#400', 'ja', '100', 'mz:', 'nein', '3', 'schon:', 'wenig', 'skip']);
   e = await ergebnis(p);

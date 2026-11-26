@@ -25,7 +25,7 @@
   "sen.antrag.s5.kurz": "Die Antwort kommt nach höchstens {tage} Arbeitstagen.",
   "sen.antrag.s5": "Die Pflegekasse muss meist nach {tage} Arbeitstagen antworten. Ist sie zu spät und ist das ihre Schuld? Dann bekommen Sie für jede Woche {betrag} extra. Das gilt nicht, wenn die Person schon im Pflegeheim wohnt und schon Pflegegrad 2 oder mehr hat. Will die Pflegekasse noch Papiere von Ihnen? Dann schicken Sie sie schnell. So lange wartet die Frist. Ist die Person im Krankenhaus, in der Reha oder im Hospiz? Dann muss es schneller gehen. Sagen Sie das der Pflegekasse gleich am Anfang.",
   "sen.antrag.s6.kurz": "Nicht einverstanden? Sie haben 1 Monat Zeit für einen Widerspruch.",
-  "sen.antrag.s6": "Ist der Pflegegrad zu niedrig? Dann schreiben Sie einen Widerspruch an die Pflegekasse. Sie haben dafür 1 Monat Zeit, nachdem der Brief da ist. Das Gutachten kommt meist mit dem Brief. Wenn Sie es nicht haben: Fragen Sie bei der Pflegekasse danach. Schreiben Sie auf, was falsch ist. Die Pflegeberatung hilft Ihnen.",
+  "sen.antrag.s6": "Ist der Pflegegrad zu niedrig? Dann schreiben Sie einen Widerspruch an die Pflegekasse. Sie haben dafür 1 Monat Zeit. Der Monat zählt ab dem vierten Tag, nachdem die Pflegekasse den Brief zur Post gegeben hat. Kommt der Brief später an, zählt der spätere Tag. Das Gutachten kommt meist mit dem Brief. Wenn Sie es nicht haben: Fragen Sie bei der Pflegekasse danach. Schreiben Sie auf, was falsch ist. Die Pflegeberatung hilft Ihnen.",
   "sen.antrag.s7.kurz": "Geht es schlechter? Fragen Sie nach einem höheren Pflegegrad.",
   "sen.antrag.s7": "Braucht die Person mehr Hilfe? Dann können Sie immer einen höheren Pflegegrad beantragen. Das geht wie beim ersten Mal.",
   "sen.antrag.einschaetzen": "=",

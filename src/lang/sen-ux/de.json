@@ -46,5 +46,14 @@
   "l.einsKurz": "Ihre Angaben, Fristen und Haken in dieser App. Andere gespeicherte Vorgänge bleiben.",
   "l.kurzZurueck": "Danach können Sie es noch eine halbe Minute lang rückgängig machen.",
   "sux.brief.t": "Bescheid von Pflegekasse, Rentenversicherung oder Amt prüfen und Widerspruch schreiben.",
-  "sux.briefA.t": "Post von Pflegekasse oder Amt für die gepflegte Person prüfen und Widerspruch schreiben."
+  "sux.briefA.t": "Post von Pflegekasse oder Amt für die gepflegte Person prüfen und Widerspruch schreiben.",
+  "sux.q.kinder": "Leben Kinder unter 25 Jahren in Ihrem Haushalt?",
+  "sux.h.kinder": "Gemeint sind Ihre Kinder oder die Kinder Ihres Partners oder Ihrer Partnerin, die bei Ihnen wohnen. Kinder ändern zum Beispiel das Wohngeld und die Grundsicherung.",
+  "sux.h.young": "Nur Kinder, die zur Schule gehen, eine Ausbildung machen oder studieren. Wohnt ein anderes erwachsenes Kind bei Ihnen, geben Sie das etwas später bei den anderen Erwachsenen in der Wohnung an.",
+  "sux.q.kindLage": "Trifft etwas davon auf die Kinder zu?",
+  "sux.h.kindLage": "Nur wenn etwas zutrifft, stellt die App dazu eine kurze Frage.",
+  "sux.g.kUnterhalt": "Ein Kind bekommt Unterhalt vom anderen Elternteil",
+  "sux.g.kWaisen": "Ein Kind bekommt Waisenrente",
+  "sux.g.kEink": "Ein Kind hat eigenes Einkommen, zum Beispiel aus einer Ausbildung oder einem Minijob",
+  "sux.kinder.solo": "Für Leistungen für Ihre Kinder (zum Beispiel Kindergeld, Kinderzuschlag, Bildungspaket) nutzen Sie bitte die App SoLo."
 }

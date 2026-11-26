@@ -15,6 +15,8 @@ const AUSNAHMEN = {
   'meta.dir': 'Schreibrichtung (ltr), kein Text'
 };
 
+// Texte neuer Karten (src/lang/karten/, 25.11.2026); eigene Zeile, damit parallele Änderungen an UNTER nicht kollidieren
+UNTER.push('karten');
 const de = JSON.parse(fs.readFileSync(path.join(DIR, 'de.json'), 'utf8'));
 UNTER.forEach((u) => { const f = path.join(DIR, u, 'de.json'); if (fs.existsSync(f)) Object.assign(de, JSON.parse(fs.readFileSync(f, 'utf8'))); });
 

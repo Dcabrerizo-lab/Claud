@@ -13,6 +13,8 @@ const Rules = (function () {
     // RBSFV 2026, Anlage zu § 28 SGB XII: Stufe 1 563, Stufe 2 506, Stufe 3 451, Stufe 4 (14-17) 471, Stufe 5 (6-13) 390, Stufe 6 (0-5) 357
     regelbedarf: { alleinstehend: 563, partner: 506, kind0: 357, kind: 390, kind14: 471, jungErwachsener: 451 },
     kindergeld: 259,
+    // Sofortzuschlag je Kind mit Regelbedarfsstufe 3–6 (§ 72 Abs. 1 SGB II i. d. F. ab 1.7.2026, https://www.buzer.de/72_SGB_II.htm, abgerufen 24.11.2026)
+    sofortzuschlag: 25,
     // Wohnkostenanteil der Eltern (§ 6a Abs. 5 BKGG): Tabelle der Familienkasse nach dem Existenzminimumbericht
     // (DA-KiZ C.3.1.2, Stand 20.02.2026), Index = Zahl der Kinder 1-10; ab 10 Kindern gilt der Wert für 10
     kiz: { vermZwei: 55000, vermDrei: 70000, vermJeWeiteres: 15000, max: 297, minAlleinerziehend: 600, minPaar: 900, anrechnung: 0.45, ampelGruenAb: 60,
@@ -38,6 +40,10 @@ const Rules = (function () {
       abzugMittel: 0.8
     },
     grundsicherung: { schonAllein: 10000, schonPaar: 20000, knappPuffer: 100, sicherAb: 50 },
+    // Sofortzuschlag § 72 SGB II (Fassung ab 1.7.2026, https://www.gesetze-im-internet.de/sgb_2/__72.html, Abruf 24.11.2026): 25 € im Monat
+    // zusätzlich für Kinder, Jugendliche und junge Erwachsene mit Regelbedarfsstufe 3 bis 6, auch wenn ihr Anspruch nur am Kindergeld scheitert.
+    // Kein Bedarf: nur im angezeigten Betrag, nicht im Vergleich der zwei Wege (§ 12a) und nicht in der Hilfebedürftigkeit beim Kinderzuschlag.
+    sofortzuschlag: 25,
     // Entweder-oder (Grundsicherungsgeld oder Wohngeld und Kinderzuschlag; Grundsicherung im Alter oder Wohngeld): Abstand, ab dem die App
     // einen Weg als voraussichtlich vorrangig zeigt. Liegt Weg „Wohngeld (und Kinderzuschlag)“ weniger als 50 € neben der Lücke, bleibt es offen
     // (Produktentscheidung 21.11.2026, docs/entwuerfe/entweder-oder.md Abschnitt 4: die Beträge sind Schätzungen).
@@ -103,6 +109,8 @@ const Rules = (function () {
     krank: { satz: 0.7, nettoMax: 0.9, bbg: 5812.5, bbg2027: 6375, abzug: 0.125, wochen: 78 },
     // Pauschale für Versicherungen bei Einkommen, das kein Lohn ist (§ 6 Abs. 1 Nr. 1 GrusiGV)
     versPauschale: 30,
+    // § 7 Abs. 3 und 5 AsylbLG (https://www.buzer.de/7_AsylbLG.htm, Abruf 24.11.2026): 25 % vom Lohn frei, 200 € Vermögen je Person
+    asylblg: { vermFrei: 200, lohnFrei: 0.25 },
     // Elterngeld: bis 300 € frei beim Wohngeld (§ 10 Abs. 1 BEEG); bei Grundsicherung und Kinderzuschlag nur, wenn vor der Geburt Einkommen da war (§ 10 Abs. 5 BEEG)
     elterngeldFrei: 300,
     // Werkstatt für behinderte Menschen (WfbM) und Grundsicherung nach dem SGB XII:
@@ -120,6 +128,11 @@ const Rules = (function () {
     // Pflegesachleistung (§ 36 SGB XI) und Tages-/Nachtpflege (§ 41 SGB XI) im Monat, seit 1.1.2025; Entlastungsbudget für Verhinderungs-
     // und Kurzzeitpflege seit 1.7.2025 (§ 42a SGB XI)
     pflegeSach: { 2: 796, 3: 1497, 4: 1859, 5: 2299 }, pflegeTages: { 2: 721, 3: 1357, 4: 1685, 5: 2085 }, entlastungsbudget: 3539,
+    // Vollstationäre Pflege im Heim (§ 43 SGB XI): Pflegegrad 1 Zuschuss 131 €, Pflegegrad 2 bis 5 Leistungsbetrag im Monat; Leistungszuschlag
+    // auf den pflegebedingten Eigenanteil (§ 43c SGB XI, Pflegegrad 2 bis 5): 15 % im ersten Jahr, 30 % nach 12, 50 % nach 24, 75 % nach 36 Monaten.
+    // Besondere Wohnform der Eingliederungshilfe (§ 43a SGB XI): 15 % der Vergütung, höchstens 278 € im Monat (Pflegegrad 2 bis 5).
+    // Quellen: BMG „Übersicht Leistungsbeträge 2026“ (Stand 04.11.2025) und BMG-Ratgeber „Vollstationäre Pflege im Heim“ (Stand 15.9.2026), Abruf 24.11.2026
+    pflegeHeim: { 1: 131, 2: 805, 3: 1319, 4: 1855, 5: 2096 }, pflegeHeimZuschlag: [15, 30, 50, 75], pflege43a: { quote: 15, max: 278 },
     // Mehrbedarf 35 % für Menschen mit Behinderung bei Hilfe zur Schule, Ausbildung oder Teilhabe am Arbeitsleben:
     // § 21 Abs. 4 SGB II (erwerbsfähig), § 23 Nr. 2 SGB II (Sozialgeld ab 15), § 30 Abs. 4 SGB XII (ab 15, Eingliederungshilfe § 112 SGB IX)
     // Pflege-Pauschbetrag für unentgeltlich Pflegende (§ 33b Abs. 6 EStG): Pflegegrad 2: 600 €, 3: 1.100 €, 4 und 5 sowie Merkzeichen H: 1.800 €
@@ -182,6 +195,11 @@ const Rules = (function () {
     // Bayerisches Familiengeld (250 €, ab dem 3. Kind 300 € im Monat, 13. bis 36. Lebensmonat) und Krippengeld (bis 100 €, einkommensabhängig):
     // nur noch für Kinder, die bis 31.12.2024 geboren sind
     famgeld: { betrag: 250, ab3: 300, krippe: 100 },
+    // Sächsisches Landeserziehungsgeld (§§ 1–3 SächsLErzGG, Fassung ab 1.1.2019, https://revosax.sachsen.de/vorschrift/5132-Saechsisches-Landeserziehungsgeldgesetz,
+    // Abruf 25.11.2026; keine Aufhebung, auch nicht im Haushaltsbegleitgesetz 2025/2026, revosax.sachsen.de/vorschrift/21249): 150 / 200 / 300 € im Monat
+    // (1. / 2. / ab 3. Kind), im 2. oder 3. Lebensjahr 5 bis 12 Monate, nur ohne staatlich geförderten Kita- oder Tagespflegeplatz,
+    // höchstens 30 Stunden Arbeit in der Woche (Informationsblatt Landeshauptstadt Dresden 01/23), Einkommensgrenze (nicht ab dem 3. Kind)
+    lerzg: { k1: 150, k2: 200, k3: 300 },
     // Wohnberechtigungsschein, Bundeswerte § 9 Abs. 2 WoFG (Untergrenze; die Länder legen eigene, meist höhere Grenzen fest)
     wbsBund: { ein: 12000, zwei: 18000, weitere: 4100, kind: 500 },
     // Landesgrenzen für den WBS (Jahres-Gesamteinkommen; geprüft 11/2026 an amtlichen Quellen, siehe docs/WBS-GRENZEN.md).
@@ -239,11 +257,12 @@ const Rules = (function () {
     // Unterhalt für die Person selbst (unt): steuerfrei (§ 14 Abs. 2 Nr. 19/20 WoGG) oder mit Realsplitting steuerpflichtig (§ 22 Nr. 1a EStG);
     // familienversichert ohne Beiträge -> 0 %, mit Steuer und eigener Kranken-/Pflegeversicherung -> 20 % (§ 16 Abs. 1 Nr. 1 und 2, Satz 2 WoGG)
     wgAbzug: { lohn: [0.1, 0.3], rente: [0.1, 0.2], kg: [0.1, 0.2], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.1], unt: [0, 0.2], ohne: [0, 0] },
-    // Wenn nur die Auszahlung bekannt ist: Rente netto ≈ 0,87 bis 0,88 × Brutto (nettoRente), also 90 % (bzw. 80 %) Brutto ≈ 103 % (bzw. 91 %)
-    // der Auszahlung. Die Werte [0, 0,06] stammen aus der alten Annahme 0,89 und sind deshalb nur ungefähr (Prüfung 19.11.2026, Anpassung offen);
+    // Wenn nur die Auszahlung bekannt ist: Rente netto ≈ 0,87 bis 0,88 × Brutto (nettoRente: KV 7,3 % + halber Zusatzbeitrag, PV 3,6 % bzw.
+    // 4,2 % ohne Kinder), also 90 % (bzw. 80 %) Brutto ≈ 103 % (bzw. 91 %) der Auszahlung (§ 16 Abs. 1 WoGG) -> rente [-0,04, 0,09]. Bis 24.11.2026
+    // stand hier [0, 0,06] (alte Annahme 0,89): die vorsichtige Schätzung war damit günstiger als mit eingegebenem Brutto (Vollprüfung B09).
     // Lohn netto 70-80 %
     // Unterhalt: der Zahlbetrag ist schon der volle Betrag (keine Abzüge vor der Auszahlung), daher wie wgAbzug.unt
-    wgAbzugAuszahlung: { lohn: [0, 0.12], rente: [0, 0.06], kg: [0, 0.06], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.05], unt: [0, 0.2], ohne: [0, 0] },
+    wgAbzugAuszahlung: { lohn: [0, 0.12], rente: [-0.04, 0.09], kg: [0, 0.06], alg: [0, 0], eg: [0, 0], wfbm: [0, 0.05], unt: [0, 0.2], ohne: [0, 0] },
     // Grundrentenfreibetrag (§ 82a SGB XII): bei 33 Jahren Grundrentenzeiten bleiben von der Rente 100 € und 30 % des Rests frei, höchstens 50 % der Regelbedarfsstufe 1
     grundrente: { sockel: 100, quote: 0.3, max: 0.5 },
     // Zusätzliche Altersvorsorge (Betriebsrente, Riester-Rente, private Rente), § 82 Abs. 4 SGB XII: 100 € frei und 30 % des Rests,
@@ -581,7 +600,9 @@ const Rules = (function () {
   // III ist für Unverheiratete zu hoch, aber vorsichtig: höheres Netto verspricht nie zu viel. Die Steuerklasse lässt sich im Formular ändern.
   function lohnAnnahmen(h, wer) {
     const kinder = (h.kids || 0) + (h.young || 0);
-    const stkl = h.adults === 2 ? (h.zweiVerdiener ? 4 : (wer === 2 ? 5 : 3)) : kinder > 0 ? 2 : 1;
+    // Alleinerziehend mit einer weiteren volljährigen Person in der Wohnung (Verwandte, WG): kein Entlastungsbetrag (§ 24b Abs. 3 EStG,
+    // https://www.gesetze-im-internet.de/estg/__24b.html, Abruf 24.11.2026), also Steuerklasse I statt II (Vollprüfung familie B18)
+    const stkl = h.adults === 2 ? (h.zweiVerdiener ? 4 : (wer === 2 ? 5 : 3)) : kinder > 0 && !h.hhAndere ? 2 : 1;
     return { stkl, kinder: Math.min(kinder, 6), kinderlos: kinder === 0, pva: Math.max(0, Math.min(4, kinder - 1)), sachsen: h.land === 'SN', heute: h.heute };
   }
 
@@ -591,7 +612,7 @@ const Rules = (function () {
     const art = (a) => (a === 'selbst' ? 'selbst' : a || 'lohn');
     const teile = adults === 2 ? [[art(inp.art1), brutto - brutto2], [art(inp.art2), brutto2]] : [[art(inp.art1), brutto]];
     const zwei = adults === 2 && teile.every((x) => x[0] === 'lohn' && x[1] > 0);
-    const h = { adults, kids: kinder, young: 0, zweiVerdiener: zwei, land: inp.bundesland, heute };
+    const h = { adults, kids: kinder, young: 0, zweiVerdiener: zwei, land: inp.bundesland, heute, hhAndere: inp.hhAndere === 'wg' || inp.hhAndere === 'verwandte' ? inp.hhAndere : '' };
     return Math.round(teile.reduce((a, [ar, b], i) => {
       if (!(b > 0)) return a;
       if (ar === 'lohn') {
@@ -639,7 +660,10 @@ const Rules = (function () {
   // ---------------------------------------------------------------
   function derive(inp) {
     const adults = inp.adults === 2 ? 2 : 1;
-    const kids = Math.max(0, inp.kids | 0);
+    // Baby ist da (jünger als 14 Monate): Es lebt im Haushalt und zählt als Kind unter 6, auch wenn es bei „Kinder“ nicht mitgezählt wurde
+    // (§§ 62, 63 EStG; Vollprüfung familie, Fable Nr. 11). Bis 24.11.2026: ohne Kind gerechnet („Kein Kind im Haushalt“ neben Elterngeld).
+    const babyDa = inp.baby === 'da' ? Math.min(3, Math.max(1, Number(inp.egKinder) | 0)) : 0;
+    const kids = Math.max(Math.max(0, inp.kids | 0), babyDa);
     const young = Math.max(0, inp.young | 0);
     const persons = adults + kids + young;
     // Einfache Version: Liste der Einkommen einer Person [{ art, b }] (b = ausgezahlter Betrag)
@@ -674,7 +698,7 @@ const Rules = (function () {
     const unterhalt = kids + young > 0 ? num(inp.unterhalt) : 0;
     const regelElt = adults === 2 ? 2 * R.regelbedarf.partner : R.regelbedarf.alleinstehend;
     // Alter der Kinder optional: ohne Angabe gilt die mittlere Stufe (6-13 Jahre, 390 €)
-    const kidsU6 = Math.min(Math.max(0, inp.kidsU6 | 0), kids);
+    const kidsU6 = Math.min(Math.max(babyDa, inp.kidsU6 | 0), kids);
     const kids14 = Math.min(Math.max(0, inp.kids14 | 0), kids - kidsU6);
     const regel = regelElt + kidsU6 * R.regelbedarf.kind0 + kids14 * R.regelbedarf.kind14 + (kids - kidsU6 - kids14) * R.regelbedarf.kind + young * R.regelbedarf.jungErwachsener;
     const pg = ['1', '2', '3', '4', '5'].indexOf(String(inp.pflegegrad)) >= 0 ? Number(inp.pflegegrad) : 0;
@@ -694,6 +718,36 @@ const Rules = (function () {
     // das Elterngeld über dem Mindestbetrag liegt, bei Mehrlingen über Mindestbetrag plus Mehrlingszuschlag (Zwillinge 600 €, Drillinge 900 €).
     const egMehr = inp.baby === 'da' ? Math.min(3, Math.max(1, Number(inp.egKinder) | 0)) : 1;
     const egOhneArbeit = R.elterngeldFrei + R.eg.mehrling * (egMehr - 1);
+    // Freibetrag für laufendes Elterngeld (Vollprüfung familie B2, B3; § 10 Abs. 1, 3, 4, 5 BEEG, https://www.buzer.de/10_BEEG.htm, Abruf 24.11.2026):
+    // Grundsicherungsgeld, Sozialhilfe, Kinderzuschlag (Abs. 5): bis 300 €, aber nur bis zur Höhe des Einkommens vor der Geburt (Elterngeld-Netto,
+    // § 2 Abs. 1, also Netto minus 102,50 €); bei ElterngeldPlus die Hälfte; bei Mehrlingen nicht vervielfacht. Wohngeld (Abs. 1, 3, 4): 300 €
+    // bzw. 150 € bei ElterngeldPlus, je Kind der Geburt. Seit 25.11.2026 fragt die App je Person, ob Basiselterngeld oder ElterngeldPlus
+    // bezogen wird (inp.egArt1, inp.egArt2: 'basis' | 'plus' | '' = weiß ich nicht; Auftrag David 25.11.2026). Bekannt: genau dieser Freibetrag.
+    // Weiß ich nicht: unter dem Mindestbetrag des Basiselterngelds (egOhneArbeit) ist es sicher ElterngeldPlus, über dem höchsten ElterngeldPlus
+    // sicher Basiselterngeld, dazwischen offen (vorsichtig: 150 €; obere Grenze: 300 €). Ohne Netto vor der Geburt (egVor): Liegt das Elterngeld nicht
+    // über Mindestbetrag plus möglichem Geschwisterbonus (75 €, halb bei Plus) plus Mehrlingszuschlag, kann es ohne Einkommen vor der Geburt
+    // entstanden sein: vorsichtig kein Freibetrag. Bis 24.11.2026: immer 300 € über dem Mindestbetrag (Geschwisterbonus und Plus nicht beachtet).
+    const egVorN = blank(inp.egVor) ? null : num(inp.egVor);
+    const egBonusMoegl = inp.baby === 'da' && kidsU6 > egMehr;
+    const egPlusMax = (R.eg.max / 2) * (1 + R.eg.bonus) + (R.eg.mehrling / 2) * (egMehr - 1);
+    const egArtVon = (p) => (inp['egArt' + p] === 'basis' || inp['egArt' + p] === 'plus' ? inp['egArt' + p] : '');
+    const egFrei = (b, p) => {
+      if (!(b > 0)) return { sgbLo: 0, sgbHi: 0, wgLo: 0, wgHi: 0 };
+      // Angabe der Person geht vor (auch wenn der Betrag ungewöhnlich ist, z. B. weil Mutterschaftsgeld angerechnet wird, § 3 BEEG)
+      const art = egArtVon(p);
+      const plusSicher = art ? art === 'plus' : b < egOhneArbeit, basisSicher = art ? art === 'basis' : b > egPlusMax;
+      const F = R.elterngeldFrei;
+      // Grenze „ohne Einkommen vor der Geburt möglich“: Basis 300 (+75) (+300 je weiteres Kind), Plus die Hälfte
+      const thrBasis = R.eg.min + (egBonusMoegl ? R.eg.bonusMin : 0) + R.eg.mehrling * (egMehr - 1);
+      const ohneVor = (plus) => b <= (plus ? thrBasis / 2 : thrBasis);
+      const cap = egVorN == null ? Infinity : Math.max(0, egVorN - R.eg.pausch);
+      const sgb = (plus) => (egVorN == null && ohneVor(plus) ? 0 : Math.min(cap, plus ? F / 2 : F));
+      const va = plusSicher ? [sgb(true)] : basisSicher ? [sgb(false)] : [sgb(true), sgb(false)];
+      const wa = plusSicher ? [F / 2] : basisSicher ? [F] : [F / 2, F];
+      return { sgbLo: Math.min(...va), sgbHi: Math.max(...va), wgLo: Math.min(...wa) * egMehr, wgHi: Math.max(...wa) * egMehr };
+    };
+    // Person des Eintrags: mit Liste x[5], sonst Reihenfolge (Person 1, Person 2)
+    const egFreiJe = pers.map((x, i) => (x[0] === 'eg' ? egFrei(x[1], liste ? x[5] : i + 1) : null));
     // Unterhalt, den die Person selbst an andere zahlt (Kinder, die nicht im Haushalt leben, frühere Partner), im Monat.
     // Grundsicherungsgeld und Kinderzuschlag: abgezogen, soweit festgelegt (Unterhaltstitel, Jugendamtsurkunde, notarielle
     // Vereinbarung) und wirklich gezahlt (§ 11b Abs. 1 Satz 1 Nr. 7 SGB II). Wohngeld: Höchstbeträge nach § 18 WoGG; mit
@@ -743,7 +797,10 @@ const Rules = (function () {
       const mitte12 = !!inp.kinder12 && kids14 === 0 && mitte > 0 ? 1 : 0;
       return Math.max(0, kidsU6 * R.uvg.bis5 + (mitte - mitte12) * R.uvg.bis11 + (ab12raus ? 0 : (kids14 + mitte12) * R.uvg.bis17) - unterhalt - waisen - uvgKindAnr);
     };
-    const ab12raus = !!inp.kinder12 && bruttoEigen < R.uvg.min12;
+    // Ein Kind von 14 bis 17 ist immer 12 oder älter: Dann gilt § 1 Abs. 1a UVG auch ohne den Haken „Ein Kind ist 12 oder älter“
+    // (gesetze-im-internet.de/uhvorschg/__1.html, Abruf 24.11.2026; Vollprüfung familie B1). Bis 24.11.2026 nur mit Haken.
+    const kinder12 = !!inp.kinder12 || kids14 > 0;
+    const ab12raus = kinder12 && bruttoEigen < R.uvg.min12;
     if (uvgGrund && (adults === 1 || uvgPartner === 'neu')) {
       uvgEst = uvgFormel(ab12raus);
       uvgOffen = uvgFormel(false) - uvgEst;
@@ -764,17 +821,28 @@ const Rules = (function () {
       if (kidsU6 === 0 && (kids - kids14 >= 1 || kids >= 2) && p < R.mehr.ae36) mehrAEhoch = Math.min(R.mehr.ae36, R.mehr.aeMax) * R.regelbedarf.alleinstehend;
     }
     if (!mehrAEhoch) mehrAEhoch = mehrAE;
+    // Wechselmodell (ein Kind etwa zur Hälfte beim anderen Elternteil): Mehrbedarf für Alleinerziehende nur zur Hälfte (BSG, Urteil vom 3.3.2009,
+    // B 4 AS 50/07 R), das Kind gehört nur zeitweise zur Bedarfsgemeinschaft (DA-KiZ Stand 20.02.2026 C.3.1.1 Abs. 2: Kinderzuschlag „ggf. nur
+    // anteilig“). Vorsichtig der halbe Mehrbedarf, obere Grenze der volle (Vollprüfung familie B14, Fable Nr. 26). Bis 24.11.2026 immer voll.
+    if (uvgWechsel && adults === 1) { mehrAEhoch = Math.max(mehrAEhoch, mehrAE); mehrAE = mehrAE / 2; }
     // Regelaltersgrenze aus dem Geburtsjahr der ältesten erwachsenen Person: sicher erreicht, oder je nach Geburtsmonat (grenz)
     const jahr = Number(inp.gebJahr) | 0;
     const heute = inp.heute ? Number(inp.heute) : (new Date().getFullYear() + new Date().getMonth() / 12);
     let alter = !!inp.alter, alterGrenz = false, gruppe = ({ '<31': '<30', '31-40': '30-39', '41-50': '40-49', '51+': '50+' })[inp.alterGruppe] || (R.sgb2.schon.hasOwnProperty(inp.alterGruppe || '') ? (inp.alterGruppe || '') : '');
+    // gruppeAlt: Wird die Person in diesem Jahr 30, 40 oder 50, hängt der Vermögensfreibetrag vom Geburtsmonat ab. Der höhere Betrag gilt
+    // ab Beginn des Monats, in dem sie das Alter erreicht (§ 12 Abs. 2 Satz 2 SGB II, https://www.buzer.de/12_SGB_II.htm, Abruf 24.11.2026).
+    // Dann ist die andere mögliche Altersgruppe gruppeAlt (Vollprüfung 24.11.2026, Befunde B-09 / Fable 13).
+    let gruppeAlt = '';
     if (jahr >= 1900 && jahr <= 2010) {
       const ragJahre = jahr < 1947 ? 65 : jahr >= 1964 ? 67 : 65 + R.rag[jahr] / 12;
       // geboren im Dezember: Grenze erst am Ende des Jahres jahr + rag erreicht; im Januar: am Anfang
       alter = jahr + 1 + ragJahre <= heute;
       alterGrenz = !alter && jahr + ragJahre <= heute;
       const age = heute - jahr - 0.5;
-      gruppe = age < 30 ? '<30' : age < 40 ? '30-39' : age < 50 ? '40-49' : '50+'; // vollendete Lebensjahre
+      const gr = (a) => (a < 30 ? '<30' : a < 40 ? '30-39' : a < 50 ? '40-49' : '50+'); // vollendete Lebensjahre
+      gruppe = gr(age);
+      const gNoch = gr(Math.floor(heute) - jahr - 1), gSchon = gr(Math.floor(heute) - jahr);
+      if (gNoch !== gSchon) gruppeAlt = gruppe === gNoch ? gSchon : gNoch;
     }
     return {
       uzBetrag, uzAn, uzTitel, uzSGB: uzTitel ? uzBetrag : 0, uzWGpess, uzWGopt,
@@ -785,7 +853,10 @@ const Rules = (function () {
       hhAndere: inp.hhAndere === 'wg' || inp.hhAndere === 'verwandte' ? inp.hhAndere : '',
       eu: inp.aufenthalt === 'eu', euArbeit: inp.euArbeit === 'ja', euJahre5: inp.euJahre === 'ab5',
       art1, art2, pers, liste: !!liste, kindEink, uvgEst, uvgOffen, uvgOffenGG, kindZahl: unterhalt + waisen + uvgEst, waisen, uvgPartner, uvgWechsel, bruttoEigen, uvgKindAnr, mehrAE, mehrAEhoch, alterGrenz,
-      egMehr, egOhneArbeit, egFreiSGB: sumIf((a, b) => a === 'eg' && b > egOhneArbeit ? R.elterngeldFrei : 0),
+      egMehr, egOhneArbeit, egFreiSGB: egFreiJe.reduce((a, f) => a + (f ? f.sgbLo : 0), 0),
+      // Teil des Elterngeld-Freibetrags, der offen ist (ElterngeldPlus oder Basiselterngeld unbekannt): nur für die Grenze zu „eher nicht“
+      egFreiOffen: egFreiJe.reduce((a, f) => a + (f ? f.sgbHi - f.sgbLo : 0), 0),
+      egFreiJe, egArt1: egArtVon(1), egArt2: adults === 2 ? egArtVon(2) : '',
       // Versicherungspauschale (§ 6 Abs. 1 Nr. 1 GrusiGV) einmal je volljähriger Person, nicht zusätzlich neben Einkommen aus Arbeit (dort
       // steckt sie im Grundabsetzbetrag von 100 €, § 11b Abs. 2 SGB II). Ist der Lohn kleiner als 30 €, geht nur der vom Lohn nicht gedeckte
       // Rest vom anderen Einkommen derselben Person ab (BA, Fachliche Weisungen §§ 11-11b SGB II Rz. 11.155 mit Beispiel).
@@ -833,13 +904,17 @@ const Rules = (function () {
       // Werkstatt-Haken bei „eine erwachsene Person“ ohne Werkstattlohn: die Person selbst oder ein Kind ab 25 (§ 7 Abs. 3 Nr. 4 SGB II)
       emWer: !inp.erwerbsgemindert && inp.emStd !== 'unter3' && !pers.some((x) => x[0] === 'wfbm') && !!inp.wfbm && !inp.wfbmSelbst && inp.bhPerson === 'erwNach25',
       behinderung: !!inp.behinderung || String(inp.gdb) === '100',
-      kinder12: !!inp.kinder12,
+      kinder12, babyDa,
       // Alter der Kinder bekannt: ausdrücklich angegeben (Frage „14 bis 17“ beantwortet) oder alle Kinder unter 6
       kidsAlter: !!inp.kidsAlter || (kids > 0 && kidsU6 === kids),
       kindKrank: !!inp.kindKrank, // ein Kind ist gerade krank, ein Elternteil kann deshalb nicht arbeiten
       unterhaltFehlt: !!inp.unterhaltFehlt,
       ausbildung: ['kind', 'kindBetrieb', 'ich'].indexOf(inp.ausbildung) >= 0 ? inp.ausbildung : '',
-      gruppe,
+      gruppe, gruppeAlt,
+      // § 11b Abs. 2b SGB II: unter 25 in Schule, Studium, Ausbildung oder Freiwilligendienst (Person 1, Angabe „Ich bin in Ausbildung“)
+      // statt 100 € die Minijob-Grenze frei. 'ja' = Alter bekannt unter 25; 'evtl' = Alter unbekannt oder Gruppe unter 30 (nur gegen
+      // ein falsches „eher nicht“).
+      azubi2b: inp.ausbildung === 'ich' ? (jahr >= 1900 && jahr <= 2010 ? (heute - jahr - 0.5 < 25 ? 'ja' : '') : (gruppe === '' || gruppe === '<30' ? 'evtl' : '')) : '',
       pflegegrad: pg,
       pflegeAntrag: inp.pflegegrad === 'antrag',
       bezug: inp.bezug || {},
@@ -870,16 +945,44 @@ const Rules = (function () {
     if (b > 1000) f += 0.1 * (Math.min(b, cap) - 1000);
     return f;
   }
+  // § 11b Abs. 2b und Abs. 3 Satz 4 SGB II (https://www.buzer.de/11b_SGB_II.htm, Abruf 24.11.2026): unter 25 in Schule, Studium,
+  // Ausbildung oder Freiwilligendienst statt 100 € die Minijob-Grenze (§ 8 Abs. 1a SGB IV) frei; die Stufe 20 % (100 bis 520 €) entfällt,
+  // 30 % von 520 bis 1.000 € und 10 % bis 1.200 / 1.500 € bleiben (Vollprüfung 24.11.2026, Befunde B-01 / Fable 15).
+  function sgb2Freibetrag2b(b, mitKindern, minijob) {
+    const cap = mitKindern ? 1500 : 1200;
+    let f = Math.min(b, minijob);
+    if (b > 520) f += 0.3 * (Math.min(b, 1000) - 520);
+    if (b > 1000) f += 0.1 * (Math.min(b, cap) - 1000);
+    return Math.min(f, b);
+  }
 
   // Unterhalt für Kinder bei Grundsicherungsgeld / Grundsicherung im Alter: Einkommen des Kindes, aber nur bis zu dessen
   // eigenem Bedarf (Regelbedarf der Kinder plus Kopfanteil der Miete); ein Überschuss mindert nicht den Bedarf der Eltern
-  // (§ 11 Abs. 1 SGB II, § 82 SGB XII). Das Kindergeld wird wie bisher voll beim Kind angerechnet.
-  // Einkommen der Kinder: Unterhalt, Unterhaltsvorschuss und eigenes Einkommen (Ausbildungsvergütung bis zur Minijob-Grenze frei).
-  function unterhaltAnrechenbar(h) {
+  // (§ 11 Abs. 1 SGB II, § 82 SGB XII). Einkommen der Kinder: Unterhalt, Unterhaltsvorschuss und eigenes Einkommen
+  // (Ausbildungsvergütung bis zur Minijob-Grenze frei).
+  // Reihenfolge (Vollprüfung 24.11.2026, Befunde B-03 / Fable 4): Unterhalt zählt zuerst beim Kind; das Kindergeld nur, soweit das Kind es
+  // noch braucht. Der Rest des Kindergelds ist Einkommen des Elternteils (§ 11 Abs. 1 Satz 5 SGB II, https://www.buzer.de/11_SGB_II.htm,
+  // Abruf 24.11.2026), davon geht die Versicherungspauschale von 30 € ab, wenn sie bei dieser Person noch nicht abgezogen ist
+  // (§ 6 Abs. 1 Nr. 1 Grundsicherungsgeld-Verordnung). Das Kindergeld zählt der Aufrufer voll; zurück kommt der Unterhaltsteil.
+  // Bis 24.11.2026 zählte der Unterhalt nur bis zum Bedarf nach Abzug des Kindergelds: Lücke bis 259 € je Kind zu hoch.
+  // ohnePauschale: Grundsicherung im Alter (SGB XII) kennt keine Pauschale; abgezogen werden nur tatsächliche Beiträge (§ 82 Abs. 2 Satz 1 Nr. 3
+  // SGB XII, https://www.buzer.de/82_SGB_XII.htm, Abruf 25.11.2026; Gegenprüfung PR #194, Befund 6)
+  function unterhaltAnrechenbar(h, ohnePauschale) {
+    const eink = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - h.minijob);
+    if (!eink) return 0;
+    const kinderBedarf = Math.max(0, (h.regel - h.regelElt) + h.miete * h.children / h.persons);
+    const anr = Math.min(eink, kinderBedarf);
+    const kgUeber = Math.min(h.children * R.kindergeld, Math.max(0, h.children * R.kindergeld - (kinderBedarf - anr)));
+    const pauschaleSchon = (h.vPausch || 0) > 0 || (h.erwerb && h.brutto - (h.brutto2 || 0) >= R.versPauschale);
+    return Math.max(0, anr - (kgUeber > 0 && !pauschaleSchon && !ohnePauschale ? Math.min(kgUeber, R.versPauschale) : 0));
+  }
+  // Alte Rechnung (Unterhalt nur bis zum Bedarf nach Kindergeld): bei mehreren Kindern ist offen, wessen Unterhalt es ist. Der Überschuss
+  // eines Kindes zählt nicht für ein Geschwister. Für „eher nicht“ rechnet SoLo deshalb auch mit dieser kleineren Anrechnung.
+  function unterhaltAnrechenbarMin(h) {
     const eink = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - h.minijob);
     if (!eink) return 0;
     const kinderBedarf = (h.regel - h.regelElt) + h.miete * h.children / h.persons;
-    return Math.min(eink, Math.max(0, kinderBedarf - h.children * R.kindergeld));
+    return Math.min(unterhaltAnrechenbar(h), Math.max(0, kinderBedarf - h.children * R.kindergeld));
   }
   // Weitere Mehrbedarfe (SGB II und SGB XII gleich): Schwangerschaft 17 % ab der 13. Woche (§ 21 Abs. 2 / § 30 Abs. 2),
   // dezentrale Warmwasserbereitung (§ 21 Abs. 7 / § 30 Abs. 7). Kostenaufwändige Ernährung (§ 21 Abs. 5 / § 30 Abs. 5) hängt von der
@@ -963,7 +1066,7 @@ const Rules = (function () {
     // Unterhalt oder Werkstattlohn derselben Person
     const lohnVon = (p) => h.pers.filter((x) => x[0] === 'lohn' && x[5] === p).reduce((a, x) => a + x[1], 0);
     const b1 = h.liste ? lohnVon(1) : h.brutto - h.brutto2;
-    const f1 = h.erwerb ? sgb2Freibetrag(b1, mk_) : 0;
+    const f1 = h.erwerb ? (h.azubi2b === 'ja' ? sgb2Freibetrag2b(b1, mk_, h.minijob) : sgb2Freibetrag(b1, mk_)) : 0;
     const f2 = h.adults === 2 && h.erwerb2 ? sgb2Freibetrag(h.liste ? lohnVon(2) : h.brutto2, mk_) : 0;
     return f1 + f2;
   }
@@ -978,12 +1081,33 @@ const Rules = (function () {
     const id = 'kindergeld';
     // § 32 Abs. 4 EStG: auch arbeitslos gemeldet bis 21, Freiwilligendienst, Ausbildungsplatzsuche, Übergangszeit bis 4 Monate;
     // nach der ersten Ausbildung höchstens 20 Stunden Arbeit in der Woche (Satz 2, 3)
-    if (h.children === 0) return mk(id, 'nein', 'keinKind', [['kindergeld.keinKind'], ['kindergeld.mehr']]);
-    if (h.bezug.kindergeld) return mk(id, 'na', 'na', [['kindergeld.na']]);
+    // Volljähriges Kind mit Behinderung (vor 25 eingetreten): eigene Karte kgBeh, hier nur der Verweis (Vollprüfung familie B23)
+    if (h.children === 0 && h.bhPerson === 'erwVor25') return mk(id, 'nein', 'keinKind', [['kindergeld.sieheBeh']]);
+    // Baby kommt bald: Kindergeld nach der Geburt beantragen (Vollprüfung familie, Fable Nr. 11)
+    if (h.children === 0) return mk(id, 'nein', 'keinKind', [['kindergeld.keinKind'], ['kindergeld.mehr']].concat(h.baby === 'bald' ? [['kindergeld.babyBald']] : []));
+    // Kindergeld läuft schon: Hinweis auf das Landeserziehungsgeld nur, wenn Sachsen angegeben ist (ohne Bundesland nur bei „wahrscheinlich“)
+    if (h.bezug.kindergeld) return mk(id, 'na', 'na', [['kindergeld.na']].concat(h.land === 'SN' ? lerzg(h) : []));
     // § 62 Abs. 2 EStG: Ausländerinnen und Ausländer nur mit bestimmten Aufenthaltstiteln; im Asylverfahren oder mit Duldung meist nicht
     if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['kindergeld.asyl']]);
-    const bay = !h.land || h.land === 'BY';
-    return mk(id, 'ja', 'ja', [['kindergeld.ja', { kg: eur(R.kindergeld) }], ['kindergeld.mehr']].concat(bay && h.kids > 0 ? [['kindergeld.familiengeld', { betrag: eur(R.famgeld.betrag), ab3: eur(R.famgeld.ab3), krippe: eur(R.famgeld.krippe) }]] : []));
+    // Familiengeld/Krippengeld (Art. 9a BayFamGG, GVBl. 2025 S. 570; Art. 29 Abs. 2 BayKiBiG n. F., GVBl. 2026 S. 401): nur Kinder, die bis
+    // 31.12.2024 geboren sind, bis zum 3. Geburtstag. Darum nur mit Kind unter 6 und nur bis Ende 2027 (Vollprüfung familie B12).
+    // Das Baby (jünger als 14 Monate, also ab 2025 geboren) bekommt sicher kein Familiengeld: nur mit einem weiteren Kind unter 6
+    // (Gegenprüfung 25.11.2026, Nr. 8)
+    const bay = (!h.land || h.land === 'BY') && h.kidsU6 > (h.babyDa || 0) && h.heute < 2028;
+    const tx = [['kindergeld.ja', { kg: eur(R.kindergeld) }], ['kindergeld.mehr']].concat(bay ? [['kindergeld.familiengeld', { betrag: eur(R.famgeld.betrag), ab3: eur(R.famgeld.ab3), krippe: eur(R.famgeld.krippe) }]] : [], lerzg(h));
+    // § 62 Abs. 1a EStG (https://www.gesetze-im-internet.de/estg/__62.html, Abruf 24.11.2026): EU-Bürger ohne Arbeit in den ersten 3 Monaten
+    // nicht, danach nur mit Freizügigkeitsrecht nach § 2 Abs. 2 oder 3 FreizügG/EU, nicht allein zur Arbeitsuche: höchstens „möglich“
+    // (Vollprüfung familie B8; bis 24.11.2026 „wahrscheinlich“).
+    if (euAusschluss(h)) return mk(id, 'vielleicht', 'vielleicht', [['kindergeld.euOhne']].concat(tx));
+    // § 62 Abs. 2 EStG: Drittstaatsangehörige nur mit bestimmten Titeln (Hinweis wie beim UVG, Vollprüfung familie B9)
+    return mk(id, 'ja', 'ja', tx.concat(!h.eu ? [['familie.titel']] : []));
+  }
+
+  // Sächsisches Landeserziehungsgeld (R.lerzg): Hinweis bei einem Kind unter 6 (Bezug im 2. oder 3. Lebensjahr),
+  // nur wenn das Bundesland (aus der Postleitzahl) Sachsen ist (Entscheidung David 25.11.2026)
+  function lerzg(h) {
+    if (!(h.kidsU6 > 0) || h.land !== 'SN') return [];
+    return [['kindergeld.lerzg', { a: eur(R.lerzg.k1), b: eur(R.lerzg.k2), c: eur(R.lerzg.k3) }]];
   }
 
   // ---------------------------------------------------------------
@@ -1039,13 +1163,16 @@ const Rules = (function () {
       const p = persNr(x, i), t = tab(x);
       const ab = [t[0], Math.max(t[1], abHi[p] || 0)];
       const wkHier = wkTeil[i]; wkSum += wkHier;
-      const zaehlt = x[0] === 'eg' ? Math.max(0, x[1] - R.elterngeldFrei * (h.egMehr || 1)) : x[1] - wkHier;
+      // Elterngeld: 300 € frei, bei ElterngeldPlus 150 €, je Kind der Geburt (§ 10 Abs. 1, 3, 4 BEEG; siehe derive egFrei): vorsichtig der kleinere
+      const egF = x[0] === 'eg' && h.egFreiJe && h.egFreiJe[i] ? h.egFreiJe[i] : { wgLo: R.elterngeldFrei * (h.egMehr || 1), wgHi: R.elterngeldFrei * (h.egMehr || 1) };
+      const zaehlt = x[0] === 'eg' ? Math.max(0, x[1] - egF.wgLo) : x[1] - wkHier;
+      const zaehltOpt = x[0] === 'eg' ? Math.max(0, x[1] - egF.wgHi) : zaehlt;
       // Unterhalt für sich selbst: mit Realsplitting sonstige Einkünfte (§ 22 Nr. 1a EStG) nach Werbungskosten-Pauschbetrag 102 € (§ 9a Satz 1
       // Nr. 3 EStG, zusammen mit Renten derselben Person), sonst voll (§ 14 Abs. 2 Nr. 19 und 20 WoGG). Die App weiß das nicht: Pauschbetrag
       // nur für „möglich“ (yB), aus dem Rest, den die Renten der Person nicht verbraucht haben.
       let wkOpt = 0;
       if (x[0] === 'unt') { wkOpt = Math.min(wkR[p], x[1]); wkR[p] -= wkOpt; }
-      sumB += zaehlt; yA += zaehlt * (1 - ab[0]); yB += (zaehlt - wkOpt) * (1 - ab[1]);
+      sumB += zaehlt; yA += zaehlt * (1 - ab[0]); yB += (zaehltOpt - wkOpt) * (1 - ab[1]);
     });
     const wA = sumB > 0 ? yA / sumB : 0.9, wB = sumB > 0 ? yB / sumB : 0.7;
     // Anzeige als Grenze für das Brutto (bzw. den ausgezahlten Betrag bei ALG I und Elterngeld), Werbungskosten wieder dazu
@@ -1181,7 +1308,9 @@ const Rules = (function () {
     // ohne Betrag; ist es das einzige Kind: „nein“. Bis 24.11.2026 rechnete die App ohne Bezug mit allen Kindern und Betrag.
     // Prüfung 24.11.2026: „nein“ nur, wenn das einzige Kind das gezählte Kind von 18 bis 24 ist und kein Kinderzuschlag läuft (Satz 9 bis 11).
     if (kindOhneKiz(h) && h.children === 1 && h.young === 1 && !h.bezug.kiz) return mk('kiz', 'nein', 'ausschluss', [[sozialamtKind(h) ? 'kiz.ausschluss' : 'kiz.kindWerkstatt']]);
-    const r = kinderzuschlag0(h);
+    const r0 = kinderzuschlag0(h);
+    // Wechselmodell: Kinderzuschlag nur, wer das Kindergeld bekommt, und das Kind zählt ggf. nur anteilig (DA-KiZ C.3.1.1 Abs. 2): höchstens „möglich“
+    const r = h.uvgWechsel && (r0.level === 'ja' || r0.level === 'vielleicht') ? wechselBis(r0, 'kiz.wechsel') : r0;
     return kindOhneKiz(h) ? ohneKindBetrag(r, 'kiz.kindGsa') : r;
   }
   function kinderzuschlag0(h) {
@@ -1213,8 +1342,14 @@ const Rules = (function () {
     const vermUeber = h.vermoegen - vermGrenze;
     const vermNein = () => mk(id, 'nein', 'vermHoch', [['kiz.verm', { n: h.persons, limit: eur(vermGrenze) }]]);
     const minEink = h.adults === 2 ? R.kiz.minPaar : R.kiz.minAlleinerziehend;
-    if (vermUeber > 0 && h.brutto < minEink) return vermNein();
-    if (h.brutto < minEink) return mk(id, 'nein', 'minEink', [['kiz.minEink', { min: eur(minEink) }]]);
+    // Mindesteinkommen (DA-KiZ Stand 20.02.2026, C.1 Abs. 2, https://www.arbeitsagentur.de/datei/fw-bkgg_ba023130.pdf, Abruf 24.11.2026):
+    // Bekommt ein Elternteil Unterhalt für sich UND Kindesunterhalt, zählt beides (nur Kindesunterhalt zählt nicht; Vollprüfung familie B21).
+    // Bei Selbstständigen zählen die Betriebseinnahmen ohne Abzug der Ausgaben; die App kennt nur den Gewinn: darunter „möglich“ (B15).
+    const mitUnt = (h.pers || []).some((x) => x[0] === 'unt' && x[1] > 0) ? h.unterhalt || 0 : 0;
+    const minBrutto = h.brutto + mitUnt;
+    if (vermUeber > 0 && minBrutto < minEink) return vermNein();
+    if (minBrutto < minEink && h.selbst) return mk(id, 'vielleicht', 'vielleicht', [['kiz.minEinkSelbst', { min: eur(minEink) }]]);
+    if (minBrutto < minEink) return mk(id, 'nein', 'minEink', [['kiz.minEink', { min: eur(minEink) }]]);
     const r = kizRechnung0(h, id);
     if (!(vermUeber > 0)) return r;
     if (!(r.est > vermUeber)) return vermNein();
@@ -1243,19 +1378,28 @@ const Rules = (function () {
     // kommt danach auf die Summe (C.2 Satz 4-6). Der KiZ-Lotse der Familienkasse rechnet das Einkommen der Kinder nicht ein (Differenztest 21.11.2026,
     // docs/entwuerfe/pruefungen-21-11/kiz.md): Er zeigt dann „Aussicht auf Erfolg“, wo die Familienkasse nach der DA-KiZ nichts zahlt.
     // Gleich verteilt gedacht: Je Kind höchstens der Höchstbetrag (Bescheid-Check rechnet je Kind genau).
-    const kindAnr = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - h.minijob);
-    const estMit = (bed, anr) => Math.max(0, gmax - kizMinderungEltern(h, bed) - Math.min(gmax, R.kiz.anrechnung * anr));
+    // Genau ein Kind ab 14 bzw. junger Erwachsener kann verdienen: dann ist klar, wessen Lohn es ist, und die Familienkasse zieht zusätzlich
+    // den Freibetrag nach § 11b Abs. 3 SGB II ohne die erste Stufe ab (30 % von 520 bis 1.000 €, 10 % bis 1.200 €; DA-KiZ C.2.2.1 Abs. 3
+    // Satz 9-11, siehe unten). Vollprüfung familie, Fable Nr. 23 (bis 24.11.2026 nur 603 € abgezogen).
+    const keEins = (h.kids14 || 0) + (h.young || 0) === 1 && (h.kindEink || 0) > h.minijob
+      ? sgb2Freibetrag(Math.min(h.kindEink, 1200), false) - sgb2Freibetrag(520, false) : 0;
+    const kindAnr = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - h.minijob - keEins);
+    const estMit = (bed, anr, hh) => Math.max(0, gmax - kizMinderungEltern(hh || h, bed) - Math.min(gmax, R.kiz.anrechnung * anr));
+    // Elterngeld: Freibetrag offen (Basiselterngeld oder ElterngeldPlus, siehe derive egFrei): obere Grenze mit dem höheren Freibetrag
+    const hEgHoch = h.egFreiOffen > 0 ? Object.assign({}, h, { egFreiSGB: (h.egFreiSGB || 0) + h.egFreiOffen }) : h;
     const est = estMit(bemessung, kindAnr);
     const gesamtBedarf = h.regel + h.miete + (h.mehrAE || 0) + maK.fest + mbK.fest;
     // Alter der Kinder nur grob bekannt (unter 6, 6-13, 14-17): Mit 36 % Mehrbedarf (Kind unter 7 oder zwei bis drei Kinder unter 16,
     // § 21 Abs. 3 Nr. 1 SGB II) wäre der Kinderzuschlag höher. Dann zeigt SoLo eine Spanne; der Bescheid-Check rechnet mit dem genauen Alter.
     const bemHoch = bemessung - (h.mehrAE || 0) + (h.mehrAEhoch || 0);
-    const estHoch = estMit(bemHoch, kindAnr);
+    const estHoch = estMit(bemHoch, kindAnr, hEgHoch);
 
     const mkE = (level, hl, tx) => Object.defineProperty(mk(id, level, hl, tx), 'est', { value: est }); // nicht aufzählbar: nur für kizRechnung
     if (est <= 0) {
       // Kind vielleicht erst 6 Jahre (Mehrbedarf 36 % statt 12 %): dann ist Kinderzuschlag möglich
-      if (estHoch > 0) return mk(id, 'vielleicht', 'vielleicht', [['kiz.ae7']]);
+      if (estMit(bemHoch, kindAnr) > 0) return mk(id, 'vielleicht', 'vielleicht', [['kiz.ae7']]);
+      // nur mit dem höheren Elterngeld-Freibetrag (Basiselterngeld statt ElterngeldPlus) bliebe etwas übrig
+      if (estHoch > 0) return mk(id, 'vielleicht', 'vielleicht', [['kiz.rand', { max: eur(R.kiz.max) }]]);
       // Knapp wegen Unterhalt, Unterhaltsvorschuss oder Waisenrente der Kinder: Hat ein minderjähriges Kind eine eigene Versicherung, zieht
       // die Familienkasse vorher 30 € im Monat ab (DA-KiZ C.2.2.1 Abs. 3 Satz 3; § 6 Abs. 1 Nr. 2 Grundsicherungsgeld-Verordnung, früher
       // Bürgergeld-V, https://www.gesetze-im-internet.de/algiiv_2008/__6.html, Abruf 21.11.2026; bei volljährigen Kindern nach Nr. 1 auch
@@ -1317,8 +1461,17 @@ const Rules = (function () {
     const out = mk(r.id, 'vielleicht', 'vielleicht', r.tx.filter((t) => t[0].indexOf('schaetz.') !== 0).map((t) => (t[0] === 'bedarfJa' ? ['bedarfRand', t[1]] : t)));
     return r.lage ? Object.defineProperty(out, 'lage', { value: r.lage }) : out;
   }
+  const wechselBis = (r, key) => {
+    const tx = r.tx.map((t) => (t[0] === 'schaetz.eins' ? ['schaetz.bis', { b: t[1].a }] : t[0] === 'schaetz.spanne' ? ['schaetz.bis', { b: t[1].b }] : t));
+    const out = mk(r.id, 'vielleicht', r.level === 'ja' ? 'vielleicht' : r.hl, [[key]].concat(tx));
+    if (typeof r.est === 'number') Object.defineProperty(out, 'est', { value: r.est });
+    return r.lage ? Object.defineProperty(out, 'lage', { value: r.lage }) : out;
+  };
   function grundsicherungsgeld(h) {
-    const r = ggeldUvgOffen(h, ggeldRechnung(h));
+    const r0 = ggeldUvgOffen(h, ggeldRechnung(h));
+    // Wechselmodell: Bedarf des Kindes nur für die Tage im Haushalt, Mehrbedarf zur Hälfte (siehe derive): höchstens „möglich“, Betrag als
+    // obere Grenze („bis etwa“), Hinweis vorn (Vollprüfung familie B14, Fable Nr. 26)
+    const r = h.uvgWechsel && (r0.level === 'ja' || r0.level === 'vielleicht') ? wechselBis(r0, 'ggeld.wechsel') : r0;
     if (h.adults !== 1 || (r.level !== 'ja' && r.level !== 'vielleicht') || !vielleichtAltersrente(h)) return r;
     return mk(r.id, 'vielleicht', 'vielleicht', r.tx.slice(0, 1).concat([['ggeld.vorgezogen']], r.tx.slice(1)));
   }
@@ -1353,20 +1506,56 @@ const Rules = (function () {
     // (§ 41 Abs. 3 SGB XII). Sie schließt den erwerbsfähigen Elternteil nicht aus (§ 7 Abs. 1 Satz 1, § 5 Abs. 2 Satz 2 SGB II): kein „nein“.
     if (h.bezug.sozialamt && !kindNurEM(h)) return mk(id, 'nein', 'ausschluss', [['ggeld.sozialamt']]);
     // § 7 Abs. 5 SGB II: Schule/Studium, die nach BAföG förderfähig sind, schließen Grundsicherungsgeld in der Regel aus
-    // (betriebliche Ausbildung mit Berufsausbildungsbeihilfe: aufstockend möglich). Ab 45 (Altersgrenze BAföG) nicht mehr förderfähig: offen.
-    if (h.ausbildung === 'ich' && !h.babBetrieb && bafoegAlter(h)) {
-      return mk(id, 'nein', 'ausschluss', [['ggeld.ausbildung']]);
+    // (betriebliche Ausbildung mit Berufsausbildungsbeihilfe: aufstockend möglich). Vollprüfung 24.11.2026 (Befunde B-07, Fable 1, 2):
+    // Der Ausschluss gilt „dem Grunde nach“, also auch ab 45 ohne BAföG wegen des Alters (BSG 19.08.2010, B 14 AS 24/09 R; Ausnahme Abendschulen,
+    // § 7 Abs. 6 Nr. 3). Er trifft nur die Person in Ausbildung: Partner und Kinder haben eigenen Anspruch, sie selbst Mehrbedarfe nach § 27
+    // (https://www.buzer.de/7_SGB_II.htm, Abruf 24.11.2026). Wer bei den Eltern wohnt und BAföG bekommt oder es nur wegen des Einkommens nicht
+    // bekommt, ist nicht ausgeschlossen (§ 7 Abs. 6 Nr. 2): dann Rechnung wie bei den Eltern, höchstens „möglich“.
+    const ausbAus = h.ausbildung === 'ich' && !h.babBetrieb;
+    if (ausbAus && h.wohnform !== 'eltern') {
+      if (h.adults === 2 || h.children > 0) return mk(id, 'vielleicht', 'vielleicht', [['ggeld.ausbildungFamilie'], ['ggeld.ausbildung']]);
+      // Gegenprüfung PR #194 (Befund 3): Schülerinnen und Schüler mit Bedarf nach § 12 BAföG sind auch mit eigener Wohnung nicht
+      // ausgeschlossen, wenn sie BAföG bekommen oder es nur wegen des Einkommens nicht bekommen (§ 7 Abs. 6 Nr. 2 SGB II, buzer.de/7_SGB_II.htm,
+      // Abruf 25.11.2026). Die App trennt Schule und Studium nicht: allein höchstens „möglich“, ohne Betrag (Schüler-BAföG zählt als Einkommen).
+      return mk(id, 'vielleicht', 'vielleicht', [['ggeld.ausbildung']]);
     }
     // § 12 Abs. 2 SGB II: je Person der Bedarfsgemeinschaft ein Freibetrag nach Alter; Kinder und junge Erwachsene bis 30: 5.000 €
-    const schon = R.sgb2.schon[h.gruppe] * h.adults + R.sgb2.schon['<30'] * h.children;
+    // Grenzjahr (h.gruppeAlt): „eher nicht“ erst über dem höheren der beiden möglichen Freibeträge
+    // Ohne Altersangabe kann die Person auch 50 oder älter sein: „eher nicht“ erst über 20.000 € je Erwachsenem (Gegenprüfung PR #194, Befund 12;
+    // § 12 Abs. 2 SGB II, buzer.de/12_SGB_II.htm, Abruf 25.11.2026); darunter über der kleinsten Grenze „möglich“ (vermGrenzen ggeldMin)
+    const schonVon = (g) => R.sgb2.schon[g === '' ? '50+' : g] * h.adults + R.sgb2.schon['<30'] * h.children;
+    const schon = Math.max(schonVon(h.gruppe), h.gruppeAlt ? schonVon(h.gruppeAlt) : 0);
     if (h.vermoegen > schon) return mk(id, 'nein', 'vermHoch', [['ggeld.verm', { schon: eur(schon) }]]);
     // Paar: Der Freibetrag gilt je Person nach ihrem eigenen Alter (§ 12 Abs. 2 SGB II, https://www.gesetze-im-internet.de/sgb_2/__12.html,
     // Abruf 21.11.2026; Merkblatt SGB II der BA, Stand 8/2026, Nr. 9.5: Paar 32 und 59 Jahre -> 10.000 + 20.000 €). Die App kennt nur
     // das Alter der ältesten Person (h.gruppe). Liegt das Vermögen über der kleinsten möglichen Grenze (zweite Person unter 30, vermGrenzen
     // ggeldMin), ist es offen: höchstens „möglich“ mit Hinweis. Bis 21.11.2026 galt der Freibetrag der ältesten Person für beide.
+    // Seit 24.11.2026 auch allein ohne Geburtsjahr (unter 30 nur 5.000 €) und im Grenzjahr (Befunde Fable 12, 13, B-09).
     const vMin = vermGrenzen(h).ggeldMin;
-    const r = ggeldRechnung0(h);
-    const r2 = h.adults === 2 && vMin && h.vermoegen > vMin ? hoechstensMoeglich(r, 'ggeld.vermAlter') : r;
+    // Bei den Eltern (einfache Version, Befund B-06): unter 25 ohne eigenes Kind gehört die Person zur Bedarfsgemeinschaft der Eltern
+    // (§ 7 Abs. 3 Nr. 4 SGB II), Regelbedarfsstufe 3 (§ 20 Abs. 2 Satz 2 Nr. 1), das Einkommen der Eltern zählt mit (§ 9 Abs. 2).
+    // Ab 25 eigene Bedarfsgemeinschaft, aber Vermutung der Unterstützung durch Verwandte (§ 9 Abs. 5). Beides kennt die App nicht: höchstens „möglich“.
+    const eltern = h.wohnform === 'eltern';
+    const u25 = eltern && h.adults === 1 && h.children === 0 && h.alterJahre && h.alterJahre < 25;
+    const dRegel = u25 ? R.regelbedarf.alleinstehend - R.regelbedarf.jungErwachsener : 0;
+    const r0 = ggeldRechnung0(dRegel ? { ...h, regel: h.regel - dRegel, regelElt: h.regelElt - dRegel } : h);
+    // Lage der zwei Wege (wegeLage) bleibt erhalten
+    const hm = (x, key) => { const o = hoechstensMoeglich(x, key); if (x.lage && o !== x) Object.defineProperty(o, 'lage', { value: x.lage }); return o; };
+    const r1 = eltern ? hm(r0, 'ggeld.u25Eltern') : r0;
+    let r = r1;
+    if (ausbAus && (r1.level === 'ja' || r1.level === 'vielleicht')) {
+      r = mk(r1.id, r1.level, r1.hl, r1.tx.concat([['ggeld.ausbildung']]));
+      if (r1.lage) Object.defineProperty(r, 'lage', { value: r1.lage });
+    }
+    // Betriebliche Ausbildung, nicht bei den Eltern: Berufsausbildungsbeihilfe geht vor (§ 12a SGB II) und zählt als Einkommen; die App
+    // rechnet sie nicht (Befund B-02). Volljähriges Kind in Schule oder Studium: sein BAföG zählt als sein Einkommen; ohne BAföG aus anderen
+    // Gründen als dem Einkommen der Eltern ist es selbst ausgeschlossen (§ 7 Abs. 5, Abs. 6 Nr. 2 SGB II; Befund B-05).
+    // EU-Bürger, die früher gearbeitet haben und jetzt ohne Arbeit sind: Der Arbeitnehmerstatus bleibt nur in bestimmten Fällen
+    // (unfreiwillige Arbeitslosigkeit, § 2 Abs. 3 FreizügG/EU; Befund B-08).
+    if (h.ausbildung === 'ich' && h.babBetrieb && h.babWohnt) r = hm(r, 'ggeld.babZuerst');
+    if (h.ausbildung === 'kind' && h.young > 0) r = hm(r, 'ggeld.kindStudium');
+    if (h.eu && !h.euJahre5 && h.euArbeit && !h.selbst && !(h.erwerb && h.brutto > 0)) r = hm(r, 'ggeld.euFrueher');
+    const r2 = vMin && h.vermoegen > vMin ? hoechstensMoeglich(r, h.adults === 2 ? 'ggeld.vermAlter' : 'ggeld.vermAlterEins') : r;
     // Nur das erwachsene Kind ist voll erwerbsgemindert: Es kann eigene Grundsicherung beim Sozialamt bekommen (§ 41 Abs. 3 SGB XII, vorrangig
     // nach § 5 Abs. 2 Satz 2, § 19 Abs. 1 Satz 2 SGB II); das Jobcenter rechnet dann für den Elternteil ohne Bedarf und Einkommen des Kindes.
     // Bekommt das Kind im Einzelfall keine Grundsicherung (eigenes Einkommen oder Vermögen), kann es doch zur Bedarfsgemeinschaft zählen
@@ -1403,9 +1592,23 @@ const Rules = (function () {
     const behTx = (mb.fest ? [['mehr.teilhabe', { betrag: eur(mb.fest) }]] : []).concat(mb.offen - ma.offen ? [['ggeld.mehrBeh']] : [],
       ma.tx, h.schwanger ? [['mehr.erstausstattung']] : [],
       h.kids > 0 && h.land && h.land !== 'BY' ? [['ggeld.schulbuch']] : [], h.miete > 0 ? [['kdu.angemessen']] : []);
+    // Puffer gegen ein falsches „eher nicht“ (Vollprüfung 24.11.2026): Kinder ohne Altersangabe können 14 bis 17 sein (471 statt 390 €,
+    // § 23 Nr. 1 SGB II; Befund B-04); bei mehreren Kindern ist offen, wessen Unterhalt es ist (B-03); Alter unbekannt in Ausbildung:
+    // Freibetrag nach § 11b Abs. 2b SGB II möglich (B-01).
+    const pufferAlter = h.kidsAlter ? 0 : Math.max(0, h.kids - h.kidsU6 - h.kids14) * (R.regelbedarf.kind14 - R.regelbedarf.kind);
+    const pufferUnt = h.children > 1 ? Math.max(0, unterhaltAnrechenbar(h) - unterhaltAnrechenbarMin(h)) : 0;
+    const puffer2b = h.azubi2b === 'evtl' && h.erwerb ? Math.max(0, elternEinkSGB2(h) - elternEinkSGB2({ ...h, azubi2b: 'ja' })) : 0;
     let r;
-    if (luecke >= R.grundsicherung.sicherAb) r = mk(id, 'ja', 'ja', bedarfTx('ja', bedarf).concat([['schaetz.eins', { a: eur(r10(luecke)) }]], behTx));
-    else if (luecke > -(R.grundsicherung.knappPuffer + mb.offen + (h.mehrAEhoch || 0) - (h.mehrAE || 0))) r = mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(behTx));
+    // Sofortzuschlag (§ 72 SGB II) je Kind bzw. jungem Erwachsenen im Haushalt: nur im angezeigten Betrag (Vollprüfung familie B4)
+    // Nicht für Kinder, die ihren Bedarf mit eigenem Einkommen (Unterhalt, Unterhaltsvorschuss, Lohn) schon ohne Kindergeld decken: Sie haben
+    // keinen Anspruch, und er scheitert nicht nur am Kindergeld (§ 72 Abs. 1 SGB II; Gegenprüfung 25.11.2026, Nr. 4). Die App kennt nur die
+    // Summe aller Kinder: deckt sie den Bedarf aller Kinder, kein Sofortzuschlag (vorsichtige Seite).
+    const kindEigen = (h.kindZahl || 0) + Math.max(0, (h.kindEink || 0) - h.minijob);
+    const kindDeckt = h.children > 0 && kindEigen >= (h.regel - h.regelElt) + h.miete * h.children / h.persons;
+    const sofort = kindDeckt ? 0 : h.children * R.sofortzuschlag;
+    const sofortTx = sofort > 0 ? [['ggeld.sofort', { sz: eur(R.sofortzuschlag) }]] : [];
+    if (luecke >= R.grundsicherung.sicherAb) r = mk(id, 'ja', 'ja', bedarfTx('ja', bedarf).concat([['schaetz.eins', { a: eur(r10(luecke + sofort)) }]], sofortTx, behTx));
+    else if (luecke > -(R.grundsicherung.knappPuffer + mb.offen + (h.mehrAEhoch || 0) - (h.mehrAE || 0) + (h.egFreiOffen || 0) + pufferAlter + pufferUnt + puffer2b)) r = mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(behTx));
     else return mk(id, 'nein', 'einkoHoch', bedarfTx('nein', bedarf));
     // Vorrangige Leistungen (§ 12a Satz 1 und Satz 2 Nr. 2 SGB II): Reichen Wohngeld und Kinderzuschlag zusammen mit dem Einkommen für den
     // Bedarf, gehen sie vor; dann gibt es kein Grundsicherungsgeld (https://www.gesetze-im-internet.de/sgb_2/__12a.html, Abruf 21.11.2026;
@@ -1468,13 +1671,23 @@ const Rules = (function () {
   function bildungTeilhabe(h, wg, kz, gg) {
     const id = 'but';
     if (h.children === 0) return mk(id, 'nein', 'keinKind', [['but.keinKind']]);
-    // § 28 Abs. 1 SGB II: junge Erwachsene nur, solange sie zur Schule gehen und keine Ausbildungsvergütung bekommen
-    if (h.kids === 0 && (h.ausbildung === 'kindBetrieb' || h.kindEink > 0)) return mk(id, 'nein', 'vorausFehlt', [['but.azubi']]);
+    // § 28 Abs. 1 Satz 2, Abs. 7 SGB II (https://www.gesetze-im-internet.de/sgb_2/__28.html, Abruf 24.11.2026): junge Erwachsene nur, solange
+    // sie eine allgemein- oder berufsbildende Schule besuchen und keine Ausbildungsvergütung bekommen; die 15 € Teilhabe nur bis 18.
+    // Ausgeschlossen ist nur die Ausbildungsvergütung (betriebliche Ausbildung), nicht ein Schülerjob (Vollprüfung familie B10; bis 24.11.2026
+    // „nein“ bei jedem Einkommen des Kindes). Ob das Kind zur Schule geht oder studiert, fragt die App nicht: höchstens „möglich“ (B11, Fable 18).
+    if (h.kids === 0 && h.ausbildung === 'kindBetrieb') return mk(id, 'nein', 'vorausFehlt', [['but.azubi']]);
+    const nurJung = h.kids === 0 && h.young > 0;
     // § 90 Abs. 4 SGB VIII: Kita und Tagespflege ohne Kostenbeitrag bei Grundsicherung, Wohngeld, Kinderzuschlag, Asylbewerberleistungen.
     // Gilt auch für den Hort als Tageseinrichtung (§ 22 Abs. 1 SGB VIII), nicht für Mittagsbetreuung/Offenen Ganztag der Schule
     // (https://www.gesetze-im-internet.de/sgb_8/__90.html, .../__22.html, Abruf 20.11.2026)
     const betreuung = (h.kidsU6 > 0 ? [['but.kita']] : []).concat(h.kids > h.kidsU6 ? [['but.hort']] : []);
-    const inhalt = h.young === 0 && h.kids > 0 && h.kidsU6 === h.kids ? ['but.inhaltKlein', { teil: eur(R.but.teilhabeMonat) }] : ['but.inhalt', { schul: eur(R.but.schulbedarf), teil: eur(R.but.teilhabeMonat) }];
+    const inhalt = nurJung ? ['but.inhaltJung', { schul: eur(R.but.schulbedarf), teil: eur(R.but.teilhabeMonat) }]
+      : h.young === 0 && h.kids > 0 && h.kidsU6 === h.kids ? ['but.inhaltKlein', { teil: eur(R.but.teilhabeMonat) }] : ['but.inhalt', { schul: eur(R.but.schulbedarf), teil: eur(R.but.teilhabeMonat) }];
+    const r = bildungTeilhabe0(h, wg, kz, gg, inhalt, betreuung);
+    return nurJung ? hoechstensMoeglich(r, 'but.azubi') : r;
+  }
+  function bildungTeilhabe0(h, wg, kz, gg, inhalt, betreuung) {
+    const id = 'but';
     // Einziges Kind ist das erwachsene Kind in der Werkstatt: kein Schüler im Sinn von § 28 Abs. 1 Satz 2 SGB II, § 34 Abs. 1 SGB XII
     if (h.children === 1 && h.young === 1 && kindNurEM(h)) return mk(id, 'nein', 'vorausFehlt', [['but.azubi']]);
     // Grundsicherung vom Sozialamt nur des erwachsenen Kindes (sozialamtKind): Sie umfasst Bildung und Teilhabe nur für das Kind selbst
@@ -1586,7 +1799,8 @@ const Rules = (function () {
         return a + e - frei;
       }
       if (art === 'lohn') return a + n;
-      if (art === 'eg') return a + Math.max(0, n - (b > (h.egOhneArbeit || R.elterngeldFrei) ? R.elterngeldFrei : 0));
+      // Elterngeld: Freibetrag nach § 10 Abs. 5 BEEG wie beim Grundsicherungsgeld (vorsichtige Seite, siehe derive egFrei)
+      if (art === 'eg') return a + Math.max(0, n - (h.egFreiJe && h.egFreiJe[i] ? h.egFreiJe[i].sgbLo : 0));
       // Rente: Grundrentenfreibetrag nur auf die gesetzliche Rente (§ 82a), Freibetrag für zusätzliche Altersvorsorge auf Betriebs-, Riester- oder private Rente (§ 82 Abs. 4)
       // § 82a Abs. 1 SGB XII (https://www.gesetze-im-internet.de/sgb_12/__82a.html, Abruf 21.11.2026): 100 € + 30 % „aus der gesetzlichen Rente“,
       // also aus der Bruttorente (Broschüre der Rentenversicherung „Die Grundsicherung“, 5/2026, S. 18: „Brutto Rente 870,00“ -> 281,50 €).
@@ -1597,14 +1811,71 @@ const Rules = (function () {
     }, 0);
   }
 
-  function grundsicherungAlter(h) {
+  // ---------------------------------------------------------------
+  // Hilfe zum Lebensunterhalt (SGB XII, 3. Kapitel, §§ 27 ff.)
+  // ---------------------------------------------------------------
+  // Für wen (Abruf 25.11.2026, gesetze-im-internet.de/sgb_12/__19.html, __21.html, __27.html; sgb_2/__5.html, __7.html): Menschen, die ihren
+  // Lebensunterhalt nicht aus Einkommen und Vermögen decken (§ 19 Abs. 1, § 27 SGB XII) und weder Grundsicherungsgeld bekommen (erwerbsfähig
+  // oder in einer Bedarfsgemeinschaft mit einer erwerbsfähigen Person: § 21 SGB XII, § 5 Abs. 2 Satz 1 SGB II) noch Grundsicherung im Alter und
+  // bei dauerhafter voller Erwerbsminderung (4. Kapitel, geht vor: § 19 Abs. 2 Satz 2 SGB XII). Die App erkennt:
+  //  vorgezogen: Altersrente vor der Regelaltersgrenze (§ 7 Abs. 4 SGB II schließt Grundsicherungsgeld aus; vielleichtAltersrente)
+  //  emZeit:     volle Erwerbsminderung (eigene Angabe, nicht Werkstatt, § 41 Abs. 3a): Hilfe zum Lebensunterhalt nur, wenn sie befristet ist
+  //  kinder:     Kinder eines alleinstehenden Elternteils mit Grundsicherung im Alter (unter 15 nicht erwerbsfähig, § 7 Abs. 1 Nr. 1 SGB II)
+  //  partner:    Partner unter der Regelaltersgrenze mit Altersrente neben einer Person mit Grundsicherung im Alter
+  // Ein längerer Klinik- oder Heimaufenthalt (§ 7 Abs. 4 Satz 1, 3 Nr. 1 SGB II; § 27b SGB XII) wird nicht abgefragt.
+  // Rechnung wie Grundsicherung im Alter (Regelsätze § 27a, Mehrbedarfe § 30, Unterkunft § 35 mit 1,5-Deckel, Einkommen §§ 82, 82a, Vermögen § 90
+  // mit 10.000 € je Person). Unterschiede: Vermutung der Bedarfsdeckung bei Verwandten im Haushalt (§ 39, nicht in der Grundsicherung: § 43 Abs. 5),
+  // Mehrbedarf G nur ab der Altersgrenze oder bei voller Erwerbsminderung (§ 30 Abs. 1), Unterhalt (§ 94 Abs. 1a Satz 6: die 100.000-€-Grenze gilt
+  // nicht bei Hilfe zum Lebensunterhalt an minderjährige Kinder), kein Antrag nötig (§ 18 Abs. 1: ab Kenntnis des Sozialamts).
+  const HLU_WEG = ['gsa.grenz', 'gsa.emDauer', 'gsa.eltern', 'gsa.heim', 'gsa.mzGBeide', 'ggeld.gemischt', 'ggeld.kindGsa'];
+  const HLU_VERWEIS = ['ggeld.vorgezogen', 'gsa.emDauer', 'gsa.eltern'];
+  function hilfeLebensunterhalt(h, gsa) {
+    const id = 'hlu';
+    if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);
+    const werkstatt = !!h.wfbm || (h.pers || []).some((x) => x[0] === 'wfbm');
+    const vorgezogen = !h.alter && vielleichtAltersrente(h);
+    const emZeit = !h.alter && !h.alterGrenz && !!h.emEltern && !werkstatt;
+    const gsaOk = !!gsa && (gsa.level === 'ja' || gsa.level === 'vielleicht' || gsa.level === 'na');
+    const rente2 = h.liste ? (h.pers || []).some((x) => x[5] === 2 && x[0] === 'rente' && x[1] > 0) : h.art2 === 'rente';
+    const kinder = h.adults === 1 && h.kids > 0 && gsaOk && !kindNurEM(h);
+    const partner = h.adults === 2 && h.alter && rente2 && gsaOk;
+    if (!vorgezogen && !emZeit && !kinder && !partner) return mk(id, 'nein', 'vorausFehlt', [[h.alter || h.alterGrenz ? 'hlu.gsaVorrang' : 'hlu.voraus']]);
+    if (h.bezug.grundsicherungsgeld) return mk(id, 'nein', 'schonGrund', [['hlu.ggBezug']]);
+    if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['gsa.eu']]);
+    if (h.bezug.sozialamt) return mk(id, 'na', 'na', [['gsa.na']]);
+    const unterhalt = ['hlu.unterhalt'];
+    // Die Person selbst bekommt Grundsicherung im Alter: Hilfe zum Lebensunterhalt nur für Kinder bzw. Partner, im Betrag der GSA-Karte enthalten
+    if (!vorgezogen && !emZeit) {
+      if (kinder) return mk(id, gsa.level === 'ja' && h.kids14 === 0 && h.young === 0 ? 'ja' : 'vielleicht', gsa.level === 'ja' && h.kids14 === 0 && h.young === 0 ? 'ja' : 'vielleicht', [['hlu.kinder'], unterhalt]);
+      return mk(id, 'vielleicht', 'vielleicht', [['hlu.partner'], unterhalt]);
+    }
+    const lage = vorgezogen ? 'hlu.vorgezogen' : 'hlu.emZeit';
+    // Mehrbedarf G (§ 30 Abs. 1 SGB XII) bei Altersrente vor der Altersgrenze nur mit voller Erwerbsminderung
+    const ohneG = vorgezogen && !h.emEltern && h.mzG;
+    const base = grundsicherungAlter(ohneG ? { ...h, mzG: false } : h, { hlu: true });
+    if (base.level === 'nein' || base.level === 'na') return mk(id, base.level, base.hl, base.tx.filter((t) => HLU_WEG.indexOf(t[0]) < 0));
+    const extra = (ohneG ? [['hlu.keinG']] : []).concat(h.kids > 0 ? [['hlu.kinder']] : [], [unterhalt]);
+    const ohneBetrag = (key) => mk(id, 'vielleicht', 'vielleicht', [[lage]].concat(key ? [[key]] : [], base.tx.filter((t) => HLU_WEG.indexOf(t[0]) < 0 && t[0].indexOf('schaetz.') !== 0 && t[0].indexOf('bedarf') !== 0), extra));
+    // § 39 SGB XII: bei Eltern oder anderen Verwandten im Haushalt vermutet das Amt Unterstützung (widerlegbar; nicht bei Behinderung oder Pflege, Satz 3 Nr. 2)
+    if (h.wohnform === 'eltern' || h.hhAndere === 'verwandte') return ohneBetrag('hlu.verwandte');
+    // Partner oder Kinder ab 15 können erwerbsfähig sein: dann meist alle beim Jobcenter (§ 7 Abs. 2, 3 SGB II, § 21 SGB XII)
+    if (h.adults === 2) return ohneBetrag('hlu.paar');
+    if (h.kids14 > 0 || h.young > 0) return ohneBetrag('hlu.kind15');
+    // Befristete volle Erwerbsminderung: Den Betrag zeigt schon die Karte Grundsicherung (gleiche Rechnung, entweder oder), hier nicht doppelt
+    if (emZeit && gsaOk) return ohneBetrag(null);
+    const r = mk(id, 'vielleicht', 'vielleicht', [[lage]].concat(base.tx.filter((t) => HLU_WEG.indexOf(t[0]) < 0), h.wohnform === 'heim' ? [['hlu.heim']] : [], extra));
+    return base.lage ? Object.defineProperty(r, 'lage', { value: base.lage }) : r;
+  }
+
+  function grundsicherungAlter(h, opt) {
     const id = 'gsa';
+    const hlu = !!(opt && opt.hlu);
     if (h.asyl) return mk(id, 'nein', 'ausschluss', [['ggeld.asyl']]);
     // Voll erwerbsgemindert zählt hier erst ab 18 Jahren (§ 41 Abs. 3 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__41.html, Abruf
     // 24.11.2026). Ist nur ein Kind unter 18 in der Werkstatt, gibt es diese Leistung nicht; das Kind bekommt Grundsicherungsgeld in der
     // Bedarfsgemeinschaft des Elternteils (§ 19 Abs. 1 Satz 2, § 23 SGB II). Bis 24.11.2026 zeigte die App hier „wahrscheinlich“ mit Betrag.
     const emAb18 = h.erwerbsgemindert && (h.emEltern || h.bhPerson !== 'minder');
-    if (!h.alter && !emAb18 && !h.alterGrenz) return mk(id, 'nein', 'vorausFehlt', [[h.erwerbsgemindert && h.bhPerson === 'minder' ? 'gsa.kindU18' : 'gsa.voraus']]);
+    if (!hlu && !h.alter && !emAb18 && !h.alterGrenz) return mk(id, 'nein', 'vorausFehlt', [[h.erwerbsgemindert && h.bhPerson === 'minder' ? 'gsa.kindU18' : 'gsa.voraus']]);
     if (euAusschluss(h)) return mk(id, 'nein', 'ausschluss', [['gsa.eu']]);
     if (h.bezug.sozialamt) return mk(id, 'na', 'na', [['gsa.na']]);
     // Nur das erwachsene Kind im Haushalt ist voll erwerbsgemindert (Angaben der Eltern): Die Grundsicherung ist die Leistung des Kindes allein.
@@ -1638,12 +1909,15 @@ const Rules = (function () {
     const maG = mehrAllg(h, eigen, regelP);
     bedarf += maG.fest;
     const offen = kduOffen + (h.wfbmEssen ? R.offen.essen : 0) + teilOffen + maG.offen;
-    const eink = gsaEinkommen(h) + (eigen ? 0 : h.children * R.kindergeld + unterhaltAnrechenbar(h));
+    const eink = gsaEinkommen(h) + (eigen ? 0 : h.children * R.kindergeld + unterhaltAnrechenbar(h, true));
     const luecke = bedarf - eink;
     const hatRente = (h.pers || []).some((x) => x[0] === 'rente' && x[1] > 0);
     const extra = (h.alterGrenz ? [['gsa.grenz']] : []).concat(h.wfbmEssen ? [['gsa.essen']] : [], kduOffen ? [[h.wohnform === 'heim' ? 'gsa.heim' : 'gsa.eltern']] : [],
-      hatRente && !h.grundrente33 ? [['gsa.grundrente']] : [], teilFest ? [['mehr.teilhabe', { betrag: eur(teilFest) }]] : [], teilOffen ? [['ggeld.mehrBeh']] : [], maG.tx,
+      hatRente && !h.grundrente33 ? [['gsa.grundrente', { max: { eur: R.grundrente.max * R.regelbedarf.alleinstehend } }]] : [], teilFest ? [['mehr.teilhabe', { betrag: eur(teilFest) }]] : [], teilOffen ? [['ggeld.mehrBeh']] : [], maG.tx,
       !eigen && h.miete > 0 ? [['kdu.angemessen']] : []);
+    // Grundsicherung bei Erwerbsminderung nur bei dauerhafter voller Erwerbsminderung (§ 41 Abs. 3 SGB XII); befristet: Hilfe zum Lebensunterhalt
+    // (3. Kapitel, gleiches Amt, gleiche Regelsätze). Die App fragt „dauerhaft“ nicht -> Hinweis (Vollprüfung B16/F11, 24.11.2026)
+    if (!h.alter && !h.alterGrenz && h.emStd === 'unter3' && !h.wfbm) extra.push(['gsa.emDauer']);
     // Merkzeichen G fragt die App nur für eine Person ab. Der Mehrbedarf von 17 % gilt für jede leistungsberechtigte Person mit Merkzeichen G
     // (§ 30 Abs. 1 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__30.html, Abruf 21.11.2026; Beispiel b) im Merkblatt Grundsicherung
     // der Stadt Bochum: Ehepaar, beide G). Bei Paaren deshalb ein Hinweis, dass der Betrag dann höher ist (vorsichtige Seite).
@@ -1653,8 +1927,16 @@ const Rules = (function () {
     if (luecke >= R.grundsicherung.sicherAb) {
       const sch = offen ? ['schaetz.mind', { a: eur(r10(luecke)) }] : ['schaetz.eins', { a: eur(r10(luecke)) }];
       r = mk(id, ja ? 'ja' : 'vielleicht', ja ? 'ja' : 'vielleicht', bedarfTx('ja', bedarf).concat([sch], extra));
-    } else if (luecke > -(R.grundsicherung.knappPuffer + offen)) r = mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(extra));
+    } else if (luecke > -(R.grundsicherung.knappPuffer + offen + (eigen || h.kidsAlter ? 0 : Math.max(0, h.kids - h.kidsU6 - h.kids14) * (R.regelbedarf.kind14 - R.regelbedarf.kind)))) r = mk(id, 'vielleicht', 'vielleicht', bedarfTx('vielleicht', bedarf).concat(extra));
     else return mk(id, 'nein', 'einkoHoch', bedarfTx('nein', bedarf));
+    // Gemischtes Paar (Vollprüfung 24.11.2026, Befund Fable 17): Arbeitet die zweite Person, bezieht sie Arbeitslosengeld oder leben Kinder
+    // im Haushalt, gehören diese in der Regel zum Jobcenter (§ 7 Abs. 2, 3 SGB II). Grundsicherung nach § 43 Abs. 1 SGB XII bekommt nur die
+    // Person im Rentenalter bzw. voll erwerbsgemindert, für ihren eigenen Bedarf. Kinder: nur ab 14 Jahren bzw. volljährig (ab 15 erwerbsfähig möglich). Die Rechnung für den ganzen Haushalt passt dann nicht:
+    // höchstens „möglich“, ohne Betrag.
+    if (!eigen && h.adults === 2 && ((h.erwerb2 && h.brutto2 > 0) || h.art2 === 'alg' || h.young > 0 || h.kids14 > 0)) {
+      const tx = r.tx.filter((t) => t[0].indexOf('schaetz.') !== 0 && t[0].indexOf('bedarf') !== 0);
+      return mk(id, 'vielleicht', 'vielleicht', [['ggeld.gemischt']].concat(tx));
+    }
     // Grundsicherung im Alter und Wohngeld gibt es nicht zusammen (§ 7 Abs. 1 Satz 1 Nr. 5 WoGG, https://www.gesetze-im-internet.de/wogg/__7.html,
     // Abruf 21.11.2026). Die Karte bleibt unverändert, auch wenn Wohngeld reichen würde (kein Ausschluss durch § 2 Abs. 1 SGB XII, siehe wegeLage);
     // hier nur die Lage für die Anzeige der zwei Wege. Nur im eigenen Haushalt (bei den Eltern oder im Wohnheim kein Wohngeld).
@@ -1701,13 +1983,19 @@ const Rules = (function () {
   }
   // Einkommen je Person (Brutto b, Netto n) aus den Angaben; ohne Liste wird das Netto nach dem Brutto aufgeteilt
   function bafPers(h) {
-    if (h.liste) return h.pers.map((x) => ({ art: x[0], b: x[1], n: x[2], aus: !!x[3], selbst: !!x[4], p: x[5] || 1 }));
-    return h.pers.map((x, i) => ({ art: x[0], b: x[1], n: h.brutto > 0 ? h.netto * x[1] / h.brutto : (i === 0 ? h.netto : 0), selbst: !!x[4], p: i + 1 }));
+    if (h.liste) return h.pers.map((x, i) => ({ art: x[0], b: x[1], n: x[2], aus: !!x[3], selbst: !!x[4], p: x[5] || 1, i }));
+    return h.pers.map((x, i) => ({ art: x[0], b: x[1], n: h.brutto > 0 ? h.netto * x[1] / h.brutto : (i === 0 ? h.netto : 0), selbst: !!x[4], p: i + 1, i }));
   }
+  // Höchster möglicher Elterngeld-Freibetrag beim BAföG: § 1 Nr. 2 Buchst. f BAföG-EinkommensV (https://www.buzer.de/s1.htm?a=1&g=BAf%C3%B6G-EinkommensV,
+  // Abruf 24.11.2026) zählt Elterngeld nur, „soweit es die nach § 10 BEEG anrechnungsfreien Beträge übersteigt“; das BAföG ist in § 10 Abs. 5
+  // BEEG nicht ausgenommen, also gelten Abs. 1, 3, 4 (https://www.buzer.de/10_BEEG.htm): 300 €, bei ElterngeldPlus 150 €, je Kind der Geburt,
+  // ohne Bedingung „Einkommen vor der Geburt“ – wie beim Wohngeld. Für die untere Schätzung (lo, „eher nicht“) der höchste mögliche Betrag
+  // (wgHi aus derive egFrei, falls vorhanden; sonst 300 € je Kind der Geburt). Bis 24.11.2026: immer 300 €, auch bei Mehrlingen.
+  const bafEgFreiMax = (h, x) => (h.egFreiJe && h.egFreiJe[x.i] ? h.egFreiJe[x.i].wgHi : R.elterngeldFrei * (h.egMehr || 1));
   // Monatliches Einkommen nach § 21 BAföG [lo, hi] aus dem heutigen Einkommen. hi: nie kleiner als das Netto (Sozialpauschale 22,3 %
   // bzw. 16,5 %/38,8 % ist mindestens so hoch wie die tatsächlichen Beiträge), lo: Lohn nach § 21 (Steuer = Brutto − Netto − Beiträge);
-  // Studierende selbst (Werkstudenten zahlen weniger Beiträge): Steuer höchstens Brutto − Netto. Andere Einkommen: Elterngeld bis 300 € frei
-  // (§ 10 Abs. 1 BEEG), Unterhalt für sich selbst zählt nur versteuert (lo 0), Rente lo 80 %, sonst lo 50 % (Annahme, vorsichtig).
+  // Studierende selbst (Werkstudenten zahlen weniger Beiträge): Steuer höchstens Brutto − Netto. Andere Einkommen: Elterngeld bis 300 € je Kind
+  // der Geburt frei (§ 10 Abs. 1, 4 BEEG, siehe bafEgFreiMax), Unterhalt für sich selbst zählt nur versteuert (lo 0), Rente lo 80 %, sonst lo 50 % (Annahme, vorsichtig).
   function bafEink(h, nurP, student) {
     const ps = bafPers(h).filter((x) => !nurP || x.p === nurP);
     let lo = 0, hi = 0, untHi = 0;
@@ -1724,7 +2012,7 @@ const Rules = (function () {
       const n = Math.max(0, x.n);
       hi += n;
       if (x.art === 'unt') untHi += n;
-      const nEg = Math.max(0, n - R.elterngeldFrei);
+      const nEg = Math.max(0, n - bafEgFreiMax(h, x));
       // Lohn ohne Brutto: Sozialpauschale 22,3 % und Arbeitnehmer-Pauschbetrag statt der echten Beiträge -> lo 80 % minus 80 € (Annahme)
       lo += x.art === 'eg' ? nEg : x.art === 'unt' ? 0 : x.art === 'rente' ? 0.8 * n : x.art === 'lohn' && !x.selbst ? Math.max(0, 0.8 * n - 80) : 0.5 * n;
     });
@@ -1753,8 +2041,9 @@ const Rules = (function () {
         return;
       }
       ja += n;
-      // wie bisher: Unterhalt für sich selbst ganz, Elterngeld bis 300 € abgezogen (Betrag laut Eingabe; ohne Liste das Brutto-Feld)
-      nein += n - (x.art === 'unt' ? (h.liste ? n : x.b) : x.art === 'eg' ? Math.min(R.elterngeldFrei, h.liste ? n : x.b) : 0);
+      // wie bisher: Unterhalt für sich selbst ganz, Elterngeld bis zum höchsten möglichen Freibetrag abgezogen (300 € je Kind der Geburt, § 10 BEEG;
+      // Betrag laut Eingabe; ohne Liste das Brutto-Feld)
+      nein += n - (x.art === 'unt' ? (h.liste ? n : x.b) : x.art === 'eg' ? Math.min(bafEgFreiMax(h, x), h.liste ? n : x.b) : 0);
     });
     // Prüfung 21.11.2026: Für „wahrscheinlich“ zählt als Steuer höchstens die Lohnsteuer, die das Finanzamt am Ende festsetzt, nicht alles,
     // was zwischen Brutto und Netto fehlt. Grund: Abgezogen wird nur die „zu leistende Einkommensteuer“ (§ 21 Abs. 1 Satz 3 Nr. 3 BAföG, laut
@@ -1828,8 +2117,12 @@ const Rules = (function () {
     const id = 'bafoeg';
     if (!h.ausbildung) return mk(id, 'nein', 'vorausFehlt', [['bafoeg.keine']]);
     if (h.ausbildung === 'kindBetrieb') return mk(id, 'nein', 'vorausFehlt', [['bafoeg.betrieb']]);
+    // Betriebliche Ausbildung der Person selbst: kein BAföG (§ 2 Abs. 1 BAföG), sondern Berufsausbildungsbeihilfe (§ 56 SGB III);
+    // Vollprüfung 24.11.2026, Befunde B-02 / Fable 6
+    if (h.ausbildung === 'ich' && h.babBetrieb) return mk(id, 'nein', 'vorausFehlt', [['bafoeg.betrieb']]);
     if (h.ausbildung === 'kind') {
-      if (h.children === 0) return mk(id, 'nein', 'vorausFehlt', [['bafoeg.keinKind']]);
+      // Das mitgezählte Baby ist kein Kind in Ausbildung (Gegenprüfung 25.11.2026, Nr. 9); als Geschwister zählt es beim Freibetrag mit
+      if (h.children - (h.babyDa || 0) === 0) return mk(id, 'nein', 'vorausFehlt', [['bafoeg.keinKind']]);
       const fb = (h.adults === 2 ? R.bafoeg.freiPaar : R.bafoeg.freiAllein) + Math.max(0, h.children - 1) * R.bafoeg.jeKind;
       const p = { fb: eur(fb) };
       const e21 = bafEink21(h);
@@ -1879,11 +2172,18 @@ const Rules = (function () {
     if (h.pflegegrad === 0) return mk(id, 'nein', 'vorausFehlt', [['pflege.keiner']]);
     if (h.pflegegrad === 1) return mk(id, 'ja', 'ja', [['pflege.pg1', { ent: eur(R.pflege.entlastung) }], ['pflege.zeit']]);
     const pg = h.pflegegrad;
+    // Besondere Wohnform der Eingliederungshilfe (Wohnheim): Die Pflegekasse zahlt pauschal 15 % der Vergütung, höchstens 278 € im Monat, an die
+    // Einrichtung (§ 43a SGB XI); Pflegegeld nur anteilig für Tage zu Hause (§ 43a Satz 3, § 38 SGB XI). Wer in der Wohnform gepflegt wird, weiß die
+    // App nicht sicher -> „möglich“ (Vollprüfung B07, 24.11.2026; vorher „wahrscheinlich“ mit vollem Pflegegeld)
+    if (h.wohnform === 'heim') return mk(id, 'vielleicht', 'vielleicht', [['pflege.wohnform', { quote: R.pflege43a.quote, max: eur(R.pflege43a.max) }], ['pflege.zeit']]);
+    // Pflegende in Vollrente nach der Regelaltersgrenze sind rentenversicherungsfrei (§ 5 Abs. 4 Satz 1 Nr. 1 SGB VI): keine Beiträge nach § 44 SGB XI,
+    // außer mit Teilrente (Vollprüfung B12)
+    const renteAlt = h.alter ? [['pflege.renteAlt']] : [];
     return mk(id, 'ja', 'ja', [['pflege.pg2', { geld: eur(R.pflege.geld[pg]), pg, ent: eur(R.pflege.entlastung) }],
       // Pflegedienst statt Angehörige (Sachleistung, auch kombiniert), Tages- und Nachtpflege zusätzlich
       ['pflege.sach', { sach: eur(R.pflegeSach[pg]), tages: eur(R.pflegeTages[pg]) }],
       // Pflegende Angehörige: Rentenversicherung (§ 44 SGB XI), Pflege-Pauschbetrag (§ 33b Abs. 6 EStG), Steuerermäßigung (§ 35a EStG), Pflegezeit
-      ['pflege.rente'], ['pflege.pauschbetrag', { betrag: eur(R.pflegePausch[pg]) }], ['pflege.steuer35a'], ['pflege.zeit']]);
+      ['pflege.rente']].concat(renteAlt, [['pflege.pauschbetrag', { betrag: eur(R.pflegePausch[pg]) }], ['pflege.steuer35a'], ['pflege.zeit']]));
   }
 
   // ---------------------------------------------------------------
@@ -2064,6 +2364,20 @@ const Rules = (function () {
     if (!h.baby) return mk(id, 'nein', 'vorausFehlt', [['eg.keine']]);
     if ((h.pers || []).some((x) => x[0] === 'eg' && x[1] > 0)) return mk(id, 'na', 'na', [['eg.na']]);
     if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['eg.asyl']]);
+    // Einkommensgrenze § 1 Abs. 8 BEEG (https://www.gesetze-im-internet.de/beeg/__1.html, Abruf 24.11.2026): zu versteuerndes Einkommen im
+    // letzten Jahr vor der Geburt über 175.000 € (Paar: beide zusammen) -> kein Elterngeld. Die App kennt nur das heutige Brutto aus Arbeit
+    // (Selbstständige: Gewinn). Über 175.000 € Brutto im Jahr höchstens „möglich“ mit der Grenze vorn (Vollprüfung familie B5). Kein „eher
+    // nicht“: Vom zu versteuernden Einkommen gehen außer Werbungskosten und Vorsorgeaufwendungen auch Kinderfreibeträge, Kinderbetreuungskosten,
+    // Kirchensteuer u. a. ab (§ 2 Abs. 5 EStG; Paar 2 × 110.000 € mit Kind etwa 174.600 €), und es zählt das Jahr vor der Geburt, nicht das
+    // heutige Brutto (Gegenprüfung 25.11.2026, Nr. 1; bis dahin „eher nicht“ ab 175.000 € / 0,8).
+    const jahrArbeit = 12 * (h.pers || []).reduce((a, x) => a + (x[0] === 'lohn' ? x[1] : 0), 0);
+    const grenzeTx = ['eg.grenze', { grenze: eur(R.eg.einkommenGrenze) }];
+    const r = elterngeld0(h);
+    if (!(jahrArbeit > R.eg.einkommenGrenze) || (r.level !== 'ja' && r.level !== 'vielleicht')) return r;
+    return mk(id, 'vielleicht', r.level === 'ja' ? 'vielleicht' : r.hl, [grenzeTx].concat(r.tx.filter((t) => t[0] !== 'eg.grenze')));
+  }
+  function elterngeld0(h) {
+    const id = 'elterngeld';
     const monate = R.eg.monate + R.eg.partner; // Paare zusammen 14, Alleinerziehende allein 14 (§ 4 Abs. 4, 6 BEEG)
     const tx = [];
     const kinder = h.egKinder, mehr = { zuschlag: eur(R.eg.mehrling) };
@@ -2080,6 +2394,8 @@ const Rules = (function () {
       const o = { nach, kinder, bonus: geschw >= 2 };
       const basis = elterngeldBerechnen(vor, o), plus = elterngeldBerechnen(vor, Object.assign({ plus: true }, o));
       tx.push(['eg.ja', { basis: eur(basis), plus: eur(plus), monate }], ['schaetz.eins', { a: eur(r10(basis)) }]);
+      // § 4 Abs. 6 BEEG (gleichzeitig Basiselterngeld nur 1 Monat), § 4b BEEG (Partnerschaftsbonus), Abruf 24.11.2026 (Vollprüfung familie B20, Fable 27)
+      if (h.adults === 2) tx.push(['eg.paar']);
       if (h.egNach > 0) {
         const kern = elterngeldBerechnen(vor, { nach });
         tx.push([kern <= R.eg.min ? 'eg.teilzeitMin' : 'eg.teilzeit', { nach: eur(h.egNach), deckel: eur(R.eg.deckel), min: eur(R.eg.min) }],
@@ -2090,7 +2406,9 @@ const Rules = (function () {
       if (geschw >= 2) tx.push(['eg.geschwister', { min: eur(R.eg.bonusMin) }]);
       else if (geschw === 1) tx.push(['eg.geschwisterVielleicht', { min: eur(R.eg.bonusMin) }]);
     }
+    // § 1 Abs. 7 BEEG: Drittstaatsangehörige nur mit bestimmten Titeln (Vollprüfung familie B9)
     tx.push(['eg.mutterschaft'], ['eg.grenze', { grenze: eur(R.eg.einkommenGrenze) }]);
+    if (!h.eu) tx.push(['familie.titel']);
     return mk(id, h.egVor == null ? 'vielleicht' : 'ja', h.egVor == null ? 'vielleicht' : 'ja', tx);
   }
 
@@ -2108,7 +2426,7 @@ const Rules = (function () {
   // Hilfe zur Pflege (SGB XII, 7. Kapitel): wenn Pflegekasse und eigenes Geld nicht reichen (Pflegedienst, Tagespflege, Heim)
   function hilfeZurPflege(h) {
     const id = 'hzp';
-    if (h.pflegegrad < 2 && !h.pflegeAntrag) return mk(id, 'nein', 'vorausFehlt', [['hzp.keine']]);
+    if (h.pflegegrad < 1 && !h.pflegeAntrag) return mk(id, 'nein', 'vorausFehlt', [['hzp.keine']]);
     // EU-Bürger ohne Arbeit, unter 5 Jahren: keine Leistungen nach § 23 Abs. 1 SGB XII (umfasst Hilfe zur Pflege), Ausnahmen Härte
     // (Satz 6) und nach 5 Jahren (Satz 7) – § 23 Abs. 3 SGB XII, https://www.gesetze-im-internet.de/sgb_12/__23.html, Abruf 20.11.2026.
     // Gleiche Logik und Stufe wie bei der Grundsicherung im Alter (euAusschluss)
@@ -2118,6 +2436,9 @@ const Rules = (function () {
     // Abruf 20.11.2026). Nach 36 Monaten SGB XII entsprechend (§ 2 Abs. 1 AsylbLG), davor nur im Einzelfall (§ 6 Abs. 1 AsylbLG,
     // https://www.gesetze-im-internet.de/asylblg/__6.html, Abruf 20.11.2026)
     if (h.asyl) return mk(id, 'vielleicht', 'vielleicht', [['hzp.asyl'], ['hzp.heim']]);
+    // Pflegegrad 1: Hilfe zur Pflege nur für Pflegehilfsmittel, Wohnumfeld, digitale Pflegeanwendungen und den Entlastungsbetrag (§ 63 Abs. 2
+    // SGB XII, https://www.buzer.de/63_SGB_XII.htm, Abruf 24.11.2026). Bis 24.11.2026 „nein“ (Vollprüfung B06)
+    if (h.pflegegrad === 1 && !h.pflegeAntrag) return mk(id, 'vielleicht', 'vielleicht', [['hzp.pg1']]);
     const grenze = hzpGrenze(h);
     return mk(id, 'vielleicht', 'vielleicht', [[h.netto <= grenze ? 'hzp.unter' : 'hzp.ueber', { grenze: eur(grenze) }], ['hzp.heim']]);
   }
@@ -2127,10 +2448,18 @@ const Rules = (function () {
     const id = 'mutter';
     if (!h.baby) return mk(id, 'nein', 'vorausFehlt', [['mu.keine']]);
     const pers = h.pers || [];
-    const lohn = pers.filter((x) => x[0] === 'lohn' && x[1] > 0), alg = pers.some((x) => x[0] === 'alg' && x[1] > 0);
-    if (!lohn.length && !alg) return mk(id, 'nein', 'vorausFehlt', [['mu.ohne']]);
+    // Vollprüfung familie B6, B7 (§ 24i Abs. 1 Satz 1, Abs. 2 letzter Satz SGB V, https://www.gesetze-im-internet.de/sgb_5/__24i.html, Abruf
+    // 24.11.2026): Mitglieder mit Anspruch auf Krankengeld bekommen Mutterschaftsgeld, „andere Mitglieder“ in Höhe des Krankengeldes. Also auch
+    // mit Krankengeld (bis 24.11.2026: „nein“). Selbstständige nur als gesetzlich Versicherte mit Krankengeld-Anspruch (Wahlerklärung), ohne
+    // Arbeitgeberzuschuss: höchstens „möglich“ (bis 24.11.2026: „wahrscheinlich“ mit dem Text zum Arbeitgeber).
+    const lohn = pers.filter((x) => x[0] === 'lohn' && x[1] > 0 && !x[4]), selbst = pers.some((x) => x[0] === 'lohn' && x[1] > 0 && x[4]);
+    const alg = pers.some((x) => x[0] === 'alg' && x[1] > 0), kg = pers.some((x) => x[0] === 'kg' && x[1] > 0);
     const M = R.mutter, p = { tag: eur(M.tag), bas: eur(M.bas), vor: M.vor, nach: M.nach, nachLang: M.nachLang };
-    const tx = [[alg && !lohn.length ? 'mu.alg' : 'mu.lohn', p]];
+    if (!lohn.length && !alg && !kg) {
+      if (selbst) return mk(id, 'vielleicht', 'vielleicht', [['mu.selbst'], ['mu.frist', p]]);
+      return mk(id, 'nein', 'vorausFehlt', [['mu.ohne']]);
+    }
+    const tx = [[lohn.length ? 'mu.lohn' : alg ? 'mu.alg' : 'mu.kg', p]];
     if (lohn.some((x) => x[1] <= h.minijob)) tx.push(['mu.minijob', p]);
     tx.push(['mu.frist', p]);
     if (h.baby === 'da') return mk(id, 'vielleicht', 'vielleicht', [['mu.da', p]].concat(tx));
@@ -2155,6 +2484,8 @@ const Rules = (function () {
     const id = 'lpg';
     if (h.land && h.land !== 'BY') return mk(id, 'nein', 'land', [['lpg.land']]);
     if (h.pflegegrad < 2 && !h.pflegeAntrag) return mk(id, 'nein', 'vorausFehlt', [['lpg.keine']]);
+    // Bundesland nicht angegeben: nur „möglich“ (Hauptwohnsitz in Bayern, Art. 2 BayLPflGG; Vollprüfung F8, 24.11.2026)
+    if (!h.land) return mk(id, 'vielleicht', 'vielleicht', [['lpg.ohneLand', { betrag: eur(R.lpg.betrag) }]]);
     // lpg.antrag: Auszahlung bis 31. Januar des Folgejahres (Art. 2 Abs. 4 Satz 2 BayLPflGG, https://www.gesetze-bayern.de/Content/Document/BayLPflGG-2, Abruf 21.11.2026);
     // im Text „in der Regel“, weil der Antrag noch bis 3 Monate nach Ende des Pflegegeldjahres gestellt werden kann (Art. 3 Abs. 1 Satz 1)
     const tx = [['lpg.ja', { betrag: eur(R.lpg.betrag), stand: R.lpg.stand }], ['lpg.antrag']];
@@ -2175,11 +2506,25 @@ const Rules = (function () {
     if (vermSGB12(h) > R.grundsicherung.schonAllein * h.adults + 500 * h.children) return mk(id, 'nein', 'vermHoch', [['blh.verm']]);
     const grenze = hzpGrenze(h);
     const tx = [h.netto <= grenze ? ['blh.unter', { grenze: eur(grenze) }] : ['blh.ueber', { grenze: eur(grenze), prozent: Math.round(R.blh.einsatzUeber * 100) }],
-      [h.land && h.land !== 'BY' ? 'blh.landAnders' : 'blh.bayern']];
-    // Höhe: Blindenhilfe minus Landesblindengeld (voll angerechnet, § 72 Abs. 1 Satz 2), wo das Landesblindengeld belegt ist
-    const B = R.blhBetrag, landB = !h.land || h.land === 'BY' ? R.beh.blind.blind : R.landBlind.land[h.land];
+      [h.land === 'BY' ? 'blh.bayern' : 'blh.landAnders']];
+    // Höhe: Blindenhilfe minus Landesblindengeld (voll angerechnet, § 72 Abs. 1 Satz 1), wo das Landesblindengeld belegt ist. Ohne Bundesland
+    // kein Landesbetrag (Vollprüfung F8, 24.11.2026; vorher bayerischer Betrag).
+    const B = R.blhBetrag, landB = h.land === 'BY' ? R.beh.blind.blind : h.land ? R.landBlind.land[h.land] : 0;
     tx.push(['blh.betrag', { betrag: eur2(B.erw), kind: eur2(B.kind), stand: B.stand }]);
-    if (landB && h.bhPerson !== 'minder') tx.push(['blh.differenz', { land: BL_NAME[h.land || 'BY'], landbetrag: eur2(landB), rest: eur2(Math.max(0, B.erw - landB)) }]);
+    // Mit Pflegegrad 2 bis 5 wird Pflegegeld angerechnet: auf die Blindenhilfe 50 % des Pflegegelds PG 2 bzw. 40 % des Pflegegelds PG 3, höchstens
+    // 50 % der Blindenhilfe (§ 72 Abs. 1 Satz 2 SGB XII, https://www.buzer.de/72_SGB_XII.htm), auf das Bayerische Blindengeld 46 % bzw. 33 %
+    // (Art. 4 Abs. 1 BayBlindG, https://www.gesetze-bayern.de/Content/Document/BayBlindG-4), beide Abruf 24.11.2026. Beispiel PG 3: (951,92 − 239,60)
+    // − (809 − 197,67) = 100,99 €. Andere Länder rechnen anders: dort mit Pflegegrad kein Restbetrag (Vollprüfung F15; vorher 142,92 € ohne Anrechnung).
+    if (landB && h.bhPerson !== 'minder' && !(h.pflegegrad >= 2 && h.land !== 'BY')) {
+      let blhNetto = B.erw, landNetto = landB;
+      if (h.pflegegrad >= 2) {
+        const pg2 = h.pflegegrad === 2;
+        blhNetto = B.erw - Math.min(pg2 ? R.pflege.geld[2] * 0.5 : R.pflege.geld[3] * 0.4, 0.5 * B.erw);
+        landNetto = Math.max(20, landB - (pg2 ? R.pflege.geld[2] * 0.46 : R.pflege.geld[3] * 0.33));
+      }
+      const rest = Math.round(Math.max(0, blhNetto - landNetto) * 100) / 100;
+      tx.push(['blh.differenz', { land: BL_NAME[h.land], landbetrag: eur2(Math.round(landNetto * 100) / 100), rest: eur2(rest) }]);
+    }
     if (h.bhPerson === 'minder') tx.push(['blh.kind']);
     if (h.pflegegrad >= 2) tx.push(['blh.pflege']);
     tx.push(['blh.heim']);
@@ -2191,6 +2536,20 @@ const Rules = (function () {
     const id = 'asylblg';
     if (!h.asyl) return mk(id, 'nein', 'vorausFehlt', [['asyl.keine']]);
     if (h.asylBezug) return mk(id, 'na', 'na', [['asyl.na'], ['asyl.analog']]);
+    // § 7 AsylbLG (https://www.buzer.de/7_AsylbLG.htm, Abruf 24.11.2026; Befunde B-15 / Fable 3): Einkommen und Vermögen sind vorher
+    // aufzubrauchen (Abs. 1). Frei: 25 % vom Lohn, höchstens 50 % der Bedarfsstufe (Abs. 3), 200 € Vermögen je Person (Abs. 5).
+    // Grob gerechnet mit den Regelbedarfen nach dem SGB II als obere Grenze (Analogleistungen nach § 2 AsylbLG) plus Miete.
+    // Einkommen mehr als 100 € über diesem Bedarf: „eher nicht“. Vermögen über dem Freibetrag: „möglich“ (nach dem Verbrauch kann der Anspruch
+    // entstehen; eine feste Schwelle nennt das Gesetz nicht – Gegenprüfung PR #194, Befund 7).
+    const bedarf = h.regel + h.miete;
+    const lohnNetto = h.erwerb || h.erwerb2 ? (h.pers || []).reduce((a, x) => a + (x[0] === 'lohn' ? (h.liste ? x[2] : (h.brutto > 0 ? h.netto * x[1] / h.brutto : 0)) : 0), 0) : 0;
+    const frei = Math.min(R.asylblg.lohnFrei * lohnNetto, 0.5 * R.regelbedarf.alleinstehend * h.adults);
+    const luecke = bedarf - Math.max(0, h.netto - frei);
+    const vermUeber = h.vermoegen - R.asylblg.vermFrei * h.persons;
+    const tx = [['asyl.einkommen'], ['asyl.ja'], ['asyl.analog']];
+    if (luecke < -R.grundsicherung.knappPuffer) return mk(id, 'nein', 'einkoHoch', tx);
+    // Die Grundleistungen (§ 3a AsylbLG) liegen unter den Regelbedarfen: „wahrscheinlich“ nur ohne eigenes Einkommen und Vermögen
+    if (vermUeber > 0 || h.netto > 0 || luecke < R.grundsicherung.sicherAb) return mk(id, 'vielleicht', 'vielleicht', tx);
     return mk(id, 'ja', 'ja', [['asyl.ja'], ['asyl.analog']]);
   }
 
@@ -2230,16 +2589,22 @@ const Rules = (function () {
   function pauschbetrag(h) {
     const id = 'pausch';
     const g = gdbEff(h);
-    if (!g && h.gdbAntrag) return mk(id, 'vielleicht', 'vielleicht', [['pausch.laeuft']]);
-    if (!g) return keinBeh(id);
-    const tx = [['pausch.ja', { betrag: eur(R.beh.pausch[g]) }]];
-    // Fahrtkostenpauschale (§ 33 Abs. 2a EStG): 900 € ab GdB 80 oder GdB 70 mit Merkzeichen G; 4.500 € bei aG, Bl, TBl oder H
-    if (g === 'H' || h.mzAG) tx.push(['pausch.fahrt', { betrag: eur(4500) }]);
+    // 7.400 € für blinde und hilflose Menschen (§ 33b Abs. 3 Satz 3 EStG); dem Merkzeichen H steht Pflegegrad 4 oder 5 gleich (§ 65 Abs. 2 Satz 2
+    // EStDV, https://www.gesetze-im-internet.de/estdv_1955/__65.html), ohne festgestellten GdB (Finanzverwaltung NRW „Steuererleichterungen für
+    // Menschen mit einer Behinderung“), Abruf 24.11.2026. Blind ohne GdB-Angabe: Nachweis Merkzeichen Bl fehlt evtl. noch -> „möglich“.
+    // Bis 24.11.2026 zählte nur das Merkzeichen H (Vollprüfung B01/B02).
+    const hilflos = g === 'H' || h.blind === 'blind' || h.pflegegrad >= 4;
+    if (!g && !hilflos && h.gdbAntrag) return mk(id, 'vielleicht', 'vielleicht', [['pausch.laeuft']]);
+    if (!g && !hilflos) return keinBeh(id);
+    const tx = [hilflos ? ['pausch.hilflos', { betrag: eur(R.beh.pausch.H) }] : ['pausch.ja', { betrag: eur(R.beh.pausch[g]) }]];
+    // Fahrtkostenpauschale (§ 33 Abs. 2a EStG): 900 € ab GdB 80 oder GdB 70 mit Merkzeichen G; 4.500 € bei aG, Bl, TBl oder H, Pflegegrad 4 und 5
+    // wie H (§ 33 Abs. 4 EStG mit § 65 Abs. 2 Satz 2 EStDV; Finanzverwaltung NRW, Abruf 24.11.2026)
+    if (hilflos || h.mzAG) tx.push(['pausch.fahrt', { betrag: eur(4500) }]);
     else if (gdbNum(h) >= 80 || (gdbNum(h) >= 70 && h.mzG)) tx.push(['pausch.fahrt', { betrag: eur(900) }]);
     if (h.alter || h.netto * 12 < R.beh.grundfreibetrag) tx.push(['pausch.steuer']);
     if (g === 'H' && h.pflegegrad < 2) tx.push(['pflege.pauschbetrag', { betrag: eur(R.pflegePausch.H) }]);
     if (h.bhPerson === 'minder' || h.bhPerson === 'erwVor25') tx.push(['pausch.kind']);
-    return mk(id, 'ja', 'ja', tx);
+    return !g && h.blind === 'blind' && !(h.pflegegrad >= 4) ? mk(id, 'vielleicht', 'vielleicht', tx) : mk(id, 'ja', 'ja', tx);
   }
 
   // Schwerbehindertenausweis und Nachteilsausgleiche (§ 2 SGB IX, § 208 SGB IX). § 2 Abs. 2 SGB IX verlangt Wohnsitz, gewöhnlichen
@@ -2254,10 +2619,17 @@ const Rules = (function () {
     const g = gdbNum(h);
     if (!gdbEff(h) && h.gdbAntrag) return mk(id, 'na', 'na', [['ausweis.laeuft']]);
     if (gdbEff(h) && g >= 50) {
-      const frei = gdbEff(h) === 'H' || h.blind === 'blind' || h.mzAG; // H, Bl, TBl, aG
-      return mk(id, 'ja', 'ja', [h.alter ? ['ausweis.schwerRente'] : ['ausweis.schwer', { tage: R.beh.zusatzurlaub }]]
-        .concat(h.alter ? [] : [['ausweis.kuendigung']], frei ? [['ausweis.frei']] : h.mzG || h.mzGl ? [['ausweis.g']] : [], h.mzGl ? [['ausweis.gl']] : [], h.mzAG || h.blind === 'blind' ? [['ausweis.park']] : []));
+      // Wertmarke ohne Eigenbeteiligung nur für blinde und hilflose Menschen (und bei Grundsicherung u. a.), § 228 Abs. 4 SGB IX
+      // (https://www.buzer.de/228_SGB_IX.htm, Abruf 24.11.2026); aG: Kfz-Steuer frei (§ 3a Abs. 1 KraftStG), Wertmarke gegen Eigenbeteiligung.
+      // Bis 24.11.2026 hieß es auch bei aG „kostenlos“ (Vollprüfung B03).
+      const frei = gdbEff(h) === 'H' || h.blind === 'blind'; // H, Bl, TBl
+      // Kind unter 18: Zusatzurlaub und Kündigungsschutz gelten nur für Beschäftigte (§§ 168, 208 SGB IX) -> eigener Text (Vollprüfung B14)
+      const kind = h.bhPerson === 'minder';
+      return mk(id, 'ja', 'ja', [kind ? ['ausweis.schwerKind'] : h.alter ? ['ausweis.schwerRente'] : ['ausweis.schwer', { tage: R.beh.zusatzurlaub }]]
+        .concat(h.alter || kind ? [] : [['ausweis.kuendigung']], frei ? [['ausweis.frei']] : h.mzAG ? [['ausweis.ag']] : h.mzG || h.mzGl ? [['ausweis.g']] : [], h.mzGl ? [['ausweis.gl']] : [], h.mzAG || h.blind === 'blind' ? [['ausweis.park']] : []));
     }
+    // Gleichstellung (§ 2 Abs. 3 SGB IX) hilft nur für einen Arbeitsplatz: allein lebend über der Regelaltersgrenze kein Nutzen (Vollprüfung B15)
+    if (gdbEff(h) && g >= 30 && h.alter && h.adults === 1) return mk(id, 'nein', 'vorausFehlt', [['ausweis.niedrigRente']]);
     if (gdbEff(h) && g >= 30) return mk(id, 'vielleicht', 'vielleicht', [['ausweis.gleich']]);
     if (gdbEff(h)) return mk(id, 'nein', 'vorausFehlt', [['ausweis.niedrig']]);
     if (hatBeh(h)) return mk(id, 'vielleicht', 'vielleicht', [['ausweis.antrag']]);
@@ -2284,6 +2656,13 @@ const Rules = (function () {
       return mk(id, 'ja', 'ja', [t1].concat(h.pflegegrad >= 2 ? [['blindengeld.pflegeLand']] : []));
     }
     const b = R.beh.blind;
+    // Bundesland nicht angegeben: Blindengeld gibt es in jedem Land, aber in eigener Höhe -> Spanne und den bayerischen Betrag nur als Beispiel;
+    // Sehbehindertengeld nur in einigen Ländern -> „möglich“ (Vollprüfung F8, 24.11.2026; vorher bayerischer Betrag als feste Zusage)
+    if (!h.land) {
+      const bsp = ['blindengeld.ohneLand', { betrag: eur2(h.blind === 'blind' ? b.blind : b.hoch), stand: b.stand }];
+      if (h.blind !== 'blind') return mk(id, 'vielleicht', 'vielleicht', [['blindengeld.hochLand'], bsp]);
+      return mk(id, 'ja', 'ja', [['blindengeld.landJa', { von: eur(R.landBlind.von), bis: eur(R.landBlind.bis) }], bsp].concat(h.pflegegrad >= 2 ? [['blindengeld.pflegeLand']] : []));
+    }
     const tx = [[h.blind === 'blind' ? 'blindengeld.blind' : 'blindengeld.hoch', { betrag: eur2(h.blind === 'blind' ? b.blind : b.hoch), stand: b.stand }]];
     // Art. 4 Abs. 1 Satz 2 BayBlindG (https://www.gesetze-bayern.de/Content/Document/BayBlindG-4, Abruf 21.11.2026): PG 2: 46 % des Pflegegeldes
     // nach § 37 Abs. 1 Satz 3 Nr. 1 SGB XI (Pflegegrad 2); PG 3 bis 5 einheitlich 33 % des Betrags nach Nr. 2 (Pflegegeld Pflegegrad 3 = 197,67 €);
@@ -2316,6 +2695,8 @@ const Rules = (function () {
       { id: 'notruf', ab: 1, art: 'zuschuss', betrag: null, recht: '§ 40 Abs. 1 SGB XI' },
       { id: 'umbau', ab: 1, art: 'zuschuss', betrag: je(R.beh.wohnumfeld, 1), einheit: 'mass', bis: true, recht: '§ 40 Abs. 4 SGB XI' },
       { id: 'wg', ab: 1, art: 'zuschuss', betrag: je(U.wohngruppe, 1), einheit: 'monat', bis: false, recht: '§ 45f SGB XI' },
+      // Pflege im Heim (§ 43 SGB XI) mit Leistungszuschlag auf den Eigenanteil (§ 43c SGB XI); nur Information, keine eigene Karte (Vollprüfung B08)
+      { id: 'heim', ab: 1, art: 'budget', betrag: je(R.pflegeHeim, 1), einheit: 'monat', bis: true, recht: '§§ 43, 43a, 43c SGB XI' },
       { id: 'kurs', ab: 0, art: 'frei', betrag: null, recht: '§ 45 SGB XI' },
       { id: 'beratung', ab: 0, art: 'frei', betrag: null, recht: '§§ 7a, 7c, 37 Abs. 3 SGB XI' },
       { id: 'rente', ab: 2, art: 'schutz', betrag: null, recht: '§ 44 SGB XI' },
@@ -2342,6 +2723,8 @@ const Rules = (function () {
     if (h.pflegegrad === 0) return mk(id, 'nein', 'vorausFehlt', [['pflegeplus.keiner']]);
     const tx = [['pflegeplus.mittel', { verbrauch: eur(R.beh.verbrauch), wohn: eur(R.beh.wohnumfeld) }]];
     if (h.pflegegrad >= 2) tx.push(['pflegeplus.budget', { betrag: eur(R.entlastungsbudget) }]);
+    // Besondere Wohnform (§ 43a SGB XI): Leistungen für die Pflege zu Hause nur anteilig bzw. für Tage zu Hause -> „möglich“ (Vollprüfung B07)
+    if (h.wohnform === 'heim' && h.pflegegrad >= 2) return mk(id, 'vielleicht', 'vielleicht', [['pflege.wohnform', { quote: R.pflege43a.quote, max: eur(R.pflege43a.max) }]].concat(tx));
     return mk(id, 'ja', 'ja', tx);
   }
 
@@ -2371,10 +2754,17 @@ const Rules = (function () {
     if (h.asylBezug) return mk(id, 'ja', 'ja', [['rundfunk.asyl']]);
     if (h.asyl) return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.asyl']]);
     if (gg.level === 'ja' || gsa.level === 'ja') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.folgt']]);
+    // § 4 Abs. 1 Nr. 1 RBeitrStV: Hilfe zum Lebensunterhalt (3. Kapitel SGB XII) befreit (gesetze-bayern.de Dokument RBeitrStV-4, Abruf 25.11.2026)
+    if (w.hlu && (w.hlu.level === 'ja' || w.hlu.level === 'vielleicht')) return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.hlu']]);
+    // In Ausbildung allein: Grundsicherungsgeld nur „möglich“ (Schüler-BAföG, § 7 Abs. 6 Nr. 2 SGB II); die Befreiung folgt dann aus dem
+    // BAföG (§ 4 Abs. 1 Nr. 5 Buchst. a RBeitrStV), nicht aus dem Härtefall
+    if (gg.level === 'vielleicht' && gg.tx[0] && gg.tx[0][0] === 'ggeld.ausbildung' && w.baf && (w.baf.level === 'ja' || w.baf.level === 'vielleicht')) return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.weitere']].concat(h.mzRF ? [['rundfunk.rf']] : []));
     if (gg.level === 'vielleicht' || gsa.level === 'vielleicht') return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.haerte']]);
     // § 4 Abs. 1 RBeitrStV, weitere Befreiungsgründe: Hilfe zur Pflege (SGB XII), Blindenhilfe (§ 72 SGB XII), BAföG nicht bei den Eltern
     const okW = (r) => r && (r.level === 'ja' || r.level === 'vielleicht');
-    if (okW(w.hzp) || okW(w.blh) || (okW(w.baf) && h.ausbildung === 'ich' && h.wohnform !== 'eltern')) return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.weitere']].concat(h.mzRF ? [['rundfunk.rf']] : []));
+    // Berufsausbildungsbeihilfe, nicht bei den Eltern (§ 4 Abs. 1 Nr. 5 Buchst. b RBeitrStV, gesetze-bayern.de Dokument RBeitrStV-4,
+    // Abruf 24.11.2026; Befund B-12): die BAB-Karte ist nur „möglich“, wenn die Person nicht bei den Eltern wohnt
+    if (okW(w.hzp) || okW(w.blh) || ((okW(w.baf) || okW(w.bab)) && h.ausbildung === 'ich' && h.wohnform !== 'eltern')) return mk(id, 'vielleicht', 'butMoeglich', [['rundfunk.weitere']].concat(h.mzRF ? [['rundfunk.rf']] : []));
     if (h.mzRF) return mk(id, 'vielleicht', 'vielleicht', [['rundfunk.rf']]);
     return mk(id, 'nein', 'vorausFehlt', [['rundfunk.nein']]);
   }
@@ -2382,11 +2772,15 @@ const Rules = (function () {
   // Befreiung von Zuzahlungen der Krankenkasse (§ 62 SGB V)
   function zuzahlung(h) {
     const id = 'zuzahl';
-    if (!hatBeh(h)) return keinBeh(id);
+    // Die Belastungsgrenze von 2 % gilt für alle gesetzlich Versicherten (§ 62 Abs. 1 SGB V, https://www.buzer.de/62_SGB_V.htm, Abruf 24.11.2026);
+    // bis 24.11.2026 „nein“ ohne Behinderung oder Pflegegrad (Vollprüfung F7)
+    // Ohne Behinderung, Pflegegrad, Rente oder Grundsicherung erreicht man die Grenze selten: „eher nicht“ mit Hinweis, dass sie trotzdem gilt
+    if (!hatBeh(h) && !h.alter && !h.bezug.grundsicherungsgeld && !h.bezug.sozialamt) return mk(id, 'nein', 'keinBeh', [['zuzahl.keine']]);
     const tx = [['zuzahl.grenze']];
     // Chroniker-Richtlinie § 2: GdB mindestens 60 oder Pflegegrad 3 bis 5 (bei Dauerbehandlung)
     if (gdbNum(h) >= 60 || h.pflegegrad >= 3) tx.push(['zuzahl.chron']);
-    // Fahrten zur ambulanten Behandlung (§ 60 SGB V, Krankentransport-Richtlinie): bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5
+    // Fahrten zur ambulanten Behandlung (§ 60 SGB V, Krankentransport-Richtlinie): bei aG, Bl, H oder Pflegegrad 3 (mit Einschränkung) bis 5;
+    // für Krankenfahrten gilt die Genehmigung dann als erteilt (§ 60 Abs. 1 Satz 5 SGB V, https://www.buzer.de/60_SGB_V.htm, Abruf 24.11.2026)
     if (gdbEff(h) === 'H' || h.mzAG || h.blind === 'blind' || h.pflegegrad >= 3) tx.push(['zuzahl.fahrt']);
     return mk(id, 'vielleicht', 'vielleicht', tx);
   }
@@ -2431,7 +2825,8 @@ const Rules = (function () {
     const w = R.wbs;
     const ein = hoechst ? w.maxEin : w.ein, zwei = hoechst ? w.maxZwei : w.zwei, weitere = hoechst ? w.maxWeitere : w.weitere, kind = hoechst ? w.maxKind : w.kind;
     const basis = h.persons <= 1 ? ein : zwei + (h.persons - 2) * weitere;
-    return basis + h.children * kind;
+    // Art. 4 Abs. 1 Satz 4 BayWoBindG: Eine bestehende Schwangerschaft zählt wie ein Kind (Abruf 24.11.2026; Befund B-13)
+    return basis + (h.children + (h.schwanger || h.baby === 'bald' ? 1 : 0)) * kind;
   }
   function wbs(h) {
     const id = 'wbs';
@@ -2511,10 +2906,15 @@ const Rules = (function () {
     if (h.bezug.grundsicherungsgeld) out.push(['z.ggBezug']);
     if (ok(g('wohngeld')) && ok(g('kiz')) && g('wohngeld').hl !== 'einkoNiedrig' && g('kiz').hl !== 'einkoNiedrig') out.push(['z.wgKiz']);
     if (ok(g('gsa')) && ok(g('wohngeld'))) out.push(['z.gsaWg']);
+    // Wohngeld und Hilfe zum Lebensunterhalt gibt es nicht zusammen (§ 7 Abs. 1 Satz 1 Nr. 6 WoGG, https://www.gesetze-im-internet.de/wogg/__7.html)
+    else if (ok(g('hlu')) && ok(g('wohngeld'))) out.push(['z.hluWg']);
     if (!h.bezug.grundsicherungsgeld && !h.bezug.sozialamt && ok(g('ggeld')) && (ok(g('wohngeld')) || ok(g('kiz')))) out.push(['z.ggVsWg']);
     if (g('kindergeld').level === 'ja' && ok(g('kiz'))) out.push(['z.kgZuerst']);
+    // § 6a Abs. 3 Satz 4 BKGG (https://www.gesetze-im-internet.de/bkgg_1996/__6a.html, Abruf 24.11.2026): kein Kinderzuschlag, wenn zumutbare
+    // Anstrengungen unterlassen wurden, Einkommen des Kindes (Unterhalt, Unterhaltsvorschuss) geltend zu machen (Vollprüfung familie B16)
+    if (ok(g('uvg')) && ok(g('kiz'))) out.push(['z.uvgZuerst']);
     // Was SoLo nicht einrechnet (bei den Leistungen mit Einkommens- und Vermögensprüfung), und wie es nach dem Antrag weitergeht
-    if (['ggeld', 'gsa', 'wohngeld', 'kiz'].some((id) => ok(g(id)))) out.push(['z.grenzen']);
+    if (['ggeld', 'gsa', 'hlu', 'wohngeld', 'kiz'].some((id) => ok(g(id)))) out.push(['z.grenzen']);
     if (r.some(ok)) out.push(['z.verfahren']);
     if (r.some(ok)) out.push(['z.stichtag']);
     if (r.every((x) => x.level === 'nein' || x.level === 'na')) out.push(['z.keine']);
@@ -2532,18 +2932,18 @@ const Rules = (function () {
     eingl: 'Eingliederungshilfe', pausch: 'Behinderten-Pauschbetrag', ausweis: 'Schwerbehindertenausweis und Nachteilsausgleiche',
     blindengeld: 'Landesblindengeld', pflegeplus: 'Verhinderungspflege und Pflegehilfsmittel', arbeit: 'Budget für Arbeit',
     rundfunk: 'Befreiung vom Rundfunkbeitrag', zuzahl: 'Befreiung von Zuzahlungen', bab: 'Berufsausbildungsbeihilfe',
-    wbs: 'Wohnberechtigungsschein', alg1: 'Arbeitslosengeld I', krankengeld: 'Krankengeld', srente: 'Altersrente für schwerbehinderte Menschen', elterngeld: 'Elterngeld', hzp: 'Hilfe zur Pflege', lpg: 'Landespflegegeld (Bayern)', mutter: 'Mutterschaftsgeld', kkg: 'Kinderkrankengeld', blh: 'Blindenhilfe (Sozialhilfe)', asylblg: 'Asylbewerberleistungen'
+    wbs: 'Wohnberechtigungsschein', alg1: 'Arbeitslosengeld I', krankengeld: 'Krankengeld', srente: 'Altersrente für schwerbehinderte Menschen', elterngeld: 'Elterngeld', hzp: 'Hilfe zur Pflege', lpg: 'Landespflegegeld (Bayern)', mutter: 'Mutterschaftsgeld', kkg: 'Kinderkrankengeld', blh: 'Blindenhilfe (Sozialhilfe)', asylblg: 'Asylbewerberleistungen', hlu: 'Hilfe zum Lebensunterhalt'
   };
   // Unterlagen der neuen Karten: gemeinsame Schlüssel (u.*), damit nicht jede Karte eigene Texte braucht
   const NEWSTEPS = {
     kgBeh: ['u.ausweis', 'u.arzt', 'u.steuerid'], emrente: ['u.ausweis', 'u.arzt', 'u.rentenverlauf'],
     eingl: ['u.ausweis', 'u.arzt', 'u.einkommen'], ausweis: ['u.ausweis', 'u.arzt', 'u.foto'],
     blindengeld: ['u.ausweis', 'u.arzt', 'u.bescheide'], pflegeplus: ['u.versichertenkarte', 'u.pflegebescheid', 'u.kosten'],
-    arbeit: ['u.ausweis', 'u.arzt', 'u.vertrag'], rundfunk: ['u.beitragsnr', 'u.bescheide', 'u.ausweis'],
+    arbeit: ['u.ausweis', 'u.arzt', 'u.vertrag'], rundfunk: ['u.beitragsnr', 'u.bescheidBefreiung', 'u.ausweis'], // Nachweis = Bescheid über die befreiende Leistung (§ 4 Abs. 1, 7 RBeitrStV), nicht „andere Leistungen, z. B. Pflegegeld“ (Prüfung Schulden 24.11.2026)
     zuzahl: ['u.versichertenkarte', 'u.quittungen', 'u.einkommen'], bab: ['u.ausbildungsvertrag', 'u.einkommen', 'u.mietvertrag'],
     wbs: ['u.einkommen', 'u.ausweis', 'u.haushalt'],
     srente: ['u.ausweis', 'u.arzt', 'u.rentenverlauf'],
-    elterngeld: ['u.geburtsurkunde', 'u.lohnabrechnung', 'u.steuerid'], hzp: ['u.pflegebescheid', 'u.einkommen', 'u.kosten'], lpg: ['u.pflegebescheid', 'u.ausweis', 'u.bescheide'], mutter: ['u.arzt', 'u.versichertenkarte', 'u.lohnabrechnung'], kkg: ['u.arzt', 'u.versichertenkarte', 'u.lohnabrechnung'], blh: ['u.ausweis', 'u.bescheide', 'u.einkommen'], asylblg: ['u.ausweis', 'u.aufenthalt', 'u.einkommen'],
+    elterngeld: ['u.geburtsurkunde', 'u.lohnabrechnung', 'u.steuerid'], hzp: ['u.pflegebescheid', 'u.einkommen', 'u.kosten'], lpg: ['u.pflegebescheid', 'u.ausweis', 'u.bescheide'], mutter: ['u.arzt', 'u.versichertenkarte', 'u.lohnabrechnung'], kkg: ['u.arzt', 'u.versichertenkarte', 'u.lohnabrechnung'], blh: ['u.ausweis', 'u.bescheide', 'u.einkommen'], asylblg: ['u.ausweis', 'u.aufenthalt', 'u.einkommen'], hlu: ['s.hlu.u1', 's.gsa.u2', 's.gsa.u3'],
     alg1: ['u.ausweis', 'u.kuendigung', 'u.lohnabrechnung'], krankengeld: ['u.au', 'u.versichertenkarte', 'u.lohnabrechnung']
   };
   const STEPS = {};
@@ -2563,17 +2963,17 @@ const Rules = (function () {
     pflegeplus: '§§ 39, 40, 42, 42a SGB XI', arbeit: '§ 61 SGB IX', rundfunk: '§ 4 RBeitrStV', zuzahl: '§ 62 SGB V',
     bab: '§§ 56 ff. SGB III', wbs: '§ 27 WoFG, Einkommensgrenze § 9 Abs. 2 WoFG; in Ländern mit eigenem Gesetz Landesrecht', alg1: '§§ 136 ff. SGB III', krankengeld: '§§ 44 ff. SGB V',
     srente: '§§ 37, 236a SGB VI', elterngeld: 'BEEG, §§ 1–2a, 4, 4a BEEG', hzp: '§§ 61 ff. SGB XII', lpg: 'BayLPflGG',
-    mutter: '§ 19 MuSchG, § 24i SGB V', kkg: '§ 45 SGB V', blh: '§ 72 SGB XII', asylblg: 'AsylbLG'
+    mutter: '§ 19 MuSchG, § 24i SGB V', kkg: '§ 45 SGB V', blh: '§ 72 SGB XII', asylblg: 'AsylbLG', hlu: '§§ 19, 27–35, 39, 82, 90, 94 SGB XII; Abgrenzung § 21 SGB XII, § 5 Abs. 2, § 7 Abs. 4 SGB II'
   };
 
   // Fehlende Angaben: Leistungen, die Einkommen, Vermögen oder Miete vergleichen, dürfen mit leeren Feldern kein „ja“ ergeben.
   // Nur positive Ergebnisse werden ersetzt; „nein“ aus anderen Gründen (z. B. falsche Zuständigkeit) und „na“ bleiben stehen.
   const BRAUCHT = {
     wohngeld: ['einkommen', 'vermoegen', 'miete'], kiz: ['einkommen', 'vermoegen', 'miete'], ggeld: ['einkommen', 'vermoegen', 'miete'],
-    gsa: ['einkommen', 'vermoegen', 'miete'], but: ['einkommen'], bafoeg: ['einkommen'], wbs: ['einkommen'], rundfunk: ['einkommen']
+    gsa: ['einkommen', 'vermoegen', 'miete'], hlu: ['einkommen', 'vermoegen', 'miete'], but: ['einkommen'], bafoeg: ['einkommen'], wbs: ['einkommen'], rundfunk: ['einkommen']
   };
   // BAföG und Grundsicherung im Alter rechnen mit dem Nettoeinkommen: dort genügt eine Angabe zu Brutto ODER Netto
-  const NUR_NETTO = { bafoeg: true, gsa: true };
+  const NUR_NETTO = { bafoeg: true, gsa: true, hlu: true };
   const angabeFehlt = (h) => (x) => {
     const fehlt = (k) => (k === 'einkommen' && NUR_NETTO[x.id] ? h.fehlt.einkommen && h.fehlt.netto : h.fehlt[k]);
     const need = (BRAUCHT[x.id] || []).filter(fehlt);
@@ -2639,7 +3039,7 @@ const Rules = (function () {
       const offen = r.level === 'ja' || r.level === 'vielleicht';
       if (r.id === 'ggeld' && offen) r.tx = r.tx.concat([['einmal.sgb2'], ['einmal.umzug']]);
       else if (r.id === 'ggeld' && r.level === 'nein' && (r.hl === 'bedarfNein' || r.hl === 'einkoHoch') && (h.schwanger || h.baby === 'bald')) r.tx = r.tx.concat([['einmal.ohneBezug']]);
-      if (r.id === 'gsa' && offen) r.tx = r.tx.concat([['einmal.sgb12']]);
+      if ((r.id === 'gsa' || r.id === 'hlu') && offen) r.tx = r.tx.concat([['einmal.sgb12']]);
     });
   }
   function uzHinweise(h, results) {
@@ -2651,7 +3051,7 @@ const Rules = (function () {
       // Vereinbarung, Unterhaltstitel oder Bescheid der dort festgelegte Betrag (Satz 2) – Text t.uz.wg und einfach/b.json gleichlautend.
       if (r.id === 'wohngeld') r.tx = r.tx.concat([['uz.wg', u]]);
       else if (r.id === 'kiz' || r.id === 'ggeld') r.tx = r.tx.concat([[h.uzTitel ? 'uz.sgb2Titel' : 'uz.sgb2Ohne', u]], r.id === 'ggeld' && r.level !== 'nein' ? [['uz.selbstbehalt']] : []);
-      else if (r.id === 'gsa') r.tx = r.tx.concat([['uz.gsa', u], ['uz.selbstbehalt']]);
+      else if (r.id === 'gsa' || r.id === 'hlu') r.tx = r.tx.concat([['uz.gsa', u], ['uz.selbstbehalt']]);
     });
   }
 
@@ -2695,7 +3095,11 @@ const Rules = (function () {
   // (BT-Drs. 21/7860: Sofortzuschlag, Unterhaltsvorschuss, Wohngeld, Regelsätze), Pflegegeld (BT-Drs. 21/8869), Grundfreibetrag 12.564 €.
   // Erst nach Verkündung und ab dem Stichtag einrechnen bzw. anzeigen.
   function kartenHinweise(h, results) {
+    const offenId = (id) => results.some((x) => x.id === id && (x.level === 'ja' || x.level === 'vielleicht' || x.level === 'na'));
     results.forEach(function (r) {
+      // Elterngeld zählt beim Grundsicherungsgeld und Kinderzuschlag als Einkommen, frei nur bis zum Einkommen vor der Geburt, höchstens 300 €
+      // (Plus 150 €): § 10 Abs. 5 BEEG (Vollprüfung familie B17)
+      if (r.id === 'elterngeld' && (r.level === 'ja' || r.level === 'vielleicht') && (h.bezug.grundsicherungsgeld || h.bezug.sozialamt || h.bezug.kiz || offenId('ggeld') || offenId('kiz'))) r.tx = r.tx.concat([['eg.anrechnung']]);
       // Wohngeld gibt es erst ab dem Antragsmonat (§ 25 Abs. 2 WoGG): früh beantragen
       if (r.id === 'wohngeld' && (r.level === 'ja' || r.level === 'vielleicht')) r.tx = r.tx.concat([['wg.frueh']]);
       // Antragsloses Kindergeld bei Geburt (§ 67 Abs. 2 i. V. m. § 69 Satz 3 EStG n. F.): Gesetz zur Einführung eines antragslosen
@@ -2722,17 +3126,17 @@ const Rules = (function () {
     results.forEach(function (r) {
       if (!offen(r)) return;
       const id = r.id;
-      if (h.eigentum && (id === 'ggeld' || id === 'gsa')) { kappe(r); zu(r, 'kdu.eigentum'); }
+      if (h.eigentum && (id === 'ggeld' || id === 'gsa' || id === 'hlu')) { kappe(r); zu(r, 'kdu.eigentum'); }
       if (h.eigentum && id === 'wohngeld') { kappe(r); zu(r, 'wohngeld.lasten'); }
       if (h.hhAndere === 'verwandte' && id === 'ggeld') { kappe(r); zu(r, 'ggeld.verwandte'); }
       if (h.hhAndere === 'verwandte' && id === 'wohngeld') { kappe(r); zu(r, 'wohngeld.verwandte'); }
-      if (h.hhAndere === 'wg' && (id === 'ggeld' || id === 'gsa' || id === 'wohngeld')) zu(r, 'wg.anteil');
+      if (h.hhAndere === 'wg' && (id === 'ggeld' || id === 'gsa' || id === 'hlu' || id === 'wohngeld')) zu(r, 'wg.anteil');
       // Ein angemessenes Auto ist im SGB II geschützt; bei hohem Wert prüft das Jobcenter, ob es noch angemessen ist
       if (h.autoWert > R.autoPruefen && !h.autoBraucht && (id === 'ggeld' || id === 'kiz')) { kappe(r); zu(r, 'auto.hoch', { wert: eur(R.autoPruefen) }); }
       // SGB XII: angemessenes Auto geschützt (§ 90 Abs. 2 Nr. 10); bei hohem Wert prüft das Sozialamt die Angemessenheit
-      if (h.autoWert > R.autoPruefen && !h.autoBraucht && !h.mzG && !h.mzAG && (id === 'gsa' || id === 'hzp' || id === 'blh')) { kappe(r); zu(r, 'auto.hochSgb12', { wert: eur(R.autoPruefen) }); }
-      if (h.selbst && (id === 'ggeld' || id === 'kiz' || id === 'wohngeld' || id === 'gsa')) zu(r, 'selbst.hinweis');
-      if (h.eu && id === 'kindergeld') zu(r, 'kg.eu');
+      if (h.autoWert > R.autoPruefen && !h.autoBraucht && !h.mzG && !h.mzAG && (id === 'gsa' || id === 'hlu' || id === 'hzp' || id === 'blh')) { kappe(r); zu(r, 'auto.hochSgb12', { wert: eur(R.autoPruefen) }); }
+      if (h.selbst && (id === 'ggeld' || id === 'kiz' || id === 'wohngeld' || id === 'gsa' || id === 'hlu')) zu(r, 'selbst.hinweis');
+      if (h.eu && id === 'kindergeld' && !euAusschluss(h)) zu(r, 'kg.eu');
     });
   }
 
@@ -2771,9 +3175,12 @@ const Rules = (function () {
   function vermGrenzen(h) {
     // ggeldMin: Das Alter steht nur für die älteste erwachsene Person fest (oder gar nicht). Weitere Erwachsene können jünger sein:
     // kleinste mögliche Grenze mit dem kleinsten Freibetrag (§ 12 Abs. 2 SGB II). Der Hinweis nennt dann keine feste Zahl.
-    const unsicher = h.gruppe === '' || h.adults > 1;
-    const min = unsicher ? (h.gruppe ? R.sgb2.schon[h.gruppe] : R.sgb2.schon['<30']) + R.sgb2.schon['<30'] * (h.adults - 1 + h.children) : 0;
-    return { ggeld: R.sgb2.schon[h.gruppe] * h.adults + R.sgb2.schon['<30'] * h.children, ggeldMin: min,
+    // Grenzjahr (gruppeAlt, § 12 Abs. 2 Satz 2 SGB II): je nach Geburtsmonat der kleinere oder größere Freibetrag; ggeld ist der größere
+    const unsicher = h.gruppe === '' || h.adults > 1 || !!h.gruppeAlt;
+    const erste = h.gruppe ? Math.min(R.sgb2.schon[h.gruppe], h.gruppeAlt ? R.sgb2.schon[h.gruppeAlt] : Infinity) : R.sgb2.schon['<30'];
+    const min = unsicher ? erste + R.sgb2.schon['<30'] * (h.adults - 1 + h.children) : 0;
+    const sv = (g) => R.sgb2.schon[g] * h.adults + R.sgb2.schon['<30'] * h.children;
+    return { ggeld: Math.max(sv(h.gruppe === '' ? '50+' : h.gruppe), h.gruppeAlt ? sv(h.gruppeAlt) : 0), ggeldMin: min,
       gsa: h.wohnform !== '' ? R.grundsicherung.schonAllein : R.grundsicherung.schonAllein * h.adults + R.schonUnterhalten * h.children,
       wohngeld: R.wohngeld.vermoegenErste + R.wohngeld.vermoegenJeWeitere * (h.persons - 1),
       kiz: h.persons <= 2 ? R.kiz.vermZwei : R.kiz.vermDrei + R.kiz.vermJeWeiteres * (h.persons - 3) };
@@ -2813,14 +3220,24 @@ const Rules = (function () {
     const zk = zukunft(inp, h, a1, krg, eg);
     let wg = wohngeld(h);
     let kz = kinderzuschlag(h);
-    let gg = grundsicherungsgeld(h);
+    // Seit 1.7.2026: Unterkunftskosten über dem Eineinhalbfachen der angemessenen Grenze werden auch im ersten Jahr nicht anerkannt
+    // (§ 22 Abs. 1 Satz 6 SGB II, https://www.gesetze-im-internet.de/sgb_2/__22.html; § 35 Abs. 1 Satz 7 SGB XII, https://www.buzer.de/35_SGB_XII.htm;
+    // Abruf 24.11.2026; Befund Fable 16). Orientierung: 1,5 × (Wohngeld-Höchstbetrag + 10 %) plus Heizkostenkomponente (Heizung nicht gedeckelt).
+    // Mit Kindern kann das Amt im ersten Jahr im Einzelfall mehr anerkennen (Satz 7): Betrag dann eher zu niedrig, nie zu hoch.
+    const kdu15 = h.stufe && !h.eigentum && !h.wohnform ? wgCap(h.stufe, h.persons) * 1.1 * 1.5 + wgHeiz(h.persons) : null;
+    const hK = kdu15 && h.miete > kdu15 ? Object.assign({}, h, { miete: kdu15 }) : h;
+    let gg = grundsicherungsgeld(hK);
     const lagen = [gg.lage];
     if (zk) { wg = mitZukunft(wg, wohngeld(zk.h), zk); kz = mitZukunft(kz, kinderzuschlag(zk.h), zk); const ggZ = grundsicherungsgeld(zk.h); lagen.push(ggZ.lage); gg = mitZukunft(gg, ggZ, zk); }
     const kdu = kduGrenze(h);
     if (kdu && h.miete > kdu) { const ggK = grundsicherungsgeld(Object.assign({}, h, { miete: kdu })); lagen.push(ggK.lage); gg = mitKdu(gg, ggK, kdu); }
-    let gsa = grundsicherungAlter(h);
+    let gsa = grundsicherungAlter(hK);
+    let hlu = hilfeLebensunterhalt(hK, gsa);
     const lagenR = [gsa.lage];
-    if (kdu && h.miete > kdu) { const gsaK = grundsicherungAlter(Object.assign({}, h, { miete: kdu })); lagenR.push(gsaK.lage); gsa = mitKdu(gsa, gsaK, kdu); }
+    if (kdu && h.miete > kdu) {
+      const hKdu = Object.assign({}, h, { miete: kdu }), gsaK = grundsicherungAlter(hKdu);
+      lagenR.push(gsaK.lage); hlu = mitKdu(hlu, hilfeLebensunterhalt(hKdu, gsaK), kdu); gsa = mitKdu(gsa, gsaK, kdu);
+    }
     // Bildung und Teilhabe gibt es auf beiden Wegen (§ 6b BKGG, § 28 SGB II): Einstufung vor dem Kappen bei unklarem Weg
     const but = bildungTeilhabe(h, wg, kz, gg);
     const wege = h.ohneWege ? null : wegeAnwenden(h, wg, kz, gg, gsa, lagen, lagenR);
@@ -2828,13 +3245,24 @@ const Rules = (function () {
     const baf = bafoeg(h);
     const pf = pflege(h);
     const hzp = hilfeZurPflege(h), blh = blindenhilfe(h);
-    const results = [kg, wg, kz, gg, but, uvg, gsa, baf, pf,
+    const babK = bab(h);
+    const results = [kg, wg, kz, gg, but, uvg, gsa, hlu, baf, pf,
       a1, krg, eg, mutterschaftsgeld(h), kinderkrankengeld(h), hzp, landespflegegeld(h), asylbewerber(h), kindergeldBeh(h), erwerbsminderungsrente(h), schwerbRente(h), eingliederungshilfe(h), pauschbetrag(h), ausweis(h), blindengeld(h), blh,
-      pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa, { hzp, blh, baf }), zuzahlung(h), bab(h), wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id], recht: RECHT[x.id] }));
+      pflegeplus(h), budgetArbeit(h), rundfunk(h, gg, gsa, { hzp, blh, baf, bab: babK, hlu }), zuzahlung(h), babK, wbs(h)].map(angabeFehlt(h)).map((x, i) => ({ ...x, name: NAMES[x.id], order: i, steps: STEPS[x.id], recht: RECHT[x.id] }));
     uzHinweise(h, results);
     einmalHinweise(h, results);
     kartenHinweise(h, results);
     besondere(h, results);
+    // Nebensätze, die „Hilfe zum Lebensunterhalt“ nennen, verweisen auf die eigene Karte, wenn diese „möglich“ oder besser ist
+    if (hlu.level === 'ja' || hlu.level === 'vielleicht' || hlu.level === 'na') {
+      results.forEach((r) => {
+        if (r.id === 'hlu') return;
+        const i = r.tx.findIndex((t) => HLU_VERWEIS.indexOf(t[0]) >= 0);
+        if (i >= 0) r.tx = r.tx.slice(0, i + 1).concat([['hlu.siehe']], r.tx.slice(i + 1));
+      });
+    }
+    // „Darin sind … Sofortzuschlag“ nur zusammen mit einem Betrag (Vorrang, Wechselmodell u. a. entfernen ihn; Gegenprüfung 25.11.2026, Nr. 5)
+    results.forEach((r) => { if (r.id === 'ggeld' && !r.tx.some((t) => /^(schaetz|zuk\.betrag)/.test(t[0]))) r.tx = r.tx.filter((t) => t[0] !== 'ggeld.sofort'); });
     const sorted = results.slice().sort((a, b) => ORDER[a.level] - ORDER[b.level] || a.order - b.order);
     const zus = zusammenspiel(h, results);
     // Hinweis zur vorrangigen Leistung vor den allgemeinen Hinweisen (nicht eingerechnet, Verfahren, Stichtag)

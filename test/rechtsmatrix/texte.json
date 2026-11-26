@@ -1,0 +1,1101 @@
+[
+ {
+  "id": "T01",
+  "schluessel": "t.krank.78",
+  "beschreibung": "Krankengeld höchstens 78 Wochen in 3 Jahren, 6 Wochen Lohnfortzahlung zählen mit",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "3",
+    "6",
+    "78"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_5/__48.html",
+  "zahlenAusnahmen": {
+   "ar": [
+    "3",
+    "78"
+   ]
+  }
+ },
+ {
+  "id": "T02",
+  "schluessel": "t.krank.lfz",
+  "beschreibung": "Lohnfortzahlung 6 Wochen; Krankengeld 70 % brutto, höchstens 90 % netto",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "6",
+    "70",
+    "90"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_5/__47.html"
+ },
+ {
+  "id": "T03",
+  "schluessel": "t.pflege.rente",
+  "beschreibung": "Rentenbeiträge für Pflegepersonen: mind. 10 Std./Woche an 2 Tagen, höchstens 30 Std. Arbeit",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "10",
+    "2",
+    "30"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_11/__19.html ; https://www.gesetze-im-internet.de/sgb_6/__3.html",
+  "zahlenAusnahmen": {
+   "ar": [
+    "10",
+    "30"
+   ]
+  }
+ },
+ {
+  "id": "T04",
+  "schluessel": "pfl.pu.rente.x",
+  "beschreibung": "wie T03 (Pflege-Übersicht)",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "10",
+    "2",
+    "30"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_11/__19.html",
+  "zahlenAusnahmen": {
+   "ps": null,
+   "so": null
+  }
+ },
+ {
+  "id": "T05",
+  "schluessel": "t.uvg.ja",
+  "beschreibung": "UVG-Altersstufen 0-5, 6-11, 12-17, bis 18. Geburtstag; Beträge als Platzhalter",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "11",
+    "12",
+    "17",
+    "18",
+    "5",
+    "6"
+   ],
+   "platzhalter": "{a} {b} {c}"
+  },
+  "quelle": "https://www.gesetze-im-internet.de/uhvorschg/__2.html",
+  "zahlenAusnahmen": {
+   "ar": [
+    "11",
+    "12",
+    "17",
+    "5",
+    "6"
+   ]
+  }
+ },
+ {
+  "id": "T06",
+  "schluessel": "s.kindergeld.tip",
+  "beschreibung": "Kindergeld höchstens 6 Monate rückwirkend",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "6"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/estg/__66.html",
+  "zahlenAusnahmen": {
+   "ar": [],
+   "en": []
+  }
+ },
+ {
+  "id": "T07",
+  "schluessel": "t.eg.mutterschaft",
+  "beschreibung": "Elterngeld rückwirkend nur 3 Monate",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "3",
+    "3"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/beeg/__7.html"
+ },
+ {
+  "id": "T08",
+  "schluessel": "f.alg1.meldung",
+  "beschreibung": "Arbeitsuchend 3 Monate vorher, sonst innerhalb 3 Tagen",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "3",
+    "3"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_3/__38.html"
+ },
+ {
+  "id": "T09",
+  "schluessel": "t.alg1.melden",
+  "beschreibung": "3 Monate vorher melden; Sperrzeit bei Eigenkündigung 12 Wochen",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "12",
+    "3"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_3/__38.html ; https://www.gesetze-im-internet.de/sgb_3/__159.html"
+ },
+ {
+  "id": "T10",
+  "schluessel": "t.alg1.zeit",
+  "beschreibung": "Anwartschaft 12 Monate in 30 Monaten",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "12",
+    "30"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_3/__142.html"
+ },
+ {
+  "id": "T11",
+  "schluessel": "t.alg1.dauerMin",
+  "beschreibung": "ALG-Dauer 6 bis 24 Monate",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "24",
+    "6"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_3/__147.html"
+ },
+ {
+  "id": "T12",
+  "schluessel": "gs.d.mahn.frist",
+  "beschreibung": "Mahnbescheid-Widerspruch und Einspruch je 2 Wochen; seit Vollprüfung: Satz zu anderen Briefen im gelben Umschlag (ebenfalls oft 2 Wochen)",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "2",
+    "2",
+    "2",
+    "339",
+    "692",
+    "700"
+   ],
+   "gesetze": [
+    "ZPO",
+    "ZPO"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/zpo/__692.html ; https://www.gesetze-im-internet.de/zpo/__339.html"
+ },
+ {
+  "id": "T13",
+  "schluessel": "pf.tipp.umwandeln",
+  "beschreibung": "P-Konto ab 4. Geschäftstag; Umwandlung binnen 1 Monat schützt gesperrtes Guthaben",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "1",
+    "4",
+    "850",
+    "899"
+   ],
+   "gesetze": [
+    "ZPO",
+    "ZPO"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/zpo/__850k.html ; https://www.gesetze-im-internet.de/zpo/__899.html"
+ },
+ {
+  "id": "T14",
+  "schluessel": "gs.d.strom.frist",
+  "beschreibung": "Sperrandrohung 4 Wochen, Ankündigung 8 Werktage",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "4",
+    "41",
+    "8"
+   ],
+   "gesetze": [
+    "EnWG"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/enwg_2005/__41f.html"
+ },
+ {
+  "id": "T15",
+  "schluessel": "sp.schulden.strom.kurz",
+  "beschreibung": "Sperre erst ab 2 Abschlägen und 100 €",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "100",
+    "2"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/enwg_2005/__41f.html"
+ },
+ {
+  "id": "T16",
+  "schluessel": "gs.d.miete.frist",
+  "beschreibung": "Schonfrist 2 Monate nach Räumungsklage, einmal in 2 Jahren",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "2",
+    "2",
+    "569"
+   ],
+   "gesetze": [
+    "BGB"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/bgb/__569.html"
+ },
+ {
+  "id": "T17",
+  "schluessel": "s.rundfunk.tip",
+  "beschreibung": "Rundfunkbefreiung höchstens 3 Jahre rückwirkend",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "3"
+   ]
+  },
+  "quelle": "https://www.gesetze-bayern.de/Content/Document/RdFunkBeitrStVtr-4"
+ },
+ {
+  "id": "T18",
+  "schluessel": "t.asyl.analog",
+  "beschreibung": "Analogleistungen nach 36 Monaten",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "36"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/asylblg/__2.html"
+ },
+ {
+  "id": "T19",
+  "schluessel": "t.bafoeg.asyl",
+  "beschreibung": "BAföG mit Duldung nach 15 Monaten",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "15"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/baf_g/__8.html"
+ },
+ {
+  "id": "T20",
+  "schluessel": "t.bab.asyl",
+  "beschreibung": "BAB mit Duldung nach 15 Monaten, Gestattung ausgeschlossen",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "15"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_3/__60.html"
+ },
+ {
+  "id": "T21",
+  "schluessel": "t.ggeld.eu",
+  "beschreibung": "EU-Bürger: erste 5 Jahre, § 7 SGB II",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "5",
+    "7"
+   ],
+   "gesetze": [
+    "SGB II"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_2/__7.html"
+ },
+ {
+  "id": "T22",
+  "schluessel": "t.kg.eu",
+  "beschreibung": "EU: Kindergeld erste 3 Monate nur mit inländischen Einkünften, § 62 EStG",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "3",
+    "62"
+   ],
+   "gesetze": [
+    "EStG"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/estg/__62.html"
+ },
+ {
+  "id": "T23",
+  "schluessel": "t.kiz.verm",
+  "beschreibung": "KiZ-Vermögen 40.000 € + 15.000 € je weitere Person, § 6a Abs. 3 BKGG; Beträge als {eur:…} im Landesformat (TS-07)",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "3",
+    "6"
+   ],
+   "gesetze": [
+    "BKGG"
+   ],
+   "platzhalter": "{limit} {n}",
+   "eur": [
+    "15000",
+    "40000"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/bkgg_1996/__6a.html"
+ },
+ {
+  "id": "T24",
+  "schluessel": "t.kiz.knappKindEink",
+  "beschreibung": "Kindeseinkommen zu 45 %, Versicherungspauschale 30 €",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "30",
+    "45"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/bkgg_1996/__6a.html"
+ },
+ {
+  "id": "T25",
+  "schluessel": "t.mehr.schwanger",
+  "beschreibung": "Mehrbedarf Schwangerschaft 17 % ab 13. Woche",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "13",
+    "17"
+   ],
+   "platzhalter": "{betrag}"
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_2/__21.html"
+ },
+ {
+  "id": "T26",
+  "schluessel": "t.zuzahl.chron",
+  "beschreibung": "Chroniker 1 %, GdB 60, Pflegegrad 3 bis 5",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "1",
+    "3",
+    "5",
+    "60"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_5/__62.html"
+ },
+ {
+  "id": "T27",
+  "schluessel": "t.ausweis.schwer",
+  "beschreibung": "Schwerbehindert ab GdB 50; Zusatzurlaub bei 5-Tage-Woche",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "5",
+    "50"
+   ],
+   "platzhalter": "{tage}"
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_9_2018/__208.html"
+ },
+ {
+  "id": "T28",
+  "schluessel": "t.srente.allg",
+  "beschreibung": "Altersrente schwerbehinderte Menschen: GdB 50, 35 Jahre, 2 Jahre früher ohne, 5 Jahre mit Abschlag",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "2",
+    "35",
+    "5",
+    "50"
+   ],
+   "platzhalter": "{abschlag}"
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_6/__236a.html",
+  "zahlenAusnahmen": {
+   "ar": [
+    "35",
+    "5",
+    "50"
+   ]
+  }
+ },
+ {
+  "id": "T29",
+  "schluessel": "t.emrente.warte",
+  "beschreibung": "EM-Rente: 5 Jahre Wartezeit, 3 Jahre Pflichtbeiträge in 5 Jahren",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "3",
+    "5",
+    "5"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_6/__43.html"
+ },
+ {
+  "id": "T30",
+  "schluessel": "t.emrente.wfbm20",
+  "beschreibung": "EM-Rente nach 20 Jahren Werkstatt",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "20"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_6/__43.html"
+ },
+ {
+  "id": "T31",
+  "schluessel": "t.kkg.ja",
+  "beschreibung": "Kinderkrankengeld für Kinder unter 12; Tage und Höchstbetrag als Platzhalter",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "12"
+   ],
+   "platzhalter": "{hoechst} {max} {satz} {tage}"
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_5/__45.html"
+ },
+ {
+  "id": "T32",
+  "schluessel": "el.ks.kern",
+  "beschreibung": "Kostensenkung meist höchstens 6 Monate",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "1",
+    "22",
+    "3",
+    "35",
+    "6"
+   ],
+   "gesetze": [
+    "SGB II",
+    "SGB XII"
+   ]
+  },
+  "quelle": "https://www.buzer.de/22_SGB_II.htm"
+ },
+ {
+  "id": "T33",
+  "schluessel": "el.ks.d.tod",
+  "beschreibung": "Todesfall: 12 Monate keine Senkung",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "1",
+    "11",
+    "12",
+    "22",
+    "3",
+    "35",
+    "4"
+   ],
+   "gesetze": [
+    "SGB II",
+    "SGB XII"
+   ]
+  },
+  "quelle": "https://www.buzer.de/22_SGB_II.htm"
+ },
+ {
+  "id": "T34",
+  "schluessel": "hb.hw.verm.d.ggeld",
+  "beschreibung": "Schonvermögen nach Alter seit 1.7.2026 (unter 30 / ab 30 / ab 40 / ab 50), Altfälle § 65a",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "1,7",
+    "1,7",
+    "12",
+    "2",
+    "2026",
+    "2026",
+    "30",
+    "30",
+    "40",
+    "50",
+    "65"
+   ],
+   "gesetze": [
+    "SGB II",
+    "SGB II"
+   ],
+   "platzhalter": "{a} {b} {c} {d}"
+  },
+  "quelle": "https://www.buzer.de/12_SGB_II.htm (Fassung ab 1.7.2026; amtlich: gesetze-im-internet.de/sgb_2/__12.html)"
+ },
+ {
+  "id": "T35",
+  "schluessel": "fri.art.termin.t",
+  "beschreibung": "Meldeversäumnis: 30 % für einen Monat",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "30"
+   ]
+  },
+  "quelle": "https://www.bundesregierung.de/breg-de/aktuelles/neue-grundsicherung-2399562"
+ },
+ {
+  "id": "T36",
+  "schluessel": "bp.wid.bis.t",
+  "beschreibung": "Bekanntgabefiktion 4 Tage (seit 1.1.2025)",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "4"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_10/__37.html"
+ },
+ {
+  "id": "T37",
+  "schluessel": "t.gsa.grundrente",
+  "beschreibung": "Grundrentenfreibetrag: 33 Jahre, 100 € + 30 %, höchstens 50 % Regelbedarfsstufe 1 (281,50 €) als Platzhalter {max} aus src/rules.js (TS-07)",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "30",
+    "33",
+    "82"
+   ],
+   "eur": [
+    "100"
+   ],
+   "gesetze": [
+    "SGB XII"
+   ],
+   "platzhalter": "{max}"
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__82a.html"
+ },
+ {
+  "id": "T38",
+  "schluessel": "t.kindergeld.mehr",
+  "beschreibung": "Kindergeld bis 21 arbeitsuchend, bis 25, Pause 4 Monate, 20 Wochenstunden",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "20",
+    "21",
+    "25",
+    "4"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/estg/__32.html"
+ },
+ {
+  "id": "T39",
+  "schluessel": "az.p.kindergeld.t",
+  "beschreibung": "wie T38, Abzweigung § 74 EStG, § 1 Abs. 2 BKGG",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "1",
+    "18",
+    "2",
+    "20",
+    "21",
+    "25",
+    "32",
+    "4",
+    "4",
+    "74"
+   ],
+   "gesetze": [
+    "EStG",
+    "EStG",
+    "BKGG"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/estg/__32.html"
+ },
+ {
+  "id": "T40",
+  "schluessel": "az.p.waisenrente.t",
+  "beschreibung": "Waisenrente bis 18, in Ausbildung bis 27",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "18",
+    "27",
+    "4",
+    "48"
+   ],
+   "gesetze": [
+    "SGB VI"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_6/__48.html"
+ },
+ {
+  "id": "T41",
+  "schluessel": "az.p.melden.t",
+  "beschreibung": "Ummelden binnen 2 Wochen",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "17",
+    "19",
+    "2"
+   ],
+   "gesetze": [
+    "BMG",
+    "BMG"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/bmg/__17.html"
+ },
+ {
+  "id": "T42",
+  "schluessel": "t.uvg.wechsel",
+  "beschreibung": "Wechselmodell ab 40 % schließt UVG aus (BVerwG 2023)",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "2023",
+    "40"
+   ]
+  },
+  "quelle": "BVerwG, Urteil vom 12.12.2023 – 5 C 9.22"
+ },
+ {
+  "id": "T43",
+  "schluessel": "t.eg.teilzeitStunden",
+  "beschreibung": "Elterngeld nur bis 32 Wochenstunden",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "32"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/beeg/__1.html"
+ },
+ {
+  "id": "T44",
+  "schluessel": "t.alg1.neben",
+  "beschreibung": "Nebenbeschäftigung unter 15 Wochenstunden",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "15"
+   ],
+   "platzhalter": "{frei}"
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_3/__155.html"
+ },
+ {
+  "id": "T45",
+  "schluessel": "pfl.ui.erg.grenzen",
+  "beschreibung": "Pflegegrad-Schwellen 12,5 / 27 / 47,5 / 70 / 90 Punkte",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "1",
+    "12,5",
+    "15",
+    "2",
+    "2",
+    "27",
+    "3",
+    "3",
+    "4",
+    "47,5",
+    "5",
+    "70",
+    "90"
+   ],
+   "gesetze": [
+    "SGB XI"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_11/__15.html",
+  "zahlenAusnahmen": {
+   "ps": null,
+   "so": null
+  }
+ },
+ {
+  "id": "T46",
+  "schluessel": "pfl.pi.geld.1",
+  "beschreibung": "Beratungsbesuch: PG 2-5 halbjährlich Pflicht, PG 4 und 5 auf Wunsch vierteljährlich (seit 1.1.2026)",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "2",
+    "4",
+    "5",
+    "5"
+   ]
+  },
+  "quelle": "https://www.buzer.de/gesetz/4851/al233700-0.htm (BGBl. 2025 I Nr. 371, ab 1.1.2026)",
+  "zahlenAusnahmen": {
+   "ps": null,
+   "so": null
+  }
+ },
+ {
+  "id": "T47",
+  "schluessel": "t.pflege.zeit",
+  "beschreibung": "Freistellung: 10 Tage, Pflegezeit 6 Monate, Familienpflegezeit 24 Monate",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "10",
+    "24",
+    "6"
+   ]
+  },
+  "quelle": "https://www.gesetze-im-internet.de/pflegezg/__2.html"
+ },
+ {
+  "id": "T50",
+  "schluessel": "t.bafoeg.kindJa",
+  "beschreibung": "BAföG-Einschub „nach den Abzügen, die das BAföG-Amt macht“ in jeder Übersetzung (BAföG zweimal wie im Deutschen), TS-03",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [],
+   "gesetze": [
+    "BAföG",
+    "BAföG"
+   ],
+   "platzhalter": "{fb}"
+  },
+  "quelle": "Befund TS-03"
+ },
+ {
+  "id": "T52-t.uvg.keinKind",
+  "schluessel": "t.uvg.keinKind",
+  "beschreibung": "SoLo Rumänisch: informelle Anrede (tu) wie im Rest der App (TS-05)",
+  "sprachen": [
+   "ro"
+  ],
+  "erwartet": {
+   "anrede": "du"
+  },
+  "quelle": "Vorgabe SoLo seriöses Du; Befund TS-05"
+ },
+ {
+  "id": "T52-t.uvg.ab12",
+  "schluessel": "t.uvg.ab12",
+  "beschreibung": "SoLo Rumänisch: informelle Anrede (tu) wie im Rest der App (TS-05)",
+  "sprachen": [
+   "ro"
+  ],
+  "erwartet": {
+   "anrede": "du"
+  },
+  "quelle": "Vorgabe SoLo seriöses Du; Befund TS-05"
+ },
+ {
+  "id": "T52-t.uvg.asyl",
+  "schluessel": "t.uvg.asyl",
+  "beschreibung": "SoLo Rumänisch: informelle Anrede (tu) wie im Rest der App (TS-05)",
+  "sprachen": [
+   "ro"
+  ],
+  "erwartet": {
+   "anrede": "du"
+  },
+  "quelle": "Vorgabe SoLo seriöses Du; Befund TS-05"
+ },
+ {
+  "id": "T52-t.uvg.titel",
+  "schluessel": "t.uvg.titel",
+  "beschreibung": "SoLo Rumänisch: informelle Anrede (tu) wie im Rest der App (TS-05)",
+  "sprachen": [
+   "ro"
+  ],
+  "erwartet": {
+   "anrede": "du"
+  },
+  "quelle": "Vorgabe SoLo seriöses Du; Befund TS-05"
+ },
+ {
+  "id": "T52-t.but.asylBezug",
+  "schluessel": "t.but.asylBezug",
+  "beschreibung": "SoLo Rumänisch: informelle Anrede (tu) wie im Rest der App (TS-05)",
+  "sprachen": [
+   "ro"
+  ],
+  "erwartet": {
+   "anrede": "du"
+  },
+  "quelle": "Vorgabe SoLo seriöses Du; Befund TS-05"
+ },
+ {
+  "id": "T52-t.alg1.asyl",
+  "schluessel": "t.alg1.asyl",
+  "beschreibung": "SoLo Rumänisch: informelle Anrede (tu) wie im Rest der App (TS-05)",
+  "sprachen": [
+   "ro"
+  ],
+  "erwartet": {
+   "anrede": "du"
+  },
+  "quelle": "Vorgabe SoLo seriöses Du; Befund TS-05"
+ },
+ {
+  "id": "T52-t.ausweis.asyl",
+  "schluessel": "t.ausweis.asyl",
+  "beschreibung": "SoLo Rumänisch: informelle Anrede (tu) wie im Rest der App (TS-05)",
+  "sprachen": [
+   "ro"
+  ],
+  "erwartet": {
+   "anrede": "du"
+  },
+  "quelle": "Vorgabe SoLo seriöses Du; Befund TS-05"
+ },
+ {
+  "id": "T52-t.wbs.ausreise",
+  "schluessel": "t.wbs.ausreise",
+  "beschreibung": "SoLo Rumänisch: informelle Anrede (tu) wie im Rest der App (TS-05)",
+  "sprachen": [
+   "ro"
+  ],
+  "erwartet": {
+   "anrede": "du"
+  },
+  "quelle": "Vorgabe SoLo seriöses Du; Befund TS-05"
+ },
+ {
+  "id": "T52-t.bafoeg.eu",
+  "schluessel": "t.bafoeg.eu",
+  "beschreibung": "SoLo Rumänisch: informelle Anrede (tu) wie im Rest der App (TS-05)",
+  "sprachen": [
+   "ro"
+  ],
+  "erwartet": {
+   "anrede": "du"
+  },
+  "quelle": "Vorgabe SoLo seriöses Du; Befund TS-05"
+ },
+ {
+  "id": "T53",
+  "schluessel": "*",
+  "beschreibung": "Deutsch: „Bürgergeld“ nur als früherer Name (mit „früher“ oder „bis Juni 2026“)",
+  "sprachen": [
+   "de"
+  ],
+  "erwartet": {
+   "bürgergeldNurAlsAltname": true
+  },
+  "quelle": "https://www.bundesregierung.de/breg-de/aktuelles/neue-grundsicherung-2399562"
+ },
+ {
+  "id": "T54",
+  "schluessel": "*",
+  "beschreibung": "Alle Schlüssel: Gesetzesbezeichnungen (SGB II/XII, BGB, ZPO …) in jeder Übersetzung wie im Deutschen",
+  "sprachen": "alle",
+  "erwartet": {
+   "gesetzeWieDeutsch": true
+  },
+  "quelle": "Befund TS-03 (Ergänzung zu test/test-sprachen-zahlen.js, das nur Ziffern prüft)"
+ },
+ {
+  "id": "T56",
+  "schluessel": "docs/STORE.md",
+  "beschreibung": "Store-Text darf Pflege nicht „in allen 13 Sprachen“ nennen, solange src/lang/pflege/<sprache>.json fehlt (Paschtu, Somali: bewusst Deutsch bis zur Muttersprachler-Prüfung, Entscheidung David), TS-01",
+  "sprachen": [
+   "de"
+  ],
+  "erwartet": {
+   "storePflegeSprachen": true
+  },
+  "quelle": "Befund TS-01"
+ },
+ {
+  "id": "T57",
+  "schluessel": "t.kdu.angemessen",
+  "beschreibung": "Miete über der Grenze: erstes Jahr höchstens das Eineinhalbfache, danach Kostensenkungsaufforderung und in der Regel noch bis zu 6 Monate (§ 22 Abs. 1 Satz 6, 9, 10 SGB II n. F.), TS-09; zusätzlich § 35 SGB XII (Grundsicherung im Alter)",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "22",
+    "35",
+    "6"
+   ],
+   "gesetze": [
+    "SGB II",
+    "SGB XII"
+   ],
+   "platzhalter": ""
+  },
+  "quelle": "https://www.buzer.de/22_SGB_II.htm (Fassung ab 1.7.2026, BGBl. 2026 I Nr. 107), abgerufen 24.11.2026"
+ },
+ {
+  "id": "T58",
+  "schluessel": "t.kdu.hoch",
+  "beschreibung": "wie T57 mit Orientierungsgrenze (Wohngeld-Höchstbetrag + 10 %), TS-09",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "10",
+    "22",
+    "6"
+   ],
+   "gesetze": [
+    "SGB II"
+   ],
+   "platzhalter": "{grenze}"
+  },
+  "quelle": "https://www.buzer.de/22_SGB_II.htm, abgerufen 24.11.2026"
+ },
+ {
+  "id": "T59",
+  "schluessel": "t.gsa.eltern",
+  "beschreibung": "Unterhaltsrückgriff auf Eltern erst bei mehr als 100.000 € Jahreseinkommen je Elternteil; Betrag als {eur:100000}, TS-04/TS-07",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [],
+   "eur": [
+    "100000"
+   ],
+   "platzhalter": ""
+  },
+  "quelle": "§ 94 Abs. 1a SGB XII, https://www.buzer.de/94_SGB_XII.htm, abgerufen 24.11.2026 („jeweils mehr als 100.000 Euro“)"
+ },
+ {
+  "id": "T60",
+  "schluessel": "ek.zusatzRente.hint",
+  "beschreibung": "Zusatzrente: 100 € + 30 %, höchstens 50 % Regelbedarfsstufe 1 als {max} (§ 82 Abs. 4 SGB XII), TS-07",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "30"
+   ],
+   "eur": [
+    "100"
+   ],
+   "platzhalter": "{max}"
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__82.html"
+ },
+ {
+  "id": "T61",
+  "schluessel": "es.tipp.grundrente",
+  "beschreibung": "Grundrente-Tipp: Höchstbetrag als {max} (§ 82a SGB XII), TS-07",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "33"
+   ],
+   "platzhalter": "{max}"
+  },
+  "quelle": "https://www.gesetze-im-internet.de/sgb_12/__82a.html"
+ },
+ {
+  "id": "T62",
+  "schluessel": "t.bafoeg.vermEvtl",
+  "beschreibung": "Zusätzlicher Vermögensfreibetrag 2.300 € als {eur:2300} (§ 29 Abs. 1 BAföG), TS-07",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "29"
+   ],
+   "eur": [
+    "2300"
+   ],
+   "gesetze": [
+    "BAföG",
+    "BAföG"
+   ],
+   "platzhalter": "{monat} {verm}"
+  },
+  "quelle": "https://www.gesetze-im-internet.de/baf_g/__29.html"
+ },
+ {
+  "id": "T63",
+  "schluessel": "t.bafoeg.vermTeil",
+  "beschreibung": "wie T62, verteilt auf 12 Monate, TS-07",
+  "sprachen": "alle",
+  "erwartet": {
+   "zahlen": [
+    "12"
+   ],
+   "eur": [
+    "2300"
+   ],
+   "platzhalter": "{monat} {verm}"
+  },
+  "quelle": "https://www.gesetze-im-internet.de/baf_g/__29.html ; § 30 BAföG"
+ },
+ {
+  "id": "T64",
+  "schluessel": "*",
+  "beschreibung": "Unbenutzte Etiketten gruppe.label, gruppe.0–4 (falsche Altersstufen „bis 30 / 31 bis 40 …“) gibt es in keiner Sprache mehr (TS-08, Fable-Prüfung Nr. 10)",
+  "sprachen": "alle",
+  "erwartet": {
+   "fehlendeSchluessel": [
+    "gruppe.label",
+    "gruppe.0",
+    "gruppe.1",
+    "gruppe.2",
+    "gruppe.3",
+    "gruppe.4"
+   ]
+  },
+  "quelle": "§ 12 Abs. 2 SGB II n. F. (unter 30 / ab 30 / ab 40 / ab 50)"
+ },
+ {
+  "id": "T65",
+  "schluessel": "*",
+  "beschreibung": "Rumänisch: kein Text nur in Sie-Form (dumneavoastră, aveți, puteți …), seriöses Du wie Deutsch (TS-05, verallgemeinert); Ausnahmen: Mehrzahl (deutsch „ihr“/„ihr beide“), dort ist voi/aveți richtig",
+  "sprachen": [
+   "ro"
+  ],
+  "erwartet": {
+   "anredeAlle": "du",
+   "ausnahmen": [
+    "t.gsa.mzGBeide",
+    "t.kiz.vermKnapp",
+    "sf.q.bezug",
+    "ra.wer.hint"
+   ]
+  },
+  "quelle": "Vorgabe SoLo: seriöses Du; nur fa, fa-AF, ps höflich"
+ },
+ {
+  "id": "T66",
+  "schluessel": "*",
+  "beschreibung": "Englisch: kein Euro-Betrag im deutschen Zahlformat (40.000 € liest sich wie 40 €), feste Beträge über {eur:…} (TS-07)",
+  "sprachen": [
+   "en"
+  ],
+  "erwartet": {
+   "keinDeutschesZahlformat": true
+  },
+  "quelle": "Befund TS-07"
+ }
+]

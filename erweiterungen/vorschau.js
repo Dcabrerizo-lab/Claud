@@ -130,7 +130,10 @@
     const summe = (plus, minus, zahl) => {
       if (plus.concat([zahl]).some((id) => n(id) == null && !/-(ae|schw|ww|g)$/.test(id))) return;
       const s = plus.reduce((a, id) => a + (n(id) || 0), 0) - minus.reduce((a, id) => a + (n(id) || 0), 0);
-      if (Math.abs(Math.max(0, s) - n(zahl)) > 1) plus.concat(minus, [zahl]).filter((id) => n(id) != null).forEach((id) => aus.add(id));
+      // Grundsicherungsgeld: Der Zahlbetrag enthält oft den Sofortzuschlag (§ 72 SGB II, 25 € je Kind) – Vielfache davon gelten als passend
+      const sz = art === 'jc' ? Rules.RULES.sofortzuschlag : 0, d = n(zahl) - Math.max(0, s);
+      const passtSZ = sz > 0 && d > 0 && d <= 10 * sz + 1 && Math.abs(d - Math.round(d / sz) * sz) <= 1;
+      if (Math.abs(d) > 1 && !passtSZ) plus.concat(minus, [zahl]).filter((id) => n(id) != null).forEach((id) => aus.add(id));
     };
     if (art === 'jc') summe(['bs-b-regel', 'bs-b-ae', 'bs-b-schw', 'bs-b-ww', 'bs-b-kdu'], ['bs-b-eink', 'bs-b-kg'], 'bs-b-zahl');
     if (art === 'sa') summe(['ga-b-regel', 'ga-b-g', 'ga-b-ww', 'ga-b-kdu'], ['ga-b-eink'], 'ga-b-zahl');
@@ -668,7 +671,7 @@ Ergebnis: Pflegegrad 2`;
     r.hinweise.forEach((t) => box.append(h('p', { class: 'note', text: t })));
     box.append(h('p', {}, r.zuWenigImMonat > 0 ? h('span', { class: 'big', text: `Vermutlich ${eur(r.zuWenigImMonat)} im Monat zu wenig` }) : h('span', { class: 'big', text: 'Keine sichere Abweichung zu deinen Lasten gefunden' })));
     abweichungsKarten(box, r, 'Vergleich der Posten');
-    if (r.zahlbetrag) box.append(h('p', { class: 'small', text: `Zahlbetrag nach SoLo ${eur(r.zahlbetrag.erwartet)}, im Bescheid ${eur(r.zahlbetrag.bescheid)}.` }));
+    if (r.zahlbetrag) box.append(h('p', { class: 'small', text: `Zahlbetrag nach SoLo ${eur(r.zahlbetrag.erwartet)}${r.zahlbetrag.mitSofortzuschlag ? ` (mit ${eur(r.erwartet.sofortzuschlag)} Sofortzuschlag für Kinder, § 72 SGB II)` : ''}, im Bescheid ${eur(r.zahlbetrag.bescheid)}.${r.zahlbetrag.sofortzuschlagMoeglich ? ` Dazu kommt möglicherweise der Sofortzuschlag für Kinder von ${eur(r.zahlbetrag.sofortzuschlagMoeglich)} (§ 72 SGB II), falls er nicht gesondert gezahlt wird.` : ''}` }));
     box.append(h('p', { class: 'small muted', text: r.grenzen }));
   }
   // Widerspruch mit Zahlen-Begründung nur, wenn der Vergleich vollständig ist. Fehlen Angaben, entsteht ein fristwahrender Widerspruch
@@ -737,15 +740,29 @@ Ergebnis: Pflegegrad 2`;
     wz++; const n = wz; w = w || {};
     const art = h('select', { id: `wm-art-${n}`, 'aria-label': `Einkommen ${n}: Art` }, ARTEN.map(([v, t]) => h('option', { value: v, text: t, selected: v === (w.art || 'lohn') })));
     const abz = h('select', { id: `wm-abz-${n}`, 'aria-label': `Einkommen ${n}: Pauschalabzug` }, [0, 10, 20, 30].map((p) => h('option', { value: p, text: p + ' %', selected: p === (w.abzug != null ? w.abzug : 30) })));
+    // Elterngeld: kein Pauschalabzug, dafür Basiselterngeld oder ElterngeldPlus und Kinder dieser Geburt (Freibetrag § 10 BEEG, BescheidWG egFrei).
+    // „Weiß ich nicht“ = egPlus fehlt (dann vorsichtige Spanne). Vorbelegt aus dem Check (Frage „Bekommst du Basiselterngeld oder ElterngeldPlus?“).
+    const egWert = w.egPlus === true ? 'plus' : w.egPlus === false ? 'basis' : '';
+    const egArt = h('select', { id: `wm-eg-${n}`, 'aria-label': `Einkommen ${n}: Basiselterngeld oder ElterngeldPlus` },
+      [['', 'Weiß ich nicht'], ['basis', 'Basiselterngeld'], ['plus', 'ElterngeldPlus']].map(([v, t]) => h('option', { value: v, text: t, selected: v === egWert })));
+    const egK = h('select', { id: `wm-egk-${n}`, 'aria-label': `Einkommen ${n}: Kinder bei dieser Geburt` },
+      [[1, 'ein Kind'], [2, 'Zwillinge'], [3, 'Drillinge oder mehr']].map(([v, t]) => h('option', { value: v, text: t, selected: v === (Number(w.egKinder) || 1) })));
+    const egBox = h('div', { class: 'wm-eg' }, egArt, egK);
+    const egZeigen = () => { const eg = art.value === 'eg'; abz.hidden = eg; egBox.hidden = !eg; };
+    art.addEventListener('change', egZeigen); egZeigen();
     const tr = h('tr', {}, h('td', {}, art),
       h('td', {}, h('input', { type: 'number', min: '0', step: '0.01', inputmode: 'decimal', id: `wm-b-${n}`, 'aria-label': `Einkommen ${n}: brutto im Monat`, value: w.brutto || '' })),
-      h('td', {}, abz),
+      h('td', {}, abz, egBox),
       h('td', {}, h('input', { type: 'number', min: '0', step: '0.01', inputmode: 'decimal', id: `wm-u-${n}`, 'aria-label': `Einkommen ${n}: Unterhalt im Monat`, value: w.unterhalt || '' })),
       h('td', {}, h('button', { type: 'button', class: 'btn', 'aria-label': `Einkommen ${n} entfernen`, onclick: () => { tr.remove(); zeigeWG(); } }, '×')));
     $('wg-mitglieder').append(tr);
   }
   function leseWG() {
-    const mitglieder = [...$('wg-mitglieder').children].map((tr) => { const s = tr.querySelectorAll('select'), i = tr.querySelectorAll('input'); return { art: s[0].value, abzug: +s[1].value, brutto: +i[0].value || 0, unterhalt: +i[1].value || 0 }; });
+    const mitglieder = [...$('wg-mitglieder').children].map((tr) => {
+      const s = tr.querySelectorAll('select'), i = tr.querySelectorAll('input'), m = { art: s[0].value, abzug: +s[1].value, brutto: +i[0].value || 0, unterhalt: +i[1].value || 0 };
+      if (m.art === 'eg') { const a = s[2].value; if (a) m.egPlus = a === 'plus'; m.egKinder = +s[3].value || 1; }
+      return m;
+    });
     return { personen: +$('wg-n').value || 1, stufe: +$('wg-stufe').value, bruttokalt: +$('wg-kalt').value || 0, schwerbehindert: +$('wg-sb').value || 0, alleinerziehend: $('wg-ae').checked, mitglieder,
       bescheid: { miete: wert('wg-b-miete'), einkommen: wert('wg-b-eink'), wohngeld: wert('wg-b-wg') } };
   }
@@ -1010,7 +1027,8 @@ Ergebnis: Pflegegrad 2`;
         if (hh.stufe && $('wg-stufe').querySelector(`option[value="${hh.stufe}"]`)) $('wg-stufe').value = hh.stufe;
         if (hh.alleinerziehend) $('wg-ae').checked = true;
         if (nurLeer('wg-mitglieder')) $('wg-mitglieder').replaceChildren();
-        if (!$('wg-mitglieder').children.length) erw.filter((p) => p.brutto).forEach((p) => wgZeile({ art: 'lohn', brutto: p.brutto }));
+        // Elterngeld aus dem Check: ausgezahlter Betrag, Basiselterngeld/ElterngeldPlus und Kinder dieser Geburt (p.eg); sonst wie bisher Lohn mit Brutto
+        if (!$('wg-mitglieder').children.length) erw.forEach((p) => { if (p.eg && p.eg.betrag) wgZeile({ art: 'eg', brutto: p.eg.betrag, egPlus: p.eg.plus, egKinder: p.eg.kinder }); else if (p.brutto) wgZeile({ art: 'lohn', brutto: p.brutto }); });
       }
       if (art === 'fk') {
         if (erw.length === 2) $('kz-zahl').value = '2';
@@ -1252,8 +1270,10 @@ Ergebnis: Pflegegrad 2`;
         h('p', { text: tA('bp.an.zeile', 'So steht es im Brief: „{zeile}“', { zeile: r.fristen[0].zeile }) }),
         h('p', { text: tA('bp.an.pruefen', 'Bitte lies die Frist im Brief selbst nach. Die Texterkennung kann sich irren.') })));
     }
-    if (r.mahnbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { text: 'Das ist wohl ein gerichtlicher Mahnbescheid. ' }), 'Widerspruch nur innerhalb von 2 Wochen ab Zustellung. Mehr dazu unten.'));
-    if (r.vollstreckungsbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { text: 'Das ist wohl ein Vollstreckungsbescheid. ' }), 'Einspruch nur innerhalb von 2 Wochen ab Zustellung. Frag sofort eine Schuldnerberatung.'));
+    // Mahnbescheid: Widerspruch am besten binnen 2 Wochen (§ 692 Abs. 1 Nr. 3 ZPO), danach noch, solange kein Vollstreckungsbescheid verfügt ist
+    // (§ 694 Abs. 1 ZPO); Vollstreckungsbescheid: Einspruch 2 Wochen, Notfrist (§§ 700, 339 ZPO). Texte übersetzt (src/lang/zusatz, Prüfung Schulden 24.11.2026).
+    if (r.mahnbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { 'data-t': 'bp.mb.titel', text: tA('bp.mb.titel', 'Das ist wohl ein gerichtlicher Mahnbescheid.') }), ' ', h('span', { 'data-t': 'bp.mb.frist', text: tA('bp.mb.frist', 'Widerspruch am besten innerhalb von 2 Wochen ab Zustellung. Später geht es nur noch, solange das Gericht keinen Vollstreckungsbescheid erlassen hat. Mehr dazu unten.') })));
+    if (r.vollstreckungsbescheid) box.append(h('p', { class: 'frist', role: 'note' }, h('strong', { 'data-t': 'bp.vb.titel', text: tA('bp.vb.titel', 'Das ist wohl ein Vollstreckungsbescheid.') }), ' ', h('span', { 'data-t': 'bp.vb.frist', text: tA('bp.vb.frist', 'Einspruch nur innerhalb von 2 Wochen ab Zustellung. Frag sofort eine Schuldnerberatung.') })));
     // Mahnbescheid/Vollstreckungsbescheid: Tag der Zustellung (gelber Umschlag) erfragen, erst der Tipp merkt die Frist
     if ((r.mahnbescheid || r.vollstreckungsbescheid) && window.FristenOrdner) box.append(window.FristenOrdner.knopf((zugang) => ({ art: r.vollstreckungsbescheid ? 'vb' : 'mb', stelle: 'gericht', basis: { zugang }, quelle: 'brief' }), { feld: 'zugang' }));
     if (r.inkasso) box.append(h('p', { class: 'note' }, h('strong', { text: 'Im Brief steht „Inkasso“. ' }), 'Lies unten, was du prüfen solltest.'));

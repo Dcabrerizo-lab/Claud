@@ -3,7 +3,7 @@
 Funktionen: `pfaendFreibetrag`, `pfaendung`, `pkonto` (Werte `R.pfaendung`).
 
 ## Eingaben
-Nettolohn im Monat, Zahl der Personen, denen Unterhalt gezahlt wird (0–5, mehr zählt wie 5); P-Konto: zusätzlich Kinder mit Kindergeld und Kinderzuschlag.
+Nettolohn im Monat, Zahl der Personen, denen Unterhalt gezahlt wird (0–5, mehr zählt wie 5); P-Konto: zusätzlich Kinder mit Kindergeld und – nur wenn Kindergeld-Kinder angegeben sind – der Kinderzuschlag im Monat (Feld, leer = 0; seit 24.11.2026 abgefragt).
 
 ## Rechenschritte Lohn (§ 850c ZPO)
 1. Freibetrag = 1.587,40 € + 597,42 € (erste unterhaltsberechtigte Person) + 332,83 € je zweite bis fünfte Person (§ 850c Abs. 1, 2; Pfändungsfreigrenzenbekanntmachung 2026).

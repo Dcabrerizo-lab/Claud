@@ -46,5 +46,14 @@
   "l.einsKurz": "Bu uygulamadaki bilgileriniz, süreleriniz ve işaretleriniz. Kaydedilmiş diğer işlemler kalır.",
   "l.kurzZurueck": "Sonrasında yarım dakika boyunca hâlâ geri alabilirsiniz.",
   "sux.brief.t": "Bakım sigortası kasasından (Pflegekasse), emeklilik sigortasından veya bir kurumdan gelen kararı kontrol edin ve itiraz yazın.",
-  "sux.briefA.t": "Baktığınız kişiye bakım sigortası kasasından (Pflegekasse) veya bir kurumdan gelen mektupları kontrol edin ve itiraz yazın."
+  "sux.briefA.t": "Baktığınız kişiye bakım sigortası kasasından (Pflegekasse) veya bir kurumdan gelen mektupları kontrol edin ve itiraz yazın.",
+  "sux.q.kinder": "Hanenizde 25 yaşından küçük çocuklar yaşıyor mu?",
+  "sux.h.kinder": "Sizinle birlikte yaşayan kendi çocuklarınız veya eşinizin ya da partnerinizin çocukları kastediliyor. Çocuklar örneğin kira yardımını ve temel güvenceyi değiştirir.",
+  "sux.h.young": "Sadece okula giden, meslek eğitimi gören veya üniversitede okuyan çocuklar. Sizinle başka bir yetişkin çocuk yaşıyorsa, bunu biraz sonra evdeki diğer yetişkinlerle birlikte belirtin.",
+  "sux.q.kindLage": "Bunlardan biri çocuklar için geçerli mi?",
+  "sux.h.kindLage": "Sadece bir şey geçerliyse uygulama bununla ilgili kısa bir soru sorar.",
+  "sux.g.kUnterhalt": "Bir çocuk diğer ebeveynden nafaka alıyor",
+  "sux.g.kWaisen": "Bir çocuk yetim aylığı alıyor",
+  "sux.g.kEink": "Bir çocuğun kendi geliri var, örneğin meslek eğitiminden veya Minijob'dan",
+  "sux.kinder.solo": "Çocuklarınız için yardımlar (örneğin Kindergeld, Kinderzuschlag, eğitim paketi) için lütfen SoLo uygulamasını kullanın."
 }

@@ -121,8 +121,14 @@ var Geld = (function () {
   //  Puffer = 10 % der Einnahmen (auf den Cent aufgerundet), mindestens 50 € – für Unvorhergesehenes (Nachzahlung, Reparatur)
   //  Obergrenze = pfändbarer Betrag nach der Pfändungstabelle (§ 850c ZPO mit den geprüften Werten 2026 in Rules.pfaendung, Wortlaut § 850c
   //    abgerufen 21.11.2026 auf https://www.gesetze-im-internet.de/zpo/__850c.html): mehr als das könnten alle Gläubiger zusammen auch mit einer
-  //    Lohnpfändung nicht bekommen. Grundlage grob: Einnahmen des Plans ohne Kindergeld (§ 76 EStG), Unterhaltsberechtigte aus dem Pfändungsrechner
-  //    oder dem Check (Partner und Kinder im Haushalt). Unterhaltsgläubiger können mehr pfänden (§ 850d ZPO) – das ersetzt keine Beratung.
+  //    Lohnpfändung nicht bekommen. Grundlage: nur das eigene pfändbare Einkommen der Person 1 (Haushalt.rest().pfBasis: Lohn, Rente, ALG,
+  //    Krankengeld, Elterngeld über 300 € bzw. 150 € bei ElterngeldPlus je Kind der Geburt, „Sonstige Einnahmen“) – ohne Einkommen des Partners und ohne unpfändbare Leistungen (Kindergeld § 76 EStG, Wohngeld,
+  //    Kinderzuschlag, Grundsicherungsgeld, Sozialhilfe, Unterhalt für die Kinder; § 54 SGB I, § 42 Abs. 4 SGB II, § 17 Abs. 1 SGB XII;
+  //    Prüfung Schulden 24.11.2026). Fehlt pfBasis (alte Aufrufer), wie bisher Einnahmen ohne Kindergeld. Unterhaltsberechtigte aus dem
+  //    Pfändungsrechner oder dem Check (Partner und Kinder im Haushalt). Unterhaltsgläubiger können mehr pfänden (§ 850d ZPO) – das ersetzt keine Beratung.
+  //    Paare (Frage „Wer hat die Schulden?“, Auftrag David 25.11.2026): hh.pfBasisJe = pfändbares Einkommen je Person, die die Schulden hat
+  //    (Haushalt.pfaendbarBasisJe). Jede Person wird getrennt nach der Pfändungstabelle gerechnet (§ 850c ZPO gilt je Schuldner); die Obergrenze
+  //    ist die Summe der pfändbaren Beträge, die Einkommen werden nicht zusammengezählt. Unterhaltsberechtigte je Person: dieselbe Zahl.
   //  Rate   = min(frei − Puffer, pfändbar), abgerundet auf volle 5 €; unter 5 € keine Empfehlung: „keine“ (kein Spielraum) oder
   //    „unpfaendbar“ (nach der Tabelle nichts pfändbar) – beide mit Verweis auf die Schuldnerberatung.
   //  Mehrere offene Schulden mit Betrag: Reihenfolge wie in der Schulden-Liste (Schulden.artStufe: 1 Miete, Strom, Unterhalt, Geldstrafe,
@@ -144,10 +150,13 @@ var Geld = (function () {
     var ein = Math.round(hh.ein), aus = hh.aus > 0 ? Math.round(hh.aus) : 0;
     var frei = ein - aus, puffer = Math.max(Math.ceil(ein * RATE.pufferAnteil / 100), RATE.pufferMin);
     // pfaendbar (Cent) nur, wenn schon berechnet übergeben (Tests der reinen Rechnung); sonst aus der Pfändungstabelle
-    var pf = typeof hh.pfaendbar === 'number' ? hh.pfaendbar : pfaendbarCent(ein - (hh.kindergeld > 0 ? Math.round(hh.kindergeld) : 0), hh.personen);
+    var basis = typeof hh.pfBasis === 'number' ? Math.round(hh.pfBasis) : ein - (hh.kindergeld > 0 ? Math.round(hh.kindergeld) : 0);
+    var je = Array.isArray(hh.pfBasisJe) && hh.pfBasisJe.length ? hh.pfBasisJe.map(function (c) { return pfaendbarCent(Math.round(c > 0 ? c : 0), hh.personen); }) : null;
+    var pf = typeof hh.pfaendbar === 'number' ? hh.pfaendbar : je ? je.reduce(function (a, c) { return a + c; }, 0) : pfaendbarCent(basis, hh.personen);
     var roh = Math.min(frei - puffer, pf), rate = roh > 0 ? Math.floor(roh / RATE.schritt) * RATE.schritt : 0;
     var art = rate >= RATE.schritt ? 'rate' : pf < RATE.schritt ? 'unpfaendbar' : 'keine';
     var r = { art: art, ein: ein, aus: aus, frei: frei, puffer: puffer, pfaendbar: pf, gedeckelt: frei - puffer > pf, rate: art === 'rate' ? rate : 0, teile: [] };
+    if (je && typeof hh.pfaendbar !== 'number') { r.pfJe = je; r.schuldner = hh.schuldner || ''; }
     if (r.art !== 'rate') return r;
     var mit = (liste || []).filter(function (e) { return e && e.st !== 'erledigt' && forderung(e) > 0; });
     if (mit.length < 2) return r;
@@ -362,9 +371,25 @@ var Geld = (function () {
   // Anerkenntnis: Ein Ratenangebot oder eine Abschlagszahlung kann die Forderung anerkennen; die Verjährung beginnt dann neu
   // (§ 212 Abs. 1 Nr. 1 BGB, https://www.gesetze-im-internet.de/bgb/__212.html, abgerufen 20.11.2026). Darum vorher „Stimmt der Brief?“.
   function eurCent(c) { return { eur: c / 100 }; }
+  // Frage „Wer hat die Schulden?“ (nur bei Paaren): drei Knöpfe, gewählter mit aria-pressed. Ohne Antwort rechnet SoLo wie bisher mit
+  // deinem Einkommen (Person 1). Die Antwort steht im Haushaltsplan des Vorgangs (ctx.schuldner -> Haushalt.schuldner).
+  var WER = [['ich', 'ra.wer.ich'], ['partner', 'ra.wer.partner'], ['beide', 'ra.wer.beide']];
+  function wer(box, jetzt, neu) {
+    var g = box.appendChild(el('div', 'ra-wer')); g.id = 'ra-wer'; g.setAttribute('role', 'group'); g.setAttribute('aria-labelledby', 'ra-wer-q');
+    var q = g.appendChild(el('p', 'pf-frage ra-wer-q', t('ra.wer.q'))); q.id = 'ra-wer-q';
+    var b = g.appendChild(el('div', 'wahl-raster'));
+    WER.forEach(function (x) {
+      b.appendChild(knopf('wahl', t(x[1]), function () {
+        ctx.schuldner(x[0]); neu('ra-wer-' + x[0]);
+        var f = document.getElementById('ra-wer-' + x[0]); if (f && document.activeElement !== f) f.focus();
+      }, { id: 'ra-wer-' + x[0], 'aria-pressed': String(jetzt === x[0]) }));
+    });
+    g.appendChild(el('p', 'hint', t('ra.wer.hint')));
+  }
   function rateSeite(box, neu) {
     var m = st.ms; if (m.art !== 'rate') { m.art = 'rate'; m.rate = m.rate || ''; }
-    var liste = ctx.schulden ? ctx.schulden() : [], e = rateEmpfehlung(ctx.haushalt ? ctx.haushalt() : null, liste);
+    var hh = ctx.haushalt ? ctx.haushalt() : null, liste = ctx.schulden ? ctx.schulden() : [], e = rateEmpfehlung(hh, liste);
+    if (hh && hh.zwei && ctx.schuldner) wer(box, hh.schuldner || '', neu);
     var wo = box.appendChild(el('div', 'ra-empf')); wo.id = 'ra-empf';
     if (e.art === 'ohnePlan') {
       var v = wo.appendChild(el('p', 'small ra-ohne', t('ra.ohnePlan'))); v.id = 'ra-ohne';
@@ -412,7 +437,9 @@ var Geld = (function () {
       var so = k.appendChild(el('details', 'mehr ra-so')); so.appendChild(el('summary', '', t('ra.so')));
       so.appendChild(el('p', '', t('ra.so.1', { a: eurCent(e.ein), b: eurCent(e.aus), c: eurCent(e.frei) })));
       so.appendChild(el('p', '', t('ra.so.2', { b: eurCent(e.puffer) })));
-      so.appendChild(el('p', '', t('ra.so.3', { p: eurCent(e.pfaendbar), b: eurCent(e.rate) })));
+      // Paar: Text je nach Antwort auf „Wer hat die Schulden?“ (ohne Antwort wie bisher: nur dein Einkommen)
+      if (e.schuldner === 'beide' && e.pfJe && e.pfJe.length === 2) so.appendChild(el('p', '', t('ra.so.3beide', { p1: eurCent(e.pfJe[0]), p2: eurCent(e.pfJe[1]), p: eurCent(e.pfaendbar), b: eurCent(e.rate) })));
+      else so.appendChild(el('p', '', t(e.schuldner === 'partner' ? 'ra.so.3partner' : 'ra.so.3', { p: eurCent(e.pfaendbar), b: eurCent(e.rate) })));
       if (e.teile.length) so.appendChild(el('p', '', t('ra.so.4')));
       so.appendChild(el('p', 'small', t('ra.so.5')));
       k.appendChild(ctx.tipp('ra.tipp', 'ra-tipp'));

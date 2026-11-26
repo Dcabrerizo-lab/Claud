@@ -116,12 +116,12 @@ check('Hinweis zur unbekannten Mietenstufe', keys(t7b, 'wohngeld').includes('woh
 // 5) Vermögen, Freibeträge (Grenzfall 1.860 €: mit Werbungskostenpauschale seit dem Abgleich mit dem amtlichen Wohngeldrechner)
 check('Vermögen über 10.000 €: Grundsicherung im Alter nein', lv(ev({ brutto: 900, netto: 800, miete: 450, mietstufe: 2, alter: true, vermoegen: 15000 }), 'gsa') === 'nein');
 check('Vermögen über 60.000 €: Wohngeld nein', lv(ev({ brutto: 1000, netto: 900, miete: 450, mietstufe: 2, vermoegen: 80000 }), 'wohngeld') === 'nein');
-// Vermögen 15.000 €: kein Grundsicherungsgeld (Schonvermögen 10.000 €), damit nur der Freibetrag beim Wohngeld wirkt und nicht die Lage der zwei Wege
-const nf = ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 15000 });
+// Vermögen 25.000 €: kein Grundsicherungsgeld (ohne Altersangabe bis 20.000 € frei möglich, Gegenprüfung PR #194 Befund 12), damit nur der Freibetrag beim Wohngeld wirkt und nicht die Lage der zwei Wege
+const nf = ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 25000 });
 check('Freibetrag: ohne Behinderung Grenzbereich', lv(nf, 'wohngeld') === 'vielleicht');
-check('Freibetrag: mit Behinderung besser', lv(ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 15000, behinderung: true }), 'wohngeld') === 'ja');
+check('Freibetrag: mit Behinderung besser', lv(ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 25000, behinderung: true }), 'wohngeld') === 'ja');
 // § 17 Nr. 1 WoGG: Pflegegrad allein gibt keinen Freibetrag; GdB 50 bis 99 nur zusammen mit Pflegebedürftigkeit; GdB 100 immer
-const wgL = (o) => lv(ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 15000, ...o }), 'wohngeld');
+const wgL = (o) => lv(ev({ brutto: 1860, netto: 1500, miete: 600, mietstufe: 3, vermoegen: 25000, ...o }), 'wohngeld');
 check('Freibetrag: Pflegegrad allein gibt ihn nicht', wgL({ pflegegrad: '2' }) === wgL({}));
 check('Freibetrag: GdB 50 ohne Pflege gibt ihn nicht', wgL({ gdb: '50' }) === wgL({}));
 check('Freibetrag: GdB 50 mit Pflegegrad besser', wgL({ gdb: '50', pflegegrad: '2' }) === 'ja');
@@ -455,7 +455,7 @@ console.log('Hinweis, nicht verwendete Schlüssel:', unused.length ? unused.join
   check('[wege] Wer Grundsicherungsgeld schon bekommt: keine zwei Wege', W({ adults: 2, kids: 2, art1: 'lohn', brutto: 1500, miete: 800, bezug: { grundsicherungsgeld: true } }).wege === null);
   check('[wege] ohneWege (nur für Regeltests): jede Leistung für sich, Grundsicherungsgeld wie vorher „wahrscheinlich“ mit Betrag', (() => { const o = W({ adults: 2, kids: 2, art1: 'lohn', brutto: 2800, miete: 800, ohneWege: true }); return o.wege === null && lv(o, 'ggeld') === 'ja' && betrag(o, 'ggeld'); })());
   check('[wege] Gefährlicher Tipp „beide Anträge gleichzeitig“ ist weg (sperrt den erweiterten Zugang, § 6a Abs. 1a Nr. 3 BKGG)', !Object.keys(I18N.de).some((k) => /^ww\./.test(k)) && !Object.values(I18N.de).some((v) => /beide Anträge gleichzeitig/.test(v)));
-  check('[wege] Keine „Weg 1/2“-Namen mehr; „welcher Weg dir mehr bringt“ nur noch bei Rente (dort echte Wahl: z.gsaWg, eo.tipp), kein Satz „Grundsicherung im Alter gibt es nicht“', !Object.values(I18N.de).some((v) => /Weg [12]:/.test(v)) && Object.keys(I18N.de).filter((k) => /welcher Weg dir mehr bringt/.test(I18N.de[k])).sort().join() === 'eo.tipp,z.gsaWg' && !('t.gsa.vorrang' in I18N.de) && !Object.values(I18N.de).some((v) => /Grundsicherung im Alter gibt es nicht\b(?! gleichzeitig)/.test(v)));
+  check('[wege] Keine „Weg 1/2“-Namen mehr; „welcher Weg dir mehr bringt“ nur noch bei Rente (dort echte Wahl: z.gsaWg, z.hluWg, eo.tipp), kein Satz „Grundsicherung im Alter gibt es nicht“', !Object.values(I18N.de).some((v) => /Weg [12]:/.test(v)) && Object.keys(I18N.de).filter((k) => /welcher Weg dir mehr bringt/.test(I18N.de[k])).sort().join() === 'eo.tipp,z.gsaWg,z.hluWg' && !('t.gsa.vorrang' in I18N.de) && !Object.values(I18N.de).some((v) => /Grundsicherung im Alter gibt es nicht\b(?! gleichzeitig)/.test(v)));
   // Eigenschaften über Zufallshaushalte
   let seed = 4711; const rnd = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }; const pick = (a) => a[Math.floor(rnd() * a.length)];
   const bad = {};

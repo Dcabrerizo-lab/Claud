@@ -46,5 +46,14 @@
   "l.einsKurz": "Vos données, délais et coches dans cette application. Les autres dossiers enregistrés sont conservés.",
   "l.kurzZurueck": "Ensuite, vous pouvez encore annuler pendant une demi-minute.",
   "sux.brief.t": "Vérifier une décision (Bescheid) de la caisse d'assurance dépendance (Pflegekasse), de l'assurance retraite ou d'une administration et rédiger un recours (Widerspruch).",
-  "sux.briefA.t": "Vérifier le courrier de la caisse d'assurance dépendance (Pflegekasse) ou d'une administration adressé à la personne aidée et rédiger un recours (Widerspruch)."
+  "sux.briefA.t": "Vérifier le courrier de la caisse d'assurance dépendance (Pflegekasse) ou d'une administration adressé à la personne aidée et rédiger un recours (Widerspruch).",
+  "sux.q.kinder": "Des enfants de moins de 25 ans vivent-ils dans votre foyer ?",
+  "sux.h.kinder": "Il s’agit de vos enfants ou des enfants de votre partenaire qui vivent avec vous. Les enfants modifient par exemple l’aide au logement et le minimum de base.",
+  "sux.h.young": "Seulement les enfants à l’école, en formation ou aux études. Si un autre enfant adulte vit avec vous, indiquez-le un peu plus tard avec les autres adultes du logement.",
+  "sux.q.kindLage": "Est-ce que l’un de ces points concerne les enfants ?",
+  "sux.h.kindLage": "L’application ne pose une courte question que si quelque chose s’applique.",
+  "sux.g.kUnterhalt": "Un enfant reçoit une pension alimentaire de l’autre parent",
+  "sux.g.kWaisen": "Un enfant reçoit une pension d’orphelin",
+  "sux.g.kEink": "Un enfant a un revenu propre, par exemple d’apprentissage ou d’un Minijob",
+  "sux.kinder.solo": "Pour les prestations pour vos enfants (par exemple Kindergeld, Kinderzuschlag, aides à l’éducation), veuillez utiliser l’application SoLo."
 }

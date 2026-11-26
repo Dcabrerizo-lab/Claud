@@ -12,12 +12,18 @@
   /*VAR-PFLEGE-ANFANG oben*/
   // Leistungen der Pflege-Variante (ids aus test/karten.js): Pflege, häufige Hilfen im Alter und bei dauerhafter Erwerbsminderung.
   // Gerechnet wird mit denselben Regeln (src/rules.js); die Variante filtert nur die Anzeige (varFilter).
-  var VAR_KARTEN = ['pflege', 'pflegeplus', 'hzp', 'lpg', 'gsa', 'wohngeld', 'emrente', 'srente', 'ausweis', 'pausch', 'rundfunk', 'zuzahl', 'blindengeld', 'blh'];
+  var VAR_KARTEN = ['pflege', 'pflegeplus', 'hzp', 'lpg', 'gsa', 'hlu', 'wohngeld', 'emrente', 'srente', 'ausweis', 'pausch', 'rundfunk', 'zuzahl', 'blindengeld', 'blh'];
   // Fragen (src/schritte.js) und Formularfelder, die nur weggefallene Leistungen betreffen (Kinder, Elterngeld, Arbeit, Ausbildung)
-  var VAR_FRAGEN_AUS = ['kids', 'kidsU6', 'kids14', 'kinderMehr', 'uvgWechsel', 'uvgPartner', 'young', 'schwanger', 'baby', 'egVor', 'egKinder', 'egNach',
-    'arbeitSit', 'algZeit', 'algMonate', 'krankWochen', 'lohnVorher', 'ausbildung', 'babMehr', 'unterhalt', 'waisen', 'kindEink'];
-  var VAR_FELDER_AUS = ['kids', 'kidsU6', 'kids14', 'kinder12', 'kindKrank', 'unterhaltFehlt', 'uvgWechsel', 'uvgPartner', 'young', 'schwanger', 'baby', 'egVor', 'egKinder', 'egNach',
-    'unterhalt', 'waisen', 'kindEink'];
+  // Kinder unter 25 im Haushalt (Auftrag David 25.11.2026): eigene Frage „Leben Kinder unter 25 Jahren in Ihrem Haushalt?“ (varFragen, senKinder).
+  // Bei Kindern rechnen die Regeln wie in SoLo mit (richtige Beträge bei Wohngeld und Grundsicherung). Angezeigt wird zusätzlich nur das Kindergeld
+  // für erwachsene Kinder mit Behinderung (varKarten). Kindergeld, Kinderzuschlag, Bildung und Teilhabe, Unterhaltsvorschuss zeigt die Variante nicht;
+  // stattdessen ein Hinweis auf die App SoLo unter den Karten (varKinderHinweis). Entscheidung David 25.11.2026: Fokus auf Rente und Pflege.
+  var VAR_KARTEN_KINDER = ['kgBeh'];
+  // Hinweise zu Leistungen, die die Variante nicht zeigt (Kindergeld zuerst, Wohngeld mit Kinderzuschlag, Unterhaltsvorschuss zuerst)
+  var VAR_HINWEISE_AUS = ['z.kgZuerst', 'z.wgKiz', 'z.uvgZuerst'];
+  var VAR_FRAGEN_AUS = ['kinderMehr', 'uvgWechsel', 'uvgPartner', 'schwanger', 'baby', 'egVor', 'egArt', 'egKinder', 'egNach',
+    'arbeitSit', 'algZeit', 'algMonate', 'krankWochen', 'lohnVorher', 'ausbildung', 'babMehr'];
+  var VAR_FELDER_AUS = ['kindKrank', 'kinder12', 'unterhaltFehlt', 'uvgWechsel', 'uvgPartner', 'schwanger', 'baby', 'egVor', 'egArt', 'egKinder', 'egNach'];
   var VAR_FIELDSETS_AUS = ['arbeitSit', 'ausbildung']; // ganze Abschnitte „Arbeit“ und „Ausbildung“
   var varBereit = false;
   var VAR_TEL = /(^|[^\d\w+])((?:\+49[\s-]?|0)\d{2,5}(?:[\s\/-]?\d{2,}){1,4})(?![\d,.]\d)/g;
@@ -91,6 +97,9 @@
     return ohne ? Fmt.ohnePara(s) : s;
   }
 
+  // Höchster Freibetrag (§ 82a SGB XII Grundrente, § 82 Abs. 4 SGB XII Zusatzrente): 50 % der Regelbedarfsstufe 1, wandert mit dem Regelsatz
+  function freiMax(art) { return { max: { eur: Rules.RULES[art].max * Rules.RULES.regelbedarf.alleinstehend } }; }
+
   // Text für Laien: ohne Beratungsmodus Paragrafen in Klammern ausblenden (Fmt.ohnePara); im Beratungsmodus unverändert
   function tL(key, p) { var s = t(key, p); return beratung ? s : Fmt.ohnePara(s); }
 
@@ -153,7 +162,7 @@
   // Erlaubte Arten für das zweite Einkommen einer Person (leer = keins)
   var EK_ZWEIT = ['', 'lohn', 'selbst', 'rente', 'alg', 'kg', 'eg', 'wfbm', 'unt'];
   function blankState() {
-    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', waisen: '', uvgPartner: '', uvgWechsel: false, kindEink: '', ek1bArt: '', ek1bBetrag: '', ek2bArt: '', ek2bBetrag: '', zusatzRente: '', baby: '', egVor: '', egKinder: '', egNach: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', plzOrt: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
+    return { adults: 1, kids: 0, kidsU6: 0, kids14: 0, young: 0, ek1Art: '', ek1Brutto: '', ek1Netto: '', ek2Art: '', ek2Brutto: '', ek2Netto: '', brutto: '', brutto2: '', netto: '', unterhalt: '', waisen: '', uvgPartner: '', uvgWechsel: false, kindEink: '', ek1bArt: '', ek1bBetrag: '', ek2bArt: '', ek2bBetrag: '', zusatzRente: '', baby: '', egVor: '', egKinder: '', egNach: '', egArt1: '', egArt2: '', aufenthalt: '', miete: '', heizkosten: '', mietstufe: '', plz: '', plzPick: '', plzOrt: '', bundesland: '', vermoegen: '', gebJahr: '', arbeitSit: '', algMonate: '', krankWochen: '', lohnVorher: '', ausbildung: '', pflegegrad: '', bhPerson: '', gdb: '', blind: '', emStd: '', uzBetrag: '', uzAn: '', uzTitel: false, wohnart: '', hhAndere: '', autoWert: '', autoBraucht: false, euArbeit: '', euJahre: '', bezug: {} };
   }
 
   function detect() {
@@ -334,6 +343,7 @@
   // ----- Folgefragen: nur zeigen, wenn sie passen; ausgeblendete Werte zurücksetzen, damit sie nicht mitrechnen -----
   function folgefragen() {
     var reset = function (keys) { keys.forEach(function (k) { if (typeof state[k] === 'boolean') { state[k] = false; $(k).checked = false; } else { state[k] = ''; $(k).value = ''; } }); };
+    if (VAR_PFLEGE && state.bhPerson === 'minder' && !(state.kids > 0)) reset(['bhPerson']); // Pflege-Variante: „Kind unter 18“ nur mit Kindern unter 18
     if (!state.bhPerson) reset(['gdb', 'blind', 'wfbm', 'bhSelbst']);
     if (state.bhPerson !== 'erwVor25') reset(['bhSelbst']);
     if (VAR_PFLEGE && !varUnter67(state)) reset(['emStd']); // Pflege-Variante: ab 67 keine Frage zur Erwerbsminderung (kurzer Fragepfad)
@@ -352,6 +362,9 @@
     if (!state.ek2bArt) reset(['ek2bBetrag']);
     if (!(state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente' || state.ek2bArt === 'rente')) reset(['grundrente33', 'zusatzRente']);
     if (!(state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm' || state.ek2bArt === 'wfbm')) reset(['wfbmEssen']);
+    // Basiselterngeld oder ElterngeldPlus: nur, wenn die Person Elterngeld als Einkommen hat
+    if (!hatEg(1)) reset(['egArt1']);
+    if (!hatEg(2)) reset(['egArt2']);
     if (state.arbeitSit !== 'krank') reset(['krankWochen']);
     if (!state.arbeitSit) reset(['lohnVorher']);
     if (state.ausbildung !== 'ich') reset(['babBetrieb', 'babWohnt']);
@@ -379,6 +392,8 @@
     show('.cond-ek2b', state.adults === 2 && !!state.ek2Art && state.ek2Art !== 'ohne');
     show('.cond-ek2bBetrag', !!state.ek2bArt);
     show('.cond-rente', state.ek1Art === 'rente' || state.ek2Art === 'rente' || state.ek1bArt === 'rente' || state.ek2bArt === 'rente');
+    show('.cond-eg1', hatEg(1));
+    show('.cond-eg2', hatEg(2));
     show('.cond-wfbm', !!state.wfbm || state.ek1Art === 'wfbm' || state.ek1bArt === 'wfbm' || state.ek2bArt === 'wfbm');
     show('.cond-krank', state.arbeitSit === 'krank');
     show('.cond-job', !!state.arbeitSit);
@@ -389,6 +404,8 @@
     show('.cond-uvgPartner', !!state.unterhaltFehlt && state.kids > 0 && state.adults === 2);
     show('.cond-auto', Number(state.autoWert) > 0);
   }
+  // Person i (1 oder 2) hat Elterngeld als Einkommen (Hauptfeld oder zweites Einkommen); Person 2 nur bei zwei Erwachsenen
+  function hatEg(i) { return (i === 1 || state.adults === 2) && (state['ek' + i + 'Art'] === 'eg' || (!!state['ek' + i + 'Art'] && state['ek' + i + 'Art'] !== 'ohne' && state['ek' + i + 'bArt'] === 'eg')); }
   // Frühere Fragen (Haken „Grad der Behinderung 100“ und „voll erwerbsgemindert“) in die neuen Fragen übernehmen
   function migriereFragen(s) {
     if (s.behinderung && !s.gdb) { s.gdb = '100'; if (!s.bhPerson) s.bhPerson = 'erwNach25'; }
@@ -671,6 +688,8 @@
     fillSelect('gdb', gd, state.gdb);
     fillSelect('baby', [['', t('baby.0')], ['bald', t('baby.bald')], ['da', t('baby.da')]], state.baby);
     fillSelect('egKinder', [['', t('egKinder.1')], ['2', t('egKinder.2')], ['3', t('egKinder.3')]], state.egKinder);
+    // Basiselterngeld oder ElterngeldPlus (je Person mit Elterngeld): bestimmt den Freibetrag nach § 10 BEEG (src/rules.js, derive egFrei)
+    ['egArt1', 'egArt2'].forEach(function (k) { fillSelect(k, [['', t('egArt.0')], ['basis', t('egArt.basis')], ['plus', t('egArt.plus')]], state[k]); });
     fillSelect('uvgPartner', [['', t('uvgPartner.0')], ['neu', t('uvgPartner.neu')], ['ehe', t('uvgPartner.ehe')], ['eltern', t('uvgPartner.eltern')]], state.uvgPartner);
     fillSelect('aufenthalt', [['', t('aufenthalt.0')], ['eu', t('aufenthalt.eu')], ['asyl', t('aufenthalt.asyl')], ['ausreise', t('aufenthalt.ausreise')]], state.aufenthalt);
     fillSelect('euArbeit', [['', t('eu.arbeit.0')], ['ja', t('eu.arbeit.ja')], ['nein', t('eu.arbeit.nein')]], state.euArbeit);
@@ -698,6 +717,7 @@
     document.querySelectorAll('[data-t]').forEach(function (el) { el.textContent = t(el.getAttribute('data-t')); });
     document.querySelectorAll('[data-t-aria]').forEach(function (el) { el.setAttribute('aria-label', t(el.getAttribute('data-t-aria'))); });
     document.querySelectorAll('[data-t-ph]').forEach(function (el) { el.setAttribute('placeholder', t(el.getAttribute('data-t-ph'))); });
+    if ($('zusatzRenteHint')) $('zusatzRenteHint').textContent = t('ek.zusatzRente.hint', freiMax('vorsorge')); // Höchstbetrag aus den Regeln (50 % Regelsatz), nicht fest im Text
     $('mappeDeNote').hidden = lang === 'de'; // Hinweis „Brief und Angabenblatt sind auf Deutsch“ nur bei anderer App-Sprache
     $('stand').textContent = t('stand', { stand: standL() });
     $('vertrauenT').textContent = t('vertrauen', { stand: standL() }); // Stand und Herkunft der Zahlen sichtbar am Ergebnis
@@ -859,7 +879,7 @@
   }
 
   var CHECKS = ['mzG', 'mzGl', 'algZeit', 'grundrente33', 'wfbmEssen', 'teilhabe', 'schwanger', 'ernaehrung', 'warmwasser', 'kinder12', 'kindKrank', 'unterhaltFehlt', 'uvgWechsel', 'bhSelbst', 'em5', 'wfbm', 'babBetrieb', 'babWohnt', 'uzTitel', 'autoBraucht'];
-  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'ek2bArt', 'bhWeitere', 'baby', 'egKinder', 'aufenthalt', 'uvgPartner', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
+  var SELECTS = ['ek1Art', 'ek2Art', 'bundesland', 'mietstufe', 'ek1bArt', 'ek2bArt', 'bhWeitere', 'baby', 'egKinder', 'egArt1', 'egArt2', 'aufenthalt', 'uvgPartner', 'arbeitSit', 'algMonate', 'krankWochen', 'ausbildung', 'pflegegrad', 'bhPerson', 'gdb', 'blind', 'emStd', 'uzAn', 'wohnart', 'hhAndere', 'euArbeit', 'euJahre'];
   var NUMS = ['miete', 'heizkosten', 'ek1Brutto', 'ek1Netto', 'ek2Brutto', 'ek2Netto', 'unterhalt', 'waisen', 'kindEink', 'lohnVorher', 'ek1bBetrag', 'ek2bBetrag', 'egVor', 'egNach', 'vermoegen', 'uzBetrag', 'autoWert', 'zusatzRente'];
   var BEZUG = ['grundsicherungsgeld', 'sozialamt', 'wohngeld', 'kiz', 'kindergeld'];
 
@@ -880,6 +900,7 @@
   }
 
   function touched() {
+    if (VAR_PFLEGE && varMitKindern(state)) state.senKinder = 'ja'; // Pflege-Variante: Kinder im Formular eingetragen -> Frage „Kinder unter 25“ gilt als „Ja“
     started = true; if (undoFn) undoWeg(); // nach neuer Eingabe nichts Altes mehr zurückholen
     if (!edited) { edited = true; $('sampleNotice').hidden = true; }
     // Ausgeblendete Felder zurücksetzen, damit keine alten Werte mitrechnen
@@ -1336,7 +1357,7 @@
     var alle = out.zusammen.filter(function (z) { return HINWEIS_ALLE.indexOf(z[0]) >= 0; });
     tippsHtml = (alle.length ? tippHtml('licht', t('gut.h'), listItems(alle.map(function (z) { return tL(z[0], z[1]); })), 'gutWissen') : '') +
       tippHtml('person', t('res.beratung'), '<p>' + esc(t('foot.2')) + '</p>', 'beratung');
-    $('cards').innerHTML = kartenHtml(out.results, out.wege);
+    $('cards').innerHTML = kartenHtml(out.results, out.wege) + (VAR_PFLEGE ? varKinderHinweis() : ''); // Pflege-Variante: Hinweis auf SoLo bei Kindern
     Object.keys(openIds).forEach(function (id) { var d = document.querySelector('#' + id + ' details'); if (d) d.open = true; });
     Object.keys(tippOffen).forEach(function (id) { var d = $(id); if (d) d.open = true; });
     if (neinOpen) { var nb = document.querySelector('#cards .neinbox'); if (nb) nb.open = true; }
@@ -1364,6 +1385,7 @@
     but: { stelle: 'Stelle für Bildung und Teilhabe der Kommune', betreff: 'Antrag auf Leistungen für Bildung und Teilhabe', satz: 'hiermit beantrage ich Leistungen für Bildung und Teilhabe für die Kinder in meinem Haushalt, zum Beispiel Schulbedarf, Mittagessen und Teilhabeleistungen.' },
     uvg: { stelle: 'Unterhaltsvorschussstelle (Jugendamt)', betreff: 'Antrag auf Unterhaltsvorschuss', satz: 'hiermit beantrage ich Unterhaltsvorschuss für mein Kind beziehungsweise meine Kinder. Der andere Elternteil zahlt keinen oder nicht ausreichend Unterhalt.' },
     gsa: { stelle: 'Sozialamt', betreff: 'Antrag auf Grundsicherung im Alter und bei voller Erwerbsminderung', satz: 'hiermit beantrage ich Grundsicherung im Alter und bei Erwerbsminderung nach dem Zwölften Buch Sozialgesetzbuch (SGB XII).' },
+    hlu: { stelle: 'Sozialamt', betreff: 'Antrag auf Hilfe zum Lebensunterhalt', satz: 'hiermit beantrage ich Hilfe zum Lebensunterhalt nach dem Dritten Kapitel des Zwölften Buches Sozialgesetzbuch (SGB XII). Bitte werten Sie dieses Schreiben als Kenntnis meiner Notlage im Sinne des § 18 SGB XII.' },
     bafoeg: { stelle: 'Amt für Ausbildungsförderung', betreff: 'Antrag auf Ausbildungsförderung nach dem BAföG', satz: 'hiermit beantrage ich Ausbildungsförderung nach dem Bundesausbildungsförderungsgesetz (BAföG).' },
     pflege: { stelle: 'Pflegekasse', betreff: 'Antrag auf Feststellung eines Pflegegrades und Leistungen der Pflegeversicherung', satz: 'hiermit beantrage ich die Feststellung eines Pflegegrades und Leistungen der Pflegeversicherung, insbesondere Pflegegeld und den Entlastungsbetrag.' },
     kgBeh: { stelle: 'Familienkasse der Bundesagentur für Arbeit', betreff: 'Antrag auf Kindergeld für ein volljähriges Kind mit Behinderung', satz: 'hiermit beantrage ich Kindergeld für mein volljähriges Kind. Die Behinderung ist vor dem 25. Geburtstag eingetreten, das Kind kann sich wegen der Behinderung nicht selbst unterhalten.' },
@@ -1421,7 +1443,7 @@
   var SUCHE = {
     kindergeld: ['Familienkasse'], kiz: ['Familienkasse Kinderzuschlag'], kgBeh: ['Familienkasse'],
     wohngeld: ['Wohngeldstelle'], wbs: ['Wohnberechtigungsschein beantragen'], but: ['Bildung und Teilhabe Antrag'],
-    uvg: ['Unterhaltsvorschussstelle Jugendamt'], gsa: ['Grundsicherung im Alter Sozialamt'], ggeld: ['Jobcenter'],
+    uvg: ['Unterhaltsvorschussstelle Jugendamt'], gsa: ['Grundsicherung im Alter Sozialamt'], hlu: ['Hilfe zum Lebensunterhalt Sozialamt'], ggeld: ['Jobcenter'],
     bafoeg: ['BAföG-Amt'], elterngeld: ['Elterngeldstelle'], hzp: ['Hilfe zur Pflege Sozialamt'], blh: ['Blindenhilfe Sozialamt'],
     asylblg: ['Asylbewerberleistungen Sozialamt'], eingl: ['Eingliederungshilfe Antrag'], arbeit: ['Budget für Arbeit Eingliederungshilfe'],
     ausweis: ['Schwerbehindertenausweis beantragen Versorgungsamt'], blindengeld: ['Blindengeld Antrag'],
@@ -1489,6 +1511,7 @@
     if (s.egVor) b.push('Nettoeinkommen vor der Geburt (für das Elterngeld): ' + money(s.egVor) + ' im Monat');
     if (s.baby && s.egKinder === '2') b.push('Zwillinge');
     if (s.baby && s.egKinder === '3') b.push('Drillinge oder mehr Kinder bei einer Geburt');
+    [1, 2].forEach(function (i) { var a = s['egArt' + i]; if (a === 'basis' || a === 'plus') b.push('Art des Elterngelds' + (s.adults === 2 ? (i === 1 ? ' (antragstellende Person)' : ' (Partner/in)') : '') + ': ' + (a === 'basis' ? 'Basiselterngeld' : 'ElterngeldPlus')); });
     if (s.egNach) b.push('Nettoeinkommen nach der Geburt in Teilzeit (für das Elterngeld): ' + money(s.egNach) + ' im Monat');
     if (s.aufenthalt === 'asyl') b.push('Im Asylverfahren (Aufenthaltsgestattung) oder mit Duldung');
     if (s.aufenthalt === 'ausreise') b.push('Ausreisepflichtig ohne Duldung');
@@ -1736,7 +1759,7 @@
     var k = 'fw.' + f.id + (f.id === 'wbs' ? '.' + (!bl ? 'leer' : bl === 'BY' ? 'BY' : WBS_DE[bl] ? 'de' : 'sonst') : f.id === 'wg' ? (f.art === 'link' ? '.by' : '.land') : '');
     return Object.prototype.hasOwnProperty.call(I18N.de, k) ? { text: t(k), de: false } : { text: f.warum, de: lang !== 'de' };
   }
-  var HINWEIS_FUER = { gsa: 'gsa', wg: 'wohngeld', wbs: 'wbs' };
+  var HINWEIS_FUER = { gsa: 'gsa', hlu: 'hlu', wg: 'wohngeld', wbs: 'wbs' };
   function antraegeHtml(ids, briefe, ohneOrt) {
     var nameLang = function (r) { return '<span' + (lang === 'de' ? '' : ' lang="de"') + '>' + esc(r.name) + '</span>' + (lang === 'de' ? '' : ' <span class="small">(' + esc(t('n.' + r.id)) + ')</span>'); };
     var satzP = function (s) { return '<p class="small"' + (s.de ? ' lang="de" dir="ltr"' : '') + '>' + esc(s.text) + '</p>'; };
@@ -2878,7 +2901,7 @@
     if (es.kind === 'ja' && es.ausweis === 'ja') tipps.push(t(mz.H || mz.Bl || mz.TBl ? 'es.tipp.pauschElternH' : 'es.tipp.pauschEltern'));
     if (es.wohnen === 'eltern' && (['2', '3', '4', '5'].indexOf(es.pflege) >= 0 || mz.H)) tipps.push(t('es.tipp.pflegePausch'));
     if ((out.zusammen || []).some(function (z) { return z[0] === 'z.gsaWg'; })) tipps.unshift(t('es.tipp.wgOderGsa'));
-    if (hat('gsa', 'gsa.grundrente') && es.renteJa === 'ja') tipps.push(t('es.tipp.grundrente'));
+    if (hat('gsa', 'gsa.grundrente') && es.renteJa === 'ja') tipps.push(t('es.tipp.grundrente', freiMax('grundrente')));
     if (gut.some(function (x) { return x.id === 'kgBeh'; })) tipps.push(t(es.wohnen === 'eltern' ? 'es.tipp.kgEltern' : 'es.tipp.kgAbzweig'));
     esMietgrenze(gut, out, tipps);
     var h = '<h2 class="es-q" id="es-q" tabindex="-1">' + esc(t(gut.length ? 'es.erg.h' : 'es.erg.keine')) + '</h2>' +
@@ -2984,7 +3007,7 @@
   if (window.Schritte) {
     Schritte.init({
       t: t, state: function () { return state; }, begonnen: function () { return started; },
-      geaendert: function (id) { writeForm(); if (id === 'plz') plzUpdate(true); buildSelects(); touched(); },
+      geaendert: function (id) { if (VAR_PFLEGE && id === 'senKinder') varKinderNein(); writeForm(); if (id === 'plz') plzUpdate(true); buildSelects(); touched(); },
       speichern: save, app: function () { return $('app'); },
       formKopf: function () { return $('h-form'); }, ergebnisKopf: function () { return $('h-res'); },
       euro: function (v) { return Fmt.euro(v, lang, !!(I18N[lang] && I18N[lang]['meta.dir'] === 'rtl')); }, parse: parseAmount, roman: Rules.roman,
@@ -3022,7 +3045,7 @@
   };
   // ----- Netto-Helfer: Steuerklasse und Kirchensteuer mit großen Knöpfen wählen, Netto nach Programmablaufplan ausrechnen -----
   function lohnOpts(i) {
-    var o = Rules.lohnAnnahmen({ adults: state.adults, kids: Number(state.kids) || 0, young: Number(state.young) || 0, zweiVerdiener: state.adults === 2 && state.ek1Art === 'lohn' && state.ek2Art === 'lohn', land: state.bundesland }, i);
+    var o = Rules.lohnAnnahmen({ adults: state.adults, kids: Number(state.kids) || 0, young: Number(state.young) || 0, zweiVerdiener: state.adults === 2 && state.ek1Art === 'lohn' && state.ek2Art === 'lohn', land: state.bundesland, hhAndere: state.hhAndere === 'wg' || state.hhAndere === 'verwandte' ? state.hhAndere : '' }, i);
     if ([1, 2, 3, 4, 5, 6].indexOf(Number(state['stkl' + i])) >= 0) o.stkl = Number(state['stkl' + i]);
     o.kirche = state['kirche' + i] ? (state.bundesland === 'BY' || state.bundesland === 'BW' ? 0.08 : 0.09) : 0;
     return o;
@@ -3563,8 +3586,21 @@
     } else if (pf.schritt === 2 && pf.art === 'konto') {
       p(t('pf.kg.q'), 'pf-frage'); p(t('pf.kg.hint'), 'hint');
       var r2 = knoepfe('wahl-raster');
-      [0, 1, 2, 3, 4, 5].forEach(function (n) { r2.appendChild(nhKnopf('wahl', '<b>' + esc(n === 5 ? t('pf.mehr') : String(n)) + '</b>', pf.kg === n, function () { pf.kg = n; pf.schritt = 3; pfRender(true); })); });
+      [0, 1, 2, 3, 4, 5].forEach(function (n) { r2.appendChild(nhKnopf('wahl', '<b>' + esc(n === 5 ? t('pf.mehr') : String(n)) + '</b>', pf.kg === n, function () { pf.kg = n; if (!n) pf.kiz = ''; pf.schritt = 3; pfRender(true); })); });
       leiste(null);
+    } else if (pf.schritt === 3 && pf.art === 'konto' && pf.kg > 0) {
+      // Kinderzuschlag ist auf dem P-Konto zusätzlich geschützt: „andere gesetzliche Geldleistungen für Kinder“ (§ 902 Satz 1 Nr. 5 ZPO,
+      // https://www.gesetze-im-internet.de/zpo/__902.html, abgerufen 24.11.2026; Prüfung Schulden 24.11.2026). Leer = kein Kinderzuschlag.
+      p(t('pf.kiz.q'), 'pf-frage');
+      var fk = document.createElement('div'); fk.className = 'field';
+      fk.innerHTML = '<label for="pfKiz">' + esc(t('pf.kiz.l')) + '</label><div class="money"><input type="text" inputmode="decimal" autocomplete="off" id="pfKiz"><span aria-hidden="true">€</span></div><span class="hint">' + esc(t('pf.kiz.hint')) + '</span>';
+      box.appendChild(fk);
+      var inK = fk.querySelector('input'); inK.value = pf.kiz === '' ? '' : String(pf.kiz).replace('.', ',');
+      var msgK = p('', 'warn'); msgK.hidden = true; msgK.setAttribute('role', 'status');
+      var weiterK = function () { var leerK = inK.value.trim() === '', v = leerK ? '' : parseAmount(inK.value); if (!leerK && !(v >= 0 && v !== '')) { msgK.hidden = false; msgK.textContent = t('pf.netto.fehlt'); inK.focus(); return; } pf.kiz = v; pf.schritt = 4; pfRender(true); };
+      inK.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') weiterK(); });
+      leiste(weiterK);
+      if (fokus) { inK.focus(); return; }
     } else if (pf.art === 'lohn') {
       var e = Rules.pfaendung(pf.netto, pf.pers);
       p(t('pf.erg.h'), 'pf-frage');
@@ -3584,18 +3620,18 @@
       spVerweis();
       box.appendChild(quellenEl([t('pf.stand')])); // Quelle der Werte unter dem Ergebnis, zugeklappt
     } else {
-      var k = Rules.pkonto({ personen: pf.pers, kindergeldKinder: pf.kg });
+      var k = Rules.pkonto({ personen: pf.pers, kindergeldKinder: pf.kg, kiz: pf.kg > 0 ? pf.kiz : 0 });
       p(t('pf.erg.h'), 'pf-frage');
       p(t('pf.erg.konto', { g: { eur: k.gesamt } }), 'pf-zahl');
-      // Aufschlüsselung nur bei Erhöhung (Unterhalt, Kindergeld); sonst stünde der Grundfreibetrag zweimal da (UX-Audit C)
-      if (k.unterhalt || k.kindergeld) {
+      // Aufschlüsselung nur bei Erhöhung (Unterhalt, Kindergeld, Kinderzuschlag); sonst stünde der Grundfreibetrag zweimal da (UX-Audit C)
+      if (k.unterhalt || k.kindergeld || k.kiz) {
         var tab = document.createElement('table'); tab.className = 'pf-tab';
-        [['pf.k.sockel', k.sockel], ['pf.k.unterhalt', k.unterhalt], ['pf.k.kg', k.kindergeld]].forEach(function (x) { if (!x[1] && x[0] !== 'pf.k.sockel') return; var tr = tab.insertRow(); tr.insertCell().textContent = t(x[0]); tr.insertCell().textContent = E(x[1]); });
+        [['pf.k.sockel', k.sockel], ['pf.k.unterhalt', k.unterhalt], ['pf.k.kg', k.kindergeld], ['pf.k.kiz', k.kiz]].forEach(function (x) { if (!x[1] && x[0] !== 'pf.k.sockel') return; var tr = tab.insertRow(); tr.insertCell().textContent = t(x[0]); tr.insertCell().textContent = E(x[1]); });
         box.appendChild(tab);
       }
-      var mk = k.unterhalt || k.kindergeld ? 'pf.tipp.bescheinigung' : 'pf.tipp.kontomehr';
-      jetzt(['pf.tipp.umwandeln', mk, 'pf.tipp.beratung']);
-      tipps(['pf.tipp.uebertrag', 'pf.tipp.sozial'].concat(mk === 'pf.tipp.kontomehr' ? [] : ['pf.tipp.kontomehr']));
+      // Bescheinigung immer nennen: auch ohne Unterhalt und Kinder kann mehr geschützt werden (§ 902 Satz 1 Nr. 1 b, 2, 4, 6 ZPO, Prüfung Schulden 24.11.2026)
+      jetzt(['pf.tipp.umwandeln', 'pf.tipp.bescheinigung', 'pf.tipp.beratung']);
+      tipps(['pf.tipp.uebertrag', 'pf.tipp.sozial', 'pf.tipp.kontomehr']);
       var d2 = knoepfe('btns');
       d2.appendChild(nhKnopf('btn ghost', esc(t('pf.neu')), null, function () { pf = { art: '', schritt: 0, netto: '', pers: null, kg: null, kiz: '' }; pfRender(true); }));
       spVerweis();
@@ -4502,7 +4538,9 @@
       ['verh', t('pfl.pi.z.verh.h', { betrag: piEuro(R.entlastungsbudget) }), 'budget', 'pi-verh'],
       ['tages', bis(je(R.pflegeTages)), 'budget', 'pi-dienst'],
       ['hilfs', t('pfl.pi.z.hilfs.h', { betrag: piEuro(R.beh.verbrauch) }), 'budget', 'pi-hilfs'],
-      ['umbau', t('pfl.pi.z.umbau.h', { betrag: piEuro(R.beh.wohnumfeld) }), 'budget', 'pi-hilfs']];
+      ['umbau', t('pfl.pi.z.umbau.h', { betrag: piEuro(R.beh.wohnumfeld) }), 'budget', 'pi-hilfs'],
+      // Pflege im Heim (§§ 43, 43a, 43c SGB XI; Beträge rules.js pflegeHeim, Vollprüfung B08, 24.11.2026)
+      ['heim', je(R.pflegeHeim), 'budget', 'pi-heim']];
     var tw = el('div', null, 'tabwrap'); tw.setAttribute('role', 'region'); tw.setAttribute('aria-label', t('pfl.pi.tab')); tw.tabIndex = 0;
     var tb = el('table'), th = el('thead'), tr0 = el('tr');
     ['leistung', 'wie', 'hoehe'].forEach(function (x) { tr0.appendChild(el('th', t('pfl.pi.sp.' + x))); }); th.appendChild(tr0); tb.appendChild(th);
@@ -4528,6 +4566,7 @@
     abschnitt('pi-verh', 6, 0, { betrag: piEuro(R.entlastungsbudget) });
     abschnitt('pi-hilfs', 3, 0, null);
     var hilfs = $('pi-hilfs').querySelectorAll('p'); hilfs[0].textContent = t('pfl.pi.hilfs.0', { betrag: piEuro(R.beh.verbrauch) }); hilfs[2].textContent = t('pfl.pi.hilfs.2', { betrag: piEuro(R.beh.wohnumfeld) });
+    abschnitt('pi-heim', 3, 0, puHeimWerte());
     abschnitt('pi-gut', 3);
     box.appendChild(quellenEl([t('pfl.pi.stand', { stand: R.stand || 'November 2026' })]));
   }
@@ -4564,12 +4603,17 @@
   ];
 
   // Texte der Übersicht: src/lang/pflege/<Sprache>.json (Schlüssel „pfl.pu.<id>.t|x|m0…|w“), Beträge im Beispiel aus den Rechenregeln
-  var PU_MEHR = { geld: 1, dienst: 2, entl: 3, verh: 6, tages: 2, kombi: 1, hilfs: 1, notruf: 0, umbau: 1, wg: 0, kurs: 0, beratung: 1, rente: 1, zeit: 1 };
+  var PU_MEHR = { geld: 1, dienst: 2, entl: 3, verh: 6, tages: 2, kombi: 1, hilfs: 1, notruf: 0, umbau: 1, wg: 0, heim: 3, kurs: 0, beratung: 1, rente: 1, zeit: 1 };
+  // Werte für die Texte zur Pflege im Heim: Zuschlag § 43c SGB XI, § 43a SGB XI, Elternunterhalt erst über 100.000 € (§ 94 Abs. 1a SGB XII)
+  function puHeimWerte() {
+    var R = Rules.RULES, z = R.pflegeHeimZuschlag;
+    return { pg1: piEuro(R.pflegeHeim[1]), z1: String(z[0]), z2: String(z[1]), z3: String(z[2]), z4: String(z[3]), q43a: String(R.pflege43a.quote), max: piEuro(R.pflege43a.max), grenze: piEuro(100000) };
+  }
   function puTexte(pg) {
     var R = Rules.RULES;
     var kombiPg = pg >= 2 ? pg : 2, halb = R.pflegeSach[kombiPg] / 2;
     var e2 = function (x) { return Number(x).toLocaleString('de-DE', { minimumFractionDigits: x % 1 ? 2 : 0, maximumFractionDigits: 2 }) + ' €'; };
-    var w = { pg: String(kombiPg), halb: e2(halb), rest: e2(Rules.pflegeKombi(kombiPg, halb)) }, o = {};
+    var w = Object.assign({ pg: String(kombiPg), halb: e2(halb), rest: e2(Rules.pflegeKombi(kombiPg, halb)) }, puHeimWerte()), o = {};
     Object.keys(PU_MEHR).forEach(function (id) {
       var k = 'pfl.pu.' + id + '.', m = [];
       for (var i = 0; i < PU_MEHR[id]; i++) m.push(t(k + 'm' + i, w));
@@ -4756,8 +4800,16 @@
   function haushalt() {
     if (!started) return { erwachsene: [], kinder: [] };
     var alter = state.gebJahr ? new Date().getFullYear() - (+state.gebJahr) : '';
-    var erw = [{ alter: alter, brutto: zahlOderLeer(state.ek1Brutto), netto: zahlOderLeer(state.ek1Netto) }];
-    if (state.adults === 2) erw.push({ alter: '', brutto: zahlOderLeer(state.ek2Brutto), netto: zahlOderLeer(state.ek2Netto) });
+    // Elterngeld je Person (Bescheid-Check Wohngeld): ausgezahlter Betrag, Basiselterngeld (plus false) / ElterngeldPlus (true) / unbekannt (null),
+    // Kinder dieser Geburt (nur bei „Baby ist da“, wie in den Regeln)
+    var egVon = function (i) {
+      var betrag = state['ek' + i + 'Art'] === 'eg' ? zahlOderLeer(state['ek' + i + 'Netto']) : state['ek' + i + 'bArt'] === 'eg' ? zahlOderLeer(state['ek' + i + 'bBetrag']) : '';
+      if (betrag === '') return null;
+      var a = state['egArt' + i];
+      return { betrag: betrag, plus: a === 'plus' ? true : a === 'basis' ? false : null, kinder: state.baby === 'da' ? Math.min(3, Math.max(1, Number(state.egKinder) || 1)) : 1 };
+    };
+    var erw = [{ alter: alter, brutto: zahlOderLeer(state.ek1Brutto), netto: zahlOderLeer(state.ek1Netto), eg: egVon(1) }];
+    if (state.adults === 2) erw.push({ alter: '', brutto: zahlOderLeer(state.ek2Brutto), netto: zahlOderLeer(state.ek2Netto), eg: egVon(2) });
     var kinder = [], u6 = state.kidsU6 || 0, k14 = state.kids14 || 0, rest = Math.max(0, (state.kids || 0) - u6 - k14), i;
     for (i = 0; i < u6; i++) kinder.push({ alter: '', gruppe: 'u6' });
     for (i = 0; i < rest; i++) kinder.push({ alter: '', gruppe: state.kidsAlter ? '6bis13' : '' });
@@ -4774,7 +4826,7 @@
     var r = BriefLesen.lies(text, briefArt || null);
     // Auch in einer Kachel: Anhörung oder Aufforderung zur Mitwirkung erkennen und erklären statt nachzurechnen
     var e0 = briefArt ? BriefLesen.erkenne(text) : null;
-    if (e0 && (e0.art === 'anh' || e0.art === 'mit')) r = BriefLesen.lies(text, null);
+    if (e0 && (e0.art === 'anh' || e0.art === 'mit' || (e0.art === 'kg' && briefArt === 'fk'))) r = BriefLesen.lies(text, null); // Kindergeld in der Kachel „Familienkasse“ (Kinderzuschlag)
     $('elErg').textContent = '';
     // Aufforderung zur Senkung der Wohn- oder Heizkosten: Erklärung statt Nachrechnung (erweiterungen/kostensenkung.js)
     var ks = BriefLesen.kostensenkung ? BriefLesen.kostensenkung(text) : null;
@@ -4786,11 +4838,11 @@
     // Anderer Brief: Frist mit Beleg suchen, Mahnbescheid und Inkasso erkennen (Anhörung und Mitwirkung erklärt der Teil darunter)
     if (briefArt === 'an' && r.art !== 'anh' && r.art !== 'mit') { elNachricht(''); if (window.PruefpaketAndere) window.PruefpaketAndere.zeige(text, { box: $('elErg'), wechseln: function (art) { var tx = text; briefOeffnen(art); textLesen(tx); } }); return; }
     if (!r.art) { elNachricht(t('el.unbekannt')); return; }
-    if (r.art === 'anh' || r.art === 'mit') {
+    if (r.art === 'anh' || r.art === 'mit' || r.art === 'kg') { // kg: Kindergeld-Bescheid nur erklären (Einspruch § 347 AO), kein Nachrechnen
       var d = document.createElement('div'); d.className = 'el-erkl';
       var b = document.createElement('b'); b.textContent = ppEin(r.titel); d.appendChild(b);
       var p = document.createElement('p'); p.textContent = BriefLesen.ERKLAERUNG[r.art]; d.appendChild(p);
-      var fr = BriefLesen.frist(text);
+      var fr = r.art === 'kg' ? null : BriefLesen.frist(text);
       if (fr) { var q = document.createElement('p'); q.className = 'frist frist-wann'; q.setAttribute('role', 'note'); q.textContent = t('el.frist', { frist: BriefLesen.fristLesbar ? BriefLesen.fristLesbar(fr) : fr }); $('elErg').appendChild(q); } // Frist-Muster ganz oben
       var fk = fr && window.FristenOrdner ? FristenOrdner.briefKnopf(text, r.art) : null; if (fk) d.appendChild(fk); // nur auf Knopfdruck merken
       $('elErg').appendChild(d); if (ks) ksZeigen(ks, text); elNachricht(t('el.erkanntOhne', { titel: ppEin(r.titel) })); return;
@@ -4967,6 +5019,8 @@
         r.personen = pf.pers !== null ? pf.pers : Math.min(5, (state.adults === 2 ? 1 : 0) + (state.kids | 0) + (state.young | 0));
         return r;
       },
+      // Wer hat die Schulden? (nur bei Paaren; gespeichert im Haushaltsplan des Vorgangs, src/haushalt.js)
+      schuldner: function (w) { return window.Haushalt ? Haushalt.schuldner(w) : ''; },
       mappeDrucken: window.Schulden ? function () { oeffneVon('schulden', true); Schulden.blatt(); } : null, // Druck: Blatt der Schulden-Liste mit Haushaltsplan und Unterlagenliste
       textAusgeben: function (text, titel, msg) { if (!NATIVE) { schreibenDrucken(text); return; } schreibenAusgeben({ value: text }, titel, plug('PdfAusgabe') && !(window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios') ? 'drucken' : 'teilen', msg); },
       absender: absender, absenderKasten: absenderKasten // gespeicherter Absender (einmal eingetragen, gilt für alle Briefe)
@@ -5141,15 +5195,24 @@
   // ===================== Variante Pflege („SoLo Pflege“, nur bei VARIANTE=pflege aktiv) =====================
   // Startseite mit zwei Einstiegen, eigene Ansicht „sen“, weniger Leistungen und Fragen, große Schrift, Telefonnummern zum Antippen.
   // Inhalte für Angehörige und für den Pflegegrad-Antrag liefert src/senioren.js (window.SENIOREN), Vorlesen src/vorlesen.js (window.VORLESEN).
+  // Karten der Variante; mit Kindern unter 25 im Haushalt auch Kindergeld, Kinderzuschlag, Bildung und Teilhabe, Unterhaltsvorschuss
+  function varMitKindern(s) { return !!s && (Number(s.kids) || 0) + (Number(s.young) || 0) > 0; }
+  function varKarten(s) { return varMitKindern(s || state) ? VAR_KARTEN.concat(VAR_KARTEN_KINDER) : VAR_KARTEN; }
   function varFilter(out) {
     if (!VAR_PFLEGE || !out || !out.results) return out;
-    var w = out.wege;
-    if (w && w.a.concat(w.b).some(function (id) { return VAR_KARTEN.indexOf(id) < 0; })) w = null; // Weg mit weggefallener Leistung: Karten einzeln zeigen
-    return Object.assign({}, out, { results: out.results.filter(function (r) { return VAR_KARTEN.indexOf(r.id) >= 0; }), wege: w });
+    var w = out.wege, k = varKarten();
+    if (w && w.a.concat(w.b).some(function (id) { return k.indexOf(id) < 0; })) w = null; // Weg mit weggefallener Leistung: Karten einzeln zeigen
+    return Object.assign({}, out, { results: out.results.filter(function (r) { return k.indexOf(r.id) >= 0; }), wege: w,
+      zusammen: (out.zusammen || []).filter(function (z) { return VAR_HINWEISE_AUS.indexOf(z[0]) < 0; }) });
+  }
+  // Mit Kindern: kurzer Hinweis unter den Karten, dass Leistungen für Kinder in der App SoLo stehen (Text sux.kinder.solo)
+  function varKinderHinweis() {
+    if (!VAR_PFLEGE || !varMitKindern(state)) return '';
+    return '<p class="small muted var-kinder-hinweis" id="varKinderHinweis" data-t="sux.kinder.solo">' + esc(t('sux.kinder.solo')) + '</p>';
   }
   // Suche: nur Ziele, die es in der Variante gibt
   function varZiel(id) {
-    if (/^l-/.test(id)) return VAR_KARTEN.indexOf(id.slice(2)) >= 0;
+    if (/^l-/.test(id)) return varKarten().indexOf(id.slice(2)) >= 0;
     if (id === 'b-jc' || id === 'b-fk') return false;
     if (id === 'geld' || /^g-/.test(id)) return id === 'g-finden';
     if (id === 'ausziehen' || /^a-/.test(id)) return false;
@@ -5274,7 +5337,7 @@
         else if (ziel === 'sen-antrag') senWeiter('antrag');
         else if (ziel === 'pflege-einschaetzen') paOeffnen();
         else if (ziel === 'check') oeffneVon('leistungen', true);
-        else if (/^karte:/.test(ziel) && VAR_KARTEN.indexOf(ziel.slice(6)) >= 0) sucheGehe('l-' + ziel.slice(6));
+        else if (/^karte:/.test(ziel) && varKarten().indexOf(ziel.slice(6)) >= 0) sucheGehe('l-' + ziel.slice(6));
       }
     };
   }
@@ -5348,6 +5411,16 @@
     var grenze = j < 1947 ? 65 : j >= 1964 ? 67 : 65 + rag[j] / 12;
     return !(j + 1 + grenze <= d.getFullYear() + d.getMonth() / 12);
   }
+  // Antwort „Nein“ auf „Leben Kinder unter 25 Jahren in Ihrem Haushalt?“: alle Angaben zu Kindern löschen (rechnen nicht mehr mit)
+  function varKinderNein() {
+    if (state.senKinder === 'ja') return;
+    state.kids = 0; state.kidsU6 = 0; state.kids14 = 0; state.young = 0; state.kidsAlter = false;
+    ['kinder12', 'unterhaltFehlt', 'uvgWechsel'].forEach(function (k) { state[k] = false; });
+    ['uvgPartner', 'unterhalt', 'waisen', 'kindEink'].forEach(function (k) { state[k] = ''; });
+    if (state.bezug) { state.bezug.kiz = false; state.bezug.kindergeld = false; }
+    if (state.bhPerson === 'minder') state.bhPerson = '';
+    ['kUnterhalt', 'kWaisen', 'kEink'].forEach(function (k) { VAR_MERK[k] = false; });
+  }
   function varRente(s) { return s.ek1Art === 'rente' || s.ek2Art === 'rente' || s.ek1bArt === 'rente' || s.ek2bArt === 'rente'; }
   var VAR_EK_ALT = ['rente', 'lohn', 'selbst', 'unt', 'asylblg', 'ohne'];             // Regelaltersgrenze sicher erreicht: Rente, Minijob/Lohn, selbstständig, Unterhalt, Asylbewerberleistungen (keine Altersgrenze; nur bei passendem Aufenthalt angeboten), kein Einkommen
   var VAR_EK_JUNG = ['rente', 'lohn', 'wfbm', 'alg', 'kg', 'unt', 'selbst', 'asylblg', 'ohne']; // unter 67 (Erwerbsminderung); Elterngeld nie
@@ -5396,12 +5469,34 @@
         if (k === 'auto') { s.autoWert = ''; s.autoBraucht = false; }
         if (k === 'unterhalt') { s.uzBetrag = ''; s.uzAn = ''; s.uzTitel = false; }
       } };
+    // Kinder unter 25 (Auftrag David 25.11.2026): eine Ja/Nein-Frage nach der Haushaltsfrage; nur bei „Ja“ folgen Zahl und grobes Alter
+    // (wie in SoLo: unter 18, davon unter 6 und 14 bis 17, dann 18 bis 24 in Schule, Ausbildung oder Studium) und eine Sammelfrage zu den Kindern.
+    // Ein gespeicherter Fall mit Kindern ohne Antwort gilt als „Ja“.
+    var kinderJa = function (s) { return s.senKinder === 'ja' || (s.senKinder !== 'nein' && varMitKindern(s)); };
+    var kinder = { id: 'senKinder', b: 'haus', art: 'wahl', q: 'sux.q.kinder', h: 'sux.h.kinder', opts: [['ja', 'sf.a.ja'], ['nein', 'sf.a.nein']] };
+    var kindLage = { id: 'senKindLage', b: 'haus', art: 'mehr', q: 'sux.q.kindLage', h: 'sux.h.kindLage', wenn: function (s) { return kinderJa(s) && varMitKindern(s); },
+      felder: [['kUnterhalt', 'sux.g.kUnterhalt', function (s) { return s.kids > 0; }], ['kWaisen', 'sux.g.kWaisen'], ['kEink', 'sux.g.kEink']],
+      get: function (s, k) {
+        if (k === 'kUnterhalt') return merk(k, s, Number(s.unterhalt) > 0);
+        if (k === 'kWaisen') return merk(k, s, Number(s.waisen) > 0);
+        if (k === 'kEink') return merk(k, s, Number(s.kindEink) > 0);
+        return false;
+      },
+      set: function (s, k, v) {
+        VAR_MERK[k] = !!v;
+        if (!v) leeren(s, [{ kUnterhalt: 'unterhalt', kWaisen: 'waisen', kEink: 'kindEink' }[k]]);
+      } };
     var weg = VAR_FRAGEN_AUS.concat(['wohnart', 'warmwasser', 'ernaehrung', 'grundrente33']);
     var neu = {
       adults: kopie('adults', { opts: [[1, 'sux.a.allein'], [2, 'sf.a.paar']] }),
       aufenthalt: mitWenn('aufenthalt', function (s) { return merk('pass', s, s.aufenthalt); }),
       hhAndere: mitWenn('hhAndere', function (s) { return merk('mitbew', s, s.hhAndere); }),
-      bhPerson: kopie('bhPerson', { opts: (typeof nach.bhPerson.opts === 'function' ? nach.bhPerson.opts(state) : nach.bhPerson.opts).filter(function (o) { return o[0] !== 'minder'; }) }),
+      // „Ein Kind unter 18“ nur, wenn Kinder unter 18 angegeben sind
+      bhPerson: kopie('bhPerson', { opts: function (s) { var alt = nach.bhPerson.opts; return (typeof alt === 'function' ? alt(s) : alt).filter(function (o) { return o[0] !== 'minder' || s.kids > 0; }); } }),
+      kids: mitWenn('kids', kinderJa), kidsU6: mitWenn('kidsU6', kinderJa), kids14: mitWenn('kids14', kinderJa), young: kopie('young', { wenn: kinderJa, h: 'sux.h.young' }),
+      unterhalt: mitWenn('unterhalt', function (s) { return kinderJa(s) && merk('kUnterhalt', s, Number(s.unterhalt) > 0); }),
+      waisen: mitWenn('waisen', function (s) { return kinderJa(s) && merk('kWaisen', s, Number(s.waisen) > 0); }),
+      kindEink: mitWenn('kindEink', function (s) { return kinderJa(s) && merk('kEink', s, Number(s.kindEink) > 0); }),
       bhMehr: kopie('bhMehr', { felder: nach.bhMehr.felder.map(function (x) { var alt = x[2]; return ['wfbm', 'teilhabe', 'bhSelbst'].indexOf(x[0]) < 0 ? x : [x[0], x[1], function (s) { return varUnter67(s) && (!alt || alt(s)); }]; }) }),
       bhWeitere: mitWenn('bhWeitere', function (s) { return s.adults === 2 || !!s.hhAndere; }),
       emStd: mitWenn('emStd', varUnter67),
@@ -5409,16 +5504,19 @@
       zusatzRente: mitWenn('zusatzRente', function (s) { return merk('zusatz', s, Number(s.zusatzRente) > 0); }),
       uzBetrag: mitWenn('uzBetrag', function (s) { return merk('unterhalt', s, Number(s.uzBetrag) > 0); }),
       autoWert: mitWenn('autoWert', function (s) { return merk('auto', s, Number(s.autoWert) > 0); }),
-      bezug: kopie('bezug', { felder: nach.bezug.felder.filter(function (x) { return x[0] !== 'kiz' && x[0] !== 'kindergeld'; }) })
+      bezug: kopie('bezug', { felder: nach.bezug.felder.map(function (x) { return x[0] === 'kiz' || x[0] === 'kindergeld' ? [x[0], x[1], varMitKindern] : x; }) })
     };
     ['ek1bArt', 'ek2bArt'].forEach(function (id) { var f = neu[id], alt = f.wenn; f.wenn = function (s) { return alt(s) && merk('zweitEk', s, s.ek1bArt || s.ek2bArt); }; });
     neu.ek1bBetrag = nach.ek1bBetrag; neu.ek2bBetrag = nach.ek2bBetrag;
     // Reihenfolge: Sammelfrage 1 nach dem Geburtsjahr; das zweite Einkommen erst nach Sammelfrage 2 (die steht nach allen Einkommen)
+    // Kinder: Ja/Nein nach der Haushaltsfrage, Sammelfrage zu den Kindern nach „18 bis 24“
     var spaeter = ['ek1bArt', 'ek1bBetrag', 'ek2bArt', 'ek2bBetrag'], out = [];
     basis.forEach(function (f) {
       if (weg.indexOf(f.id) >= 0 || spaeter.indexOf(f.id) >= 0) return;
       if (f.id === 'zusatzRente') { out.push(geld); spaeter.forEach(function (id) { out.push(neu[id]); }); }
       out.push(neu[f.id] || f);
+      if (f.id === 'adults') out.push(kinder);
+      if (f.id === 'young') out.push(kindLage);
       if (f.id === 'gebJahr') out.push(lage);
     });
     return out;
@@ -5436,7 +5534,7 @@
     if (f.id === 'miete' && v > 0 && v < 50) return t('sux.p.klein');
     return '';
   }
-  if (window.__SOLO_TEST__) window.__soloVariante = { telNummern: varTelNummern, filter: varFilter, karten: VAR_KARTEN, variante: VARIANTE };
+  if (window.__SOLO_TEST__) window.__soloVariante = { telNummern: varTelNummern, filter: varFilter, karten: VAR_KARTEN, kartenKinder: VAR_KARTEN_KINDER, variante: VARIANTE };
   if (window.__SOLO_TEST__) window.__soloVariante.fragen = varFragen;
   /*VAR-PFLEGE-ENDE*/
 

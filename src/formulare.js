@@ -86,7 +86,8 @@ const Formulare = (function () {
       if (miete > 0 || eigen) anl.push('Anlage KDU: Kosten für Unterkunft und Heizung' + (miete > 0 ? ' (laut SoLo zusammen ' + geld(miete) + ' € im Monat: nach Grundmiete, Nebenkosten und Heizkosten aufteilen)' : ''));
       anl.push('Anlage VM: Vermögen (Konten, Auto, Immobilien)');
       if (erw === 2) anl.push('Anlage WEP und eine eigene Anlage EK für die Partnerin oder den Partner; Anlage VE nur, wenn ihr nicht verheiratet seid');
-      if (young > 0) anl.push('Anlage WEP für jedes Kind ab 15 Jahren');
+      // Anlage WEP für jede weitere Person ab 15 (BA-Vordrucke): auch Kinder 15–17; „14 bis 17“ im Check kann ein 15-Jähriges enthalten (Prüfung Schulden 24.11.2026)
+      if (young > 0 || (s.kids14 | 0) > 0) anl.push('Anlage WEP für jedes Kind ab 15 Jahren');
       if (kids > 0) anl.push('Anlage KI für jedes Kind unter 15 Jahren');
       if (allein) anl.push('Anlage UH3: Unterhalt für die Kinder vom anderen Elternteil, je Kind eine');
       if (s.schwanger && erw === 1) anl.push('Anlage UH2: Schwangerschaft, wenn du nicht verheiratet bist');
@@ -141,8 +142,17 @@ const Formulare = (function () {
         'Angaben zu dir und zu Personen im Haushalt, Wohnkosten (Mietvertrag, Nebenkosten- und Heizkostenabrechnung)',
         'Einkommen: Rentenbescheid, bei Werkstatt Lohnabrechnung; Vermögen mit Kontoauszügen der letzten 3 Monate (geschützt sind 10.000 €)',
         'Bei Erwerbsminderung: Rentenbescheid oder Bescheid über die volle Erwerbsminderung; bei Werkstatt reicht der Nachweis der Werkstatt',
-        'Unterhalt von Kindern oder Eltern wird erst ab 100.000 € Jahreseinkommen geprüft',
+        'Unterhalt von Kindern oder Eltern wird erst bei mehr als 100.000 € Jahreseinkommen geprüft (§ 94 Abs. 1a SGB XII)',
         'Schwerbehindertenausweis mit Merkzeichen G oder aG: Mehrbedarf, Kopie beilegen']);
+    }
+    // Hilfe zum Lebensunterhalt (Sozialamt, 3. Kapitel SGB XII): kein Antrag nötig, die Hilfe beginnt, sobald das Amt die Notlage kennt (§ 18 Abs. 1 SGB XII)
+    if (ok(R('hlu')) && !(s.bezug || {}).sozialamt) {
+      hinweis('hlu', 'Hilfe zum Lebensunterhalt (SGB XII, Drittes Kapitel)', 'Beim Sozialamt der Stadt oder des Landkreises; ein Brief oder ein Anruf reicht. Die Hilfe beginnt erst, wenn das Sozialamt von der Notlage weiß (§ 18 SGB XII): früh melden', [
+        'Angaben zu dir und zu Personen im Haushalt, Wohnkosten (Mietvertrag, Nebenkosten- und Heizkostenabrechnung)',
+        'Einkommen: Rentenbescheid (auch Altersrente vor der Regelaltersgrenze) oder Bescheid über die befristete volle Erwerbsminderung; Vermögen mit Kontoauszügen der letzten 3 Monate (geschützt sind 10.000 € je Person)',
+        'Wohnst du mit Verwandten zusammen: Angaben zu deren Einkommen, denn das Sozialamt vermutet Unterstützung (§ 39 SGB XII); bei Behinderung oder Pflegebedarf gilt das nicht',
+        'Unterhalt von Eltern oder erwachsenen Kindern prüft das Sozialamt erst bei mehr als 100.000 € Jahreseinkommen; bei Kindern unter 18 gilt diese Grenze nicht (§ 94 Abs. 1a SGB XII)',
+        'Schwerbehindertenausweis mit Merkzeichen G: Mehrbedarf nur ab der Regelaltersgrenze oder bei voller Erwerbsminderung, Kopie beilegen']);
     }
     // Wohnberechtigungsschein: SoLo füllt nichts aus. Es gibt den leeren Landesvordruck mit Ausfüllhilfe, sonst die Fundstelle.
     if (ok(R('wbs'))) {

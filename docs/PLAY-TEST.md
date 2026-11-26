@@ -57,7 +57,7 @@ Google stellt nach den 14 Tagen Fragen zum Test. **Die Platzhalter in [eckigen K
 > Für Menschen in Deutschland, die wissen möchten, welche Sozialleistungen ihnen zustehen könnten, z. B. Familien mit kleinem Einkommen, Alleinerziehende, Rentnerinnen und Rentner, Menschen mit Behinderung und pflegende Angehörige. Es gibt eine einfache Version für Menschen mit Lernschwierigkeiten und 8 Sprachen.
 
 **Welchen Nutzen bietet die App?**
-> Viele Menschen beantragen Leistungen nicht, weil sie nicht wissen, dass sie Anspruch haben. Die App prüft 31 Leistungen in etwa 5 Minuten, nennt die zuständige Stelle und die Unterlagen und schreibt formlose Anträge. Sie läuft vollständig offline, ohne Konto, ohne Werbung, ohne In-App-Käufe und ohne Datenübertragung. Sie ist eine Orientierung und keine Behörden-App.
+> Viele Menschen beantragen Leistungen nicht, weil sie nicht wissen, dass sie Anspruch haben. Die App prüft 32 Leistungen in etwa 5 Minuten, nennt die zuständige Stelle und die Unterlagen und schreibt formlose Anträge. Sie läuft vollständig offline, ohne Konto, ohne Werbung, ohne In-App-Käufe und ohne Datenübertragung. Sie ist eine Orientierung und keine Behörden-App.
 
 **Wie viele Installationen erwarten Sie im ersten Jahr?**
 > [Realistische Schätzung, z. B. 1.000 bis 10.000.]
