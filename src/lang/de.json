@@ -990,6 +990,8 @@
   "t.blh.differenz": "Das Landesblindengeld in {land} ({landbetrag}) wird abgezogen. Bei wenig Einkommen bleiben bis zu {rest} im Monat Blindenhilfe dazu.",
   "t.blh.betrag": "Die Blindenhilfe beträgt bis zu {betrag} im Monat, für Kinder unter 18 Jahren bis zu {kind} (Stand {stand}).",
   "t.blindengeld.landBetrag": "In {land} bekommen blinde Erwachsene {betrag} Landesblindengeld im Monat (Stand {stand}), meist unabhängig vom Einkommen. Für Kinder ist es oft weniger. Die zuständige Stelle prüft den genauen Betrag.",
+  "t.blindengeld.landKind": "In {land} bekommen blinde Kinder unter 18 Jahren {betrag} Landesblindengeld im Monat (Stand {stand}), meist unabhängig vom Einkommen. Die zuständige Stelle prüft den genauen Betrag.",
+  "t.blindengeld.landKindAlter": "In {land} bekommen blinde Kinder unter {alter} Jahren {betrag} Landesblindengeld im Monat, ab {alter} Jahren {betrag2} (Stand {stand}), meist unabhängig vom Einkommen. Die zuständige Stelle prüft den genauen Betrag.",
   "t.blindengeld.hochLand": "Für hochgradig sehbehinderte Menschen zahlen nur einige Bundesländer eine eigene Leistung (zum Beispiel Bayern). Frag bei der zuständigen Stelle, ob es sie in deinem Land gibt.",
   "t.blindengeld.pflegeLand": "Bekommst du Pflegegeld, wird es in den meisten Ländern teilweise auf das Landesblindengeld angerechnet.",
   "t.wbs.landJa": "Dein Bruttoeinkommen liegt sogar unter der bundesweiten Grenze ({grenze} im Jahr für deinen Haushalt). Kein Bundesland hat eine niedrigere Grenze, ein Wohnberechtigungsschein ist also sehr wahrscheinlich.",

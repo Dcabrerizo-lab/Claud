@@ -990,6 +990,8 @@
   "t.blh.differenz": "{land} eyaletindeki körlük yardımı ({landbetrag}) düşülür. Geliri düşük olanlara ayda en fazla {rest} Blindenhilfe ek olarak ödenir.",
   "t.blh.betrag": "Körlük yardımı (Blindenhilfe) ayda en fazla {betrag}, 18 yaş altı çocuklar için en fazla {kind} ({stand} itibarıyla).",
   "t.blindengeld.landBetrag": "{land} eyaletinde görme engelli yetişkinler ayda {betrag} eyalet körlük yardımı alır ({stand} itibarıyla), çoğunlukla gelirden bağımsız. Çocuklar için genellikle daha azdır. Kesin tutarı yetkili kurum belirler.",
+  "t.blindengeld.landKind": "{land} eyaletinde 18 yaşından küçük görme engelli çocuklar ayda {betrag} eyalet körlük yardımı alır ({stand} itibarıyla), çoğunlukla gelirden bağımsız. Kesin tutarı yetkili kurum kontrol eder.",
+  "t.blindengeld.landKindAlter": "{land} eyaletinde {alter} yaşından küçük görme engelli çocuklar ayda {betrag}, {alter} yaşından itibaren {betrag2} eyalet körlük yardımı alır ({stand} itibarıyla), çoğunlukla gelirden bağımsız. Kesin tutarı yetkili kurum kontrol eder.",
   "t.blindengeld.hochLand": "Ağır görme engelli kişiler için sadece bazı eyaletler ayrı bir yardım öder (örneğin Bavyera). Eyaletinde olup olmadığını yetkili daireye sor.",
   "t.blindengeld.pflegeLand": "Pflegegeld alıyorsan, çoğu eyalette bunun bir kısmı Landesblindengeld'den düşülür.",
   "t.wbs.landJa": "Brüt gelirin ülke genelindeki sınırın bile altında (hanen için yılda {grenze}). Hiçbir eyaletin sınırı daha düşük değildir, bu yüzden Wohnberechtigungsschein çok olasıdır.",

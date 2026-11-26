@@ -6729,7 +6729,7 @@
  {
   "id": "C-BLI-06",
   "pruefer": "Claude",
-  "beschreibung": "Blind, Nordrhein-Westfalen: Landesblindengeld (Spanne), kein bayerischer Betrag",
+  "beschreibung": "Blind, Nordrhein-Westfalen, allein, 76 Jahre: 473 € (§ 2 Abs. 1 GHBG, ab 60), kein bayerischer Betrag (vorher Spanne; Fable-Nachprüfung Nr. 7)",
   "h": {
    "adults": 1,
    "kids": 0,
@@ -6754,12 +6754,14 @@
   "erwartet": {
    "blindengeld": {
     "status": "ja",
-    "tx": [
-     "blindengeld.landJa"
+    "betrag": 473,
+    "betragAus": "blindengeld.landBetrag.betrag",
+    "txNicht": [
+     "blindengeld.blind"
     ]
    }
   },
-  "quelle": "Landesblindengeldgesetze; https://www.gesetze-im-internet.de/sgb_12/__72.html, __87.html"
+  "quelle": "§ 2 Abs. 1 GHBG NRW – https://recht.nrw.de/system/files/BH/4675-20951.htm, Abruf 26.11.2026"
  },
  {
   "id": "C-EMR-01",
@@ -8673,7 +8675,7 @@
  },
  {
   "id": "B-blind-NW",
-  "beschreibung": "blind, Erwachsene, Nordrhein-Westfalen: kein fester Betrag, Spanne 350–952 € – altersabhängig (§ 2 Abs. 1 GHBG: unter 60 = Blindenhilfe, ab 60 473 €)",
+  "beschreibung": "blind, Erwachsene, Nordrhein-Westfalen: kein fester Betrag, Spanne 350–952 € – altersabhängig (§ 2 Abs. 1 GHBG: unter 60 = Blindenhilfe, ab 60 473 €) (ohne Geburtsjahr: Alter unbekannt)",
   "h": {
    "adults": 1,
    "kids": 0,
@@ -8687,7 +8689,7 @@
    "miete": 450,
    "mietstufe": "3",
    "vermoegen": 0,
-   "gebJahr": 1950,
+   "gebJahr": "",
    "heute": 2026.9,
    "pflegegrad": "",
    "bhPerson": "",
@@ -8955,7 +8957,7 @@
  },
  {
   "id": "B-blind-spanne",
-  "beschreibung": "blind, NRW: Spanne bis 952 € (NRW unter 60 = Blindenhilfe 951,92 €)",
+  "beschreibung": "blind, NRW: Spanne bis 952 € (NRW unter 60 = Blindenhilfe 951,92 €) (ohne Geburtsjahr: Alter unbekannt)",
   "h": {
    "adults": 1,
    "kids": 0,
@@ -8969,7 +8971,7 @@
    "miete": 450,
    "mietstufe": "3",
    "vermoegen": 0,
-   "gebJahr": 1950,
+   "gebJahr": "",
    "heute": 2026.9,
    "pflegegrad": "",
    "bhPerson": "",
@@ -9497,5 +9499,813 @@
   },
   "quelle": "§ 72 Abs. 1 Satz 1, Abs. 2 SGB XII – https://www.buzer.de/72_SGB_XII.htm; § 2 ThürSinnbGG; FIM Thüringen https://fimportal.de/api/v0/xzufi-services/L100038/354554/de/pdf (seit 1.7.2023 472 €); https://www.dbsv.org/blindengeld-in-thueringen.html (Stand 1.7.2026); betanet (Stand 28.7.2026)",
   "pruefer": "Claude (Teil blind, 26.11.2026)"
+ },
+ {
+  "id": "B-blind-kind-BW",
+  "beschreibung": "blindes Kind unter 18, BW: 205 € (Kinderbetrag)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "minder",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "BW",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 205,
+    "betragAus": "blindengeld.landKind.betrag",
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "§ 2 Abs. 1 BliHG BW (50 %); DBSV-Länderseiten dbsv.org/blindengeld-in-… (Stand 1.7.2026); betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026), Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-kind-BE",
+  "beschreibung": "blindes Kind unter 18, BE: 761,54 € (Kinderbetrag)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "minder",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "BE",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 761.54,
+    "betragAus": "blindengeld.landKind.betrag",
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "§ 2 LPflGG Berlin (alle Alter); DBSV-Länderseiten dbsv.org/blindengeld-in-… (Stand 1.7.2026); betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026), Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-kind-BB",
+  "beschreibung": "blindes Kind unter 18, BB: 221,51 € (Kinderbetrag)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "minder",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "BB",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 221.51,
+    "betragAus": "blindengeld.landKind.betrag",
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "§ 3 Abs. 1 LTeilhGG + Rentenanpassung 1.7.2026; DBSV-Länderseiten dbsv.org/blindengeld-in-… (Stand 1.7.2026); betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026), Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-kind-HB",
+  "beschreibung": "blindes Kind unter 18, HB: 279,87 € (Kinderbetrag)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "minder",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "HB",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 279.87,
+    "betragAus": "blindengeld.landKind.betrag",
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "Bremisches LPflGG; DBSV-Länderseiten dbsv.org/blindengeld-in-… (Stand 1.7.2026); betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026), Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-kind-HH",
+  "beschreibung": "blindes Kind unter 18, HH: 724,99 € (Kinderbetrag)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "minder",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "HH",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 724.99,
+    "betragAus": "blindengeld.landKind.betrag",
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "HmbBlinGG (alle Alter); DBSV-Länderseiten dbsv.org/blindengeld-in-… (Stand 1.7.2026); betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026), Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-kind-HE",
+  "beschreibung": "blindes Kind unter 18, HE: 476,78 € (Kinderbetrag)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "minder",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "HE",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 476.78,
+    "betragAus": "blindengeld.landKind.betrag",
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "BliGG Hessen; DBSV-Länderseiten dbsv.org/blindengeld-in-… (Stand 1.7.2026); betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026), Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-kind-MV",
+  "beschreibung": "blindes Kind unter 18, MV: 273,05 € (Kinderbetrag)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "minder",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "MV",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 273.05,
+    "betragAus": "blindengeld.landKind.betrag",
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "LBlGG M-V; DBSV-Länderseiten dbsv.org/blindengeld-in-… (Stand 1.7.2026); betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026), Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-kind-NI",
+  "beschreibung": "blindes Kind unter 18, NI: 450 € (Kinderbetrag)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "minder",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "NI",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 450,
+    "betragAus": "blindengeld.landKind.betrag",
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "§ 2 Abs. 1 BlindGeldG Nds. (alle Alter); DBSV-Länderseiten dbsv.org/blindengeld-in-… (Stand 1.7.2026); betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026), Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-kind-NW",
+  "beschreibung": "blindes Kind unter 18, NW: 476,78 € (Kinderbetrag)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "minder",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "NW",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 476.78,
+    "betragAus": "blindengeld.landKind.betrag",
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "§ 2 Abs. 1 GHBG NRW (Blindenhilfe unter 18); DBSV-Länderseiten dbsv.org/blindengeld-in-… (Stand 1.7.2026); betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026), Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-kind-RP",
+  "beschreibung": "blindes Kind unter 18, RP: 205 € (Kinderbetrag)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "minder",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "RP",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 205,
+    "betragAus": "blindengeld.landKind.betrag",
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "§ 2 LBlindenGG RP (50 %); DBSV-Länderseiten dbsv.org/blindengeld-in-… (Stand 1.7.2026); betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026), Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-kind-SL",
+  "beschreibung": "blindes Kind unter 18, SL: 327 € (Kinderbetrag)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "minder",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "SL",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 327,
+    "betragAus": "blindengeld.landKind.betrag",
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "saarländisches Landesrecht; DBSV-Länderseiten dbsv.org/blindengeld-in-… (Stand 1.7.2026); betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026), Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-kind-ST",
+  "beschreibung": "blindes Kind unter 18, ST: 333,32 € (Kinderbetrag)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "minder",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "ST",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 333.32,
+    "betragAus": "blindengeld.landKind.betrag",
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "LBliGG Sachsen-Anhalt; DBSV-Länderseiten dbsv.org/blindengeld-in-… (Stand 1.7.2026); betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026), Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-kind-SH",
+  "beschreibung": "blindes Kind unter 18, SH: 250 € (Kinderbetrag)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "minder",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "SH",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 250,
+    "betragAus": "blindengeld.landKind.betrag",
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "LBlGG SH; DBSV-Länderseiten dbsv.org/blindengeld-in-… (Stand 1.7.2026); betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026), Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-kind-TH",
+  "beschreibung": "blindes Kind unter 18, TH: 472 € (Kinderbetrag)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "minder",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "TH",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 472,
+    "betragAus": "blindengeld.landKind.betrag",
+    "txNicht": [
+     "blindengeld.landBetrag",
+     "blindengeld.landJa"
+    ]
+   }
+  },
+  "quelle": "§ 2 ThürSinnbGG (alle Alter); DBSV-Länderseiten dbsv.org/blindengeld-in-… (Stand 1.7.2026); betanet.de/blindenhilfe-landesblindengeld.html (Stand 28.7.2026), Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-kind-SN",
+  "beschreibung": "blindes Kind, Sachsen: unter 14 Jahren 285 €, ab 14 Jahren 380 € (Alter des Kindes unbekannt, beide Beträge)",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "minder",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "SN",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 285,
+    "betragAus": "blindengeld.landKindAlter.betrag",
+    "tx": [
+     "blindengeld.landKindAlter"
+    ]
+   }
+  },
+  "quelle": "§ 2 Abs. 1, 2 LBlindG Sachsen – https://revosax.sachsen.de/vorschrift/1537, Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-kind-SN-ab14",
+  "beschreibung": "blindes Kind, Sachsen: Betrag ab 14 Jahren 380 €",
+  "h": {
+   "adults": 1,
+   "kids": 1,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "minder",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "SN",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 380,
+    "betragAus": "blindengeld.landKindAlter.betrag2"
+   }
+  },
+  "quelle": "§ 2 Abs. 1, 2 LBlindG Sachsen – https://revosax.sachsen.de/vorschrift/1537, Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-NW-ab60",
+  "beschreibung": "blind, NRW, allein, Geburtsjahr 1950 (76 Jahre): 473 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "NW",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 473,
+    "betragAus": "blindengeld.landBetrag.betrag"
+   }
+  },
+  "quelle": "§ 2 Abs. 1 GHBG NRW – https://recht.nrw.de/system/files/BH/4675-20951.htm; § 72 Abs. 2 SGB XII, Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-NW-u60",
+  "beschreibung": "blind, NRW, allein, Geburtsjahr 1980: Höhe der Blindenhilfe 951,92 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "lohn",
+   "art2": "",
+   "brutto": 2000,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1980,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "NW",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "betrag": 951.92,
+    "betragAus": "blindengeld.landBetrag.betrag"
+   },
+   "blh": {
+    "txNicht": [
+     "blh.differenz"
+    ]
+   }
+  },
+  "quelle": "§ 2 Abs. 1 GHBG NRW – https://recht.nrw.de/system/files/BH/4675-20951.htm; § 72 Abs. 2 SGB XII, Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blind-NW-paar",
+  "beschreibung": "blind, NRW, Paar: Alter der blinden Person unbekannt -> Spanne",
+  "h": {
+   "adults": 2,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1711,
+   "brutto2": "",
+   "netto": 1500,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "erwNach25",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "NW",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blindengeld": {
+    "status": "ja",
+    "tx": [
+     "blindengeld.landJa"
+    ],
+    "txNicht": [
+     "blindengeld.landBetrag"
+    ]
+   }
+  },
+  "quelle": "§ 2 Abs. 1 GHBG NRW – https://recht.nrw.de/system/files/BH/4675-20951.htm; § 72 Abs. 2 SGB XII, Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
+ },
+ {
+  "id": "B-blh-NW-ab60",
+  "beschreibung": "blind, NRW, 76 Jahre, wenig Einkommen: Blindenhilfe-Rest 951,92 − 473 = 478,92 €",
+  "h": {
+   "adults": 1,
+   "kids": 0,
+   "kidsU6": 0,
+   "young": 0,
+   "art1": "rente",
+   "art2": "",
+   "brutto": 1027,
+   "brutto2": "",
+   "netto": 900,
+   "miete": 450,
+   "mietstufe": "3",
+   "vermoegen": 0,
+   "gebJahr": 1950,
+   "heute": 2026.9,
+   "pflegegrad": "",
+   "bhPerson": "",
+   "gdb": "",
+   "blind": "blind",
+   "bundesland": "NW",
+   "aufenthalt": "",
+   "bezug": {},
+   "ohneWege": true
+  },
+  "erwartet": {
+   "blh": {
+    "status": "vielleicht|ja",
+    "betrag": 478.92,
+    "betragAus": "blh.differenz.rest"
+   }
+  },
+  "quelle": "§ 72 Abs. 1 Satz 1 SGB XII; § 2 Abs. 1 GHBG NRW – https://recht.nrw.de/system/files/BH/4675-20951.htm; § 72 Abs. 2 SGB XII, Abruf 26.11.2026",
+  "pruefer": "Claude (Fable-Nachprüfung Nr. 7, 27.11.2026)"
  }
 ]

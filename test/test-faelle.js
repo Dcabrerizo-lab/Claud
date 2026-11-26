@@ -370,9 +370,9 @@ ck('[blh-voraus] Blindenhilfe: hochgradig sehbehindert -> nein; nicht blind -> n
 ck('[blh-verm] Blindenhilfe: Vermögen 15.000 € -> nein', L({ ...blind, vermoegen: 15000 }, 'blh') === 'nein');
 ck('[blh-hinweise] Blindenhilfe: Kind halbiert, Pflegegrad angerechnet', K({ ...blind, bhPerson: 'minder', adults: 2, kids: 1 }, 'blh').includes('blh.kind') && K({ ...blind, pflegegrad: '3' }, 'blh').includes('blh.pflege'));
 ck('[blh-land] Blindenhilfe außerhalb Bayerns: Landesblindengeld des Landes', K({ ...blind, bundesland: 'NW' }, 'blh').includes('blh.landAnders'));
-ck('[blh-betrag] Blindenhilfe 951,92 € (Kinder 476,78 €); Unterschied zum Landesblindengeld: Bayern 142,92 €, Hessen 133,27 €, Schleswig-Holstein 601,92 €; ohne belegten Landesbetrag kein Unterschied',
+ck('[blh-betrag] Blindenhilfe 951,92 € (Kinder 476,78 €); Unterschied zum Landesblindengeld: Bayern 142,92 €, Hessen 133,27 €, Schleswig-Holstein 601,92 €, NRW ab 60 478,92 € (§ 2 Abs. 1 GHBG: 473 €); NRW mit unbekanntem Alter (Paar) kein Unterschied',
   T(blind, 'blh', 'blh.betrag').betrag === '951,92 €' && T(blind, 'blh', 'blh.betrag').kind === '476,78 €' && T(blind, 'blh', 'blh.differenz').rest === '142,92 €' &&
-  T({ ...blind, bundesland: 'HE' }, 'blh', 'blh.differenz').rest === '133,27 €' && T({ ...blind, bundesland: 'SH' }, 'blh', 'blh.differenz').rest === '601,92 €' && !T({ ...blind, bundesland: 'NW' }, 'blh', 'blh.differenz'));
+  T({ ...blind, bundesland: 'HE' }, 'blh', 'blh.differenz').rest === '133,27 €' && T({ ...blind, bundesland: 'SH' }, 'blh', 'blh.differenz').rest === '601,92 €' && T({ ...blind, bundesland: 'NW' }, 'blh', 'blh.differenz').rest === '478,92 €' && !T({ ...blind, bundesland: 'NW', adults: 2 }, 'blh', 'blh.differenz'));
 ck('[blh-asyl] Blindenhilfe bei Asyl: nur möglich mit Hinweis', K({ ...blind, aufenthalt: 'asyl' }, 'blh')[0] === 'blh.asyl');
 
 // ---------- Prüfliste (docs/PRUEFLISTE.md): je Regel ein Test, Marke in eckigen Klammern. Erwartungen von Hand aus dem Gesetz ----------
