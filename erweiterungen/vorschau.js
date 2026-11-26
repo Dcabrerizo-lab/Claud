@@ -617,8 +617,10 @@ Ergebnis: Pflegegrad 2`;
   const WIRK = { passt: 'passt', zuWenig: 'zu deinen Lasten', zuViel: 'zu deinen Gunsten', pruefen: 'bitte prüfen', fehlt: 'nicht eingetragen' };
   // Ergebnis als Karten: je Abweichung eine Karte (Bescheid, nach SoLo, Grund, Paragraf); was passt, steht in einer Zeile;
   // die vollständige Tabelle zum Aufklappen. Für alle Bescheid-Prüfungen gleich.
+  // Hinweis Bescheid-Check Grundsicherung im Alter: Freibetrag für Arbeit offenbar vom Netto (BescheidGSA, tKey bp.sa.nettoFrei)
+  const NETTO_FREI_DE = 'Das Sozialamt hat den Freibetrag für deinen Lohn offenbar vom Netto berechnet. Viele Sozialämter rechnen 30 % vom Brutto (zum Beispiel Hamburg und Bremen in ihren Verwaltungsanweisungen). Dann wären es {diff} mehr Grundsicherung im Monat. Das Gesetz sagt es nicht eindeutig (§ 82 Abs. 3 SGB XII). Frag beim Sozialamt nach oder lege vorsorglich innerhalb der Frist Widerspruch ein.';
   function abweichungsKarten(box, r, label) {
-    const grundVon = (p) => p.grund || ((r.gruende || []).find((g) => g.key === p.key) || {}).grund || '';
+    const grundVon = (p) => (p.tKey ? tA(p.tKey, NETTO_FREI_DE, p.tP) : p.grund) || ((r.gruende || []).find((g) => g.key === p.key) || {}).grund || '';
     const ab = r.posten.filter((p) => p.wirkung === 'zuWenig' || p.wirkung === 'pruefen');
     for (const p of ab) {
       box.append(h('div', { class: 'opt abw' },
@@ -699,7 +701,7 @@ Ergebnis: Pflegegrad 2`;
   // ---------------- Bescheid Grundsicherung im Alter ----------------
   function leseGSA() {
     const zwei = $('ga-zahl').value === '2';
-    const person = (i) => ({ renteNetto: +$('ga-rente' + i).value || 0, renteBrutto: +$('ga-brutto' + i).value || 0, zusatzRente: +$('ga-zus' + i).value || 0, lohnNetto: +$('ga-lohn' + i).value || 0, sonstiges: +$('ga-sonst' + i).value || 0, versicherungen: +$('ga-vers' + i).value || 0, grundrente33: $('ga-gr' + i).checked, mzG: $('ga-g' + i).checked });
+    const person = (i) => ({ renteNetto: +$('ga-rente' + i).value || 0, renteBrutto: +$('ga-brutto' + i).value || 0, zusatzRente: +$('ga-zus' + i).value || 0, lohnNetto: +$('ga-lohn' + i).value || 0, lohnBrutto: +$('ga-lohnb' + i).value || 0, sonstiges: +$('ga-sonst' + i).value || 0, versicherungen: +$('ga-vers' + i).value || 0, grundrente33: $('ga-gr' + i).checked, mzG: $('ga-g' + i).checked });
     return { personen: zwei ? [person(1), person(2)] : [person(1)], warmwasserDezentral: $('ga-ww').checked, miete: { tatsaechlich: wert('ga-miete'), heizung: wert('ga-heiz') },
       bescheid: { regel: wert('ga-b-regel'), mehrG: wert('ga-b-g'), mehrWW: wert('ga-b-ww'), kdu: wert('ga-b-kdu'), einkommen: wert('ga-b-eink'), zahlbetrag: wert('ga-b-zahl') } };
   }
@@ -720,7 +722,8 @@ Ergebnis: Pflegegrad 2`;
       h('p', {}, h('span', { class: 'big', text: r.posten.length ? (r.zuWenigImMonat > 0 ? `Vermutlich ${eur(r.zuWenigImMonat)} im Monat zu wenig` : r.gruende.length ? 'Bitte prüfen' : 'Keine Abweichung zu deinen Lasten gefunden') : `Nach SoLo: ${eur(r.erwartet.zahlbetrag)} Grundsicherung im Monat` })),
       h('p', { class: 'small', text: `Nach SoLo: Bedarf ${eur(r.erwartet.bedarf)}, anzurechnendes Einkommen ${eur(r.erwartet.einkommen)}, Zahlbetrag ${eur(r.erwartet.zahlbetrag)}.` }));
     if (r.posten.length) abweichungsKarten(box, r, 'Vergleich Grundsicherung im Alter');
-    if (r.zahlbetrag) box.append(h('p', { class: 'small', text: `Zahlbetrag nach SoLo ${eur(r.zahlbetrag.erwartet)}, im Bescheid ${eur(r.zahlbetrag.bescheid)}.` }));
+    const zB = r.erwartet.zahlbetragBrutto > r.erwartet.zahlbetrag + 1 ? ` (mit 30 % Freibetrag vom Bruttolohn: ${eur(r.erwartet.zahlbetragBrutto)})` : '';
+    if (r.zahlbetrag) box.append(h('p', { class: 'small', text: `Zahlbetrag nach SoLo ${eur(r.zahlbetrag.erwartet)}${zB}, im Bescheid ${eur(r.zahlbetrag.bescheid)}.` }));
     box.append(h('p', { class: 'small muted', text: r.grenzen }));
   }
   function macheGSAWiderspruch(opt) {

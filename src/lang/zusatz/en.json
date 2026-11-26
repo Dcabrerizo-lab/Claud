@@ -141,5 +141,7 @@
   "u.eink.basis": "Proof of income",
   "u.eink.mit": "{basis}: {teile}",
   "u.eink.wg": "for Wohngeld from everyone in the household, usually for the last 12 months",
-  "u.eink.kiz": "for Kinderzuschlag from the parents and on the children’s income (e.g. maintenance), usually for the last 6 months"
+  "u.eink.kiz": "for Kinderzuschlag from the parents and on the children’s income (e.g. maintenance), usually for the last 6 months",
+  "bp.sa.lohnB": "Gross wage (if known)",
+  "bp.sa.nettoFrei": "The social welfare office (Sozialamt) apparently calculated the allowance for your wage from the net amount. Many social welfare offices calculate 30 % of the gross amount (for example Hamburg and Bremen in their administrative guidelines). You would then get {diff} more basic income support per month. The law is not clear on this (§ 82 Abs. 3 SGB XII). Ask the social welfare office, or file an objection (Widerspruch) as a precaution within the deadline."
 }

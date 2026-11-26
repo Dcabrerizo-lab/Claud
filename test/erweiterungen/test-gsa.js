@@ -44,6 +44,24 @@ const kd = G.pruefe({ personen: [{}], miete: { tatsaechlich: 600, heizung: 80 },
 ok('Gekürzte Unterkunft → prüfen, nicht sicher zu wenig', kd.posten[0].wirkung === 'pruefen' && kd.zuWenigImMonat === 0);
 ok('Widerspruch Grundsicherung im Alter', /Widerspruch gegen den Bescheid über Leistungen der Grundsicherung im Alter und bei Erwerbsminderung vom 16\.11\.2026/.test(W.text({ art: 'gsa', bescheidDatum: '2026-11-16', heute: '2026-11-17', punkte: W.punkteSGB2(r) })));
 
+// 2b. Bruttolohn freiwillig (§ 82 Abs. 3 Satz 1 SGB XII; Entscheidung David 26.11.2026): Rente 600, Lohn 1.000 brutto / 800 netto, Miete 450.
+//     Netto-Lesart: Freibetrag 240 -> Einkommen 1.160; Brutto-Lesart: 30 % von 1.000 = 300, gedeckelt 281,50 -> Einkommen 1.118,50 (Differenz 41,50)
+const lb = (eink, brutto) => G.pruefe({ personen: [{ renteNetto: 600, lohnNetto: 800, lohnBrutto: brutto }], miete: { tatsaechlich: 450, heizung: 0 }, bescheid: { einkommen: eink } }, Rules);
+const pe = (x) => x.posten.find((y) => y.key === 'einkommen');
+ok('Ohne Bruttolohn: wie bisher (Freibetrag 240, Bescheid 1.160 passt)', G.freiArbeit(800, R) === 240 && pe(lb(1160)).wirkung === 'passt' && lb(1160).erwartet.einkommen === 1160, pe(lb(1160)));
+ok('Freibetrag aus Brutto 1.000: 281,50 (Deckel), nie mehr als das Netto', G.freiArbeit(800, R, 1000) === 281.5 && G.freiArbeit(100, R, 400) === 100 && G.freiArbeit(400, R, 300) === 120);
+const nur = lb(1160, 1000);
+ok('Bescheid passt nur zur Netto-Lesart: „prüfen“, kein „zu wenig“', pe(nur).wirkung === 'pruefen' && nur.zuWenigImMonat === 0 && pe(nur).diff === 41.5 && pe(nur).tKey === 'bp.sa.nettoFrei' && pe(nur).tP.diff === '41,50 €', pe(nur));
+ok('Hinweis nennt Quellen und Differenz (Widerspruchsbegründung, förmlich)', /Fachanweisung Hamburg/.test(pe(nur).grund) && /41,50 € im Monat niedriger/.test(pe(nur).grund) && !/\bdu\b|dein/i.test(pe(nur).grund), pe(nur).grund);
+ok('Hinweis kommt in die Widerspruchspunkte', W.punkteSGB2(nur).some((x) => /§ 82 Abs. 3 Satz 1/.test(x)));
+ok('Bescheid passt zur Brutto-Lesart: passt', pe(lb(1118.5, 1000)).wirkung === 'passt', pe(lb(1118.5, 1000)));
+const mehr = lb(1300, 1000);
+ok('Bescheid über der Netto-Lesart: zu wenig, gemessen an der Netto-Lesart (140), Text nennt die Brutto-Lesart', pe(mehr).wirkung === 'zuWenig' && pe(mehr).diff === 140 && /nur 1\.118,50 €/.test(pe(mehr).grund), pe(mehr));
+const zb = G.pruefe({ personen: [{ renteNetto: 600, lohnNetto: 800, lohnBrutto: 1000 }], miete: { tatsaechlich: 700, heizung: 0 } }, Rules).erwartet;
+ok('Zahlbetrag (Miete 700): sicher 103,00 mit Netto-Lesart, 144,50 mit Brutto-Lesart', zb.zahlbetrag === 103 && zb.zahlbetragBrutto === 144.5, zb);
+const mini = lb(1040, 400);
+ok('Minijob (brutto = netto 400 statt 800 netto angegeben): Brutto kleiner als Netto zählt nicht', G.freiArbeit(800, R, 400) === 240 && pe(mini).wirkung !== 'pruefen');
+
 // 3. Gleicher Betrag wie die App: alleinstehende Rentner (mit und ohne Grundrentenzeiten), ohne Betriebsrente (die App kennt sie nicht)
 let rnd = 777; const zuf = () => (rnd = (rnd * 1103515245 + 12345) % 2147483648) / 2147483648;
 let verglichen = 0;

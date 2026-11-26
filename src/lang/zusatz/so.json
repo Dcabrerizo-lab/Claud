@@ -141,5 +141,7 @@
   "u.eink.basis": "Caddaynta dakhliga",
   "u.eink.mit": "{basis}: {teile}",
   "u.eink.wg": "Wohngeld: dhammaan xubnaha qoyska, inta badan 12-kii bilood ee u dambeeyay",
-  "u.eink.kiz": "Kinderzuschlag: waalidiinta iyo dakhliga carruurta (tusaale ahaan masruufka), inta badan 6-dii bilood ee u dambeeyay"
+  "u.eink.kiz": "Kinderzuschlag: waalidiinta iyo dakhliga carruurta (tusaale ahaan masruufka), inta badan 6-dii bilood ee u dambeeyay",
+  "bp.sa.lohnB": "Mushaharka guud (haddii aad taqaanno)",
+  "bp.sa.nettoFrei": "Xafiiska arrimaha bulshadu (Sozialamt) waxay u muuqataa inuu lacagta laga dhaafo mushaharkaaga ka xisaabiyay lacagta saafiga ah. Xafiisyo badan oo arrimaha bulshada ah waxay xisaabiyaan 30 % lacagta guud (tusaale Hamburg iyo Bremen tilmaamahooda maamul). Markaas waxaad bishii heli lahayd {diff} oo kaalmo aasaasi ah oo dheeraad ah. Sharcigu arrintan si cad uma sheego (§ 82 Abs. 3 SGB XII). Weydii xafiiska arrimaha bulshada ama taxaddar ahaan ka soo gudbi diidmo (Widerspruch) muddada gudaheeda."
 }
