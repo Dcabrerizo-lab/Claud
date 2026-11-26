@@ -141,5 +141,7 @@
   "u.eink.basis": "Dovezi de venit",
   "u.eink.mit": "{basis}: {teile}",
   "u.eink.wg": "pentru Wohngeld de la toți din gospodărie, de obicei pentru ultimele 12 luni",
-  "u.eink.kiz": "pentru Kinderzuschlag de la părinți și despre venitul copiilor (de ex. pensie de întreținere), de obicei pentru ultimele 6 luni"
+  "u.eink.kiz": "pentru Kinderzuschlag de la părinți și despre venitul copiilor (de ex. pensie de întreținere), de obicei pentru ultimele 6 luni",
+  "bp.sa.lohnB": "Salariul brut (dacă îl știi)",
+  "bp.sa.nettoFrei": "Biroul de asistență socială (Sozialamt) a calculat se pare suma scutită pentru salariul tău din venitul net. Multe birouri de asistență socială calculează 30 % din venitul brut (de exemplu Hamburg și Bremen în instrucțiunile lor administrative). Atunci ai primi cu {diff} mai mult ajutor de bază pe lună. Legea nu este clară în această privință (§ 82 Abs. 3 SGB XII). Întreabă la biroul de asistență socială sau depune din precauție contestație (Widerspruch) în termen."
 }
