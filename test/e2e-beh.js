@@ -58,7 +58,7 @@ const file = process.argv[2] || (__dirname + '/../dist/sozialleistungslotse.html
 
   // Anderes Bundesland: Landesblindengeld mit Spanne und Landschaftsverband als zuständige Stelle (NRW), danach zurück zu Bayern
   await sel('blind', 'blind'); await sel('bundesland', 'NW');
-  c = await card('Landesblindengeld'); ok('NRW: Landesblindengeld wahrscheinlich, Spanne 350 bis 950 €, Stelle Landschaftsverband', c && c.pill === 'ja' && /350 €/.test(c.text) && /950 €/.test(c.text) && /Landschaftsverband/.test(c.zust), JSON.stringify(c));
+  c = await card('Landesblindengeld'); ok('NRW: Landesblindengeld wahrscheinlich, Spanne 350 bis 952 €, Stelle Landschaftsverband', c && c.pill === 'ja' && /350 €/.test(c.text) && /952 €/.test(c.text) && /Landschaftsverband/.test(c.zust), JSON.stringify(c));
   c = await card('Schwerbehindertenausweis und Nachteilsausgleiche'); ok('NRW: Ausweis beim Kreis bzw. der kreisfreien Stadt', c && /Kreis bzw\. kreisfreie Stadt/.test(c.zust), c && c.zust);
   await sel('bundesland', 'BY'); await sel('blind', '');
 

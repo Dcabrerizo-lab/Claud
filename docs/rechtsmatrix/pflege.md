@@ -25,7 +25,7 @@ Grundlage für künftige Aktualitätsprüfungen. Zusammengeführt aus zwei unabh
 | Hilfe zur Pflege bei PG 1 | nur Pflegehilfsmittel, Wohnumfeld, DiPA (+ Unterstützung), Entlastungsbetrag | § 63 Abs. 2 SGB XII | buzer.de/63_SGB_XII.htm | `hilfeZurPflege` |
 | Sozialhilfe setzt ein | ab Kenntnis des Trägers (Tag, nicht Monat) | § 18 Abs. 1 SGB XII | buzer.de/18_SGB_XII.htm | Texte `s.hzp.tip`, `s.blh.tip` |
 | Elternunterhalt | nur wenn ein Kind jeweils mehr als 100.000 € Gesamteinkommen (§ 16 SGB IV) hat; Vermutung darunter | § 94 Abs. 1a SGB XII | buzer.de/94_SGB_XII.htm | Texte `t.hzp.heim`, `s.gsa.tip`, `pfl.pi.heim.2`, Antragsmappe GSA (`src/formulare.js`: „mehr als“ statt „ab“, 24.11.2026) |
-| Blindenhilfe | 951,92 € / unter 18: 476,78 € (ab 1.7.2026) | § 72 Abs. 2 SGB XII | ZBFS-Infoblatt 7/2026 (abgeleitet), siehe Prüfliste | `R.blhBetrag` |
+| Blindenhilfe | 951,92 € / unter 18: 476,78 € (ab 1.7.2026) | § 72 Abs. 2 SGB XII (Anpassung wie aktueller Rentenwert) | ZBFS-Infoblatt 7/2026 (809 € = 85 %), Hessen 818,65 € (= 86 %), Berlin 80 % = 761,54 €; betanet Stand 28.7.2026; Abruf 26.11.2026 | `R.blhBetrag` |
 | Anrechnung Pflegegeld auf Blindenhilfe | PG 2: 50 % von PG-2-Pflegegeld; PG 3–5: 40 % von PG-3-Pflegegeld, höchstens 50 % der Blindenhilfe | § 72 Abs. 1 Satz 2 SGB XII | buzer.de/72_SGB_XII.htm | `blindenhilfe` |
 | Bayerisches Blindengeld | 809 € / Sehbehinderte 242,70 €; Anrechnung PG 2: 46 % von PG-2-, PG 3–5: 33 % von PG-3-Pflegegeld, mind. 20 € | Art. 2, 4 BayBlindG | gesetze-bayern.de/Content/Document/BayBlindG-4 | `blindengeld0` |
 | Landespflegegeld Bayern | 500 € im Jahr ab PG 2, Hauptwohnsitz Bayern | Art. 2 BayLPflGG | gesetze-bayern.de (Abruf 21.11.2026) | `landespflegegeld` |
@@ -71,5 +71,32 @@ Grundlage für künftige Aktualitätsprüfungen. Zusammengeführt aus zwei unabh
 - `nettoRente` ohne Kinderlosen-Zuschlag als Standard (Z4 Claude).
 - Digitale Pflegeanwendungen, § 92c-Zuschuss, Zuschüsse § 44a Abs. 1 in der Übersicht (Z5 Claude).
 - Krankengeld als Zahlbetrag beim Wohngeld (`wgAbzugAuszahlung.kg`), gleiche Herleitung wie Rente, nicht geändert.
-- Landesblindengeld SH (350 € oder 300 €), BW/MV/NI/RP einzeln nachprüfen (K2, K3 Fable).
+- Landesblindengeld SH, BW, MV, NI, RP: am 26.11.2026 geprüft, siehe Abschnitt 4 (erledigt). Offen bleiben feste Beträge für BB, HB, HH, NW, SL, ST, TH (Abschnitt 4) und der Gesetzestext SH in juris (nicht abrufbar).
 - Regelbedarfe und Pflegebeträge 2027 erst nach Verkündung (Z8 Claude, K9 Fable).
+
+## 4. Landesblindengeld aller Länder (Prüfung 26.11.2026, Rechtsstand 2026)
+
+Erwachsene, häusliche Versorgung, ohne Pflegegrad. „In der App“: fester Betrag in `R.landBlind.land` (Karte `blindengeld`, Text `blindengeld.landBetrag`, Abzug in `blh.differenz`), sonst Spanne `R.landBlind.von`–`bis` (350–952 €). Abruf aller Quellen 26.11.2026. Werte, die erst 2027 gelten: keine gefunden.
+
+| Land | Betrag Erwachsene (Kinder) | Rechtsgrundlage | Quelle / Fundstelle | In der App | Testfall |
+|---|---|---|---|---|---|
+| BW | 410 € (unter 18: 205 €); Heim 50 %; Anrechnung PG 2: 46 % PG-2-, PG 3–5: 33 % PG-3-Pflegegeld (Minderjährige halb) | §§ 2, 3 BliHG BW | lexaris.de (Gesetzestext BliHG); service-bw/Heidelberg, Stand 19.10.2026 („ab 01.07.2026 410,00 EUR“) | fest 410 € | B-blind-BW |
+| BY | 809 € (alle Alter); Sehbehinderte 242,70 €; Anrechnung PG 2: 159,62 €, PG 3–5: 197,67 €, mind. 20 €; Heim höchstens 50 % Kürzung | Art. 2, 4 BayBlindG | ZBFS-Infoblatt Blindengeld Stand 1.7.2026 (zbfs.bayern.de/…/blindengeld_infoblatt_2026-07_comp.pdf) | fest 809 € mit Pflegegrad-Rechnung | B-blind-BY, F-bl-01 bis F-bl-07 |
+| BE | 761,54 € (alle Alter) = 80 % der Blindenhilfe; blind und gehörlos 1.189 € | § 2 LPflGG Berlin | berlin.de/sen/soziales/soziale-sicherung/landespflegegeldgesetz/ (Stand 17.11.2025: „80 v.H. der Blindenhilfe“) × 951,92 € | fest 761,54 € (neu) | B-blind-BE, B-blh-BE |
+| BB | 425 € (unter 18: 212,50 €), ab 1.7.2026 angepasst um die Rentenwert-Änderung (betanet: 443,03 €); taubblind 850 € (angepasst) | § 3 Abs. 1 LTeilhGG | bravors.brandenburg.de/gesetze/lteilhgg (geänd. G v. 20.6.2024, GVBl. I Nr. 25) | Spanne (Cent-Betrag nicht amtlich belegt) | B-blind-BB |
+| HB | betanet: 559,73 € (Kinder 279,87 €) | Bremisches LPflGG | service.bremen.de nicht abrufbar | Spanne | B-blind-HB |
+| HH | betanet: 724,99 € (alle Alter) | HmbBlinGG | hamburg.de nennt keinen Betrag (Stand 25.11.2026) | Spanne | B-blind-HH |
+| HE | 818,65 € = 86 % der Blindenhilfe (Kinder 476,78 €); Sehbehinderte 245,60 €; taubblind 1.637,30 € | BliGG Hessen | betanet Stand 28.7.2026; Rechnung 0,86 × 951,92 € | fest 818,65 € | B-blind-HE |
+| MV | 430 € (unter 18: 273,05 €); Sehbehinderte 107,50 € / 68,26 € | § 1 LBlGG M-V | FIM-Leistung MV (fimportal.de …/L100027/9576990); LT-Drs. 7/3853 (seit 2009 430 €); Haushaltsbegleitgesetz 2026/2027 (LT-Drs. 8/5199) ändert das LBlGG nicht | fest 430 € | B-blind-MV |
+| NI | 450 € (alle Alter); Heim 225 €; Anrechnung PG 2: 135 €, PG 3–5: 165 € | §§ 2, 3 BlindGeldG Nds., geänd. durch Art. 10 G v. 13.12.2024 (Nds. GVBl. 2024 Nr. 118) | schure.de/2114102/blindgeldg.htm | fest 450 € | B-blind-NI, B-blh-NI |
+| NW | unter 60: Höhe der Blindenhilfe (951,92 €); ab 60: 473 €; Sehbehinderte und Gehörlose 77 € | §§ 2, 4, 5 GHBG NRW | recht.nrw.de/system/files/BH/4675-20951.htm | Spanne; Obergrenze 952 € (korrigiert, vorher 950 €) | B-blind-NW, B-blind-spanne |
+| RP | 410 € (unter 18: 205 €); Anrechnung PG 2: 159,62 €, PG 3–5: 197,67 €; Heim: ruht nach 4 Wochen | §§ 2–5 LBlindenGG RP | lexaris.de (Gesetzestext); Flyer Kreis Mainz-Bingen Stand 1.7.2026 | fest 410 € | B-blind-RP |
+| SL | betanet / down-syndrom.org: 460 € (Kinder 327 €), taubblind 685 € / 486 € ab 1.2026 | saarländisches Landesrecht | amtliche Fundstelle nicht abgerufen | Spanne | B-blind-SL |
+| SN | 380 € ab 14 Jahren (unter 14: 285 €); Sehbehinderte 100 €; Gehörlose 150 €; Anrechnung PG 2: 40 %, PG 3–5: 30 % der SGB-XI-Leistung, höchstens 50 % | §§ 2, 4, 5 LBlindG Sachsen (Fassung ab 1.1.2023) | revosax.sachsen.de/vorschrift/1537 | fest 380 € (neu) | B-blind-SN, B-blh-SN |
+| ST | betanet: 479,96 € (Kinder 333,32 €) | LBliGG Sachsen-Anhalt | LAS-Antrag (Stand 06.2026) ohne Beträge | Spanne | B-blind-ST |
+| SH | 350 € ab 1.4.2026 (unter 18: 250 €; taubblind 450 €); Heim mind. 175 €; mit PG 2: 211,20 €, PG 3–5: 110,40 € Zahlbetrag | LBlGG SH (Bek. v. 12.5.1997) | DBSV „Blindengeld in Schleswig-Holstein“ (Stand 1.7.2026); down-syndrom.org 29.1.2026 (+25 € ab 1.4.2026, Einmalzahlung 75 € für Jan.–März); SSW-PM 20.11.2025 (325 € seit 4/2025). Die Landesseite schleswig-holstein.de (300 €, „Letzte Aktualisierung 01.03.2024“) ist veraltet. Gesetzestext in gesetze-rechtsprechung.sh.juris.de technisch nicht abrufbar | fest 350 € (bestätigt) | B-blind-SH, B-blh-SH |
+| TH | ThürSinnbGG (Fassung 2023): 400 €; betanet: 472 € – widersprüchlich | § 2 ThürSinnbGG | lexaris.de (Fassung 12.6.2023) | Spanne | B-blind-TH |
+
+Blindenhilfe (§ 72 SGB XII): 951,92 € / unter 18: 476,78 € ab 1.7.2026; Landesblindengeld wird voll angerechnet (§ 72 Abs. 1 Satz 1), Pflegegeld nach Abs. 1 Satz 2 (s. o.). Die App rechnet den Rest nur ohne Pflegegrad außerhalb Bayerns (andere Anrechnungsregeln je Land) und nicht für Kinder.
+
+Bayern mit Pflegegrad (bestätigt): Blindengeld PG 2: 809 − 159,62 = 649,38 €; PG 3–5: 809 − 197,67 = 611,33 €; Blindenhilfe-Rest PG 3: (951,92 − 239,60) − 611,33 = 100,99 €.
